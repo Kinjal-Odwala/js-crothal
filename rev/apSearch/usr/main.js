@@ -378,6 +378,7 @@ Rev.data.apInvoiceStore = WebLight.extend(Rev.data.XmlStore, {
 	checkNumber: '',
 	poNumber: '',
 	totalRecords: 0,
+	pages: [],
 	
     getCriteria: function() {
         return {
@@ -558,8 +559,39 @@ Rev.page.apSearch = WebLight.extend(WebLight.Page, {
 	        store: me.apInvoiceStore,
 	        displayInfo: true,
 	        displayMsg: 'Displaying {0} - {1} of {2}',
-	        emptyMsg: "No data available to display"
-	    });
+	        emptyMsg: "No data available to display",
+			listeners: { 
+//				change: function(thisd, params) {
+//                  pages = params.pages;
+//					total = params.total;
+//					activePage = params.activePage;
+//				},
+				beforeChange: function(thisd, params) {
+					var toolbar = me.apInvoiceGrid.getBottomToolbar();
+           			var pageData = toolbar.getPageData();
+
+					if (params.start < this.cursor) {
+						params.start = me.apInvoiceStore.pages[pageData.activePage - 2].start;
+						params.limit = me.apInvoiceStore.pages[pageData.activePage - 2].limit;
+					}
+					else {
+						params.start = me.apInvoiceStore.pages[pageData.activePage].start;
+						params.limit = me.apInvoiceStore.pages[pageData.activePage].limit;
+					}
+				}
+			},
+			initComponent: function() {
+				this.constructor.prototype.initComponent.call(this);
+				this.first.hide();
+				this.last.hide();
+				this.refresh.hide();
+				this.inputItem.readOnly = true;
+//				// Replace '->' with '-'
+//				var ix = this.items.indexOf(this.displayItem) - 1;
+//				this.items.removeAt(ix);
+//				this.items.insert(ix, new Ext.Toolbar.Separator());
+			}
+		});
 
 		var displayRenderer = function (value, metaData, record, rowIndex, colIndex, store) {
             if (metaData && record) {
@@ -684,7 +716,54 @@ Rev.page.apSearch = WebLight.extend(WebLight.Page, {
 		me.apHouseCodeStore.on('beforeload', function () { me.mask('Loading...'); setStatus("Loading"); });
         me.apHouseCodeStore.on('load', function () { me.unmask(); setStatus("Loaded"); });
         me.apInvoiceStore.on('beforeload', function () { me.mask('Loading...'); setStatus("Loading"); });
-        me.apInvoiceStore.on('load', function () { me.unmask(); setStatus("Loaded"); this.totalRecords = this.totalLength; 
+
+        me.apInvoiceStore.on('load', function () {
+			var toolbar = me.apInvoiceGrid.getBottomToolbar();
+			var pageData = toolbar.getPageData();
+			var start = 0;
+			var rowsRemoved = 0;
+
+			me.unmask(); 
+			setStatus("Loaded");
+			this.totalRecords = this.totalLength; 
+
+			if (me.apInvoiceStore.pages[pageData.activePage - 1] == undefined || !me.apInvoiceStore.pages[pageData.activePage - 1].loaded) {
+				if (me.apInvoiceStore.data.length >= toolbar.pageSize && pageData.activePage < pageData.pages) {
+					var lastGroupBy = "";
+					var lastIndex = -1;
+					for (var index = me.apInvoiceStore.data.length - 1; index > 0; index--) {
+						if (lastGroupBy == "") 
+							lastGroupBy = me.apInvoiceStore.data.items[index].data.groupBy;
+						if (index > 1 && lastGroupBy != me.apInvoiceStore.data.items[index - 1].data.groupBy) {
+							lastIndex = index;
+							break;
+						}
+					}
+					
+					for (var index = me.apInvoiceStore.data.length - 1; index >= lastIndex; index--) {
+						me.apInvoiceStore.removeAt(index);
+						rowsRemoved++;
+					}
+
+					if (pageData.activePage > 1)
+						start = me.apInvoiceStore.pages[pageData.activePage - 1].start;
+
+					toolbar.displayItem.setText(String.format(toolbar.displayMsg, start + 1, start + me.apInvoiceStore.data.length, this.totalRecords));
+
+					me.apInvoiceStore.pages[pageData.activePage - 1] = {
+						start: start,
+						limit: me.apInvoiceStore.data.length,
+						loaded: true
+					};
+
+					me.apInvoiceStore.pages[pageData.activePage] = {
+						start: start + me.apInvoiceStore.data.length,
+						limit: toolbar.pageSize + rowsRemoved,
+						loaded: false
+					};
+				}
+			}
+
 			var view = me.apInvoiceGrid.getView();
 			view.collapseAllGroups();
 		});
@@ -835,6 +914,7 @@ Rev.page.apSearch = WebLight.extend(WebLight.Page, {
 		}
 
 		me.apInvoiceStore.totalRecords = 0;
+		me.apInvoiceStore.pages = [];
 		me.apInvoiceStore.houseCode = houseCode;
         me.apInvoiceStore.vendor = vendor;
         me.apInvoiceStore.invoiceNumber = invoiceNumber;
