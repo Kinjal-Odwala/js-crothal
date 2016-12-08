@@ -555,7 +555,7 @@ Rev.page.apSearch = WebLight.extend(WebLight.Page, {
     	var summary = new Ext.ux.grid.GroupSummary();
 	
 		var pagingBar = new Ext.PagingToolbar({
-	        pageSize: 50,
+	        pageSize: 500,
 	        store: me.apInvoiceStore,
 	        displayInfo: true,
 	        displayMsg: 'Displaying {0} - {1} of {2}',
@@ -925,7 +925,7 @@ Rev.page.apSearch = WebLight.extend(WebLight.Page, {
 		me.apInvoiceStore.poNumber = poNumber;
 
 		if (action == "loadGrid")
-			me.apInvoiceStore.load({ params: { start: 0, limit: 50 }});
+			me.apInvoiceStore.load({ params: { start: 0, limit: 500 }});
 		else
 			me.apExportStore.load(houseCode, vendor, invoiceNumber, glStartDate, glEndDate, checkDate, checkNumber, poNumber);
 	},
