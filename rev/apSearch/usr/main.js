@@ -550,6 +550,9 @@ Rev.page.apSearch = WebLight.extend(WebLight.Page, {
 			else
 				return value;
 	    };
+		Ext.ux.grid.GroupSummary.Calculations['purchaseOrderId'] = function(value, record, field) {
+			return record.data;
+	    };
 
 		// Utilize custom extension for Group Summary
     	var summary = new Ext.ux.grid.GroupSummary();
@@ -653,14 +656,13 @@ Rev.page.apSearch = WebLight.extend(WebLight.Page, {
 					  { dataIndex: 'houseCode', header: 'House Code', width: 100, renderer: displayRenderer },
 					  { dataIndex: 'subLedger', header: 'Sub Ledger', width: 100, renderer: displayRenderer },
 					  { dataIndex: 'houseCodeAmount', header: 'House Code Amount', width: 150, align: 'right', renderer: displayRenderer },
-                      { dataIndex: 'poNumber', header: 'PO Number', width: 100,
-                       	renderer: function (value, meta, record) {
-							if (record.data.purchaseOrderId > 0)
-								return "<a href='javascript: void(0)' onclick='printPurchaseOrder(" + record.data.purchaseOrderId + ");'>" + value + "</a>";
+                      { dataIndex: 'poNumber', header: 'PO Number', width: 100, summaryType: 'max', summaryType: 'purchaseOrderId',
+					    summaryRenderer: function(data, params, record) {
+							if (data.purchaseOrderId > 0)
+								return "<a href='javascript: void(0)' onclick='printPurchaseOrder(" + data.purchaseOrderId + ");'>" + data.poNumber + "</a>";
 							else
-								return value;
-                  		},
-						summaryType: 'max'
+								return data.poNumber;
+		                },
                       },
 					  { dataIndex: 'groupBy', header: 'Vendor Invoice #', width: 150, align: 'right', renderer: displayRenderer }
 					 ]
