@@ -635,7 +635,18 @@ ii.init.register( function() {
 		id: {type: Number}
 		, name: {type: String}
 	};
-	
+
+	fin.adh.payCodeTypeArgs = {
+		id: {type: Number}
+		, brief: {type: String}
+		, name: {type: String}		
+	};
+
+	fin.adh.fiscalYearArgs = {
+		id: {type: Number}
+		, title: {type: String}
+	};
+
 }, 2);
 
 ii.Class({
@@ -1428,6 +1439,26 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.adh.hcmSiteTypeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.adh.PayCodeType",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.adh.payCodeTypeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.adh.FiscalYear",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.adh.fiscalYearArgs);
 			$.extend(this, args);
 		}
 	}

@@ -2,16 +2,25 @@
     <h3 class="text-center header">PERSONNEL ACTION FORM<span ng-if="empAction.Number>0"> (#{{empAction.Number}})</span></h3>
 </section>
 
+<div id="itemStatusDiv">
+    <div id="itemStatusImage" class="itemStatusImage"></div>
+    <div id="itemModifiedImage" class="itemModifiedImage"></div>
+    <div id="itemStatusText">{{pageStatus}}</div>
+</div>
+
 <div class="customizer">
     <div class="container bs-docs-container ">
         <form name="pafForm">
             <section>
+                <div class="row  margin-bottom10 form-horizontal">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <p class="bs-header text-center">(First Section to be filled out at all times by Hiring Manager, Manager and/or Associate)</p>
+            </div></div>
                 <div class="row">
                     <div class="col-md-3">
                         <div class="form-group" paf-invalid="pafForm.Date">
                             <label>Date</label>
-                            <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-model="empAction.Date" dt-name="Date" dt-required="true" max-Date="maxDate"></paf-datepicker>
+                            <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-model="empAction.Date" dt-name="Date" dt-required="true" max-Date="maxDate" dt-change="onPageEdit()"></paf-datepicker>
                         </div>
                     </div>
                     <div class="col-md-9">
@@ -21,29 +30,29 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                 <div class="row">
                     <div class="col-md-3">
                         <div class="form-group" ng-class="{'has-error':pafForm.EmployeeNumber.$invalid}">
                             <label class="control-label">Employee/Clock Number</label>
-                            <input class="form-control input-sm" name="EmployeeNumber" paf-Min="6" maxlength="6" ng-blur="onEmployeeNumberChanged(empAction.EmployeeNumber)" paf-enter="onEmployeeNumberChanged(empAction.EmployeeNumber)" ng-model="empAction.EmployeeNumber" ng-disabled="empAction.NewHire" ng-required="!empAction.NewHire" paf-integer/>
+                            <input class="form-control input-sm" name="EmployeeNumber" paf-Min="6" maxlength="6" ng-blur="onEmployeeNumberChanged(empAction.EmployeeNumber)" paf-enter="onEmployeeNumberChanged(empAction.EmployeeNumber)" ng-model="empAction.EmployeeNumber" ng-disabled="empAction.NewHire" ng-required="!empAction.NewHire" ng-change="onPageEdit()" paf-integer/>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group" ng-class="{'has-error':pafForm.FirstName.$invalid}">
                             <label class="control-label">First Name</label>
-                            <input class="form-control input-sm" name="FirstName" maxlength="50" ng-model="empAction.FirstName" ng-disabled="empAction.Data.EmployeeExists" required/>
+                            <input class="form-control input-sm" name="FirstName" maxlength="50" ng-model="empAction.FirstName" ng-disabled="empAction.Data.EmployeeExists" ng-change="onPageEdit()" required/>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             <label class="control-label">Middle Name</label>
-                            <input class="form-control input-sm" name="MiddleName" maxlength="50" ng-model="empAction.MiddleName" ng-disabled="empAction.Data.EmployeeExists" />
+                            <input class="form-control input-sm" name="MiddleName" maxlength="50" ng-model="empAction.MiddleName" ng-disabled="empAction.Data.EmployeeExists" ng-change="onPageEdit()" />
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group" ng-class="{'has-error':pafForm.LastName.$invalid}">
                             <label class="control-label">Last Name</label>
-                            <input class="form-control input-sm" name="LastName" maxlength="50" ng-model="empAction.LastName" ng-blur="onEmployeeNameChanged(empAction.LastName)" paf-enter="onEmployeeNameChanged(empAction.LastName)" ng-disabled="empAction.Data.EmployeeExists" required/>
+                            <input class="form-control input-sm" name="LastName" maxlength="50" ng-model="empAction.LastName" ng-blur="onEmployeeNameChanged(empAction.LastName)" paf-enter="onEmployeeNameChanged(empAction.LastName)"  ng-disabled="empAction.Data.EmployeeExists" ng-change="onPageEdit()" required/>
                         </div>
                     </div>
                 </div>
@@ -51,35 +60,35 @@
                     <div class="col-md-6">
                         <div class="form-group" ng-class="{'has-error':pafForm.AddressLine1.$invalid}">
                             <label class="control-label">Address 1</label>
-                            <input class="form-control input-sm" name="AddressLine1" maxlength="100" ng-model="empAction.AddressLine1" ng-disabled="empAction.Data.EmployeeExists" required/>
+                            <input class="form-control input-sm" name="AddressLine1" maxlength="100" ng-model="empAction.AddressLine1" ng-disabled="empAction.Data.EmployeeExists" ng-change="onPageEdit()" required/>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="control-label">Address 2</label>
-                            <input class="form-control input-sm" name="AddressLine2" maxlength="100" ng-model="empAction.AddressLine2" ng-disabled="empAction.Data.EmployeeExists"/>
+                            <input class="form-control input-sm" name="AddressLine2" maxlength="100" ng-model="empAction.AddressLine2" ng-disabled="empAction.Data.EmployeeExists" ng-change="onPageEdit()" />
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-3" ng-class="{'has-error':pafForm.City.$invalid}">
                         <label class="control-label">City</label>
-                        <input class="form-control input-sm" name="City" maxlength="50" ng-model="empAction.City" ng-disabled="empAction.Data.EmployeeExists" required/>
+                        <input class="form-control input-sm" name="City" maxlength="50" ng-model="empAction.City" ng-disabled="empAction.Data.EmployeeExists" ng-change="onPageEdit()" required/>
                     </div>
                     <div class="col-md-3" ng-class="{'has-error':pafForm.StateType.$invalid}">
                         <label class="control-label">State</label>
-                        <select class="form-control input-sm" name="StateType" ng-model="empAction.StateType" ng-disabled="empAction.Data.EmployeeExists" ng-options="item.id as item.name for item in States" required>
+                        <select class="form-control input-sm" name="StateType" ng-model="empAction.StateType" ng-disabled="empAction.Data.EmployeeExists" ng-options="item.id as item.name for item in States" ng-change="onPageEdit()" required>
                             <option></option>
                         </select>
                     </div>
                     <div class="col-md-3" ng-class="{'has-error':pafForm.PostalCode.$invalid}">
                         <label>Zip</label>
-                        <input class="form-control input-sm" name="PostalCode" maxlength="10" ng-model="empAction.PostalCode" paf-mask="zipcode" ng-disabled="empAction.Data.EmployeeExists" required/>
+                        <input class="form-control input-sm" name="PostalCode" maxlength="10" ng-model="empAction.PostalCode" paf-mask="zipcode" ng-disabled="empAction.Data.EmployeeExists" ng-change="onPageEdit()" required/>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group" ng-class="{'has-error':pafForm.Phone.$invalid}">
                             <label class="control-label">Phone #</label>
-                            <input class="form-control input-sm" name="Phone" maxlength="14" ng-model="empAction.Phone" paf-mask="phone" ng-disabled="empAction.Data.EmployeeExists" required/>
+                            <input class="form-control input-sm" name="Phone" maxlength="14" ng-model="empAction.Phone" paf-mask="phone" ng-disabled="empAction.Data.EmployeeExists" ng-change="onPageEdit()" required/>
                         </div>
                     </div>
                 </div>
@@ -112,13 +121,13 @@
                         <div class="col-md-4">
                             <div class="form-group" paf-invalid="hireForm.HireDate">
                                 <label>Hire Date</label>
-                                <paf-datepicker dt-model="empAction.HireDate" dt-name="HireDate" dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-required="true"></paf-datepicker>
+                                <paf-datepicker dt-model="empAction.HireDate" dt-name="HireDate" dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-required="true" dt-change="onPageEdit()"></paf-datepicker>
                             </div>
                         </div>
                         <div class="col-md-8">
                             <div class="form-group" paf-invalid="hireForm.PositionType">
                                 <label>Position</label>
-                                <select class="form-control input-sm" name="PositionType" ng-model="empAction.PositionType" ng-options="item.id as item.name for item in $parent.$parent.JobCodes" required>
+                                <select class="form-control input-sm" name="PositionType" ng-model="empAction.PositionType" ng-options="item.id as item.name for item in $parent.$parent.JobCodes" ng-change="onPageEdit()" required>
                                 <option></option>
                                 </select>
                             </div>
@@ -132,9 +141,9 @@
                                     <div class="form-inline">
                                         <div class="form-group" paf-invalid="hireForm.FullTimeHours">
                                             <label class="labelText">
-                                                <input name="Status" ng-model="empAction.Status" ng-disabled="empAction.PayStatus=='Per Diem'" required="required" type="radio" value="Full Time" />&nbsp;Full Time
+                                                <input name="Status" ng-model="empAction.Status" ng-disabled="empAction.PayStatus=='Per Diem'" required="required" type="radio" value="Full Time" ng-change="onPageEdit()"/>&nbsp;Full Time
                                             </label>
-                                            <input class="form-control input-sm" name="FullTimeHours" paf-maxlength="6" paf-Max="168" tooltip="" tooltip-placement="bottom" ng-show="empAction.Status=='Full Time'" ng-model="empAction.Hours" ng-required="empAction.Status=='Full Time'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
+                                            <input class="form-control input-sm" name="FullTimeHours" paf-maxlength="6" paf-Max="168" tooltip="" tooltip-placement="bottom" ng-show="empAction.Status=='Full Time'" ng-model="empAction.Hours" ng-change="onPageEdit()" ng-required="empAction.Status=='Full Time'" paf-format="{0} hours/week" paf-numeric="" placeholder="0 hours/week" type="text" />
                                         </div>
                                     </div>
                                 </div>
@@ -202,7 +211,7 @@
                         <div class="col-md-4">
                             <div class="form-group" paf-invalid="hireForm.PayGrade">
                                 <label>Pay Grade (min - mid - max)</label>
-                                <select class="form-control input-sm" name="PayGrade" ng-model="empAction.PayGrade" ng-options="item.id as item.id + ' (' + item.min + ' - ' + item.mid + ' - ' + item.max + ')' for item in $parent.$parent.PayGrades" required="required">
+                                <select class="form-control input-sm" name="PayGrade" ng-model="empAction.PayGrade" ng-options="item.id as item.id + ' (' + item.min + ' - ' + item.mid + ' - ' + item.max + ')' for item in $parent.$parent.PayGrades" ng-change="onPageEdit()" required="required">
                                     <option></option>
                                 </select>
                             </div>
@@ -224,19 +233,19 @@
                                 <div class="col-md-2">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingName">
                                         <label>Manager Name</label>
-                                        <input class="form-control input-sm" ng-disabled="empAction.Data.ManagerNameExists" name="ReportingName" maxlength="100" ng-model="empAction.ManagerName" required/>
+                                        <input class="form-control input-sm" ng-disabled="empAction.Data.ManagerNameExists" name="ReportingName" maxlength="100" ng-change="onPageEdit()" ng-model="empAction.ManagerName" required/>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingTitle">
                                         <label>Manager Title</label>
-                                        <input class="form-control input-sm" ng-disabled="empAction.Data.ManagerTitleExists" name="ReportingTitle" maxlength="100" ng-model="empAction.ManagerTitle" required/>
+                                        <input class="form-control input-sm" ng-disabled="empAction.Data.ManagerTitleExists" name="ReportingTitle" maxlength="100" ng-change="onPageEdit()" ng-model="empAction.ManagerTitle" required/>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingEmail">
                                         <label>Manager Email</label>
-                                        <input paf-validation="EMAIL" class="form-control input-sm" ng-disabled="empAction.Data.ManagerEmailExists" name="ReportingEmail" maxlength="50" ng-model="empAction.ManagerEmail" required/>
+                                        <input paf-validation="EMAIL" class="form-control input-sm" ng-disabled="empAction.Data.ManagerEmailExists" name="ReportingEmail" maxlength="50" ng-change="onPageEdit()" ng-model="empAction.ManagerEmail" required/>
                                     </div>
                                 </div>
                             </ng-form>
@@ -254,19 +263,19 @@
                                 <div class="col-md-2">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingName">
                                         <label>Manager Name</label>
-                                        <input class="form-control input-sm" ng-disabled="empAction.Data.ManagerNameExists" name="ReportingName" maxlength="100" ng-model="empAction.ManagerName" required/>
+                                        <input class="form-control input-sm" ng-disabled="empAction.Data.ManagerNameExists" name="ReportingName" maxlength="100" ng-change="onPageEdit()" ng-model="empAction.ManagerName" required/>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingTitle">
                                         <label>Manager Title</label>
-                                        <input class="form-control input-sm" ng-disabled="empAction.Data.ManagerTitleExists" name="ReportingTitle" maxlength="100" ng-model="empAction.ManagerTitle" required/>
+                                        <input class="form-control input-sm" ng-disabled="empAction.Data.ManagerTitleExists" name="ReportingTitle" maxlength="100" ng-change="onPageEdit()" ng-model="empAction.ManagerTitle" required/>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingEmail">
                                         <label>Manager Email</label>
-                                        <input paf-validation="EMAIL" class="form-control input-sm" ng-disabled="empAction.Data.ManagerEmailExists" name="ReportingEmail" maxlength="50" ng-model="empAction.ManagerEmail" required/>
+                                        <input paf-validation="EMAIL" class="form-control input-sm" ng-disabled="empAction.Data.ManagerEmailExists" name="ReportingEmail" maxlength="50" ng-change="onPageEdit()" ng-model="empAction.ManagerEmail" required/>
                                     </div>
                                 </div>
                             </ng-form>
@@ -282,13 +291,13 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Training Contact</label>
-                                <input class="form-control input-sm" maxlength="50" ng-model="empAction.TrainingContact" />
+                                <input class="form-control input-sm" maxlength="50" ng-model="empAction.TrainingContact" ng-change="onPageEdit()"/>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Duration</label>
-                                <input class="form-control input-sm" ng-model="empAction.Duration" paf-format="{0} weeks" paf-numeric="" paf-maxlength="2" placeholder="0 weeks" type="text" />
+                                <input class="form-control input-sm" ng-model="empAction.Duration" ng-change="onPageEdit()" paf-format="{0} weeks" paf-numeric="" paf-maxlength="2" placeholder="0 weeks" type="text" />
                             </div>
                         </div>
                     </div>
@@ -297,7 +306,7 @@
                             <div class="form-group">
                                 <label>Car Allowance</label>
                                 <div class="input-group-btn" dropdown="">
-                                    <input class="form-control input-sm" dropdown-toggle="" ng-model="empAction.CarAllowance" paf-format="${0}/month" paf-numeric="" paf-maxlength="4" placeholder="$0/month" />
+                                    <input class="form-control input-sm" dropdown-toggle="" ng-model="empAction.CarAllowance" ng-change="onPageEdit()" paf-format="${0}/month" paf-numeric="" paf-maxlength="4" placeholder="$0/month" />
                                     <ul id="dropdown-menu" class="dropdown-menu" role="menu">
                                         <li ng-click="empAction.CarAllowance = item.Id;" ng-repeat="item in lkup.CarAllowances">
                                             <a>{{item.Description}}</a>
@@ -309,7 +318,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Bonus Eligible</label>
-                                <select class="form-control input-sm" ng-model="empAction.BonusEligibleType" ng-options="item.id as item.title for item in $parent.$parent.lkup.BounsEligibles">
+                                <select class="form-control input-sm" ng-change="onPageEdit()" ng-model="empAction.BonusEligibleType" ng-options="item.id as item.title for item in $parent.$parent.lkup.BounsEligibles">
                                     <option value=""></option>
                                 </select>
                             </div>
@@ -330,19 +339,19 @@
                         <div class="col-md-4">
                             <div class="form-group" ng-class="{'has-error':separationForm.SeparationDate.$invalid}">
                                 <label>Separation Date</label>
-                                <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-name="SeparationDate" dt-model="empAction.SeparationDate" dt-required="true"></paf-datepicker>
+                                <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-name="SeparationDate" dt-model="empAction.SeparationDate" dt-required="true" dt-change="onPageEdit()"></paf-datepicker>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Number Vacation Days Due</label>
-                                <input class="form-control input-sm" ng-model="empAction.VacationDaysDue" maxlength="3" paf-numeric/>
+                                <input class="form-control input-sm" ng-model="empAction.VacationDaysDue" maxlength="3" ng-change="onPageEdit()" paf-numeric/>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Severance Pay - Number of Weeks</label>
-                                <input class="form-control input-sm" ng-model="empAction.SeverancePayNumberOfWeeks" maxlength="3" paf-numeric/>
+                                <input class="form-control input-sm" ng-model="empAction.SeverancePayNumberOfWeeks" ng-change="onPageEdit()" maxlength="3" paf-numeric/>
                             </div>
                         </div>
                     </div>
@@ -352,7 +361,7 @@
                                 <label>
                                     <input type="radio" name="SeparationReason" ng-model="empAction.SeparationReason" ng-checked="separationReasonChecked(empAction.SeparationReason)" value="ResignationType" />&nbsp;Resignation <span ng-if="empAction.SeparationReason=='ResignationType'">- <i>Enter Reason Code Below</i></span>
                                 </label>
-                                <select class="form-control input-sm" name="ResignationType" ng-model="empAction.ResignationType" ng-disabled="empAction.SeparationReason!='ResignationType'" ng-options="item.id as item.brief + ' ' + item.title for item in $parent.$parent.lkup.Resignations" ng-required="empAction.SeparationReason=='ResignationType'">
+                                <select class="form-control input-sm" name="ResignationType" ng-model="empAction.ResignationType" ng-change="onPageEdit()" ng-disabled="empAction.SeparationReason!='ResignationType'" ng-options="item.id as item.brief + ' ' + item.title for item in $parent.$parent.lkup.Resignations" ng-required="empAction.SeparationReason=='ResignationType'">
                                     <option value=""></option>
                                 </select>
                             </div>
@@ -362,7 +371,7 @@
                                 <label>
                                     <input type="radio" name="SeparationReason" ng-model="empAction.SeparationReason" ng-checked="separationReasonChecked(empAction.SeparationReason)" value="TerminationType" />&nbsp;Termination <span ng-if="empAction.SeparationReason=='TerminationType'">- <i>Enter Reason Code Below</i></span>
                                 </label>
-                                <select class="form-control input-sm" name="TerminationType" ng-model="empAction.TerminationType" ng-disabled="empAction.SeparationReason!='TerminationType'" ng-options="item.id as item.brief + ' ' + item.title for item in $parent.$parent.lkup.Terminations" ng-required="empAction.SeparationReason=='TerminationType'">
+                                <select class="form-control input-sm" name="TerminationType" ng-model="empAction.TerminationType" ng-change="onPageEdit()" ng-disabled="empAction.SeparationReason!='TerminationType'" ng-options="item.id as item.brief + ' ' + item.title for item in $parent.$parent.lkup.Terminations" ng-required="empAction.SeparationReason=='TerminationType'">
                                     <option value=""></option>
                                 </select>
                             </div>
@@ -372,7 +381,7 @@
                                 <label>
                                     <input type="radio" name="SeparationReason" ng-model="empAction.SeparationReason" ng-checked="separationReasonChecked(empAction.SeparationReason)" value="LayoffType" />&nbsp;Layoff <span ng-if="empAction.SeparationReason=='LayoffType'">- <i>Enter Reason Code Below</i></span>
                                 </label>
-                                <select class="form-control input-sm" name="LayoffType" ng-model="empAction.LayoffType" ng-disabled="empAction.SeparationReason!='LayoffType'" ng-options="item.id as item.brief + ' ' + item.title for item in $parent.$parent.lkup.Layoffs" ng-required="empAction.SeparationReason=='LayoffType'">
+                                <select class="form-control input-sm" name="LayoffType" ng-model="empAction.LayoffType" ng-change="onPageEdit()" ng-disabled="empAction.SeparationReason!='LayoffType'" ng-options="item.id as item.brief + ' ' + item.title for item in $parent.$parent.lkup.Layoffs" ng-required="empAction.SeparationReason=='LayoffType'">
                                     <option value=""></option>
                                 </select>
                             </div>
@@ -386,7 +395,7 @@
                             <div class="form-group" ng-show="empAction.SeparationReason=='LayoffType' || empAction.SeparationReason=='TerminationType'" ng-class="{'has-error':separationForm.ReviewedWithHR.$invalid}">
                                 <label>Reviewed with HR:</label>
                                 <div>
-                                    <select class="form-control input-sm" ng-model="empAction.HrReviewType" name="ReviewedWithHR" ng-options="item.id as item.title for item in $parent.$parent.lkup.HRReviews" ng-required="empAction.SeparationReason=='LayoffType' || empAction.SeparationReason=='TerminationType'">
+                                    <select class="form-control input-sm" ng-model="empAction.HrReviewType" ng-change="onPageEdit()" name="ReviewedWithHR" ng-options="item.id as item.title for item in $parent.$parent.lkup.HRReviews" ng-required="empAction.SeparationReason=='LayoffType' || empAction.SeparationReason=='TerminationType'">
                                         <option value=""></option>
                                     </select>
                                 </div>
@@ -396,11 +405,11 @@
                             <label>Rehire:</label>
                             <div class="form-group" ng-class="{'has-error':separationForm.SeparationReHire.$invalid}">
                                 <label class="radio-inline">
-                                    <input type="radio" name="SeparationReHire" ng-model="empAction.SeparationReHire" ng-value="true" required="required"/>Yes
+                                    <input type="radio" name="SeparationReHire" ng-model="empAction.SeparationReHire" ng-change="onPageEdit()" ng-value="true" required="required"/>Yes
                                 </label>
                                
                                 <label class="radio-inline">
-                                    <input type="radio" name="SeparationReHire" ng-model="empAction.SeparationReHire" ng-value="false" required="required"/>No 
+                                    <input type="radio" name="SeparationReHire" ng-model="empAction.SeparationReHire" ng-change="onPageEdit()" ng-value="false" required="required"/>No 
                                 </label>
                             </div>
                         </div>
@@ -420,13 +429,13 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Start Date</label>
-                                <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-name="LoaStartDate" dt-model="empAction.LoaStartDate"></paf-datepicker>
+                                <paf-datepicker dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-name="LoaStartDate" dt-model="empAction.LoaStartDate" dt-change="onPageEdit()"></paf-datepicker>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Date Return</label>
-                                <paf-datepicker dt-option="dateOptions" dt-name="LoaReturnDate" min-date="empAction.LoaStartDate" dt-popup="MM/dd/yyyy" dt-model="empAction.LoaReturnDate"></paf-datepicker>
+                                <paf-datepicker dt-option="dateOptions" dt-name="LoaReturnDate" min-date="empAction.LoaStartDate" dt-popup="MM/dd/yyyy" dt-model="empAction.LoaReturnDate" dt-change="onPageEdit()"></paf-datepicker>
                             </div>
                         </div>
                     </div>
@@ -449,7 +458,7 @@
                         <div class="col-md-6">
                             <div class="form-group" ng-class="{'has-error':pdsForm.NewPositionType.$invalid}">
                                 <label>New Position</label>
-                                <select class="form-control input-sm" name="NewPositionType" ng-model="empAction.NewPositionType" ng-options="item.id as item.name for item in $parent.JobCodes" ng-required="$parent.empAction.Promotion || $parent.empAction.Demotion">
+                                <select class="form-control input-sm" name="NewPositionType" ng-model="empAction.NewPositionType" ng-options="item.id as item.name for item in $parent.JobCodes" ng-change="onPageEdit()" ng-required="$parent.empAction.Promotion || $parent.empAction.Demotion">
                                     <option value=""></option>
                                 </select>
                             </div>
@@ -459,13 +468,13 @@
                         <div class="col-md-4">
                             <div class="form-group" ng-class="{'has-error':pdsForm.EffectiveDate.$invalid}">
                                 <label>Effective Date</label>
-                                <paf-datepicker dt-model="empAction.EffectiveDate" dt-name="EffectiveDate" dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-required="$parent.empAction.SalaryChange || $parent.empAction.Promotion || $parent.empAction.Demotion"></paf-datepicker>
+                                <paf-datepicker dt-model="empAction.EffectiveDate" dt-name="EffectiveDate" dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-change="onPageEdit()" dt-required="$parent.empAction.SalaryChange || $parent.empAction.Promotion || $parent.empAction.Demotion"></paf-datepicker>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group" ng-class="{'has-error':pdsForm.ChangeReasonType.$invalid}">
                                 <label>Reason for Change*:</label>
-                                <select class="form-control input-sm" name="ChangeReasonType" ng-model="empAction.ChangeReasonType" ng-options="item.id as item.title for item in $parent.lkup.Reason4Changes|reason4ChangeFilter:$parent.empAction" ng-required="$parent.empAction.SalaryChange || $parent.empAction.Promotion || $parent.empAction.Demotion">
+                                <select class="form-control input-sm" name="ChangeReasonType" ng-model="empAction.ChangeReasonType" ng-options="item.id as item.title for item in $parent.lkup.Reason4Changes|reason4ChangeFilter:$parent.empAction" ng-change="onPageEdit()" ng-required="$parent.empAction.SalaryChange || $parent.empAction.Promotion || $parent.empAction.Demotion">
                                     <option></option>
                                 </select>
                             </div>
@@ -474,7 +483,7 @@
                             <div class="form-group">
                                 <label>Reviewed with HR:</label>
                                 <div>
-                                    <select class="form-control input-sm" ng-model="empAction.HrReviewType" ng-options="item.id as item.title for item in $parent.$parent.lkup.HRReviews">
+                                    <select class="form-control input-sm" ng-model="empAction.HrReviewType" ng-change="onPageEdit()" ng-options="item.id as item.title for item in $parent.$parent.lkup.HRReviews">
                                         <option value=""></option>
                                     </select>
                                 </div>
@@ -540,7 +549,7 @@
                         <div class="col-md-3">
                             <div class="form-group" ng-class="{'has-error':pdsForm.NewPayGrade.$invalid}">
                                 <label>New Pay Grade (min - mid - max)</label>
-                                <select class="form-control input-sm" name="NewPayGrade" ng-model="empAction.NewPayGrade" ng-options="item.id as item.id + ' (' + item.min + ' - ' + item.mid + ' - ' + item.max + ')' for item in $parent.PayGrades" ng-required="$parent.empAction.SalaryChange || $parent.empAction.Promotion || $parent.empAction.Demotion">
+                                <select class="form-control input-sm" name="NewPayGrade" ng-model="empAction.NewPayGrade" ng-change="onPageEdit()" ng-options="item.id as item.id + ' (' + item.min + ' - ' + item.mid + ' - ' + item.max + ')' for item in $parent.PayGrades" ng-required="$parent.empAction.SalaryChange || $parent.empAction.Promotion || $parent.empAction.Demotion">
                                     <option></option>
                                 </select>
                             </div>
@@ -564,19 +573,19 @@
                                 <div class="col-md-2">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingName">
                                         <label>Manager Name</label>
-                                        <input class="form-control input-sm" ng-disabled="empAction.Data.NewManagerNameExists" name="ReportingName" maxlength="100" ng-model="empAction.NewManagerName" required/>
+                                        <input class="form-control input-sm" ng-disabled="empAction.Data.NewManagerNameExists" name="ReportingName" maxlength="100" ng-model="empAction.NewManagerName" ng-change="onPageEdit()" required/>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingTitle">
                                         <label>Manager Title</label>
-                                        <input class="form-control input-sm" ng-disabled="empAction.Data.NewManagerTitleExists" name="ReportingTitle" maxlength="100" ng-model="empAction.NewManagerTitle" required/>
+                                        <input class="form-control input-sm" ng-disabled="empAction.Data.NewManagerTitleExists" name="ReportingTitle" maxlength="100" ng-model="empAction.NewManagerTitle" ng-change="onPageEdit()" required/>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingEmail">
                                         <label>Manager Email</label>
-                                        <input paf-validation="EMAIL" class="form-control input-sm" ng-disabled="empAction.Data.NewManagerEmailExists" name="ReportingEmail" maxlength="50" ng-model="empAction.NewManagerEmail" required/>
+                                        <input paf-validation="EMAIL" class="form-control input-sm" ng-disabled="empAction.Data.NewManagerEmailExists" name="ReportingEmail" maxlength="50" ng-model="empAction.NewManagerEmail" ng-change="onPageEdit()" required/>
                                     </div>
                                 </div>
                             </ng-form>
@@ -594,19 +603,19 @@
                                 <div class="col-md-2">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingName">
                                         <label>Manager Name</label>
-                                        <input class="form-control input-sm" ng-disabled="empAction.Data.NewManagerNameExists" name="ReportingName" maxlength="100" ng-model="empAction.NewManagerName" required/>
+                                        <input class="form-control input-sm" ng-disabled="empAction.Data.NewManagerNameExists" name="ReportingName" maxlength="100" ng-model="empAction.NewManagerName" ng-change="onPageEdit()" required/>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingTitle">
                                         <label>Manager Title</label>
-                                        <input class="form-control input-sm" ng-disabled="empAction.Data.NewManagerTitleExists" name="ReportingTitle" maxlength="100" ng-model="empAction.NewManagerTitle" required/>
+                                        <input class="form-control input-sm" ng-disabled="empAction.Data.NewManagerTitleExists" name="ReportingTitle" maxlength="100" ng-model="empAction.NewManagerTitle" ng-change="onPageEdit()" required/>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingEmail">
                                         <label>Manager Email</label>
-                                        <input paf-validation="EMAIL" class="form-control input-sm" ng-disabled="empAction.Data.NewManagerEmailExists" name="ReportingEmail" maxlength="50" ng-model="empAction.NewManagerEmail" required/>
+                                        <input paf-validation="EMAIL" class="form-control input-sm" ng-disabled="empAction.Data.NewManagerEmailExists" name="ReportingEmail" maxlength="50" ng-model="empAction.NewManagerEmail" ng-change="onPageEdit()" required/>
                                     </div>
                                 </div>
                             </ng-form>
@@ -624,19 +633,19 @@
                                 <div class="col-md-2">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingName">
                                         <label>Manager Name</label>
-                                        <input class="form-control input-sm" ng-disabled="empAction.Data.NewManagerNameExists" name="ReportingName" maxlength="100" ng-model="empAction.NewManagerName" required/>
+                                        <input class="form-control input-sm" ng-disabled="empAction.Data.NewManagerNameExists" name="ReportingName" maxlength="100" ng-model="empAction.NewManagerName" ng-change="onPageEdit()" required/>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingTitle">
                                         <label>Manager Title</label>
-                                        <input class="form-control input-sm" ng-disabled="empAction.Data.NewManagerTitleExists" name="ReportingTitle" maxlength="100" ng-model="empAction.NewManagerTitle" required/>
+                                        <input class="form-control input-sm" ng-disabled="empAction.Data.NewManagerTitleExists" name="ReportingTitle" maxlength="100" ng-model="empAction.NewManagerTitle" ng-change="onPageEdit()" required/>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingEmail">
                                         <label>Manager Email</label>
-                                        <input paf-validation="EMAIL" class="form-control input-sm" ng-disabled="empAction.Data.NewManagerEmailExists" name="ReportingEmail" maxlength="50" ng-model="empAction.NewManagerEmail" required/>
+                                        <input paf-validation="EMAIL" class="form-control input-sm" ng-disabled="empAction.Data.NewManagerEmailExists" name="ReportingEmail" maxlength="50" ng-model="empAction.NewManagerEmail" ng-change="onPageEdit()" required/>
                                     </div>
                                 </div>
                             </ng-form>
@@ -659,7 +668,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Bonus Eligible</label>
-                                <select class="form-control input-sm" ng-model="empAction.NewBonusEligibleType" ng-options="item.id as item.title for item in $parent.lkup.BounsEligibles">
+                                <select class="form-control input-sm" ng-model="empAction.NewBonusEligibleType" ng-options="item.id as item.title for item in $parent.lkup.BounsEligibles" ng-change="onPageEdit()">
                                     <option value=""></option>
                                 </select>
                             </div>
@@ -667,7 +676,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Other Instructions</label>
-                                <input class="form-control input-sm" ng-model="empAction.Instructions" maxlength="512" />
+                                <input class="form-control input-sm" ng-model="empAction.Instructions" maxlength="512" ng-change="onPageEdit()"/>
                             </div>
                         </div>
                     </div>
@@ -682,7 +691,7 @@
                         <div class="col-md-4 ">
                             <div class="form-group" ng-class="{'has-error':transferForm.TransferEffectiveDate.$invalid}">
                                 <label>Effective Date</label>
-                                <paf-datepicker dt-option="dateOptions" dt-name="TransferEffectiveDate" dt-popup="MM/dd/yyyy" dt-model="empAction.TransferEffectiveDate" dt-required="true"></paf-datepicker>
+                                <paf-datepicker dt-option="dateOptions" dt-name="TransferEffectiveDate" dt-popup="MM/dd/yyyy" dt-model="empAction.TransferEffectiveDate" dt-required="true" dt-change="onPageEdit()"></paf-datepicker>
                             </div>
                         </div>
                         <div class="col-md-4 ">
@@ -710,19 +719,19 @@
                                 <div class="col-md-2">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingName">
                                         <label>Manager Name</label>
-                                        <input class="form-control input-sm" ng-disabled="empAction.Data.TransferManagerNameExists" name="ReportingName" maxlength="100" ng-model="empAction.TransferManagerName" required/>
+                                        <input class="form-control input-sm" ng-disabled="empAction.Data.TransferManagerNameExists" name="ReportingName" maxlength="100" ng-model="empAction.TransferManagerName"  ng-change="onPageEdit()" required/>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingTitle">
                                         <label>Manager Title</label>
-                                        <input class="form-control input-sm" ng-disabled="empAction.Data.TransferManagerTitleExists" name="ReportingTitle" maxlength="100" ng-model="empAction.TransferManagerTitle" required/>
+                                        <input class="form-control input-sm" ng-disabled="empAction.Data.TransferManagerTitleExists" name="ReportingTitle" maxlength="100" ng-model="empAction.TransferManagerTitle" ng-change="onPageEdit()" required/>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group" paf-invalid="managerinfoForm.ReportingEmail">
                                         <label>Manager Email</label>
-                                        <input paf-validation="EMAIL" class="form-control input-sm" ng-disabled="empAction.Data.TransferManagerEmailExists" name="ReportingEmail" maxlength="50" ng-model="empAction.TransferManagerEmail" required/>
+                                        <input paf-validation="EMAIL" class="form-control input-sm" ng-disabled="empAction.Data.TransferManagerEmailExists" name="ReportingEmail" maxlength="50" ng-model="empAction.TransferManagerEmail" ng-change="onPageEdit()" required/>
                                     </div>
                                 </div>
                             </ng-form>
@@ -738,56 +747,56 @@
                     <div class="row">
                         <div class="col-md-3">
                             <label>Effective Date</label>
-                            <paf-datepicker dt-model="empAction.InfoChangeEffectiveDate" dt-option="dateOptions" dt-popup="MM/dd/yyyy"></paf-datepicker>
+                            <paf-datepicker dt-model="empAction.InfoChangeEffectiveDate" dt-option="dateOptions" dt-popup="MM/dd/yyyy" dt-change="onPageEdit()"></paf-datepicker>
                         </div>
                         <div class="col-md-3">
                             <label>First Name</label>
-                            <input class="form-control input-sm" ng-model="empAction.InfoChangeFirstName" maxlength="50" />
+                            <input class="form-control input-sm" ng-model="empAction.InfoChangeFirstName" maxlength="50" ng-change="onPageEdit()"/>
                         </div>
                         <div class="col-md-3">
                             <label>Middle Name</label>
-                            <input class="form-control input-sm" ng-model="empAction.InfoChangeMiddleName" maxlength="50" />
+                            <input class="form-control input-sm" ng-model="empAction.InfoChangeMiddleName" maxlength="50" ng-change="onPageEdit()"/>
                         </div>
                         <div class="col-md-3">
                             <label>Last Name</label>
-                            <input class="form-control input-sm" ng-model="empAction.InfoChangeLastName" maxlength="50" />
+                            <input class="form-control input-sm" ng-model="empAction.InfoChangeLastName" maxlength="50" ng-change="onPageEdit()"/>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Address 1</label>
-                                <input class="form-control input-sm" ng-model="empAction.InfoChangeAddressLine1" maxlength="100" />
+                                <input class="form-control input-sm" ng-model="empAction.InfoChangeAddressLine1" maxlength="100" ng-change="onPageEdit()"/>
                            </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>Address 2</label>
-                                <input class="form-control input-sm" ng-model="empAction.InfoChangeAddressLine2" maxlength="100" />
+                                <input class="form-control input-sm" ng-model="empAction.InfoChangeAddressLine2" maxlength="100" ng-change="onPageEdit()"/>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group" ng-class="{'has-error':personalInfoForm.InfoChangePhone.$invalid}">
                                 <label class="control-label">Phone #</label>
-                                <input class="form-control input-sm" name="InfoChangePhone" ng-model="empAction.InfoChangePhone" paf-mask="phone" maxlength="14"/>
+                                <input class="form-control input-sm" name="InfoChangePhone" ng-model="empAction.InfoChangePhone" paf-mask="phone" maxlength="14" ng-change="onPageEdit()"/>
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-4">
                             <label class="control-label">City</label>
-                            <input class="form-control input-sm" ng-model="empAction.InfoChangeCity" maxlength="50" />
+                            <input class="form-control input-sm" ng-model="empAction.InfoChangeCity" maxlength="50" ng-change="onPageEdit()"/>
                         </div>
                         <div class="col-md-4">
                             <label class="control-label">State</label>
-                            <select class="form-control input-sm" ng-model="empAction.InfoChangeStateType" ng-options="item.id as item.name for item in $parent.States">
+                            <select class="form-control input-sm" ng-model="empAction.InfoChangeStateType" ng-options="item.id as item.name for item in $parent.States" ng-change="onPageEdit()">
                                 <option></option>
                             </select>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group" ng-class="{'has-error':personalInfoForm.InfoChangePostalCode.$invalid}">
                                 <label class="control-label">Zip</label>
-                                <input class="form-control input-sm" ng-model="empAction.InfoChangePostalCode" name="InfoChangePostalCode" paf-mask="zipcode" maxlength="10" />
+                                <input class="form-control input-sm" ng-model="empAction.InfoChangePostalCode" name="InfoChangePostalCode" paf-mask="zipcode" maxlength="10" ng-change="onPageEdit()"/>
                             </div>
                         </div>
                     </div>
@@ -802,13 +811,13 @@
                         <div class="col-md-6">
                             <div class="form-group" ng-class="{'has-error':requisitionForm.Number.$invalid}">
                                 <label>Requisition #</label>
-                                <input class="form-control input-sm" ng-model="empAction.RequisitionNumber" name="Number" maxlength="50" required/>
+                                <input class="form-control input-sm" ng-model="empAction.RequisitionNumber" name="Number" maxlength="50" ng-change="onPageEdit()" required/>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group" ng-class="{'has-error':requisitionForm.EmailAddress.$invalid}">
                                 <label>Candidate Email</label>
-                                <input paf-validation="EMAIL" class="form-control input-sm" ng-model="empAction.RequisitionEmail" name="EmailAddress" maxlength="50" required/>
+                                <input paf-validation="EMAIL" class="form-control input-sm" ng-model="empAction.RequisitionEmail" name="EmailAddress" maxlength="50" ng-change="onPageEdit()" required/>
                             </div>
                         </div>
                     </div>
@@ -818,7 +827,7 @@
                         <div class="col-md-6">
                             <div class="form-group" ng-class="{'has-error':recruiterForm.Recruiter.$invalid}">
                                 <label>Recruiter Name</label>
-                                <select class="form-control input-sm" name="Recruiter" ng-model="empAction.RecruiterName" ng-options="item.name as item.name for item in Recruiters" required>
+                                <select class="form-control input-sm" name="Recruiter" ng-model="empAction.RecruiterName" ng-options="item.name as item.name for item in Recruiters" ng-change="onPageEdit()" required>
                                     <option value=""></option>
                                 </select>          
                             </div>
@@ -840,13 +849,13 @@
                         <div class="col-md-6">
                             <div class="form-group" ng-class="{'has-error':relocationForm.RelocationApprovedBy.$invalid}">
                                 <label>Relocation approved by</label>
-                                <input class="form-control input-sm" name="RelocationApprovedBy" maxlength="50" ng-model="empAction.RelocationApprovedBy" required="true" />
+                                <input class="form-control input-sm" name="RelocationApprovedBy" maxlength="50" ng-model="empAction.RelocationApprovedBy" ng-change="onPageEdit()" required="true" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group" ng-class="{'has-error':relocationForm.RelocationPlan.$invalid}">
                                 <label>Plan/Details</label>
-                                <select class="form-control input-sm" name="RelocationPlan" ng-model="empAction.RelocationPlan" ng-options="item.id as item.title for item in $parent.lkup.PlanDetails" required="true">
+                                <select class="form-control input-sm" name="RelocationPlan" ng-model="empAction.RelocationPlan" ng-options="item.id as item.title for item in $parent.lkup.PlanDetails" ng-change="onPageEdit()" required="true">
                                     <option value=""></option>
                                 </select>
                             </div>
@@ -865,16 +874,16 @@
 					   </div>
 					   <div class="col-md-2">
 					       <label class="control-label">Manager Name</label>
-					       <input class="form-control input-sm" ng-disabled="empAction.Data.RegionalManagerNameExists" name="RegionalManagerName" maxlength="100" ng-model="empAction.RegionalManagerName" />
+					       <input class="form-control input-sm" ng-disabled="empAction.Data.RegionalManagerNameExists" name="RegionalManagerName" maxlength="100" ng-model="empAction.RegionalManagerName" ng-change="onPageEdit()"/>
 					   </div>
 					   <div class="col-md-4">
 					       <label>Manager Title</label>
-					       <input class="form-control input-sm" ng-disabled="empAction.Data.RegionalManagerTitleExists" name="RegionalManagerTitle" maxlength="100" ng-model="empAction.RegionalManagerTitle"/>
+					       <input class="form-control input-sm" ng-disabled="empAction.Data.RegionalManagerTitleExists" name="RegionalManagerTitle" maxlength="100" ng-model="empAction.RegionalManagerTitle" ng-change="onPageEdit()"/>
 					   </div>
 					   <div class="col-md-4">
 					       <div class="form-group" ng-class="{'has-error':regionalManagerInfoForm.RegionalManagerEmail.$invalid}">
 					           <label class="control-label">Manager Email</label>
-					           <input paf-validation="EMAIL" class="form-control input-sm" ng-disabled="empAction.Data.RegionalManagerEmailExists" name="RegionalManagerEmail" maxlength="50" ng-model="empAction.RegionalManagerEmail"/>
+					           <input paf-validation="EMAIL" class="form-control input-sm" ng-disabled="empAction.Data.RegionalManagerEmailExists" name="RegionalManagerEmail" maxlength="50" ng-model="empAction.RegionalManagerEmail" ng-change="onPageEdit()"/>
 					       </div>
 					   </div>
 					</div>
@@ -894,7 +903,7 @@
                             </tr>
                         </thead>
                         <tbody style="height:100px;">
-                            <tr ng-repeat="item in pafDocs track by $index" ng-click="onRowClick(item, $index)" ng-class="{'warning':selectedDocItem==item}">
+                            <tr ng-repeat="item in pafDocs track by $index" ng-click="onRowClick(item, $index)" ng-class="{'warning':selectedDocItem == item}">
                                 <td width="40px" align ="center">{{$index + 1}}</td>
                                 <td width="400px">{{item.title}}</td>
                                 <td width="460px">{{item.fileName}}</td>
@@ -920,7 +929,7 @@
             <section>
                 <div class="form-group">
                     <h4>COMMENTS</h4>
-                    <textarea class="form-control input-sm" ng-model="empAction.Comments" maxlength ="1024"></textarea>
+                    <textarea class="form-control input-sm" ng-model="empAction.Comments" maxlength ="1024" ng-change="onPageEdit()"></textarea>
                 </div>
             </section>
 			<!--ADMINISTRATOR-->
@@ -930,7 +939,7 @@
                         <div class="row">
                             <div class="col-md-5">
                                 <div class="form-group" ng-class="{'has-error':administratorInfoForm.AdministratorEmail.$invalid}">
-                                   <input paf-validation="EMAIL" class="form-control input-sm" name="AdministratorEmail" maxlength="100" ng-model="empAction.AdministratorEmail" ng-disabled="empAction.Data.AdministratorEmailExists" ng-required="true"/>
+                                   <input paf-validation="EMAIL" class="form-control input-sm" name="AdministratorEmail" maxlength="100" ng-model="empAction.AdministratorEmail" ng-disabled="empAction.Data.AdministratorEmailExists" ng-change="onPageEdit()" ng-required="true"/>
                                 </div>
                             </div>
                         </div>
@@ -945,7 +954,7 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group" ng-class="{'has-error':workflowDetailsForm.LOAManagerName.$invalid}">
-                               <input class="form-control input-sm" name="LOAManagerName" maxlength="100" ng-model="empAction.LoaManagerName" ng-required="true"/>
+                               <input class="form-control input-sm" name="LOAManagerName" maxlength="100" ng-model="empAction.LoaManagerName" ng-change="onPageEdit()" ng-required="true"/>
                             </div>
                         </div>
                         <div class="col-md-2"></div>
@@ -954,7 +963,7 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group" ng-class="{'has-error':workflowDetailsForm.LOAManagerEmail.$invalid}">
-                               <input class="form-control input-sm" name="LOAManagerEmail" maxlength="100" ng-model="empAction.LoaManagerEmail" ng-required="true"/>
+                               <input class="form-control input-sm" name="LOAManagerEmail" maxlength="100" ng-model="empAction.LoaManagerEmail" ng-change="onPageEdit()" ng-required="true"/>
                             </div>
                         </div>
                     </div>
@@ -964,7 +973,7 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group" ng-class="{'has-error':workflowDetailsForm.HRManagerName.$invalid}">
-                               <input class="form-control input-sm" name="HRManagerName" maxlength="100" ng-model="empAction.HrManagerName" ng-required="true"/>
+                               <input class="form-control input-sm" name="HRManagerName" maxlength="100" ng-model="empAction.HrManagerName" ng-change="onPageEdit()" ng-required="true"/>
                             </div>
                         </div>
                         <div class="col-md-2"></div>
@@ -973,7 +982,7 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group" ng-class="{'has-error':workflowDetailsForm.HRManagerEmail.$invalid}">
-                               <input class="form-control input-sm" name="HRManagerEmail" maxlength="100" ng-model="empAction.HrManagerEmail" ng-required="true"/>
+                               <input class="form-control input-sm" name="HRManagerEmail" maxlength="100" ng-model="empAction.HrManagerEmail" ng-change="onPageEdit()" ng-required="true"/>
                             </div>
                         </div>
                     </div>
@@ -983,7 +992,7 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group" ng-class="{'has-error':workflowDetailsForm.RegionalManagerName.$invalid}">
-                               <input class="form-control input-sm" name="RegionalManagerName" maxlength="100" ng-model="empAction.RegionalManagerName" ng-disabled="empAction.Data.RegionalManagerNameExists" ng-required="true"/>
+                               <input class="form-control input-sm" name="RegionalManagerName" maxlength="100" ng-model="empAction.RegionalManagerName" ng-disabled="empAction.Data.RegionalManagerNameExists" ng-change="onPageEdit()" ng-required="true"/>
                             </div>
                         </div>
                         <div class="col-md-2"></div>
@@ -992,7 +1001,7 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group" ng-class="{'has-error':workflowDetailsForm.RegionalManagerEmail.$invalid}">
-                               <input class="form-control input-sm" name="RegionalManagerEmail" maxlength="100" ng-model="empAction.RegionalManagerEmail" ng-disabled="empAction.Data.RegionalManagerEmailExists" ng-required="true"/>
+                               <input class="form-control input-sm" name="RegionalManagerEmail" maxlength="100" ng-model="empAction.RegionalManagerEmail" ng-disabled="empAction.Data.RegionalManagerEmailExists" ng-change="onPageEdit()" ng-required="true"/>
                             </div>
                         </div>
                     </div>
@@ -1002,7 +1011,7 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group" ng-class="{'has-error':workflowDetailsForm.HRDirectorName.$invalid}">
-                               <input class="form-control input-sm" name="HRDirectorName" maxlength="100" ng-model="empAction.HrDirectorName" ng-required="true"/>
+                               <input class="form-control input-sm" name="HRDirectorName" maxlength="100" ng-model="empAction.HrDirectorName" ng-change="onPageEdit()" ng-required="true"/>
                             </div>
                         </div>
                         <div class="col-md-2"></div>
@@ -1011,7 +1020,7 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group" ng-class="{'has-error':workflowDetailsForm.HRDirectorEmail.$invalid}">
-                               <input class="form-control input-sm" name="HRDirectorEmail" maxlength="100" ng-model="empAction.HrDirectorEmail" ng-required="true"/>
+                               <input class="form-control input-sm" name="HRDirectorEmail" maxlength="100" ng-model="empAction.HrDirectorEmail" ng-change="onPageEdit()" ng-required="true"/>
                             </div>
                         </div>
                     </div>
@@ -1021,7 +1030,7 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group" ng-class="{'has-error':workflowDetailsForm.RecruiterName.$invalid}">
-                               <input class="form-control input-sm" name="RecruiterName" maxlength="100" ng-model="empAction.RecruiterName" ng-required="true" ng-disabled="empAction.RecruiterName != ''"/>
+                               <input class="form-control input-sm" name="RecruiterName" maxlength="100" ng-model="empAction.RecruiterName" ng-required="true" ng-change="onPageEdit()" ng-disabled="empAction.RecruiterName != ''"/>
                             </div>
                         </div>
                         <div class="col-md-2"></div>
@@ -1040,7 +1049,7 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group" ng-class="{'has-error':workflowDetailsForm.ProcessHRName.$invalid}">
-                               <input class="form-control input-sm" name="ProcessHRName" maxlength="100" ng-model="empAction.ProcessHRName" ng-required="true"/>
+                               <input class="form-control input-sm" name="ProcessHRName" maxlength="100" ng-model="empAction.ProcessHRName" ng-change="onPageEdit()" ng-required="true"/>
                             </div>
                         </div>
                         <div class="col-md-2"></div>
@@ -1049,7 +1058,7 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group" ng-class="{'has-error':workflowDetailsForm.ProcessHREmail.$invalid}">
-                               <input class="form-control input-sm" name="ProcessHREmail" maxlength="100" ng-model="empAction.ProcessHREmail" ng-required="true"/>
+                               <input class="form-control input-sm" name="ProcessHREmail" maxlength="100" ng-model="empAction.ProcessHREmail" ng-change="onPageEdit()" ng-required="true"/>
                             </div>
                         </div>
 					</div>
@@ -1084,7 +1093,7 @@
             <div class="pull-right margin-bottom20">
                 <button class="btn btn-primary" type="submit" ng-if="empAction.StatusType != 8 && empAction.StatusType != 11 && empAction.StatusType != 9 && empAction.StatusType != 6 && ((empAction.StatusType != 2 && write) || (empAction.StatusType == 2 && writeInProcess))" ng-click="save(0)">Save</button>
                 <button class="btn btn-primary" type="submit" ng-if="empAction.StatusType == 1 && write" ng-click="save(1)">Save & Submit</button>
-                <a class="btn btn-default" href="#/list">Cancel</a>
+                <a class="btn btn-default" ng-click="cancel()">Cancel</a>
             </div>
         </form>
         <div ng-show="isPageLoading()">
@@ -1128,7 +1137,7 @@
     <div id="employeeModal" class="modal-content" style="width:800px;">
         <div style="font-weight:bold;font-size: 18px;text-align: center;font-family: Verdana;">Select Employee</div>
         <div class="modal-body" id="employeeTable">
-        <table class="table-scroll table table-bordered table-hover">
+        <table class="table-scroll table table-striped table-bordered table-hover">
         <thead style="color:#3276b1;">
             <tr class="heading" role="row">
                 <th width="2%" style="text-align:center">
@@ -1147,7 +1156,7 @@
             </tr>
         </thead>
         <tbody style="max-height:200px;">
-            <tr ng-repeat="item in employees" ng-click="employeeSelected(item)" ng-class="{selected: item.id === employeeIdSelected}">
+            <tr ng-repeat="item in employees" ng-click="employeeSelected(item)" ng-class="{'warning':selectedEmployee == item};">
                 <td width="2%" align ="center">{{$index + 1}}</td>
                 <td width="10%" align ="center">{{item.employeeNumber == 0 ? "" : item.employeeNumber}}</td>
                 <td width="15%">{{item.firstName}}&nbsp;{{item.lastName}}</td>

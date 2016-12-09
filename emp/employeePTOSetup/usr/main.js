@@ -60,7 +60,7 @@ ii.Class({
 			me.session = new ii.Session(me.cache);
 			
 			me.authorizer = new ii.ajax.Authorizer( me.gateway );
-			me.authorizePath = "\\crothall\\chimes\\fin\\Setup\\EmployeePTO";
+			me.authorizePath = "\\crothall\\chimes\\fin\\PTOSetup\\EmployeePTO";
 			me.authorizer.authorize([me.authorizePath],
 				function authorizationsLoaded() {
 					me.authorizationProcess.apply(me);
@@ -1324,6 +1324,7 @@ ii.Class({
 			else if (section == "PTO Plans") {
 				$("#HouseCode").show();
 				$("#SearchTemplate").show();
+				$("#HouseCodeSection").hide();
 				$("#PTOTypeSearchContainer").hide();
 				$("#PTOPlanContainerLeft").show();
 				$("#PTOPlanContainerRight").show();
@@ -1336,6 +1337,7 @@ ii.Class({
 				$("#AnchorSave").hide();
 				$("#AnchorUndo").hide();
 				$("#HouseCode").show();
+				$("#HouseCodeSection").show();
 				$("#PTOTypeSearchContainer").hide();
 				$("#SearchTemplate").show();
 				$("#PTOPlanContainerLeft").show();
@@ -1347,6 +1349,7 @@ ii.Class({
 				$("#SearchTemplate").show();
 				$("#AnchorNew").hide();
 				$("#HouseCode").show();
+				$("#HouseCodeSection").show();
 				$("#PTODaysContainerLeft").show();
 				$("#PTODaysContainerRight").show();
 				me.loadEmployees();
@@ -1356,6 +1359,7 @@ ii.Class({
 				$("#SearchTemplate").show();
 				$("#AnchorNew").hide();
 				$("#HouseCode").show();
+				$("#HouseCodeSection").show();
 				$("#PTODaysContainerLeft").show();
 				$("#ManagementPTODaysContainerRight").show();
 				me.loadEmployees();
@@ -1364,12 +1368,14 @@ ii.Class({
 				$("#SearchTemplate").hide();
 				$("#AnchorNew").hide();
 				$("#HouseCode").show();
+				$("#HouseCodeSection").show();
 				$("#PTODaysContainerLeft").show();
 				$("#PTOBalanceHoursContainerRight").show();
 				me.loadEmployees();
 			}
 			else if (section == "PTO Start Date") {
 				$("#HouseCode").show();
+				$("#HouseCodeSection").show();
 				$("#SearchTemplate").hide();
 				$("#PTOStartDateContainer").show();
 				$("#AnchorNew").hide();
@@ -1493,6 +1499,7 @@ ii.Class({
 		loadPlans: function(showLoading) {
 			var me = this;
 			var active = -1;
+			var houseCodeId = parent.fin.appUI.houseCodeId;
 
 			if (me.ptoYearSearch.indexSelected == -1)
 				return;
@@ -1504,9 +1511,11 @@ ii.Class({
 				me.ptoPlanYearTo.reset();
 			}
 
+			if (me.action == "PTO Plans")
+				houseCodeId = 0;
 			if (me.action == "PTO Assignments" || me.action == "Management PTO Assignments")
 				active = 1;
-			me.ptoPlanStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId + ",ptoYearId:" + me.ptoYears[me.ptoYearSearch.indexSelected].id + ",active:" + active, me.ptoPlansLoaded, me);
+			me.ptoPlanStore.fetch("userId:[user],houseCodeId:" + houseCodeId + ",ptoYearId:" + me.ptoYears[me.ptoYearSearch.indexSelected].id + ",active:" + active, me.ptoPlansLoaded, me);
 		},
 
 		ptoPlansLoaded: function(me, activeId) {

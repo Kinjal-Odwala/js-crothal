@@ -4,7 +4,7 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 		<title>Employee PTO Setup</title>
 		<script type="text/javascript">
-			var globalContext = "/net/crothall/chimes/fin/app/act";
+			var globalContext = "/net/crothall/chimes/fin/emp/act";
 			var js = document.createElement("script");
 			js.id = "loader";
 			js.type = "text/javascript";
@@ -42,10 +42,12 @@
 		<div class="pageBody">
 			<div id="HouseCode" class="body" style="display:none;">
 				<div class="tableEditArea">
-					<div class="labelTextAreaSearch">
-						<span class="requiredFieldIndicator">&#149;</span>House Code:
+					<div id="HouseCodeSection">
+						<div class="labelTextAreaSearch">
+							<span class="requiredFieldIndicator">&#149;</span>House Code:
+						</div>
+						<div id="houseCodeContainer" class="HouseCodeContainer"></div>
 					</div>
-					<div id="houseCodeContainer" class="HouseCodeContainer"></div>
 					<div id="SearchTemplate">
 						<div class="labelTextAreaSearch">
 							<span class="requiredFieldIndicator">&#149;</span>PTO Year:

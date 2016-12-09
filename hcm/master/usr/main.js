@@ -754,10 +754,36 @@ ii.Class({
 						return false;
 					}
 
-					if (!unionSetupUIControls.payRate.valid || !unionSetupUIControls.payType.valid || !unionSetupUIControls.deductionFrequency.valid || !unionSetupUIControls.probationaryPeriod.valid 
-						|| !unionSetupUIControls.minimumDeductionAmount.valid || !unionSetupUIControls.maximumDeductionAmount.valid || !unionSetupUIControls.startDate.valid || !unionSetupUIControls.endDate.valid 
-						|| ((unionSetupUIControls.deductionType == 3) && (unionSetupUIControls.formula.getValue() === "" || !unionSetupUIControls.validateFormula()))) {
+					if (!unionSetupUIControls.deductionFrequency.valid || !unionSetupUIControls.payType.valid || !unionSetupUIControls.probationaryPeriod.valid
+						|| !unionSetupUIControls.startDate.valid || !unionSetupUIControls.endDate.valid) {
 						alert("In order to save, the errors on the Union Setup Tab must be corrected.");
+						return false;
+					}
+
+					if (unionSetupUIControls.deductionType == 1 && !unionSetupUIControls.payRate.valid) {
+						alert("In order to save, the errors on the Union Setup Tab must be corrected.");
+						return false;
+					}
+
+					if (unionSetupUIControls.deductionType == 2 && (!unionSetupUIControls.payRate.valid || !unionSetupUIControls.minimumDeductionAmount.valid || !unionSetupUIControls.maximumDeductionAmount.valid)) {
+						alert("In order to save, the errors on the Union Setup Tab must be corrected.");
+						return false;
+					}
+
+					if (unionSetupUIControls.deductionType == 3 && (!unionSetupUIControls.minimumDeductionAmount.valid || !unionSetupUIControls.maximumDeductionAmount.valid 
+						|| unionSetupUIControls.formula.getValue() === "" || !unionSetupUIControls.validateFormula())) {
+						alert("In order to save, the errors on the Union Setup Tab must be corrected.");
+						return false;
+					}
+
+					if (unionSetupUIControls.deductionType == 4 && unionSetupUIControls.payRateRangeGrid.activeRowIndex != undefined && unionSetupUIControls.payRateRangeGrid.activeRowIndex != -1 
+						&& (!unionSetupUIControls.startAmount.valid || !unionSetupUIControls.endAmount.valid || !unionSetupUIControls.rangePayRate.valid)) {
+						alert("In order to continue, the errors on the Union Setup Tab must be corrected.");
+						return false;
+					}
+					
+					if (unionSetupUIControls.validationMessage != "") {
+						alert(unionSetupUIControls.validationMessage);
 						return false;
 					}
 				}
@@ -1077,7 +1103,7 @@ ii.Class({
 					xml += ' formula="' + unionSetupUIControls.formula.getValue() + '"';
 					xml += ' active="' + unionSetupUIControls.active.check.checked + '"';
 					xml += '/>';
-					
+
 					for (var index = 0; index < unionSetupUIControls.unionDeductionPayCodes.length; index++) {
 						if ($.inArray(unionSetupUIControls.unionDeductionPayCodes[index].payCodeId.toString(), unionSetupUIControls.selectedPayCodes) == -1) {
 							unionSetupUIControls.unionDeductionPayCodes[index].status = "remove";
@@ -1087,7 +1113,7 @@ ii.Class({
 							xml += '/>';
 						}
 					}
-					
+
 					for (var index = 0; index < unionSetupUIControls.selectedPayCodes.length; index++) {
 						var found = false;
 						for (var iIndex = 0; iIndex < unionSetupUIControls.unionDeductionPayCodes.length; iIndex++) {
@@ -1096,7 +1122,7 @@ ii.Class({
 								break;
 							}
 						}
-						
+
 						if (!found) {
 							xml += '<houseCodeUnionDeductionPayCode';
 							xml += ' id="0"';
@@ -1106,9 +1132,23 @@ ii.Class({
 							xml += '/>';
 						}
 					}
+
+					if (unionSetupUIControls.deductionType == 4) {
+						for (var index = 0; index < unionSetupUIControls.payRateRangeGrid.data.length; index++) {
+							if (unionSetupUIControls.payRateRangeGrid.data[index].modified || unionSetupUIControls.payRateRangeGrid.data[index].id == 0) {
+								xml += '<houseCodeUnionDeductionPayRateRange';
+								xml += ' id="' + unionSetupUIControls.payRateRangeGrid.data[index].id + '"';
+								xml += ' unionDeductionId="' + (unionSetupUIControls.status == "New" ? 0 : unionSetupUIControls.unionDeductionGrid.data[unionSetupUIControls.unionDeductionGrid.activeRowIndex].id) + '"';
+								xml += ' startAmount="' + unionSetupUIControls.payRateRangeGrid.data[index].startAmount + '"';
+								xml += ' endAmount="' + unionSetupUIControls.payRateRangeGrid.data[index].endAmount + '"';
+								xml += ' payRate="' + unionSetupUIControls.payRateRangeGrid.data[index].payRate + '"';
+								xml += '/>';
+							}
+						}
+					}
 				}
 			}
-				
+
 			xml += '</houseCode>';
 			
 			return xml;

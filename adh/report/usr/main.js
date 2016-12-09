@@ -966,6 +966,23 @@ ii.Class({
 				itemConstructorArgs: fin.adh.invoiceTemplateArgs,
 				injectionArray: me.invoiceTemplates
 			});
+
+			//Weekly Payroll
+			me.payCodeTypes = [];
+			me.payCodeTypeStore = me.cache.register({
+				storeId: "payCodes",
+				itemConstructor: fin.adh.PayCodeType,
+				itemConstructorArgs: fin.adh.payCodeTypeArgs,
+				injectionArray: me.payCodeTypes
+			});
+
+			me.fiscalYears = [];
+			me.fiscalYearStore = me.cache.register({
+				storeId: "fiscalYears",
+				itemConstructor: fin.adh.FiscalYear,
+				itemConstructorArgs: fin.adh.fiscalYearArgs,
+				injectionArray: me.fiscalYears
+			});
 		},
 		
 		setStatus: function(status, message) {
@@ -1612,6 +1629,8 @@ ii.Class({
 						case "Employee":
 							me.typesLoadedCount = 13;	
 							me.ePayGroupTypeStore.reset();
+							me.jobCodeStore.reset();
+							me.workShiftStore.reset();
 							me.localTaxCodeStore.fetch("payrollCompany:0,appState:0,userId:[user]", me.typesLoaded, me);
 							me.maritalStatusStateTaxTypeSecondaryStore.fetch("appState:0,userId:[user]", me.typesLoaded, me);
 							me.statusTypeStore.fetch("userId:[user],personId:0", me.typesLoaded, me);
@@ -1645,6 +1664,24 @@ ii.Class({
 							me.typesLoadedCount = 1;
 							me.ePayGroupTypeStore.reset();
 							me.ePayGroupTypeStore.fetch("userId:[user]", me.typesLoaded, me);
+							break;
+
+						case "Payroll":
+							me.typesLoadedCount = 2;
+							if (me.jobCodeTypes.length === 0) {
+								me.typesLoadedCount++;
+								me.jobCodeStore.fetch("userId:[user]", me.typesLoaded, me);
+							}
+							if (me.workShifts.length === 0) {
+								me.typesLoadedCount++;
+								me.workShiftStore.fetch("userId:[user]", me.typesLoaded, me);
+							}
+							if (me.transactionStatusTypes.length === 0) {
+								me.typesLoadedCount++;
+								me.transactionStatusTypeStore.fetch("userId:[user]", me.typesLoaded, me);
+							}
+							me.payCodeTypeStore.fetch("userId:[user]", me.typesLoaded, me);
+							me.fiscalYearStore.fetch("userId:[user]", me.typesLoaded, me);
 							break;
 					}
 					
@@ -1981,7 +2018,6 @@ ii.Class({
 			me.filter = "";
 			
 			for (var index = 0; index < me.reportFilters.length; index++) {
-				
 				if ($("#sel" + me.reportFilters[index].title + "_andOr").val() == 2) 
 					operator = "Or";
 				else 
@@ -1990,76 +2026,63 @@ ii.Class({
 				if (me.reportFilters[index].validation.toLowerCase() == "bit" && $("#sel" + me.reportFilters[index].title).val() != "") {
 					me.filter += " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " = '" + $("#sel" + me.reportFilters[index].title).val() + "') " + operator + "";
 				}
-				else 
-					if ($("#" + me.reportFilters[index].title).val() != null && $("#" + me.reportFilters[index].title).val() != "") {
-						if ($("#" + me.reportFilters[index].title).val() != "0") {
-							if (me.reportFilters[index].referenceTableName != "") { //dropdown selection
-								var inQuery = "In (";
-								var selectedValues = $("#" + me.reportFilters[index].title).multiselect("getChecked").map(function(){
-									return this.value;
-								}).get();
-								for (var selectedIndex = 0; selectedIndex < selectedValues.length; selectedIndex++) {
-									inQuery += ((selectedIndex == 0) ? selectedValues[selectedIndex] : ", " + selectedValues[selectedIndex]);
-								}
-								inQuery += ")";
-								me.filter += "(" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " " + inQuery + ") " + operator + " ";
+				else if ($("#" + me.reportFilters[index].title).val() != null && $("#" + me.reportFilters[index].title).val() != "") {
+					if ($("#" + me.reportFilters[index].title).val() != "0") {
+						if (me.reportFilters[index].referenceTableName != "") { //dropdown selection
+							var inQuery = "In (";
+							var selectedValues = $("#" + me.reportFilters[index].title).multiselect("getChecked").map(function(){
+								return this.value;
+							}).get();
+							for (var selectedIndex = 0; selectedIndex < selectedValues.length; selectedIndex++) {
+								inQuery += ((selectedIndex == 0) ? selectedValues[selectedIndex] : ", " + selectedValues[selectedIndex]);
 							}
-							else 
-								if (me.reportFilters[index].validation.toLowerCase() == "datetime") {
-									if ($("#sel" + me.reportFilters[index].title).val() == 1 || $("#sel" + me.reportFilters[index].title).val() == undefined) {
-										me.filter += " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " = '" + $("#" + me.reportFilters[index].title).val() + "') " + operator + "";
-									}
-									else 
-										if ($("#sel" + me.reportFilters[index].title).val() == 2) {
-											me.filter += " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " <= '" + $("#" + me.reportFilters[index].title).val() + "') " + operator + "";
-										}
-										else 
-											if ($("#sel" + me.reportFilters[index].title).val() == 3) {
-												me.filter += " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " >= '" + $("#" + me.reportFilters[index].title).val() + "') " + operator + "";
-											}
-											else 
-												if ($("#" + me.reportFilters[index].title + "_1").val() != "" && $("#sel" + me.reportFilters[index].title).val() == 4) {
-													me.filter += " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " Between '" + $("#" + me.reportFilters[index].title).val() + "' And '" + $("#" + me.reportFilters[index].title + "_1").val() + "') " + operator + "";
-												}
-												else 
-													if ($("#sel" + me.reportFilters[index].title).val() == 5) {
-														me.filter += " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " <> '" + $("#" + me.reportFilters[index].title).val() + "') " + operator + "";
-													}
+							inQuery += ")";
+							me.filter += "(" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " " + inQuery + ") " + operator + " ";
+						}
+						else if (me.reportFilters[index].validation.toLowerCase() == "datetime") {
+							if ($("#sel" + me.reportFilters[index].title).val() == 1 || $("#sel" + me.reportFilters[index].title).val() == undefined) {
+								me.filter += " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " = '" + $("#" + me.reportFilters[index].title).val() + "') " + operator + "";
+							}
+							else if ($("#sel" + me.reportFilters[index].title).val() == 2) {
+									me.filter += " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " <= '" + $("#" + me.reportFilters[index].title).val() + "') " + operator + "";
 								}
-								else 
-									if (me.reportFilters[index].validation.toLowerCase() == "int" || me.reportFilters[index].validation.toLowerCase() == "decimal") {
-										if ($("#sel" + me.reportFilters[index].title).val() == 1 || $("#sel" + me.reportFilters[index].title).val() == undefined) {
-											me.filter += " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " = '" + $("#" + me.reportFilters[index].title).val() + "') " + operator + "";
-										}
-										else 
-											if ($("#sel" + me.reportFilters[index].title).val() == 2) {
-												me.filter += " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " <= '" + $("#" + me.reportFilters[index].title).val() + "') " + operator + "";
-											}
-											else 
-												if ($("#sel" + me.reportFilters[index].title).val() == 3) {
-													me.filter += " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " >= '" + $("#" + me.reportFilters[index].title).val() + "') " + operator + "";
-												}
-												else 
-													if ($("#" + me.reportFilters[index].title + "_1").val() != "" && $("#sel" + me.reportFilters[index].title).val() == 4) {
-														me.filter += " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " Between '" + $("#" + me.reportFilters[index].title).val() + "' And '" + $("#" + me.reportFilters[index].title + "_1").val() + "') " + operator + "";
-													}
-													else 
-														if ($("#sel" + me.reportFilters[index].title).val() == 5) {
-															me.filter += " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " <> '" + $("#" + me.reportFilters[index].title).val() + "') " + operator + "";
-														}
-									}
-									else 
-										if (me.reportFilters[index].columnDataType.toLowerCase() == "varchar") {
-											if ($("#sel" + me.reportFilters[index].title).val() == 1 || $("#sel" + me.reportFilters[index].title).val() == undefined) {
-												me.filter += " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " = '" + $("#" + me.reportFilters[index].title).val() + "') " + operator + "";
-											}
-											else 
-												if ($("#sel" + me.reportFilters[index].title).val() == 2) {
-													me.filter += " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " Like '%" + $("#" + me.reportFilters[index].title).val() + "%') " + operator + "";
-												}
-										}
+							else if ($("#sel" + me.reportFilters[index].title).val() == 3) {
+									me.filter += " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " >= '" + $("#" + me.reportFilters[index].title).val() + "') " + operator + "";
+								}
+							else if ($("#" + me.reportFilters[index].title + "_1").val() != "" && $("#sel" + me.reportFilters[index].title).val() == 4) {
+									me.filter += " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " Between '" + $("#" + me.reportFilters[index].title).val() + "' And '" + $("#" + me.reportFilters[index].title + "_1").val() + "') " + operator + "";
+							}
+							else if ($("#sel" + me.reportFilters[index].title).val() == 5) {
+									me.filter += " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " <> '" + $("#" + me.reportFilters[index].title).val() + "') " + operator + "";
+							}
+						}
+						else if (me.reportFilters[index].validation.toLowerCase() == "int" || me.reportFilters[index].validation.toLowerCase() == "decimal") {
+							if ($("#sel" + me.reportFilters[index].title).val() == 1 || $("#sel" + me.reportFilters[index].title).val() == undefined) {
+								me.filter += " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " = '" + $("#" + me.reportFilters[index].title).val() + "') " + operator + "";
+							}
+							else if ($("#sel" + me.reportFilters[index].title).val() == 2) {
+								me.filter += " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " <= '" + $("#" + me.reportFilters[index].title).val() + "') " + operator + "";
+							}
+							else if ($("#sel" + me.reportFilters[index].title).val() == 3) {
+								me.filter += " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " >= '" + $("#" + me.reportFilters[index].title).val() + "') " + operator + "";
+							}
+							else if ($("#" + me.reportFilters[index].title + "_1").val() != "" && $("#sel" + me.reportFilters[index].title).val() == 4) {
+								me.filter += " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " Between '" + $("#" + me.reportFilters[index].title).val() + "' And '" + $("#" + me.reportFilters[index].title + "_1").val() + "') " + operator + "";
+							}
+							else if ($("#sel" + me.reportFilters[index].title).val() == 5) {
+								me.filter += " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " <> '" + $("#" + me.reportFilters[index].title).val() + "') " + operator + "";
+							}
+						}
+						else if (me.reportFilters[index].columnDataType.toLowerCase() == "varchar") {
+							if ($("#sel" + me.reportFilters[index].title).val() == 1 || $("#sel" + me.reportFilters[index].title).val() == undefined) {
+								me.filter += " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " = '" + $("#" + me.reportFilters[index].title).val() + "') " + operator + "";
+							}
+							else if ($("#sel" + me.reportFilters[index].title).val() == 2) {
+								me.filter += " (" + me.reportFilters[index].tableName + "." + me.reportFilters[index].title + " Like '%" + $("#" + me.reportFilters[index].title).val() + "%') " + operator + "";
+							}
 						}
 					}
+				}
 			}
 			
 			filterStatement = me.filter;
@@ -2844,39 +2867,38 @@ ii.Class({
 			rowHtml += me.getEditableRowColumn(false, false, 11, "houseCode", args.houseCode, 100, "left");
 			
 			for (var index = 0; index < me.moduleColumnHeaders.length; index++) {
-					
-					if (me.moduleColumnHeaders[index].title == 'HcmHouseCodeJob') 
-						rowHtml += me.getEditableRowColumn(false, false, 2, "job", args.job, 100, align);
-					
-					if (me.moduleColumnHeaders[index].title == 'RevTaxableService') 
-						rowHtml += me.getEditableRowColumn(false, false, 12, "taxableService", args.taxableService, 100, align);
-					
-					if (me.moduleColumnHeaders[index].title == 'FscAccount') 
-						rowHtml += me.getEditableRowColumn(false, columnBold, 3, "account", args.account, 200, align);
-					
-					if (me.moduleColumnHeaders[index].title == 'RevInviQuantity') 
-						rowHtml += me.getEditableRowColumn(false, false, 4, "quantity", args.quantity, 100, "right");
-					
-					if (me.moduleColumnHeaders[index].title == 'RevInviPrice') 
-						rowHtml += me.getEditableRowColumn(false, false, 5, "price", args.price, 100, "right");
-					
-					if (me.moduleColumnHeaders[index].title == 'RevInviAmount') 
-						rowHtml += me.getEditableRowColumn(false, columnBold, 6, "amount", args.amount, 100, "right");
-					
-					if (me.moduleColumnHeaders[index].title == 'AppTransactionStatusType') 
-						rowHtml += me.getEditableRowColumn(false, false, 7, "status", args.status, 100, "center");
-					
-					if (me.moduleColumnHeaders[index].title == 'RevInviTaxable') 
-						rowHtml += me.getEditableRowColumn(false, false, 8, "taxable", args.taxable, 100, "center");
-					
-					if (me.moduleColumnHeaders[index].title == 'RevInviShow') 
-						rowHtml += me.getEditableRowColumn(false, false, 9, "lineShow", args.lineShow, 100, "center");
-					
-					if (me.moduleColumnHeaders[index].title == 'RevInviDescription') 
-						rowHtml += me.getEditableRowColumn(false, false, 10, "description", args.description, 300, "left");
-					
-					if (me.moduleColumnHeaders[index].title == 'RevInviCrtdBy') 
-						rowHtml += me.getEditableRowColumn(false, false, 12, "createdBy", args.createdBy, 150, "left");
+				if (me.moduleColumnHeaders[index].title == 'HcmHouseCodeJob') 
+					rowHtml += me.getEditableRowColumn(false, false, 2, "job", args.job, 100, align);
+				
+				if (me.moduleColumnHeaders[index].title == 'RevTaxableService') 
+					rowHtml += me.getEditableRowColumn(false, false, 12, "taxableService", args.taxableService, 100, align);
+				
+				if (me.moduleColumnHeaders[index].title == 'FscAccount') 
+					rowHtml += me.getEditableRowColumn(false, columnBold, 3, "account", args.account, 200, align);
+				
+				if (me.moduleColumnHeaders[index].title == 'RevInviQuantity') 
+					rowHtml += me.getEditableRowColumn(false, false, 4, "quantity", args.quantity, 100, "right");
+				
+				if (me.moduleColumnHeaders[index].title == 'RevInviPrice') 
+					rowHtml += me.getEditableRowColumn(false, false, 5, "price", args.price, 100, "right");
+				
+				if (me.moduleColumnHeaders[index].title == 'RevInviAmount') 
+					rowHtml += me.getEditableRowColumn(false, columnBold, 6, "amount", args.amount, 100, "right");
+				
+				if (me.moduleColumnHeaders[index].title == 'AppTransactionStatusType') 
+					rowHtml += me.getEditableRowColumn(false, false, 7, "status", args.status, 100, "center");
+				
+				if (me.moduleColumnHeaders[index].title == 'RevInviTaxable') 
+					rowHtml += me.getEditableRowColumn(false, false, 8, "taxable", args.taxable, 100, "center");
+				
+				if (me.moduleColumnHeaders[index].title == 'RevInviShow') 
+					rowHtml += me.getEditableRowColumn(false, false, 9, "lineShow", args.lineShow, 100, "center");
+				
+				if (me.moduleColumnHeaders[index].title == 'RevInviDescription') 
+					rowHtml += me.getEditableRowColumn(false, false, 10, "description", args.description, 300, "left");
+				
+				if (me.moduleColumnHeaders[index].title == 'RevInviCrtdBy') 
+					rowHtml += me.getEditableRowColumn(false, false, 12, "createdBy", args.createdBy, 150, "left");
 			}
 
 			return rowHtml;
@@ -3063,7 +3085,10 @@ ii.Class({
 					title = typeTableData[index].name;
 				else
 				    title = typeTableData[index].title;
-				
+
+				if (typeTableData[index].brief != undefined)
+					title = typeTableData[index].brief + " - " + title;
+
 				if (title != "")
 					rowHtml += "	<option title='" + title + "' value='" + typeTableData[index].id + "'>" + title + "</option>";
 			}				
@@ -4197,6 +4222,15 @@ ii.Class({
 				me.typeNoneAdd(me.hcmSiteTypes);
 				typeTable = me.hcmSiteTypes;
 			}
+			else if (args.typeTable == "PayPayCodes") {
+				me.typeNoneAdd(me.payCodeTypes);
+				typeTable = me.payCodeTypes;
+			}
+			else if (args.typeTable == "FscYears") {
+				me.typeNoneAdd(me.fiscalYears);
+				typeTable = me.fiscalYears;
+			}
+
 			return typeTable;
 		},
 				

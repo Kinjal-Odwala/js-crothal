@@ -146,7 +146,7 @@
     font-size: 8pt;
     font-weight: bold;
     color: #ffffff;
-    background-color: #669b67;
+    /*background-color: #669b67;*/
     text-align: left;
 }
 
@@ -164,12 +164,19 @@
     width: 100%;
 }
 
-#employeeModal {
-    left: 20%;
+#planModal {
+    left: 25%;
     position: fixed;
-    top: 10%;
+    top: 25%;
     height: auto;
     max-height: 500px;
+}
+
+#cloneModal {
+    left: 20%;
+    position: fixed;
+    top: 5%;
+    height: auto;
 }
 
 .table > thead > tr > td.warning,
@@ -193,14 +200,3 @@
 .table-hover > tbody > tr.warning:hover > th {
   background-color: lightblue;
 }
-
-
-   
-
-
-
-
-
-
-
-

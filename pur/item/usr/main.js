@@ -203,8 +203,8 @@ ii.Class({
 			    allowAdds: false
 			});
 
-			me.historyGrid.addColumn("lastModifiedBy", "lastModifiedBy", "Last Modified By", "Last Modified By", null);
-			me.historyGrid.addColumn("lastModifiedAt", "lastModifiedAt", "Last Modified At", "Last Modified At", 300);
+			me.historyGrid.addColumn("lastModifiedBy", "lastModifiedBy", "Modified By", "Modified By", null);
+			me.historyGrid.addColumn("lastModifiedAt", "lastModifiedAt", "Modified At", "Modified At", 300);
 			me.historyGrid.addColumn("previousFieldValue", "previousFieldValue", "Amount From", "Amount From", 200);
 			me.historyGrid.addColumn("fieldName", "fieldName", "Amount To", "Amount To", 200);
 			me.historyGrid.capColumns();
@@ -357,6 +357,7 @@ ii.Class({
 				
 			me.itemPrice = new ui.ctl.Input.Text({
 		        id: "ItemPrice",
+				maxLength: 19,
 				changeFunction: function() { me.modified(); }
 		    });
 			
@@ -369,7 +370,7 @@ ii.Class({
 
 				if (enteredText == "") return;
 
-				if (/^[0-9]+(\.[0-9]+)?$/.test(enteredText) == false)
+				if (enteredText != ""  && !(/^\d{1,16}(\.\d{1,2})?$/.test(enteredText)))
 					this.setInvalid("Please enter valid Price.");
 			});
 						
@@ -578,15 +579,17 @@ ii.Class({
 			me.checkLoadCount();
 		},
 
-		viewItemHistory: function () {
+		viewItemHistory: function() {
 		    loadPopup();
 		    $("#popupContact").show();
 		    $("#popupHistory").show();
+			me.historyGrid.setHeight($(window).height() - 150);
 		    me.appHistoryStore.reset();
 		    me.appHistoryStore.fetch("userId:[user],reference:" + me.historyReference + ",module:PurItem", me.appHistoriesLoaded, me);
 		},
 
-		appHistoriesLoaded: function () {
+		appHistoriesLoaded: function(me, activeId) {
+
 		    if (me.appHistories.length > 0 && me.items.length > 0) {
 		        for (var index = 0; index < me.appHistories.length; index++) {
 		            var modAtDate = ui.cmn.text.date.format(new Date(me.appHistories[index].lastModifiedAt), "mm/dd/yyyy");
@@ -607,11 +610,11 @@ ii.Class({
 		            }
 		        }
 		    }
+
 		    me.historyGrid.setData(me.appHistories);
-		    me.historyGrid.setHeight($(window).height() - 150);
 		},
 
-		actionCloseItem: function () {
+		actionCloseItem: function() {
 		    disablePopup();
 		},
 		

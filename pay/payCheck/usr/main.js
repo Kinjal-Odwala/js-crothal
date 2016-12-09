@@ -2171,7 +2171,6 @@ ii.Class({
 		},
 
 		actionSaveItem: function() {
-			var args = ii.args(arguments,{});
 			var me = this;
 			var item = [];
 			var id = 0;
@@ -2216,7 +2215,12 @@ ii.Class({
 					alert("In order to save, the errors on the page must be corrected.");
 					return false;
 				}
-			
+
+				if (me.payCodeDetailGrid.data.length === 0) {
+            		alert("Please add at least one Pay Code information.");
+            		return false;
+            	}	
+
 				if (me.payCheckRequestGrid.activeRowIndex >= 0)
 					id = me.payCheckRequestGrid.data[me.payCheckRequestGrid.activeRowIndex].id
 				

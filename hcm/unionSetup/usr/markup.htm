@@ -46,6 +46,10 @@
 										<input id="DeductionTypeFormula" name="DeductionType" onclick="javascript: fin.hcmUnionSetupUi.assignValue();" type="radio" value="3" tabindex="3" />								
 									</div>
 									<div class="labelTextRadio">Formula</div>
+									<div class="inputTextRadio">
+										<input id="DeductionTypeRange" name="DeductionType" onclick="javascript: fin.hcmUnionSetupUi.assignValue();" type="radio" value="4" tabindex="4" />								
+									</div>
+									<div class="labelTextRadio">Range</div>
 								</div>
 								<div style="clear:both;"></div>
 							</div>
@@ -70,33 +74,37 @@
 								</div>
 								<div style="clear:both;"></div>
 							</div>
-							<div class="TableEditArea">
-								<div class="labelTextArea"><span class="requiredFieldIndicator">&#149;</span>Pay Rate:</div>
-								<div class="inputTextArea">
-									<div id="PayRate"></div>
+							<div id="PayRateContainer">
+								<div class="TableEditArea">
+									<div class="labelTextArea" id="PayRateLabel"><span class="requiredFieldIndicator">&#149;</span>Pay Rate:</div>
+									<div class="inputTextArea">
+										<div id="PayRate"></div>
+									</div>
+									<div style="clear:both;"></div>
 								</div>
-								<div style="clear:both;"></div>
 							</div>
 							<div class="TableEditArea">
-								<div class="labelTextArea"><span class="requiredFieldIndicator">&#149;</span>Probationary Period:</div>
+								<div class="labelTextArea"><span class="requiredFieldIndicator">&#149;</span>Probationary Period (In Days):</div>
 								<div class="inputTextArea">
 									<div id="ProbationaryPeriod"></div>
 								</div>
 								<div style="clear:both;"></div>
 							</div>
-							<div class="TableEditArea">
-								<div class="labelTextArea"><span class="requiredFieldIndicator">&#149;</span>Minimum Deduction Amount:</div>
-								<div class="inputTextArea">
-									<div id="MinimumDeductionAmount"></div>
+							<div id="MinMaxContainer" style="display:none;">
+								<div class="TableEditArea">
+									<div class="labelTextArea"><span class="requiredFieldIndicator">&#149;</span>Minimum Deduction Amount:</div>
+									<div class="inputTextArea">
+										<div id="MinimumDeductionAmount"></div>
+									</div>
+									<div style="clear:both;"></div>
 								</div>
-								<div style="clear:both;"></div>
-							</div>
-							<div class="TableEditArea">
-								<div class="labelTextArea"><span class="requiredFieldIndicator">&#149;</span>Maximum Deduction Amount:</div>
-								<div class="inputTextArea">
-									<div id="MaximumDeductionAmount"></div>
+								<div class="TableEditArea">
+									<div class="labelTextArea"><span class="requiredFieldIndicator">&#149;</span>Maximum Deduction Amount:</div>
+									<div class="inputTextArea">
+										<div id="MaximumDeductionAmount"></div>
+									</div>
+									<div style="clear:both;"></div>
 								</div>
-								<div style="clear:both;"></div>
 							</div>
 							<div class="TableEditArea">
 								<div class="labelTextArea"><span class="requiredFieldIndicator">&#149;</span>Start Date:</div>
@@ -147,6 +155,7 @@
 										<div id="Formula"></div>
 									</div>
 									<div style="float: left;"><a id="ResetFormula" class="add" title="Click here to reset the formula">Reset Formula</a></div>
+									<div style="float: left;"><a id="UndoFormula" class="add" title="Click here to remove the last changes">Remove</a></div>
 									<div style="clear:both;"></div>
 								</div>
 							</div>
@@ -156,6 +165,9 @@
 	                            	<div id="Active"></div>
 								</div>
 	                        	<div style="clear:both;"></div>
+							</div>
+							<div id="RangeContainer" style="display:none;">
+								<div id="PayRateRangeGrid"></div>
 							</div>
 	                    </div>
 					</div>

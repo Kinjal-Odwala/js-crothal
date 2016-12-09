@@ -112,3 +112,11 @@
 	padding: 5px;
 	margin: 1px;
 }
+
+#RangeContainer {
+	padding: 15px;
+}
+
+#startAmountBodyColumn, #endAmountBodyColumn, #payRateBodyColumn {
+	text-align: right;	
+}
