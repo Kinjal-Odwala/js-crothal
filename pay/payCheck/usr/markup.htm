@@ -406,11 +406,13 @@
 						</div>
 						<div><span class="labelTextSmall">(If Applicable) $15.00</span></div>
 					</div>
+                    <div style="clear:both;"></div>
+					<div class="subHeader">Deduction Code Information</div>
 					<div style="clear:both;"></div>
 					<div class="labelHeaderSmall">Deduction Requirements: List any special deductions that must be withheld from manual check.</div>
 					<div style="clear:both;"></div>
 					<div class="contentAreaLeft">						
-						<div id="TableEditArea">
+						<div id="DeductionDiv"  style="display:none;">
 							<div class="labelText">
 								<span id="nonRequiredFieldIndicator">Deduction Code(s):</span>
 							</div>
@@ -421,7 +423,7 @@
 						</div>
 					</div>
 					<div class="contentAreaLeft">						
-						<div id="TableEditArea">
+						<div id="AmountDiv"  style="display:none;">
 							<div class="labelText">
 								<span id="nonRequiredFieldIndicator">Amount $:</span>
 							</div>
@@ -432,6 +434,12 @@
 						</div>						
 					</div>
 					<div style="clear:both;"></div>
+                    <div style="clear:both;"></div>
+					<div id="DeductionsGrid">
+						<div id="DeductionsDetailGrid"></div>
+						<div id="DeductionsDetailReadOnlyGrid" style="display:none;"></div>
+					</div>
+                    <div style="clear:both;"></div>
 					<div class="labelHeaderSmall"><i>Note: Deductions will not automatically be withheld from the manual check unless noted.</i></div>
 					<div style="clear:both;"></div>
 					<div class="contentAreaLeft">						

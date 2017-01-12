@@ -122,12 +122,14 @@ ii.Class({
 		resize: function() {
 			var args = ii.args(arguments,{});
 			var me = fin.payCheckUi;
-
+			
 			$("#pageLoading").height(document.body.scrollHeight);
-			$("#Container").height(1280);
+			$("#Container").height(1450);
 			me.payCheckRequestGrid.setHeight(200);
 			me.payCodeDetailGrid.setHeight(150);
 			me.payCodeDetailReadOnlyGrid.setHeight(150);
+			me.deductionsDetailGrid.setHeight(150);
+			me.deductionsDetailReadOnlyGrid.setHeight(150);
 			me.documentGrid.setHeight(100);
 			
 			if  (me.payCheckRequestGrid.activeRowIndex >= 0) {
@@ -393,22 +395,22 @@ ii.Class({
 				changeFunction: function() { me.modified(); }
 			});
 			
-			me.amount.makeEnterTab()
-				.setValidationMaster(me.validator)
-				.addValidation( function( isFinal, dataMap ) {					
-					var enteredText = me.amount.text.value;
+			//me.amount.makeEnterTab()
+			//	.setValidationMaster(me.validator)
+			//	.addValidation( function( isFinal, dataMap ) {					
+			//		var enteredText = me.amount.text.value;
 					
-					if (enteredText == "")
-						return;
+			//		if (enteredText == "")
+			//			return;
 						
-					if (!(ui.cmn.text.validate.generic(enteredText, "^\\d+\\.?\\d{0,2}$")))
-						this.setInvalid("Please enter valid Amount. Example: 99.99");
-				});
+			//		if (!(ui.cmn.text.validate.generic(enteredText, "^\\d+\\.?\\d{0,2}$")))
+			//			this.setInvalid("Please enter valid Amount. Example: 99.99");
+			//	});
 				
-			$("#AmountText").keypress(function (e) {
-				if (e.which != 8 && e.which != 0  && e.which != 46 && (e.which < 48 || e.which > 57))
-					return false;
-			});
+			//$("#AmountText").keypress(function (e) {
+			//	if (e.which != 8 && e.which != 0  && e.which != 46 && (e.which < 48 || e.which > 57))
+			//		return false;
+			//});
 			
 			me.requestorName = new ui.ctl.Input.Text({
 				id: "RequestorName",
@@ -657,6 +659,60 @@ ii.Class({
 			me.payCodeDetailReadOnlyGrid.addColumn("houseCodeTitle", "houseCodeTitle", "CHARGE TO HOUSE CODE", "CHARGE TO HOUSE CODE", null);
 			me.payCodeDetailReadOnlyGrid.capColumns();
 
+			me.deductionsDetailGrid = new ui.ctl.Grid({
+			    id: "DeductionsDetailGrid",
+			    allowAdds: true,
+			    createNewFunction: fin.pay.payCheck.DeductionCodeDetail,
+			    selectFunction: function (index) {
+			        $("#DeductionCodeText, #AmountText").keypress(function (e) {
+			            if (e.which != 8 && e.which != 0 && e.which != 46 && (e.which < 48 || e.which > 57))
+			                return false;
+			        });
+
+			    }
+			});
+
+			me.deductionDetailCode = new ui.ctl.Input.Text({
+			    id: "DeductionDetailCode",
+			    maxLength: 100,
+			    appendToId: "DeductionsDetailGridControlHolder",
+			    changeFunction: function () { me.modified(); }
+			});
+
+			me.detailAmount = new ui.ctl.Input.Text({
+			    id: "detailAmount",
+			    maxLength: 11,
+			    appendToId: "DeductionsDetailGridControlHolder",
+			    changeFunction: function () { me.modified(); }
+			});
+
+		    me.detailAmount.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(function (isFinal, dataMap) {
+				    var enteredText = me.amount.text.value;
+
+				    if (enteredText == "")
+				        return;
+
+				    if (!(ui.cmn.text.validate.generic(enteredText, "^\\d+\\.?\\d{0,2}$")))
+				        this.setInvalid("Please enter valid Amount. Example: 99.99");
+				});
+
+			me.deductionsDetailGrid.addColumn("deductionCode", "deductionCode", "Deduction Code", "Deduction Code", null, null, me.deductionDetailCode);
+			me.deductionsDetailGrid.addColumn("amount", "amount", "Amount", "Amount", 100, function (detailAmount) { return ui.cmn.text.money.format(detailAmount); }, me.detailAmount);
+			me.deductionsDetailGrid.capColumns();
+
+			me.deductionDetailCode.active = false;
+			me.detailAmount.active = false;
+
+			me.deductionsDetailReadOnlyGrid = new ui.ctl.Grid({
+			    id: "DeductionsDetailReadOnlyGrid"
+			});
+
+			me.deductionsDetailReadOnlyGrid.addColumn("deductionCode", "deductionCode", "Deduction Code", "Deduction Code", null);
+			me.deductionsDetailReadOnlyGrid.addColumn("amount", "amount", "Amount", "Amount", 100);
+			me.deductionsDetailReadOnlyGrid.capColumns();
+
 			me.anchorSearch = new ui.ctl.buttons.Sizeable({
 				id: "AnchorSearch",
 				className: "iiButton",
@@ -851,6 +907,14 @@ ii.Class({
 				lookupSpec: { payCode: me.payCodeTypes }
 			});
 
+			me.deductionCodeDetails = [];
+			me.deductionCodeDetailStore = me.cache.register({
+			    storeId: "payCheckRequestDeductionCodes",
+			    itemConstructor: fin.pay.payCheck.DeductionCodeDetail,
+			    itemConstructorArgs: fin.pay.payCheck.deductionCodeDetailArgs,
+			    injectionArray: me.deductionCodeDetails,
+			});
+
 			me.payCheckRequestDocuments = [];
 			me.payCheckRequestDocumentStore = me.cache.register({
 				storeId: "payCheckRequestDocuments",
@@ -1040,6 +1104,7 @@ ii.Class({
 			$("#AnchorResendRequest").hide();
 			$("#AnchorApprove").hide();
 			me.anchorCancel.display(ui.cmn.behaviorStates.disabled);
+		    me.deductionsDetailGrid.setData(me.deductionCodeDetails);
 		},
 		
 		setTabIndexes: function() {
@@ -1104,7 +1169,7 @@ ii.Class({
 			me.requestorPhone.resizeText();
 			me.managerName.resizeText();
 			me.managerEmail.resizeText();
-			me.employeeGrid.resize();			
+			me.employeeGrid.resize();
 		},
 		
 		resetControls: function(status) {
@@ -1112,6 +1177,7 @@ ii.Class({
 
 			me.status = status;
 			me.payCodeDetailGrid.body.deselectAll();
+			me.deductionsDetailGrid.body.deselectAll();
 			me.documentGrid.body.deselectAll();
 			me.requestedDate.resetValidation(true);
 			me.deliveryDate.resetValidation(true);			
@@ -1146,6 +1212,7 @@ ii.Class({
 			me.managerName.setValue("");
 			me.managerEmail.setValue("");
 			me.payCodeDetailGrid.setData([]);
+			me.deductionsDetailGrid.setData([]);
 			me.documentGrid.setData([]);
 			me.payCheckRequestDocumentStore.reset();
 			
@@ -1509,11 +1576,15 @@ ii.Class({
 			if (!parent.fin.cmn.status.itemValid())
 				return;
 
+			$("#DeductionDiv").hide();
+			$("#AmountDiv").hide();
 			$("#CheckRequestNumberInfo").hide();
 			$("#EmptyArea").show();
 			$("#PayCodeDetailGrid").show();
+			$("#DeductionsDetailGrid").show();
 			$("#SearchContainer").hide();
 			$("#PayCodeDetailReadOnlyGrid").hide();
+			$("#DeductionsDetailReadOnlyGrid").hide();
 			me.setReadOnly(false);
 			me.resetControls("CheckRequest");
 			me.anchorSendRequest.display(ui.cmn.behaviorStates.enabled);
@@ -1521,6 +1592,7 @@ ii.Class({
 			me.anchorCancel.display(ui.cmn.behaviorStates.disabled);
 			me.payCheckRequestGrid.body.deselectAll();
 			me.payCodeDetailGrid.setHeight(150);
+			me.deductionsDetailGrid.setHeight(150);
 			me.requestedDate.setValue(me.currentDate());
 			$("#AnchorResendRequest").hide();
 			$("#AnchorApprove").hide();
@@ -1543,11 +1615,13 @@ ii.Class({
 			if (!parent.fin.cmn.status.itemValid())
 				return;
 			
-			$("#PayCodeDetailGrid").hide();			
+			$("#PayCodeDetailGrid").hide();
+			$("#DeductionsDetailGrid").hide();
 			$("#SearchContainer").show();
 			$("#CheckRequestNumberInfo").show();
 			$("#EmptyArea").hide();
-			$("#PayCodeDetailReadOnlyGrid").show();			
+			$("#PayCodeDetailReadOnlyGrid").show();
+			$("#DeductionsDetailReadOnlyGrid").show();
 			me.setReadOnly(true);
 			me.resetControls("CheckRequestStatus");
 			me.searchInput.setValue("");
@@ -1561,6 +1635,8 @@ ii.Class({
 			me.payCheckRequestGrid.setHeight(200);
 			me.payCodeDetailReadOnlyGrid.setData([]);
 			me.payCodeDetailReadOnlyGrid.setHeight(150);
+			me.deductionsDetailReadOnlyGrid.setData([]);
+			me.deductionsDetailReadOnlyGrid.setHeight(150);
 			$("#imgAdd").hide();
 			$("#imgEdit").hide();
 			$("#imgRemove").hide();
@@ -1591,7 +1667,9 @@ ii.Class({
 			me.resetControls("");			
 			me.payCheckRequestGrid.setData([]);
 			me.payCodeDetailReadOnlyGrid.setData([]);
+			me.deductionsDetailReadOnlyGrid.setData([]);
 			me.payCodeDetailGrid.body.deselectAll();
+			me.deductionsDetailGrid.body.deselectAll();
 			me.payCheckRequestStore.reset();
 			me.payCheckRequestStore.fetch("userId:[user]"
 				+ ",searchValue:" + (me.filterType.indexSelected == 3 ? me.searchRequestedDate.text.value : me.searchInput.getValue()) 
@@ -1629,6 +1707,8 @@ ii.Class({
 				$("#AnchorSendRequest").hide();
 				$("#PayCodeDetailGrid").show();
 				$("#PayCodeDetailReadOnlyGrid").hide();
+				$("#DeductionsDetailGrid").show();
+				$("#DeductionsDetailReadOnlyGrid").hide();
 			}
 			else {
 				if (item.statusType == 2) {
@@ -1654,6 +1734,8 @@ ii.Class({
 				$("#imgRemove").hide();				
 				$("#PayCodeDetailGrid").hide();
 				$("#PayCodeDetailReadOnlyGrid").show();
+				$("#DeductionsDetailGrid").hide();
+				$("#DeductionsDetailReadOnlyGrid").show();
 			}
 
 			$("#houseCodeText").val(item.houseCodeTitle);
@@ -1696,12 +1778,25 @@ ii.Class({
 			me.loadCount += 1;
 			me.setLoadCount();
 			me.payCodeDetailGrid.body.deselectAll();
+			me.deductionsDetailGrid.body.deselectAll();
 			me.documentGrid.body.deselectAll();
 			me.payCodeDetailStore.reset();
+			me.deductionCodeDetailStore.reset();
 			me.payCheckRequestDocumentStore.reset();
 			me.payCodeDetailStore.fetch("userId:[user],payCheckRequest:" + item.id, me.payCodeDetailsLoaded, me);
+			me.deductionCodeDetailStore.fetch("userId:[user],payCheckRequest:" + item.id, me.deductionCodeDetailsLoaded, me);
 			me.payCheckRequestDocumentStore.fetch("userId:[user],payCheckRequestId:" + item.id, me.payCheckRequestDocumentsLoaded, me);
 			me.status = "CheckRequestStatus";
+			if (item.deductionCodes != undefined && item.deductionCodes != null && item.deductionCodes != "") {
+			    $("#DeductionDiv").show();
+			    $("#AmountDiv").show();
+			    $("#DeductionsDetailGrid").hide();
+			    $("#DeductionsDetailReadOnlyGrid").hide();
+			}
+			else {
+			    $("#DeductionDiv").hide();
+			    $("#AmountDiv").hide();
+			}
 		},
 		
 		payCodeDetailsLoaded: function(me, activeId) {
@@ -1713,6 +1808,16 @@ ii.Class({
 			me.calculateTotal("");
 			me.checkLoadCount();
 			me.modified(false);
+		},
+
+		deductionCodeDetailsLoaded: function (me, activeId) {
+
+		    me.deductionsDetailGrid.setData(me.deductionCodeDetails);
+		    me.deductionsDetailGrid.setHeight(150);
+		    me.deductionsDetailReadOnlyGrid.setData(me.deductionCodeDetails);
+		    me.deductionsDetailReadOnlyGrid.setHeight(150);
+		    me.checkLoadCount();
+		    me.modified(false);
 		},
 		
 		payCheckRequestDocumentsLoaded: function(me, activeId) {
@@ -2208,6 +2313,7 @@ ii.Class({
 				}
 				
 				me.payCodeDetailGrid.body.deselectAll();
+				me.deductionsDetailGrid.body.deselectAll();
 				me.validator.forceBlur();
 				
 				// Check to see if the data entered is valid
@@ -2335,6 +2441,15 @@ ii.Class({
 				xml += ' houseCodeId="' + me.payCodeDetailGrid.data[index].houseCodeId + '"';
 				xml += ' houseCodeTitle="' + (me.payCodeDetailGrid.data[index].houseCodeId != 0 ? me.payCodeDetailGrid.data[index].houseCodeTitle : "") + '"';
 				xml += '/>';
+			}
+
+			for (var index = 0; index < me.deductionsDetailGrid.data.length; index++) {
+			    xml += '<payCheckRequestDeductionCode';
+			    xml += ' id="' + me.deductionsDetailGrid.data[index].id + '"';
+			    xml += ' payCheckRequestId="' + item.id + '"';
+			    xml += ' deductionCode="' + me.deductionsDetailGrid.data[index].deductionCode + '"';
+			    xml += ' amount="' + me.deductionsDetailGrid.data[index].amount + '"';
+			    xml += '/>';
 			}
 
 			for (var index = 0; index < me.payCheckRequestDocuments.length; index++) {
