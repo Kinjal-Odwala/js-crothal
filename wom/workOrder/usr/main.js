@@ -41,7 +41,7 @@ ii.Class({
 			me.workOrderBackDays = 0;
 			me.search = false;
 			me.loadCount = 0;
-			
+		
 			me.gateway = ii.ajax.addGateway("wom", ii.config.xmlProvider);
 			me.cache = new ii.ajax.Cache(me.gateway);
 			me.transactionMonitor = new ii.ajax.TransactionMonitor(
@@ -2113,19 +2113,19 @@ ii.Class({
 			
 			$("#popupHeader").text("Work Order Setup");
 			$("#popupWorkOrder").show();
-			$("#workOrderContentAreaPopup").hide();
+			$("#workOrderContentAreaPopup").show();
 			$("#WorkOrderPopup").hide();
 			$("#WorkOrderPopupReadOnly").hide();
 			$("#RecurringPopup").hide();
 			$("#AnchorSavePopup").hide();
-			$("#workOrderType").show();
+			$("#workOrderType").hide();
 			$("#AnchorCancelPopup").show();
 			$("#AnchorNextPopup").show();
 			$("#Daily")[0].checked = true;
 			$("#WOMTime")[0].checked = true;
-			
+            			
 			me.workOrderItemsCountOnLoad = 0;
-			me.nextCount = 0;
+			me.nextCount = 1;
 			me.workOrderType = 0;
 			me.recurringType = 0;
 			me.action = "New";
