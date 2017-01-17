@@ -698,8 +698,8 @@ ii.Class({
 				        this.setInvalid("Please enter valid Amount. Example: 99.99");
 				});
 
-			me.deductionsDetailGrid.addColumn("deductionCode", "deductionCode", "Deduction Code", "Deduction Code", null, null, me.deductionDetailCode);
-			me.deductionsDetailGrid.addColumn("amount", "amount", "Amount", "Amount", 100, function (detailAmount) { return ui.cmn.text.money.format(detailAmount); }, me.detailAmount);
+            me.deductionsDetailGrid.addColumn("deductionCode", "deductionCode", "Deduction Code", "Deduction Code", null, null, me.deductionDetailCode);
+            me.deductionsDetailGrid.addColumn("amount", "amount", "Amount", "Amount", 100, function (detailAmount) { return ui.cmn.text.money.format(detailAmount); }, me.detailAmount);
 			me.deductionsDetailGrid.capColumns();
 
 			me.deductionDetailCode.active = false;
@@ -710,7 +710,7 @@ ii.Class({
 			});
 
 			me.deductionsDetailReadOnlyGrid.addColumn("deductionCode", "deductionCode", "Deduction Code", "Deduction Code", null);
-			me.deductionsDetailReadOnlyGrid.addColumn("amount", "amount", "Amount", "Amount", 100);
+			me.deductionsDetailReadOnlyGrid.addColumn("amount", "amount", "Amount", "Amount", 100, function (amount) { return ui.cmn.text.money.format(amount); });
 			me.deductionsDetailReadOnlyGrid.capColumns();
 
 			me.anchorSearch = new ui.ctl.buttons.Sizeable({
