@@ -80,7 +80,7 @@ a.bine-icons, span.bine-icons, div.bine-icons {
 }
 .bud-grid-1
 {
-    border: 1px solid #659A66;
+    border: 1px solid #6D94BA;
     border-collapse: collapse;
     font-family: Arial,Helvetica,sans-serif;
     font-size: 12px;
@@ -88,8 +88,8 @@ a.bine-icons, span.bine-icons, div.bine-icons {
 }
 .bud-grid-1 th
 {
-    border-bottom: 1px solid #659A66;
-    color: #659A66;
+    border-bottom: 1px solid #6D94BA;
+    color: #6D94BA;
     font-size: 14px;
     font-weight: normal;
     padding: 6px 5px;
@@ -99,7 +99,7 @@ a.bine-icons, span.bine-icons, div.bine-icons {
 {
     color: #9CCF9C;
     padding: 2px 10px;
-    border-bottom: 1px solid #659A66;
+    border-bottom: 1px solid #6D94BA;
 }
 /*
 .bud-grid-1 tbody tr:hover td {
@@ -447,7 +447,7 @@ body table tbody input.readonly
 
 .popup-box-inner-wrapper {
     background: none repeat scroll 0 0 #e6e6e6;
-    border: 1px solid #659a66;
+    border: 1px solid #6D94BA;
     border-radius: 3px 0 3px 3px;
     margin-top: -1px;
     padding: 6px;

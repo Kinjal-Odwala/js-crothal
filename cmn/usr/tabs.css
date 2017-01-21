@@ -38,10 +38,10 @@
     position: relative;
     top: 0px;
     z-index: 2;
-    color: #032D23;
+    color: #FFFFFF;
     font-size: 10px;
     font-family:Verdana;
-   font-weight: bold;
+    font-weight: bold;
     /*line-height: 1;*/
     text-align: left;
     text-decoration: none;
@@ -62,7 +62,6 @@
 .tabs-nav a:hover, .tabs-nav .tabs-nav a:hover, .tabs-nav .tabs-disabled a:focus, .tabs-nav .tabs-disabled a:active {
     background-position: 100% -256px;
     /*outline: 1;  prevent dotted border in Firefox */
-
 }
 .tabs-nav a span {
     width: 0px; /* IE 6 treats width as min-width */
@@ -87,14 +86,11 @@
 .tabs-nav .tabs-selected a span, .tabs-disabled a:hover span, .tabs-nav a:focus span, .tabs-nav .tabs-disabled a:active span {
     background-position: 0 -55px;
    /* outline: 1;  prevent dotted border in Firefox */
-
 }
 .tabs-nav a:hover span, .tabs-nav .tabs-nav a:hover span, .tabs-nav .tabs-disabled a:focus span, .tabs-nav .tabs-disabled a:active span {
     background-position: 0 -105px;
     /*outline: 1;  prevent dotted border in Firefox */
-
 }
-
 .tabs-nav .tabs-selected a:link, .tabs-nav .tabs-selected a:visited, .tabs-nav .tabs-disabled a:link, .tabs-nav .tabs-disabled a:visited{ /* @ Opera, use pseudo classes otherwise it confuses cursor... */
     cursor: text;
 }
@@ -108,7 +104,6 @@
 	border:none;
     border: solid #AAAAAA thin;
 	border-width: 1px;
-	
     background: #ffffff; /* declare background color for container to avoid distorted fonts in IE while fading */
 	/*height:352px;
 	margin-right:10px;

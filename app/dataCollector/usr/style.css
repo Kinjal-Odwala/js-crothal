@@ -156,7 +156,7 @@
 }
 
 .form-header {
-    background: none repeat scroll 0 0 #C2E4C1;
+    background: none repeat scroll 0 0 #C5D7EC;
     color: #2C2F50;
     font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
     font-size: 18px;
@@ -171,7 +171,7 @@
 }
 
 .ux-grid-1 .x-grid3-header,.ux-grid-2 .x-grid3-header , .ux-grid-2 .x-grid3-hd-over .x-grid3-hd-inner {
-    background-color: #669966;
+    background-color: #5F86AB;
     background-image: none;
     color:#fff;
     font-weight:bold;
@@ -210,12 +210,12 @@
 }
 
 .ux-grid-1 .x-grid3-row-over, .ux-grid-1 .x-grid3-row-selected,.ux-grid-2 .x-grid3-row-over, .ux-grid-2 .x-grid3-row-selected {
-    background-color: #c2e4c1 !important;
+    background-color: #C5D7EC !important;
     background-image:none !important;
 }
 
 .ux-grid-1 .x-grid3-row-alt,.ux-grid-2 .x-grid3-row-alt {
-    background-color:#f0efdd;
+    background-color:#D7E1EA;
 }
 
 .ux-grid-1 .x-grid3-row td ,.ux-grid-2 .x-grid3-row td {

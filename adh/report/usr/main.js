@@ -1711,12 +1711,12 @@ ii.Class({
 			var dateControls = [];
 			
 			if (me.reportFilters.length > 0) {
-				rowHeadData = "<th class='gridHeaderColumn' width='25%'>Title</th><th class='gridHeaderColumn' width='22%'>Filter</th><th class='gridHeaderColumn' width='40%'>Value</th><th class='gridHeaderColumn' width='13%'>Operator</th>";  
+				rowHeadData = "<th class='gridHeaderCell' width='25%'>Title</th><th class='gridHeaderCell' width='22%'>Filter</th><th class='gridHeaderCell' width='40%'>Value</th><th class='gridHeaderCell' width='13%'>Operator</th>";  
 				//rowData += "<tr><td><div id='divFilterGrid' style='overflow: scroll'><table id='tblFilterGrid' cellpadding='0' cellspacing='0' style='width: 500px'>";
 				
 				for (var index = 0; index < me.reportFilters.length; index++) {
 					rowData += "<tr>";
-					rowData += "<td class='gridColumn' width='25%'>" + me.reportFilters[index].name + ':' + "</td>";
+					rowData += "<td class='gridCell' width='25%'>" + me.reportFilters[index].name + ':' + "</td>";
 					
 					if (me.reportFilters[index].referenceTableName == "") {
 						contorlValidation = me.reportFilters[index].validation;
@@ -1770,7 +1770,7 @@ ii.Class({
 					rowData += "</tr>"
 				}
 				
-				rowData += "<tr height='100%'><td id='tdLastRow' colspan='4' class='gridColumnRight' style='height: 100%'>&nbsp;</td></tr>";
+				rowData += "<tr height='100%'><td id='tdLastRow' colspan='4' class='gridCellRight' style='height: 100%'>&nbsp;</td></tr>";
 			}
 			
 			$("#FilterGridHead").html(rowHeadData);
@@ -1884,7 +1884,7 @@ ii.Class({
 		moduleColumnHeaderLoaded: function(me, activeId) {
 			
 			var rowData = "";
-			var className = "gridHeaderColumn";
+			var className = "gridHeaderCell";
 			var width = (me.moduleColumnHeaders.length * 20);
 			var operator = 'And';
 			var filterStatement;
@@ -1918,61 +1918,61 @@ ii.Class({
 				if (me.delimitedOrgSelectedNodes == "") 
 					className = "gridColumnHidden";
 				else 
-					className = "gridHeaderColumn";
+					className = "gridHeaderCell";
 				
 				if (me.invoiceItem) {
 					
 					var invoiceHeaderWidth = 150;					
 					
-					rowData += "<th class='gridHeaderColumn' width='50px'>#</th>";
+					rowData += "<th class='gridHeaderCell' width='50px'>#</th>";
 					rowData += "<th class='gridColumnHidden'></th>";
-					rowData += "<th class='gridHeaderColumn' width='100px'>House Code</th>";
+					rowData += "<th class='gridHeaderCell' width='100px'>House Code</th>";
 					
 					for (var index = 0; index < me.moduleColumnHeaders.length; index++) {
 						if (me.moduleColumnHeaders[index].columnType != 2) {
 							
 							if (me.moduleColumnHeaders[index].title == 'HcmHouseCodeJob') {
-								rowData += "<th class='gridHeaderColumn' width='100px'>Job</th>";
+								rowData += "<th class='gridHeaderCell' width='100px'>Job</th>";
 								invoiceHeaderWidth = invoiceHeaderWidth + 100;
 							}
 							else if (me.moduleColumnHeaders[index].title == 'RevTaxableService') {
-								rowData += "<th class='gridHeaderColumn' width='100px'>Taxable Service</th>";
+								rowData += "<th class='gridHeaderCell' width='100px'>Taxable Service</th>";
 								invoiceHeaderWidth = invoiceHeaderWidth + 100;
 							}
 							else if (me.moduleColumnHeaders[index].title == 'FscAccount') {
-								rowData += "<th class='gridHeaderColumn' width='200px'>Account Code</th>";
+								rowData += "<th class='gridHeaderCell' width='200px'>Account Code</th>";
 								invoiceHeaderWidth = invoiceHeaderWidth + 200;
 							}
 							else if (me.moduleColumnHeaders[index].title == 'RevInviQuantity') {
-								rowData += "<th class='gridHeaderColumn' width='100px'>Quantity</th>";
+								rowData += "<th class='gridHeaderCell' width='100px'>Quantity</th>";
 								invoiceHeaderWidth = invoiceHeaderWidth + 100;
 							}
 							else if (me.moduleColumnHeaders[index].title == 'RevInviPrice') {
-								rowData += "<th class='gridHeaderColumn' width='100px'>Price</th>";
+								rowData += "<th class='gridHeaderCell' width='100px'>Price</th>";
 								invoiceHeaderWidth = invoiceHeaderWidth + 100;
 							}
 							else if (me.moduleColumnHeaders[index].title == 'RevInviAmount') {
-								rowData += "<th class='gridHeaderColumn' width='100px'>Total</th>";
+								rowData += "<th class='gridHeaderCell' width='100px'>Total</th>";
 								invoiceHeaderWidth = invoiceHeaderWidth + 100;
 							}
 							else if (me.moduleColumnHeaders[index].title == 'AppTransactionStatusType') {
-								rowData += "<th class='gridHeaderColumn' width='100px'>Status</th>";
+								rowData += "<th class='gridHeaderCell' width='100px'>Status</th>";
 								invoiceHeaderWidth = invoiceHeaderWidth + 100;
 							}
 							else if (me.moduleColumnHeaders[index].title == 'RevInviTaxable') {
-								rowData += "<th class='gridHeaderColumn' width='100px'>Taxable</th>";
+								rowData += "<th class='gridHeaderCell' width='100px'>Taxable</th>";
 								invoiceHeaderWidth = invoiceHeaderWidth + 100;
 							}
 							else if (me.moduleColumnHeaders[index].title == 'RevInviShow') {
-								rowData += "<th class='gridHeaderColumn' width='100px'>Show</th>";
+								rowData += "<th class='gridHeaderCell' width='100px'>Show</th>";
 								invoiceHeaderWidth = invoiceHeaderWidth + 100;
 							}
 							else if (me.moduleColumnHeaders[index].title == 'RevInviDescription') {
-								rowData += "<th class='gridHeaderColumn' width='300px'>Description</th>";
+								rowData += "<th class='gridHeaderCell' width='300px'>Description</th>";
 								invoiceHeaderWidth = invoiceHeaderWidth + 300;
 							}
 							else if (me.moduleColumnHeaders[index].title == 'RevInviCrtdBy') {
-								rowData += "<th class='gridHeaderColumn' width='150px'>Created By</th>";
+								rowData += "<th class='gridHeaderCell' width='150px'>Created By</th>";
 								invoiceHeaderWidth = invoiceHeaderWidth + 150;
 							}
 						}
@@ -1988,13 +1988,13 @@ ii.Class({
 						if (me.moduleColumnHeaders[index].columnType == 2) 
 							className = "gridColumnHidden";
 						else { 
-							className = "gridHeaderColumn";
+							className = "gridHeaderCell";
 							if (me.moduleColumnHeaders[index].columnType == 1)
 								me.reportEditable = true;
 						}
 						
 						if (index == me.moduleColumnHeaders.length - 1) 
-							className = "gridHeaderColumnRight";
+							className = "gridHeaderCellRight";
 						rowData += "<th onclick=(fin.reportUi.sortColumn(" + index + ")); class='" + className + "' style='width:" + me.moduleColumnHeaders[index].columnWidth + "px;'>" + me.moduleColumnHeaders[index].description + "</th>";
 						if (me.moduleColumnHeaders[index].sortOrder != "") 
 							me.sortColumns = me.sortColumns + me.moduleColumnHeaders[index].title + "#" + me.moduleColumnHeaders[index].sortOrder + "|";
@@ -2163,7 +2163,7 @@ ii.Class({
 						rowData += "<div >"
 						rowData += "<table width='100%' class='invoiceTable'>"
 						rowData += "<tr onclick='fin.reportUi.invoiceItemsLoad(" + index + "," + pkId + ");'>";
-						rowData += "<td class='gridColumn' style='font-weight:bold; border-bottom:solid 2px #99bbe8'><img id='expandCollapse" + index + "' src='/fin/cmn/usr/media/Common/Plus.gif' style='cursor: pointer' alt='expand/collapse' title='expand/collapse' />  Invoice #: " + invoiceNo + "</td>"
+						rowData += "<td class='gridCell' style='font-weight:bold; border-bottom:solid 2px #99bbe8'><img id='expandCollapse" + index + "' src='/fin/cmn/usr/media/Common/Plus.gif' style='cursor: pointer' alt='expand/collapse' title='expand/collapse' />  Invoice #: " + invoiceNo + "</td>"
 						rowData += "</tr>";
 						rowData += "<tr id='InvoiceDetailsRow" + index + "'></tr>"
 						rowData += "</table>"
@@ -2174,7 +2174,7 @@ ii.Class({
 				}				
 			}
 
-			rowData += '<tr height="100%"><td id="tdLastRow" colspan="' + (me.moduleColumnHeaders.length + 2) + '" class="gridColumnRight" style="height: 100%">&nbsp;</td></tr>';
+			rowData += '<tr height="100%"><td id="tdLastRow" colspan="' + (me.moduleColumnHeaders.length + 2) + '" class="gridCellRight" style="height: 100%">&nbsp;</td></tr>';
 
 			$("#AdhReportItemGridBody").html(rowData);
 			
@@ -2210,7 +2210,7 @@ ii.Class({
 			var keyValue = {}; 
 			var rowData = "";
 			var dataValue = "";
-			var className = "gridColumn";
+			var className = "gridCell";
 
 			me.gridData[args.pkId] = {};
 			me.gridData[args.pkId].buildQueue = [];
@@ -2219,7 +2219,7 @@ ii.Class({
 				className = "gridColumnHidden";
 
 			rowData += "<td id='HouseCode" + args.houseCode + "' class='" + className + "' style='width:100px;'>" + args.houseCode + "</td>";
-			className = "gridColumn";
+			className = "gridCell";
 
 			for (var index = 0; index < me.moduleColumnHeaders.length; index++) { 
 				var posTypeTable = me.moduleColumnHeaders[index].referenceTableName;
@@ -2265,7 +2265,7 @@ ii.Class({
 					dataValue = value;
 
 				if (index == me.moduleColumnHeaders.length - 1)
-					className = "gridColumnRight";
+					className = "gridCellRight";
 
 				if (me.columnType == 2) //Hidden
 					rowData += "<td id=" + argName + " class='gridColumnHidden' style='width:" + me.moduleColumnHeaders[index].columnWidth + "px;'>&nbsp;</td>";
@@ -2297,7 +2297,7 @@ ii.Class({
 			var appSiteId = "";
 			var columnWidth = 0;
 			var columnLength = 0;
-			var className = "gridColumn";
+			var className = "gridCell";
 			var pkId = args.pkId;
 			var rowIndex = args.rowIndex;
 			var houseCodeId = args.houseCodeId;
@@ -2761,7 +2761,7 @@ ii.Class({
 			invoiceRowHtml += me.getTotalGridRow(0, subTotal, "Sub Total:", "");
 			invoiceRowHtml += me.getTotalGridRow(0, salesTaxTotal, "Sales Tax Total:", "");
 			invoiceRowHtml += me.getTotalGridRow(0, total, "Total:", "");
-			invoiceRowHtml += "<tr height='100%'><td id='tdLastInvoiceRow' colspan='13' class='gridColumn' style='height: 100%'>&nbsp;</td></tr>";
+			invoiceRowHtml += "<tr height='100%'><td id='tdLastInvoiceRow' colspan='13' class='gridCell' style='height: 100%'>&nbsp;</td></tr>";
 			
 			var invoiceDetailsRow = $("#InvoiceDetailsRow" + pkId);
 			
@@ -2923,7 +2923,7 @@ ii.Class({
 			if (args.columnWidth == 0) 
 				return "<td class='gridColumnHidden'>" + args.columnValue + "</td>";
 			else 
-				return "<td class='gridColumn' style='" + styleName + "' width='" + args.columnWidth + "'>" + args.columnValue + "</td>";
+				return "<td class='gridCell' style='" + styleName + "' width='" + args.columnWidth + "'>" + args.columnValue + "</td>";
 		},
 		
 		getTotalGridRow: function() {

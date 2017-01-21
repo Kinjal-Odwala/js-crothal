@@ -33,7 +33,7 @@
 		</div>
 		<div class="pageHeader">
 			 <div style="float: left; width: 10%;"><div id="actionMenu" title="Menu of actions that you can perform.">Actions<span>&nbsp;</span></div></div>
-			 <div style="float: left; width: 80%;"><div id="header" class="header">Process Payroll</div></div>
+			 <div style="float: left; width: 80%;"><div id="header" class="pageHeaderBig">Process Payroll</div></div>
 			 <div style="float: left; width: 10%;">&nbsp;</div>
         </div>
 		<div style="clear:both;"></div>
@@ -48,51 +48,51 @@
                 <div class="body">
                 	<div id="GridHeaderContainer" style="height: 20px; width: 100%;">
 			            <table cellpadding="0" cellspacing="0">
-	     					<tr class="gridHeader">
-								<td class="borderVertical" style="width: 60px">&nbsp;</td>
-                                <td class="borderVertical" style="width: 429px">Epay Batch Info</td>                                             
-                                <td id="DetailInfo" class="borderVertical">Epay Calculated Detail Info</td>
+	     					<tr class="gridHeaderMedium">
+								<td class="borderVerticalRight" style="width: 60px">&nbsp;</td>
+                                <td class="borderVerticalRight" style="width: 429px">Epay Batch Info</td>                                             
+                                <td id="DetailInfo" class="borderVerticalRight">Epay Calculated Detail Info</td>
                	            </tr>
 	                    </table>
 					</div>
                     <div id="EPayBatchGrid"></div>
 				    <div style="clear:both;height:10px;"></div>
 					<div id="ReconcileInfo" style="display:none;">
-						<table class="gridBorder" cellpadding="0" cellspacing="0">
+						<table class="gridBorderFull" cellpadding="0" cellspacing="0">
 							<tr>
-								<td class="gridHeader borderVertical" style="width: 240px">&nbsp;</td>
-	     						<td class="gridHeader borderVertical" style="width: 180px">Record Count</td>
-								<td class="gridHeader borderVertical" style="width: 180px">Total Hours</td>
-								<td class="gridHeader" style="width: 180px">Total Amount</td>
+								<td class="gridHeaderMedium borderVerticalRight" style="width: 240px">&nbsp;</td>
+	     						<td class="gridHeaderMedium borderVerticalRight" style="width: 180px">Record Count</td>
+								<td class="gridHeaderMedium borderVerticalRight" style="width: 180px">Total Hours</td>
+								<td class="gridHeaderMedium" style="width: 180px">Total Amount</td>
                	            </tr>
 	     					<tr class="gridRow" style="height:25px">
 	     						<td class="gridLeftHeader" style="width: 240px">TeamFin Processed Import</td>
-								<td class="borderVertical" style="width: 180px"><span id="ProcessedTotalCount" class="spanLabel"></span></td>
-								<td class="borderVertical" style="width: 180px; text-align: right;"><span id="ProcessedTotalHours" class="spanLabel"></span></td>
+								<td class="borderVerticalRight" style="width: 180px"><span id="ProcessedTotalCount" class="spanLabel"></span></td>
+								<td class="borderVerticalRight" style="width: 180px; text-align: right;"><span id="ProcessedTotalHours" class="spanLabel"></span></td>
 								<td style="width: 180px; text-align: right;"><span id="ProcessedTotalAmount" class="spanLabel"></span></td>
                	            </tr>
 							<tr style="height:25px">
 	     						<td class="gridLeftHeader" style="width: 240px">Both Amount & Hours</td>
-								<td class="borderVertical" style="width: 180px">&nbsp;</td>
-								<td class="borderVertical" style="width: 180px; text-align: right;"><span id="AmountAndHours" class="spanLabel"></span></td>
+								<td class="borderVerticalRight" style="width: 180px">&nbsp;</td>
+								<td class="borderVerticalRight" style="width: 180px; text-align: right;"><span id="AmountAndHours" class="spanLabel"></span></td>
 								<td style="width: 180px; text-align: right;">&nbsp;</span></td>
 							</tr>
 							<tr class="gridRow" style="height:25px">
 	     						<td class="gridLeftHeader" style="width: 240px">TeamFin Weekly Payroll</td>
-								<td class="borderVertical" style="width: 180px"><span id="WeeklyTotalCount" class="spanLabel"></span></td>
-								<td class="borderVertical" style="width: 180px; text-align: right;"><span id="WeeklyTotalHours" class="spanLabel"></span></td>
+								<td class="borderVerticalRight" style="width: 180px"><span id="WeeklyTotalCount" class="spanLabel"></span></td>
+								<td class="borderVerticalRight" style="width: 180px; text-align: right;"><span id="WeeklyTotalHours" class="spanLabel"></span></td>
 								<td style="width: 180px; text-align: right;"><span id="WeeklyTotalAmount" class="spanLabel"></span></td>
 							</tr>
 							<tr style="height:25px">
 	     						<td class="gridLeftHeader" style="width: 240px">Variance</td>
-								<td class="borderVertical" style="width: 180px"><span id="VarianceTotalCount" class="spanLabel"></span></td>
-								<td class="borderVertical" style="width: 180px; text-align: right;"><span id="VarianceTotalHours" class="spanLabel"></span></td>
+								<td class="borderVerticalRight" style="width: 180px"><span id="VarianceTotalCount" class="spanLabel"></span></td>
+								<td class="borderVerticalRight" style="width: 180px; text-align: right;"><span id="VarianceTotalHours" class="spanLabel"></span></td>
 								<td style="width: 180px; text-align: right;"><span id="VarianceTotalAmount" class="spanLabel"></span></td>
 							</tr>
 							<tr class="gridRow" style="height:25px">
 	     						<td class="gridLeftHeader" style="width: 240px">Weekly Payroll Add</td>
-								<td class="borderVertical" style="width: 180px"><span id="WeeklyAddTotalCount" class="spanLabel"></span></td>
-								<td class="borderVertical" style="width: 180px; text-align: right;"><span id="WeeklyAddTotalHours" class="spanLabel"></span></td>
+								<td class="borderVerticalRight" style="width: 180px"><span id="WeeklyAddTotalCount" class="spanLabel"></span></td>
+								<td class="borderVerticalRight" style="width: 180px; text-align: right;"><span id="WeeklyAddTotalHours" class="spanLabel"></span></td>
 								<td style="width: 180px; text-align: right;"><span id="WeeklyAddTotalAmount" class="spanLabel"></span></td>
 							</tr>
 							<tr style="height:25px">
@@ -100,8 +100,8 @@
 							</tr>
 							<tr class="gridRow" style="height:25px">
 	     						<td class="gridLeftHeader" style="width: 240px">TeamFin Processed Error</td>
-								<td class="borderVertical" style="width: 180px"><span id="ErrorTotalCount" class="spanLabel"></span></td>
-								<td class="borderVertical" style="width: 180px; text-align: right;"><span id="ErrorTotalHours" class="spanLabel"></span></td>
+								<td class="borderVerticalRight" style="width: 180px"><span id="ErrorTotalCount" class="spanLabel"></span></td>
+								<td class="borderVerticalRight" style="width: 180px; text-align: right;"><span id="ErrorTotalHours" class="spanLabel"></span></td>
 								<td style="width: 180px; text-align: right;"><span id="ErrorTotalAmount" class="spanLabel"></span></td>
 							</tr>
 	                    </table>
@@ -122,8 +122,8 @@
 		</div>
 		<!-- Dialog that comes up when editing the batch detail -->
 		<div id="batchPopup">
-		    <table id="tblBatchPopup" class="gridBorder" cellpadding="0" cellspacing="0" style="width: 1100px; background-color: white;">
-				<tr class="subHeader">
+		    <table id="tblBatchPopup" class="gridBorderFull" cellpadding="0" cellspacing="0" style="width: 1100px; background-color: white;">
+				<tr class="popupHeader">
                     <td>&nbsp;&nbsp;Batch records with Errors<img align="right" id="imgClose" src="/fin/cmn/usr/media/Common/cross.png" style="cursor: pointer" alt="Close" title="Close" /></td>
                 </tr>
 				<tr><td class="borderHorizontal"></td></tr>
@@ -140,21 +140,21 @@
                 </tr>
 		        <tr>
 		            <td style="vertical-align: top; padding: 10px 10px 0px 10px;">
-                        <table class="gridBorder" cellpadding="0" cellspacing="0" style="width: 100%">
+                        <table class="gridBorderFull" cellpadding="0" cellspacing="0" style="width: 100%">
                             <tr>
                                 <td>
                                     <table cellpadding="0" cellspacing="0">
                                         <tr>
-                                        	<td class="gridHeaderColumn" width="25px">#</td>
-											<td class="gridHeaderColumn" width="25px"><input type="checkbox" id="chkSelectAll" class="iiInputCheck" /></td>
-											<td class="gridHeaderColumn" width="250px">Employee Name</td>
-											<td class="gridHeaderColumn" width="100px">Employee #</td>
-											<td class="gridHeaderColumn" width="100px">Pay Code</td>
-											<td class="gridHeaderColumn" width="100px">House Code</td>
-											<td class="gridHeaderColumn" width="100px">Expense Date</td>
-											<td class="gridHeaderColumn" width="100px">Hours</td>
-											<td class="gridHeaderColumn" width="100px">Amount</td>
-											<td class="gridHeaderColumn" width="100px">Work Order #</td>
+                                        	<td class="gridHeaderCell" width="25px">#</td>
+											<td class="gridHeaderCell" width="25px"><input type="checkbox" id="chkSelectAll" class="iiInputCheck" /></td>
+											<td class="gridHeaderCell" width="250px">Employee Name</td>
+											<td class="gridHeaderCell" width="100px">Employee #</td>
+											<td class="gridHeaderCell" width="100px">Pay Code</td>
+											<td class="gridHeaderCell" width="100px">House Code</td>
+											<td class="gridHeaderCell" width="100px">Expense Date</td>
+											<td class="gridHeaderCell" width="100px">Hours</td>
+											<td class="gridHeaderCell" width="100px">Amount</td>
+											<td class="gridHeaderCell" width="100px">Work Order #</td>
                                         </tr>
                                     </table>
                                 </td>
@@ -166,16 +166,17 @@
                                     </div>
                                 </td>
                         	</tr>
-							<tr class="footer">
+							<tr>
                                 <td>
 	                                <table cellpadding="0" cellspacing="0" style="width: 100%">
-	                                    <tr class="Header">
+	                                    <tr class="gridFooter">
 	                                    	<td style="width: 60px;">&nbsp;</td>
 	                                        <td align="center">Page:&nbsp;<select id="selPageNumber"></select><span id="spnPageInfo"></span></td>
-	                                        <td style="width: 60px; background-color: white">&nbsp;
-	                                            <img id="imgPrev" src="/fin/cmn/usr/media/Common/previous.png" style="cursor: pointer" alt="Previous Page" title="Previous Page" />
+	                                        <td style="width: 36px; background-color: white">
+												<img id="imgPrev" src="/fin/cmn/usr/media/Common/previous.png" style="cursor: pointer" alt="Previous Page" title="Previous Page" />
 	                                            <img id="imgNext" src="/fin/cmn/usr/media/Common/next.png" style="cursor: pointer" alt="Next Page" title="Next Page" />
 	                                        </td>
+											<td style="width: 20px;">&nbsp;</td>
 	                                    </tr>
 	                                </table>
 	                            </td>
@@ -197,16 +198,16 @@
 		    <table>
 		    	<tbody id="tblBatchDetailTemplate">
                 	<tr id="trBatchDetailRowCount" class="RowStyle">
-	                    <td class="gridColumn" style="width: 25px" align="center">#</td>
-						<td class="gridColumn" style="width: 25px" align="center"><input type="checkbox" id="chkSelectRowCount" class="iiInputCheck" /></td>
-						<td class="gridColumn" style="width: 250px"><span id="spnEmployeeNameRowCount" style="padding-left: 5px;" /></td>
-	                    <td class="gridColumn" style="width: 100px" align="center"><input type="text" id="txtEmployeeNumberRowCount" style="width: 96px;" maxlength="6" /></td>
-						<td class="gridColumn" style="width: 100px" align="center"><select id="selPayCodeRowCount" style="width: 96px;"></select></td>
-	                    <td class="gridColumn" style="width: 100px" align="center"><input type="text" id="txtHouseCodeRowCount" style="width: 96px;" maxlength="16" /></td>
-						<td class="gridColumn" style="width: 100px" align="center"><input type="text" id="txtExpenseDateRowCount" style="width: 96px;" maxlength="10" /></td>
-	                    <td class="gridColumn" style="width: 100px" align="center"><input type="text" id="txtHoursRowCount" style="width: 96px; text-align: right;" maxlength="18" /></td>
-	                    <td class="gridColumn" style="width: 100px" align="center"><input type="text" id="txtAmountRowCount" style="width: 96px; text-align: right;" maxlength="18" /></td>
-						<td class="gridColumn" style="width: 100px" align="center"><input type="text" id="txtWorkOrderNumberRowCount" style="width: 96px;" maxlength="8" /></td>
+	                    <td class="gridCell" style="width: 25px" align="center">#</td>
+						<td class="gridCell" style="width: 25px" align="center"><input type="checkbox" id="chkSelectRowCount" class="iiInputCheck" /></td>
+						<td class="gridCell" style="width: 250px"><span id="spnEmployeeNameRowCount" style="padding-left: 5px;" /></td>
+	                    <td class="gridCell" style="width: 100px" align="center"><input type="text" id="txtEmployeeNumberRowCount" style="width: 96px;" maxlength="6" /></td>
+						<td class="gridCell" style="width: 100px" align="center"><select id="selPayCodeRowCount" style="width: 96px;"></select></td>
+	                    <td class="gridCell" style="width: 100px" align="center"><input type="text" id="txtHouseCodeRowCount" style="width: 96px;" maxlength="16" /></td>
+						<td class="gridCell" style="width: 100px" align="center"><input type="text" id="txtExpenseDateRowCount" style="width: 96px;" maxlength="10" /></td>
+	                    <td class="gridCell" style="width: 100px" align="center"><input type="text" id="txtHoursRowCount" style="width: 96px; text-align: right;" maxlength="18" /></td>
+	                    <td class="gridCell" style="width: 100px" align="center"><input type="text" id="txtAmountRowCount" style="width: 96px; text-align: right;" maxlength="18" /></td>
+						<td class="gridCell" style="width: 100px" align="center"><input type="text" id="txtWorkOrderNumberRowCount" style="width: 96px;" maxlength="8" /></td>
 	                </tr>
 				</tbody>
             </table>

@@ -1,6 +1,4 @@
-
-
-.dialogTitle{
+.dialogTitle {
 	color: #FDC941;
 	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size: 9pt;
@@ -15,7 +13,7 @@
 	width: 100%;
 }
 
-.dialogLoading{
+.dialogLoading {
 	background-image: url(loading.gif);
 	height: 100px;
 	left: 155px;
@@ -24,7 +22,7 @@
 	width: 100px;
 }
 
-.dialog{
+.dialog {
 	background-image: url(dialog.gif);
 	border: 1px solid #012C40;
 	height: 288px;
@@ -33,7 +31,7 @@
 	z-index: 101;
 }
 
-.dialogText{
+.dialogText {
 	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size: 10pt;
 	height: auto;
@@ -45,7 +43,7 @@
 	width: 350px;
 }
 
-.dialogButton{
+.dialogButton {
 	cursor: pointer;	
 	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size: 9pt;
@@ -57,8 +55,7 @@
 	top: 225px;
 }
 
-.dialogButtonPart.Begin
-{
+.dialogButtonPart.Begin {
 	float: left;
 	width: 11px;
 	height: 100%;
@@ -73,46 +70,38 @@
 	background-image: url(buttonEnabledMiddle.gif);
 }
 
-.dialogButtonPart.Middle span
-{
+.dialogButtonPart.Middle span {
 	vertical-align: -7px;
 }
 
-.dialogButtonPart.End
-{
+.dialogButtonPart.End {
 	float: left;
 	width: 11px;
 	height: 100%;
 	background-image: url(buttonEnabledEnd.gif);
 }
 
-.dialogButtonPart.Disabled
-{
+.dialogButtonPart.Disabled {
 	cursor: default;
 }
 
-.dialogButtonPart.Begin.Disabled
-{
+.dialogButtonPart.Begin.Disabled {
 	background-image: url(buttonDisabledBegin.gif);
 }
 
-.dialogButtonPart.Middle.Disabled
-{
+.dialogButtonPart.Middle.Disabled {
 	color: #AAAAAA;
 	background-image: url(buttonDisabledMiddle.gif);
 }
 
-.dialogButtonPart.End.Disabled
-{
+.dialogButtonPart.End.Disabled {
 	background-image: url(buttonDisabledEnd.gif);
 }
 
-.dialogButtonPart.Middle.Enabled
-{
+.dialogButtonPart.Middle.Enabled {
 	color: #012c40;
 }
 
-.dialogButtonPart.Middle.Hot
-{
+.dialogButtonPart.Middle.Hot {
 	color: #FFFFFF;
 }

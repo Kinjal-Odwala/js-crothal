@@ -1,13 +1,4 @@
-﻿.header {
-	font-family: Verdana;
-	font-weight: bold;
-	font-size: 18px;	
-	color: #2C2F50;
-	text-align: center;
-	margin-bottom: 5px;
-}
-
-.leftContainer {
+﻿.leftContainer {
 	float: left;
 	width: 48%;
 	vertical-align: top;
@@ -58,26 +49,6 @@
 .inputTextArea {
 	float: left;
 	width: 300px;
-}
-
-.gridFooter {
-    height: 20px;
-    font-family: Verdana;
-    font-size: 8pt;
-    font-weight: bold;
-    color: #ffffff;
-    background-color: #669b67;
-    text-align: left;
-}
-
-.borderHorizontal {
-    height: 1px;
-    background-color: #adaaad;
-}
-
-.borderVertical {
-    width: 1px;
-    background-color: #adaaad;
 }
 
 #AnchorSearch {

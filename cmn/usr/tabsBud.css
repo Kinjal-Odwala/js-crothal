@@ -17,9 +17,9 @@
     list-style: none;
     margin: 0;
     padding: 5px 0 0 1px;
-	background-color:#92c992;
-	width:auto;
-	height:27px;
+	background-color: #C5D7EC;
+	width: auto;
+	height: 27px;
 }
 .tabs-nav:after { /* clearing without presentational markup, IE gets extra treatment */
     display: block;

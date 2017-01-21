@@ -1,5 +1,4 @@
-body
-{
+body {
 	background-color: #2c2f50;
 	margin: 0px;
 }
@@ -18,45 +17,37 @@ body
  * DO NOT STYLE MARGINS, BORDERS OR PADDING.
  */
 
-#panelTop
-{
+#panelTop {
 	width: 100%;
 	overflow: hidden;
 }
 
-#panelTop.Expanded
-{
+#panelTop.Expanded {
 	height: 101px;
 }
 
-#panelTop.Collapsed
-{
+#panelTop.Collapsed {
 	height: 34px;
 }
-
 
 /* @iiDoc {Styles}
  * Logo styles.
  */
 
-#logo
-{
+#logo {
 	background-image: url(media/Logo.gif);
 	width: 180px;
 	height: 81px;
 	margin: 10px 0px 10px 0px;
 }
 
-#logo.Right
-{
+#logo.Right {
 	float: right;
 }
 
-#logo.Left
-{
+#logo.Left {
 	float: left;
 }
-
 
 /* @iiDoc {Styles}
  * Middle Panel styles.
@@ -65,8 +56,7 @@ body
  * DO NOT STYLE MARGINS, BORDERS OR PADDING.
  */
 
-#panelMiddle
-{
+#panelMiddle {
 	height: 300px;
 	width: 100%;
 	overflow: hidden;
@@ -78,8 +68,7 @@ body
  * Status bar styles.
  */
 
-#statusBar
-{
+#statusBar {
 	background-image: url(media/StatusBar/statusBar.gif);
 	background-color: #707070;
 	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
@@ -90,29 +79,28 @@ body
 	position: absolute;
 }
 
-.statusBarPanel
-{
+.statusBarPanel {
 	padding: 3px 4px 4px;
 	height: 20px;
 	float: right;
 	height: 24px; 
 }
 
-#ajaxIndicator{
+#ajaxIndicator {
 	margin: 2px;
 	height: 16px;
 	width: 16px;
 	float: right;
 }
 
-#ajaxIndicator.On{
+#ajaxIndicator.On {
 	background-image: url(media/StatusBar/indicator.gif);
 	width: 16px;
 	height: 16px;
 	margin-right: 0px;
 }
 
-#ajaxIndicator.Off{
+#ajaxIndicator.Off {
 	background-image: none;
 }
 
@@ -120,7 +108,7 @@ body
 	padding-left: 2px;
 }
 
-#tracePanelIcon{
+#tracePanelIcon {
 	margin: 2px;
 	width: 16px;
 	height: 16px;
@@ -128,19 +116,19 @@ body
 	float: right;
 }
 
-#tracePanelIcon.Ok.Enabled{
+#tracePanelIcon.Ok.Enabled {
 	background-image: url(media/statusBar/ok.gif);
 }
 
-#tracePanelIcon.Error.Enabled{
+#tracePanelIcon.Error.Enabled {
 	background-image: url(media/statusBar/warning.gif);
 }
 
-#tracePanelIcon.Warning.Enabled{
+#tracePanelIcon.Warning.Enabled {
 	background-image: url(media/statusBar/info.gif);
 }
 
-#traceDiv{
+#traceDiv {
 	display: none;
 	width: 512px;
 	height: 384px;
@@ -155,18 +143,17 @@ body
 	z-index: 10000;
 }
 
-#traceDiv td{
+#traceDiv td {
 	white-space: nowrap;
 	height: 1.5em;
 }
 
-#traceDiv th{
+#traceDiv th {
 	text-align: left;
 }
 
 
-#ajaxRequestAnimation
-{
+#ajaxRequestAnimation {
 	margin-top: 2px;
 	background-image: url(media/StatusBar/Indicator.gif);
 	background-repeat: no-repeat;
@@ -174,20 +161,18 @@ body
 	visibility: hidden;
 }
 /*
-#errorPanel
-{
+ * 
+#errorPanel {
 	color: red;
 	font-weight: bold;
 }
 */
-
 	
 /* @iiDoc {Styles}
  * Inline application content styles.
  */
 
-#appContent
-{
+#appContent {
 	display: inline;		/* Needed to compensate for IE6 doubled-margin bug on floated elements */
 	/*float: left;*/
 	width: 480px;
@@ -196,90 +181,76 @@ body
 	margin: 0px 10px 10px 10px;	
 }
 
-#appContent.Right
-{
+#appContent.Right {
 	float: right;
 }
 
-#appContent.Left
-{
+#appContent.Left {
 	float: left;
 }
 
 /* #SideTabsContent h1 temp for testing */
-#appContent h1
-{
+#appContent h1 {
 	text-transform: uppercase;
 }
 
-#appContentShield
-{
+#appContentShield {
 	background-color: gray;
 }
 
 /*
-#appContentIFrame
-{
-
+#appContentIFrame {
 }
-
 
  @iiDoc {Styles}
  * Side tab styles.
  */
 
 /*
-#sideTabsSizer
-{
+#sideTabsSizer {
 	overflow: hidden;
 }
 
-.welcomeImageBG
-	{
-		float:left;
-		position:relative;
-		background-color:#c9cdcf;
-		
-	}
-.welcomeImage
-	{
-		background-image: url(media/welcome.jpg);
-		background-repeat:no-repeat;
-		width:781px;
-		height:625px;
-		margin-left:auto;
-		margin-right:auto;
-		background-color:white;
-	}
+.welcomeImageBG {
+	float: left;
+	position: relative;
+	background-color: #c9cdcf;
+	
+}
+.welcomeImage {
+	background-image: url(media/welcome.jpg);
+	background-repeat: no-repeat;
+	width: 781px;
+	height: 625px;
+	margin-left: auto;
+	margin-right: auto;
+	background-color: white;
+}
 */
-#sideTabs  
-{
+
+#sideTabs {
 	background-color: #6d94ba;
 	width: 180px;
 	height: 180px;
 	overflow: hidden;
 }
 
-#sideTabs.FullHeight
-{
+#sideTabs.FullHeight {
 	position: absolute;
 	top: 10px;
 }
 
-#sideTabs.Right
-{
+#sideTabs.Right {
 	float: right;
 }
 
-#sideTabs.Left
-{
+#sideTabs.Left {
 	float: left;
 }
 
 /********** Tab Area Header **********/
 
-#sideTabsHeader
-{
+#sideTabsHeader {
 	background-color: #DDDDDD;
 	width: 100%;
 	height: 50px;
@@ -287,129 +258,107 @@ body
 }
 
 /* .SideTabsHeader only needed for IE prior to version 7 */
-.SideTabsHeaderPart
-{
+.SideTabsHeaderPart {
 	background-image: url(media/SideTabs/HeaderCaps.gif);
 	float: left;
 }
 
-#sideTabsHeaderBegin
-{
+#sideTabsHeaderBegin {
 	width: 40px;
 	height: 100%;
 }
 
-#sideTabsHeaderBegin.Right /* could also be: .SideTabsHeaderPart.Right.Begin, */
-{
+#sideTabsHeaderBegin.Right { /* could also be: .SideTabsHeaderPart.Right.Begin, */
 	background-position: -56px 0px;
 }
 
-#sideTabsHeaderBegin.Left
-{
+#sideTabsHeaderBegin.Left {
 	background-position: -16px 0px;
 	float: right;
 }
 
-#sideTabsHeaderMiddle
-{
+#sideTabsHeaderMiddle {
 	width: 124px;
 	height: 100%;
 	background-image: url(media/SideTabs/HeaderMiddle.gif);
 }
 
-#sideTabsHeaderMiddle.Left
-{
+#sideTabsHeaderMiddle.Left {
 	float: right;
 }
 
-#sideTabsHeaderEnd
-{
+#sideTabsHeaderEnd {
 	width: 16px;
 	height: 100%;
 }
 
-#sideTabsHeaderEnd.Right
-{
+#sideTabsHeaderEnd.Right {
 	background-position: -96px 0px;
 }
 
-#sideTabsHeaderEnd.Left
-{
+#sideTabsHeaderEnd.Left {
 	float: right;
 }
 
-
 /********** Tab Area Out Tools **********/
-#toolsOut
-{
+#toolsOut {
 	width: 24px;
 	height: 50px;
 }
 
-#toolsOut.Left
-{
+#toolsOut.Left {
 	float: right;
 }
 
-#toolsOut.Right
-{
+#toolsOut.Right {
 	float: left;
 }
 
-#toolOpenClose
-{
+#toolOpenClose {
 	width: 24px;
 	height: 25px;
 	cursor: pointer;
 	background-image: url(media/SideTabs/ToolOpenClose.gif);
 }
 
-#toolOpenClose.Right
-{
+#toolOpenClose.Right {
 	background-position: -24px;
 	float: left;
 }
 
-#toolOpenClose.Left
-{
+#toolOpenClose.Left {
 	float: right;
 }
 
-#toolSize
-{
+#toolSize {
 	background-image: url(media/SideTabs/ToolSize.gif);
 	width: 24px;
 	height: 25px;
 	cursor: e-resize;
 }
 
-#toolSize.Right
-{
+#toolSize.Right {
 	background-position: -24px;
 	float: left;
 }
 
-#toolSize.Left
-{
+#toolSize.Left {
 	float: right;
 }
 
-#toolRightLeft
-{
+#toolRightLeft {
 	background-image: url(media/SideTabs/ToolRightLeft.gif);
 	width: 32px;
 	height: 25px;
 	cursor: pointer;
 }
 
-#toolRightLeft.Right
-{
+#toolRightLeft.Right {
 	background-position: -32px;
 	float: right;
 }
 
-#toolRightLeft.Left
-{
+#toolRightLeft.Left {
 	float: left;
 }
 
@@ -417,36 +366,30 @@ body
 /********** Side Tabs **********/
 /*******************************/
 
-#sideTabsTabs
-{
+#sideTabsTabs {
 	background-image: url(media/SideTabs/NoTab.gif);
 	background-color: #012c40;
 	width: 40px;
 }
 
-#sideTabsTabs.Right
-{
+#sideTabsTabs.Right {
 	float: left;
 	background-position: -40px;
 }
 
-#sideTabsTabs.Left
-{
+#sideTabsTabs.Left {
 	float: right;
 }
 
 /********** Caps **********/
 
-
-.SideTabsTabPart 
-{ 
+.SideTabsTabPart { 
 	width: 40px; 
 	height: 20px; 
 	background-image: url(media/SideTabs/TabCaps.gif);
 }
 
-.SideTabsTabPart.Middle
-{ 
+.SideTabsTabPart.Middle { 
 	height: 61px; 
 	background-image: url(media/SideTabs/Tabs.gif);
 }
@@ -458,112 +401,75 @@ body
 }
 */
 
-.SideTabsTabPart.Enabled ,.SideTabsTabPart.Hot
-{
+.SideTabsTabPart.Enabled, .SideTabsTabPart.Hot {
 	cursor: pointer;
 }
 
-.SideTabsTabPart.Right.Disabled.Begin{ background-position: 0px 0px; }
-.SideTabsTabPart.Right.Disabled.End{ background-position: 0px -20px; }
-.SideTabsTabPart.Right.Enabled.Begin{ background-position: -40px 0px; }
-.SideTabsTabPart.Right.Enabled.End{ background-position: -40px -20px; }
-.SideTabsTabPart.Right.Hot.Begin{ background-position: -80px 0px; }
-.SideTabsTabPart.Right.Hot.End{ background-position: -80px -20px; }
-.SideTabsTabPart.Right.Selected.Begin{ background-position: -120px 0px; }
-.SideTabsTabPart.Right.Selected.End{ background-position: -120px -20px; }
+.SideTabsTabPart.Right.Disabled.Begin { background-position: 0px 0px; }
+.SideTabsTabPart.Right.Disabled.End { background-position: 0px -20px; }
+.SideTabsTabPart.Right.Enabled.Begin { background-position: -40px 0px; }
+.SideTabsTabPart.Right.Enabled.End { background-position: -40px -20px; }
+.SideTabsTabPart.Right.Hot.Begin { background-position: -80px 0px; }
+.SideTabsTabPart.Right.Hot.End { background-position: -80px -20px; }
+.SideTabsTabPart.Right.Selected.Begin { background-position: -120px 0px; }
+.SideTabsTabPart.Right.Selected.End { background-position: -120px -20px; }
 
-.SideTabsTabPart.Left.Disabled.Begin{ background-position: -160px 0px; }
-.SideTabsTabPart.Left.Disabled.End{ background-position: -160px -20px; }
-.SideTabsTabPart.Left.Enabled.Begin{ background-position: -200px 0px; }
-.SideTabsTabPart.Left.Enabled.End{ background-position: -200px -20px; }
-.SideTabsTabPart.Left.Hot.Begin{ background-position: -240px 0px; }
-.SideTabsTabPart.Left.Hot.End{ background-position: -240px -20px; }
-.SideTabsTabPart.Left.Selected.Begin{ background-position: -280px 0px; }
-.SideTabsTabPart.Left.Selected.End{ background-position: -280px -20px; }
-
+.SideTabsTabPart.Left.Disabled.Begin { background-position: -160px 0px; }
+.SideTabsTabPart.Left.Disabled.End { background-position: -160px -20px; }
+.SideTabsTabPart.Left.Enabled.Begin { background-position: -200px 0px; }
+.SideTabsTabPart.Left.Enabled.End { background-position: -200px -20px; }
+.SideTabsTabPart.Left.Hot.Begin { background-position: -240px 0px; }
+.SideTabsTabPart.Left.Hot.End { background-position: -240px -20px; }
+.SideTabsTabPart.Left.Selected.Begin { background-position: -280px 0px; }
+.SideTabsTabPart.Left.Selected.End { background-position: -280px -20px; }
 
 /********** Middle **********/
 
 /********** Menu Tab **********/
-#sideTabsTabMenuMiddle.Right.Disabled{ background-position: -160px 0px; }
-#sideTabsTabMenuMiddle.Right.Enabled{ background-position: -200px 0px; }
-#sideTabsTabMenuMiddle.Right.Hot{ background-position: -240px 0px; }
-#sideTabsTabMenuMiddle.Right.Selected{ background-position: -280px 0px; }
-#sideTabsTabMenuMiddle.Left.Disabled{ background-position: 0px 0px; }
-#sideTabsTabMenuMiddle.Left.Enabled{ background-position: -40px 0px; }
-#sideTabsTabMenuMiddle.Left.Hot{ background-position: -80px 0px; }
-#sideTabsTabMenuMiddle.Left.Selected{ background-position: -120px 0px; }
+#sideTabsTabMenuMiddle.Right.Disabled { background-position: -160px 0px; }
+#sideTabsTabMenuMiddle.Right.Enabled { background-position: -200px 0px; }
+#sideTabsTabMenuMiddle.Right.Hot { background-position: -240px 0px; }
+#sideTabsTabMenuMiddle.Right.Selected { background-position: -280px 0px; }
+#sideTabsTabMenuMiddle.Left.Disabled { background-position: 0px 0px; }
+#sideTabsTabMenuMiddle.Left.Enabled { background-position: -40px 0px; }
+#sideTabsTabMenuMiddle.Left.Hot { background-position: -80px 0px; }
+#sideTabsTabMenuMiddle.Left.Selected { background-position: -120px 0px; }
 
 /********** Role Tab **********/
-#sideTabsTabRoleMiddle.Right.Disabled{ background-position: -160px -61px; }
-#sideTabsTabRoleMiddle.Right.Enabled{ background-position: -200px -61px; }
-#sideTabsTabRoleMiddle.Right.Hot{ background-position: -240px -61px; }
-#sideTabsTabRoleMiddle.Right.Selected{ background-position: -280px -61px; }
-#sideTabsTabRoleMiddle.Left.Disabled{ background-position: 0px -61px; }
-#sideTabsTabRoleMiddle.Left.Enabled{ background-position: -40px -61px; }
-#sideTabsTabRoleMiddle.Left.Hot{ background-position: -80px -61px; }
-#sideTabsTabRoleMiddle.Left.Selected{ background-position: -120px -61px; }
-
-/********** Alert Tab **********/
-/*#sideTabsTabAlertMiddle.Right.Disabled{ background-position: -160px -61px; }
-#sideTabsTabAlertMiddle.Right.Enabled{ background-position: -200px -61px; }
-#sideTabsTabAlertMiddle.Right.Hot{ background-position: -240px -61px; }
-#sideTabsTabAlertMiddle.Right.Selected{ background-position: -280px -61px; }
-#sideTabsTabAlertMiddle.Left.Disabled{ background-position: 0px -61px; }
-#sideTabsTabAlertMiddle.Left.Enabled{ background-position: -40px -61px; }
-#sideTabsTabAlertMiddle.Left.Hot{ background-position: -80px -61px; }
-#sideTabsTabAlertMiddle.Left.Selected{ background-position: -120px -61px; }
-*/
+#sideTabsTabRoleMiddle.Right.Disabled { background-image: url(media/SideTabs/TabRoleRightDisabled.gif); }
+#sideTabsTabRoleMiddle.Right.Enabled { background-image: url(media/SideTabs/TabRoleRightEnabled.gif); }
+#sideTabsTabRoleMiddle.Right.Hot { background-image: url(media/SideTabs/TabRoleRightHot.gif); }
+#sideTabsTabRoleMiddle.Right.Selected { background-image: url(media/SideTabs/TabRoleRightSelected.gif); }
+#sideTabsTabRoleMiddle.Left.Disabled { background-image: url(media/SideTabs/TabRoleLeftDisabled.gif); }
+#sideTabsTabRoleMiddle.Left.Enabled { background-image: url(media/SideTabs/TabRoleLeftEnabled.gif); }
+#sideTabsTabRoleMiddle.Left.Hot { background-image: url(media/SideTabs/TabRoleLeftHot.gif); }
+#sideTabsTabRoleMiddle.Left.Selected { background-image: url(media/SideTabs/TabRoleLeftSelected.gif); }
 
 /********** Notes Tab **********/
-#sideTabsTabNotesMiddle.Right.Disabled{ background-position: -160px -122px; }
-#sideTabsTabNotesMiddle.Right.Enabled{ background-position: -200px -122px; }
-#sideTabsTabNotesMiddle.Right.Hot{ background-position: -240px -122px; }
-#sideTabsTabNotesMiddle.Right.Selected{ background-position: -280px -122px; }
-#sideTabsTabNotesMiddle.Left.Disabled{ background-position: 0px -122px; }
-#sideTabsTabNotesMiddle.Left.Enabled{ background-position: -40px -122px; }
-#sideTabsTabNotesMiddle.Left.Hot{ background-position: -80px -122px; }
-#sideTabsTabNotesMiddle.Left.Selected{ background-position: -120px -122px; }
+#sideTabsTabNotesMiddle.Right.Disabled { background-image: url(media/SideTabs/TabNotesRightDisabled.gif); }
+#sideTabsTabNotesMiddle.Right.Enabled { background-image: url(media/SideTabs/TabNotesRightEnabled.gif); }
+#sideTabsTabNotesMiddle.Right.Hot { background-image: url(media/SideTabs/TabNotesRightHot.gif); }
+#sideTabsTabNotesMiddle.Right.Selected { background-image: url(media/SideTabs/TabNotesRightSelected.gif); }
+#sideTabsTabNotesMiddle.Left.Disabled { background-image: url(media/SideTabs/TabNotesLeftDisabled.gif); }
+#sideTabsTabNotesMiddle.Left.Enabled { background-image: url(media/SideTabs/TabNotesLeftEnabled.gif); }
+#sideTabsTabNotesMiddle.Left.Hot { background-image: url(media/SideTabs/TabNotesLeftHot.gif); }
+#sideTabsTabNotesMiddle.Left.Selected { background-image: url(media/SideTabs/TabNotesLeftSelected.gif); }
 
 /********** Flow Tab **********/
-#sideTabsTabFlowMiddle.Right.Disabled{ background-position: -160px -183px; }
-#sideTabsTabFlowMiddle.Right.Enabled{ background-position: -200px -183px; }
-#sideTabsTabFlowMiddle.Right.Hot{ background-position: -240px -183px; }
-#sideTabsTabFlowMiddle.Right.Selected{ background-position: -280px -183px; }
-#sideTabsTabFlowMiddle.Left.Disabled{ background-position: 0px -183px; }
-#sideTabsTabFlowMiddle.Left.Enabled{ background-position: -40px -183px; }
-#sideTabsTabFlowMiddle.Left.Hot{ background-position: -80px -183px; }
-#sideTabsTabFlowMiddle.Left.Selected{ background-position: -120px -183px; }
-
-/********** Report Tab **********/
-/*#sideTabsTabReportMiddle.Right.Disabled{ background-position: -160px -122px; }
-#sideTabsTabReportMiddle.Right.Enabled{ background-position: -200px -122px; }
-#sideTabsTabReportMiddle.Right.Hot{ background-position: -240px -122px; }
-#sideTabsTabReportMiddle.Right.Selected{ background-position: -280px -122px; }
-#sideTabsTabReportMiddle.Left.Disabled{ background-position: 0px -122px; }
-#sideTabsTabReportMiddle.Left.Enabled{ background-position: -40px -122px; }
-#sideTabsTabReportMiddle.Left.Hot{ background-position: -80px -122px; }
-#sideTabsTabReportMiddle.Left.Selected{ background-position: -120px -122px; }
-*/
-
-/********** Help Tab **********/
-/*#sideTabsTabHelpMiddle.Right.Disabled{ background-position: -160px -183px; }
-#sideTabsTabHelpMiddle.Right.Enabled{ background-position: -200px -183px; }
-#sideTabsTabHelpMiddle.Right.Hot{ background-position: -240px -183px; }
-#sideTabsTabHelpMiddle.Right.Selected{ background-position: -280px -183px; }
-#sideTabsTabHelpMiddle.Left.Disabled{ background-position: 0px -183px; }
-#sideTabsTabHelpMiddle.Left.Enabled{ background-position: -40px -183px; }
-#sideTabsTabHelpMiddle.Left.Hot{ background-position: -80px -183px; }
-#sideTabsTabHelpMiddle.Left.Selected{ background-position: -120px -183px; }
-*/
+#sideTabsTabFlowMiddle.Right.Disabled { background-image: url(media/SideTabs/TabFlowRightDisabled.gif); }
+#sideTabsTabFlowMiddle.Right.Enabled { background-image: url(media/SideTabs/TabFlowRightEnabled.gif); }
+#sideTabsTabFlowMiddle.Right.Hot { background-image: url(media/SideTabs/TabFlowRightHot.gif); }
+#sideTabsTabFlowMiddle.Right.Selected { background-image: url(media/SideTabs/TabFlowRightSelected.gif); }
+#sideTabsTabFlowMiddle.Left.Disabled { background-image: url(media/SideTabs/TabFlowLeftDisabled.gif); }
+#sideTabsTabFlowMiddle.Left.Enabled { background-image: url(media/SideTabs/TabFlowLeftEnabled.gif); }
+#sideTabsTabFlowMiddle.Left.Hot { background-image: url(media/SideTabs/TabFlowLeftHot.gif); }
+#sideTabsTabFlowMiddle.Left.Selected { background-image: url(media/SideTabs/TabFlowLeftSelected.gif); }
 
 /********** Tab Area Content **********/
 
-#sideTabsContent
-{
+#sideTabsContent {
 	background-image: url(media/SideTabs/Background.gif);
 	width: 124px;
-	
 	/* Stuff below temp for testing */
 	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size: 8pt;
@@ -571,12 +477,11 @@ body
 	overflow: hidden;
 }
 
-#sideTabsContent.Right{	float: left; }
-#sideTabsContent.Left{ float: right; }
+#sideTabsContent.Right { float: left; }
+#sideTabsContent.Left { float: right; }
 
 /* #sideTabsContent h1 temp for testing */
-#sideTabsContent h1
-{
+#sideTabsContent h1 {
 	margin-top: 0px;
 	text-transform: uppercase;
 	font-size: 11pt;
@@ -585,122 +490,105 @@ body
 }
 
 /********** Border **********/
-
-#sideTabsBorder
-{
+#sideTabsBorder {
 	background-image: url(media/SideTabs/Border.gif);
 	width: 16px;
 }
 
-#sideTabsBorder.Right
-{
+#sideTabsBorder.Right {
 	background-position: -16px;
 	float: right;
 }
 
-#sideTabsBorder.Left
-{
+#sideTabsBorder.Left {
 	float: left;
 }
 
-#sideTabsContentHelp.toolBar 
-{
+#sideTabsContentHelp.toolBar {
 	color: #eeeddd;
 	font-size: 7pt;
 	height: 24px;
 }
 
-
-
 /***********************************************************/
 /*                      iiMenuHorizontal                   */
 /***********************************************************/
 
-#iiMenuHorizontal
-{
+#iiMenuHorizontal {
 	background-color: #012c40;
 	display: inline;		/* Needed to compensate for IE6 doubled-margin bug on floated elements */
 	margin: 10px;
 	width: 700px; /* This width establishs the MINIMUM width of the menu for the TwoTabs layout - the layout sets the width of the menu as necessary */
 }
 
-#iiMenuHorizontal.Right
-{
+#iiMenuHorizontal.Right {
 	float: right;
 }
 
-#iiMenuHorizontal.Left
-{
+#iiMenuHorizontal.Left {
 	float: left;
 }
 
-#iiMenuHorizontalHeader
-{
+#iiMenuHorizontalHeader {
 	height: 24px;	
 }
 
-#iiMenuHorizontalHeader.Left
-{
+#iiMenuHorizontalHeader.Left {
 	float: right;
 }
 
-#iiMenuHorizontalHeader.Right
-{
+#iiMenuHorizontalHeader.Right {
 	float: left;
 }
 
-.iiMenuHorizontalHeaderPart
-{
+.iiMenuHorizontalHeaderPart {
 	background-image: url(media/Menu/HeaderCaps.gif);
 	float: left;
 }
 
 /* New stuff */
 /*
-#iiMenuHorizontalHeaderBegin{
+#iiMenuHorizontalHeaderBegin {
 	height: 100%;
 	width: 64px;
 }
 */
 
-#iiMenuHorizontalHeaderMiddle{
+#iiMenuHorizontalHeaderMiddle {
 	background-image: url(media/Menu/HeaderMiddle.gif);
 	height: 100%;
 	width: 700px;
 }
 
-#iiMenuHorizontalHeaderEnd{
+#iiMenuHorizontalHeaderEnd {
 	background-position: -128px 0px;
 	height: 100%;
 	width: 16px;
 }
+
 /* end new stuff */
 
-#iiMenuHorizontalHeaderBegin.Expanded
-{
+#iiMenuHorizontalHeaderBegin.Expanded {
 	background-position: 0px 0px;
 	cursor: pointer;
 	height: 100%;
 	width: 64px;
 }
 
-#iiMenuHorizontalHeaderBegin.Collapsed
-{
+#iiMenuHorizontalHeaderBegin.Collapsed {
 	background-position: -64px 0px;
 	cursor: pointer;
 	height: 100%;
 	width: 64px;
 }
 
-#iiMenuHorizontalHeaderMiddle
-{
+#iiMenuHorizontalHeaderMiddle {
 	background-image: url(media/Menu/HeaderMiddle.gif);
 	height: 100%;
 	width: 700px;
 }
 
-#iiMenuHorizontalHeaderTitle
-{
+#iiMenuHorizontalHeaderTitle {
 	color: #012c40;
 	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size: 10pt;
@@ -709,15 +597,13 @@ body
 	margin-top: 5px;
 }
 
-#iiMenuHorizontalHeaderEnd
-{
+#iiMenuHorizontalHeaderEnd {
 	background-position: -128px 0px;
 	height: 100%;
 	width: 16px;
 }
 
-#ToolMenuToggle
-{
+#ToolMenuToggle {
 	background-image: url(media/Menu/ToolMenuToggle.gif);
 	cursor: pointer;
 	float: left;
@@ -725,22 +611,20 @@ body
 	width: 24px;
 }
 
-#ToolMenuLogout 
-{
-	color:#032D23;
-	cursor:pointer;
-	float:right;
-	font-family:Verdana,Geneva,Arial,Helvetica,sans-serif;
-	font-size:8pt;
-	height:24px;
-	margin-top:6px;
-	text-align:center;
+#ToolMenuLogout {
+	color: #032D23;
+	cursor: pointer;
+	float: right;
+	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
+	font-size: 8pt;
+	height: 24px;
+	margin-top: 6px;
+	text-align: center;
 }
 
-#ToolMenuLogout.Hot 
-{
-	color:#012C40;
-	text-decoration:underline;
+#ToolMenuLogout.Hot {
+	color: #012C40;
+	text-decoration: underline;
 }
 
 #ToolMenuFeedback {
@@ -760,38 +644,37 @@ body
 	text-decoration: underline;
 }
 
-#ToolMenuZoomIn 
-{
-	background-image:url('media/Menu/Zoom in.png');
-	cursor:pointer;
-	float:right;
-	height:16px;
-	margin-left:10px;
-	margin-top:5px;
-	width:16px;
+#ToolMenuZoomIn {
+	background-image: url('media/Menu/Zoom in.png');
+	cursor: pointer;
+	float: right;
+	height: 16px;
+	margin-left: 10px;
+	margin-top: 5px;
+	width: 16px;
 }
-#ToolMenuZoomIn.Hot 
-{
-	background-image:url('media/Menu/Zoom in hot.png');
+
+#ToolMenuZoomIn.Hot {
+	background-image: url('media/Menu/Zoom in hot.png');
 }
-#ToolMenuZoomOut 
-{
-	background-image:url('media/Menu/Zoom out.png');
-	cursor:pointer;
-	display:none;
-	float:right;
-	height:16px;
-	margin-left:10px;
-	margin-top:5px;
-	width:16px;
+
+#ToolMenuZoomOut {
+	background-image: url('media/Menu/Zoom out.png');
+	cursor: pointer;
+	display: none;
+	float: right;
+	height: 16px;
+	margin-left: 10px;
+	margin-top: 5px;
+	width: 16px;
 }
+
 #ToolMenuZoomOut.Hot 
 {
 	background-image:url('media/Menu/Zoom out hot.png');
 }
 
-#ToolSave
-{
+#ToolSave {
 	background-image: url(media/Menu/ToolSave.gif);
 	cursor: pointer;
 	float: left;
@@ -799,90 +682,77 @@ body
 	width: 24px;
 }
 
-#iiMenuHorizontalMain
-{
+#iiMenuHorizontalMain {
 	height: 40px;	
 }
 
-#iiMenuHorizontalMain.Collapsed
-{
+#iiMenuHorizontalMain.Collapsed {
 	display: none;
 }
 
-.iiMenuHorizontalMainPart
-{
+.iiMenuHorizontalMainPart {
 	float: left;
 	background-image: url(media/Menu/MainCaps.gif);
 }
 
-#iiMenuHorizontalMainBegin
-{
+#iiMenuHorizontalMainBegin {
 	background-position: 0px 0px;		/* this is necessary only for IE6 */
 	cursor: pointer;
 	height: 100%;
 	width: 64px;
 }
 
-#iiMenuHorizontalMainMiddle{
+#iiMenuHorizontalMainMiddle {
 	background-image: url(media/Menu/MainMiddle.gif);
 	height: 100%;
 	width: 700px;
 }
 
-#iiMenuHorizontalMainEnd
-{
+#iiMenuHorizontalMainEnd {
 	background-position: -64px 0px;
 	height: 100%;
 	width: 16px;
 }
 
-#iiMenuHorizontalSub
-{
+#iiMenuHorizontalSub {
 	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size: 7.5pt;
 	height: 17px;	
 }
 
-#iiMenuHorizontalSub.Collapsed
-{
+#iiMenuHorizontalSub.Collapsed {
 	display: none;
 }
 
-.iiMenuHorizontalSubPart
-{
+.iiMenuHorizontalSubPart {
 	background-image: url(media/Menu/SubCaps.gif);
 	float: left;
 }
 
-#iiMenuHorizontalSubBegin
-{
+#iiMenuHorizontalSubBegin {
 	background-position: 0px 0px;		/* this is necessary only for IE6 */
 	height: 100%;
 	width: 16px;
 }
 
-#iiMenuHorizontalSubMiddle
-{
+#iiMenuHorizontalSubMiddle {
 	background-image: url(media/Menu/SubMiddle.gif);
 	height: 100%;
 	width: 748px;
 }
 
-#iiMenuHorizontalSubMiddle span
-{
+#iiMenuHorizontalSubMiddle span {
 	position: relative;
 }
 
 
-#iiMenuHorizontalSubEnd
-{
+#iiMenuHorizontalSubEnd {
 	background-position: -16px 0px;
 	height: 100%;
 	width: 16px;
 }
 
-.iiMenuHorizontalMainTab
-{
+.iiMenuHorizontalMainTab {
 	height: 40px;
 	float: left;
 	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
@@ -890,92 +760,76 @@ body
 	font-weight: bold; 
 }
 
-.iiMenuHorizontalMainTabPart
-{
+.iiMenuHorizontalMainTabPart {
 	background-image: url(media/Menu/TabCaps.gif);
 	color: #012c40;
 	float: left;
 }
 
-.iiMenuHorizontalMainTabPart.Begin
-{
+.iiMenuHorizontalMainTabPart.Begin {
 	width: 16px;
 	height: 40px;
 	/*background-image: url(/Crothall/Chimes/AI/Media/Skins/DarkBackground/Menu/TabEnabled.gif);*/
 }
 
-.iiMenuHorizontalMainTabPart.Middle
-{
+.iiMenuHorizontalMainTabPart.Middle {
 	height: 40px;
 	/*background-image: url(/Crothall/Chimes/AI/Media/Skins/DarkBackground/Menu/TabEnabled.gif);*/
 }
 
-.iiMenuHorizontalMainTabPart.Middle span
-{
+.iiMenuHorizontalMainTabPart.Middle span {
 	vertical-align: -9px;
 }
 
-.iiMenuHorizontalMainTabPart.End
-{
+.iiMenuHorizontalMainTabPart.End {
 	width: 16px;
 	height: 40px;
 	/*background-image: url(/Crothall/Chimes/AI/Media/Skins/DarkBackground/Menu/TabEnabled.gif);*/
 }
 
 
-.iiMenuHorizontalMainTabPart.Disabled
-, .iiMenuHorizontalMainTabPart.Enabled
-{
+.iiMenuHorizontalMainTabPart.Disabled, .iiMenuHorizontalMainTabPart.Enabled {
 	background-image: none;
 }
 
-.iiMenuHorizontalMainTabPart.Selected
-{
+.iiMenuHorizontalMainTabPart.Selected {
 	cursor: default;
 	color: #FFFFFF;
 }
 
-.iiMenuHorizontalMainTabPart.Selected.Begin
-{
+.iiMenuHorizontalMainTabPart.Selected.Begin {
 	/*background-image: url(/Crothall/Chimes/AI/Media/Skins/DarkBackground/Menu/TabSelectedBegin.gif);*/
 	background-position: -32px 0px;
 }
 
-.iiMenuHorizontalMainTabPart.Selected.Middle
-{
+.iiMenuHorizontalMainTabPart.Selected.Middle {
 	background-image: url(media/Menu/TabSelectedMiddle.gif);
 }
 
-.iiMenuHorizontalMainTabPart.Selected.End
-{
+.iiMenuHorizontalMainTabPart.Selected.End {
 	/*background-image: url(/Crothall/Chimes/AI/Media/Skins/DarkBackground/Menu/TabSelectedEnd.gif);*/
 	background-position: -48px 0px;
 }
 
-.iiMenuHorizontalMainTabPart.Hot
-{
+.iiMenuHorizontalMainTabPart.Hot {
 	color: #FFFFFF;
 	cursor: pointer;
 }
 
-.iiMenuHorizontalMainTabPart.Hot.Begin
-{
+.iiMenuHorizontalMainTabPart.Hot.Begin {
 	/*background-image: url(/Crothall/Chimes/AI/Media/Skins/DarkBackground/Menu/TabHotBegin.gif);*/
 }
 
-.iiMenuHorizontalMainTabPart.Hot.Middle
-{
+.iiMenuHorizontalMainTabPart.Hot.Middle {
 	background-image: url(media/Menu/TabHotMiddle.gif);
 }
 
-.iiMenuHorizontalMainTabPart.Hot.End
-{
+.iiMenuHorizontalMainTabPart.Hot.End {
 	/*background-image: url(/Crothall/Chimes/AI/Media/Skins/DarkBackground/Menu/TabHotEnd.gif);*/
 	background-position: -16px 0px;
 }
 
-.iiMenuHorizontalSubLink
-{
+.iiMenuHorizontalSubLink {
 	float: left;
 	color: #FFFFFF;
 	cursor: pointer;
@@ -985,19 +839,16 @@ body
 	padding-right: 15px;
 }
 
-.iiMenuHorizontalSubLink.Hot
-{
+.iiMenuHorizontalSubLink.Hot {
 	color: #fdc941;
 }
 
-.iiMenuHorizontalSubLink.Disabled
-{
+.iiMenuHorizontalSubLink.Disabled {
 	color: #AAAAAA;
 	cursor: default;
 }
 
-.iiMenuHorizontalSubLink.Selected
-{
+.iiMenuHorizontalSubLink.Selected {
 	color: #FFFFFF;
 	text-decoration: underline;
 	cursor: default;
@@ -1007,38 +858,32 @@ body
 /*                     iiMenuVertical                      */
 /***********************************************************/
 
-.iiMenuVerticalMain
-{
+.iiMenuVerticalMain {
 	color: white;
 	cursor: pointer;
 	font-size: 10pt;
 	margin-top: 3px;
 }
 
-.iiMenuVerticalMain.Hot
-{
+.iiMenuVerticalMain.Hot {
 	color: #fdc941;
 }
 
-.iiMenuVerticalMain.Disabled
-{
+.iiMenuVerticalMain.Disabled {
 	color: #AAAAAA;
 	cursor: default;
 }
 
-.iiMenuVerticalMain.Selected
-{
+.iiMenuVerticalMain.Selected {
 	color: white;
 	cursor: default;
 }
 
-.iiMenuVerticalMainPart.Selected
-{
+.iiMenuVerticalMainPart.Selected {
 	text-decoration: underline;
 }
 
-.iiMenuVerticalSub
-{
+.iiMenuVerticalSub {
 	color: white;
 	cursor: pointer;
 	font-size: 8pt;
@@ -1048,116 +893,106 @@ body
 	text-decoration: none;
 }
 
-.iiMenuVerticalSub.Hot
-{
+.iiMenuVerticalSub.Hot {
 	color: #fdc941;
 }
 
-.iiMenuVerticalSub.Disabled
-{
+.iiMenuVerticalSub.Disabled {
 	color: #AAAAAA;
 	cursor: default;
 }
 
-.iiMenuVerticalSub.Selected
-{
+.iiMenuVerticalSub.Selected {
 	color: white;
 	cursor: default;
 	text-decoration: underline;
 }
 
-.iiMenuVerticalSub.Selected span
-{
+.iiMenuVerticalSub.Selected span {
 }
 
-#reportContextReports 
-{
+#reportContextReports {
 }
 
-#reportViewer 
-{
+#reportViewer {
 }
 
-#reportViewerButton 
-{
+#reportViewerButton {
 }
 
-#sideTabsContentReport 
-{
+#sideTabsContentReport {
 }
 
-#sideTabsContentReportButton 
-{
+#sideTabsContentReportButton {
 }
 
-#userNameLabel
-	{
-		color:#6F6F6F;
-		padding-right:0px;
-		float:left;
-	}
-#userFirstName
-	{
-		color:#032D23;
-		padding-right:0px;
-		float:left;
-	}
-#userLastName
-	{
-		color:#032D23;
-		padding-right:5px;
-		float:left;
-	}
-#userNameLabel2
-	{
-		color:#6F6F6F;
-		font-size:7pt;
-		padding-left:0px;
-		padding-right:0px;
-		float:left;
-	}	
-#userName
-	{
-		color:#6F6F6F;
-		font-size:7pt;
-		padding-left:0px;
-		padding-right:0px;
-		float:left;
-	}
-#userNameLabel3	
-	{
-		color:#6F6F6F;
-		font-size:7pt;
-		padding-left:0px;
-		float:left;
-	}
-#roleName
-	{
-		color:#032D23;
-		float:left;
-	}	
-#roleLabel
-	{
-		color:#6F6F6F;
-		padding-left:10px;
-		padding-right:0px;
-		float:left;
-	}
-#version
-	{
-		color:#032D23;
-		float:left;
-	}
-#about
-	{
-		color:#6F6F6F;
-		padding-left:10px;
-		float:left;
-	}
-#versionNumber
-	{
-		display:none;
-	}
+#userNameLabel {
+	color: #6F6F6F;
+	padding-right: 0px;
+	float: left;
+}
+
+#userFirstName {
+	color: #032D23;
+	padding-right: 0px;
+	float: left;
+}
+
+#userLastName {
+	color: #032D23;
+	padding-right: 5px;
+	float: left;
+}
+
+#userNameLabel2 	{
+	color: #6F6F6F;
+	font-size: 7pt;
+	padding-left: 0px;
+	padding-right: 0px;
+	float: left;
+}
+
+#userName {
+	color: #6F6F6F;
+	font-size: 7pt;
+	padding-left: 0px;
+	padding-right: 0px;
+	float: left;
+}
+
+#userNameLabel3	{
+	color: #6F6F6F;
+	font-size: 7pt;
+	padding-left: 0px;
+	float: left;
+}
+
+#roleName {
+	color: #032D23;
+	float: left;
+}
+
+#roleLabel {
+	color: #6F6F6F;
+	padding-left: 10px;
+	padding-right: 0px;
+	float: left;
+}
+
+#version {
+	color: #032D23;
+	float: left;
+}
+
+#about {
+	color: #6F6F6F;
+	padding-left: 10px;
+	float: left;
+}
+
+#versionNumber {
+	display: none;
+}
 	
 #environmentLabel {
 	float: left;

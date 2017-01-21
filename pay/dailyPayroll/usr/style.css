@@ -1,4 +1,63 @@
-﻿
+﻿.GridTable {
+	float: left;
+	width: 100%;
+	height: 150px;		
+}
+
+.GridTableEmployee {
+	float: left;
+	width: 100%;	
+}
+
+.GridTablePaycode {
+	float: left;
+	width: 100%;
+}
+
+.Regular {
+    height: 20px;
+    font-family: Verdana;
+    font-size: 8pt;
+    color: #000000;
+    background-color: #ffffff;
+    text-align: left;
+}
+
+.Regular SELECT {
+    font-family: Verdana;
+    font-size: 8pt;
+    width: 100%;
+}
+
+.RegularLabel {
+    width: 100px;
+    font-weight: bold;
+}
+
+.Alternate {
+    height: 20px;
+    font-family: Verdana;
+    font-size: 8pt;
+    color: #000000;
+    background-color: #D7E1EA;
+    text-align: left;
+}
+
+.HeaderBorderVertical {
+	width: 1px;
+	background-color: #adaaad;
+}
+
+.BorderHorizontal {
+    height: 1px;
+    background-color: #adaaad;
+}
+
+.BorderVertical {
+    width: 1px;
+    background-color: #adaaad;
+}
+
 #divLeftGrid {
 	float: left;
 	width: 41%;	
@@ -162,79 +221,4 @@
 	left: 240px;
 	width: 80px;
 	padding: 6px 0px 5px 5px;
-}
-
-.GridTableEmployee {
-	float: left;
-	width: 100%;	
-}
-
-.GridTable {
-	float: left;
-	width: 100%;
-	height: 150px;		
-}
-
-.GridTablePaycode {
-	float: left;
-	width: 100%;
-}
-
-.Regular {
-    height: 20px;
-    font-family: Verdana;
-    font-size: 8pt;
-    color: #000000;
-    background-color: #ffffff;
-    text-align: left;
-}
-
-.Regular SELECT {
-    font-family: Verdana;
-    font-size: 8pt;
-    width: 100%;
-}
-
-.RegularLabel {
-    width: 100px;
-    font-weight: bold;
-}
-
-.Alternate {
-    height: 20px;
-    font-family: Verdana;
-    font-size: 8pt;
-    color: #000000;
-    background-color: #f7efde;
-    text-align: left;
-}
-
-.HeaderBorderVertical {
-	width: 1px;
-	background-color: #adaaad;
-}
-
-.Header {
-    height: 20px;
-    font-family: Verdana;
-    font-size: 8pt;
-    font-weight: bold;
-    color: #ffffff;
-    background-color: #669b67;
-    text-align: left;
-}
-
-.Header SELECT {
-    font-family: Verdana;
-    font-size: 8pt;
-}
-
-.BorderHorizontal {
-    height: 1px;
-    background-color: #adaaad;
-}
-
-.BorderVertical {
-    width: 1px;
-    background-color: #adaaad;
 }

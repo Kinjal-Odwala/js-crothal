@@ -1,36 +1,28 @@
-﻿#iiDropDownPopup
-{
-	
+﻿#iiDropDownPopup {
 	background-color: white;
 	border: 1px solid #AAAAAA;
-	
 	font-family:Verdana;
 	font-size:12px;
 	position: absolute;
 	z-index: 10000;
 }
 
-.iiDropDownList
-{
+.iiDropDownList {
 	overflow: auto;
 	height: 25px;
 }
 
-.iiDropDownLine
-{
+.iiDropDownLine {
 	cursor: pointer;
 	padding-left: 3px;
 	padding-right: 3px;
 	white-space: nowrap;
 }
 
-.iiDropDownLine.Selected
-{
-	background-color: #9BCD9A; /* fdca41 ffcc33 */
+.iiDropDownLine.Selected {
+	background-color: #6D94BA; /* fdca41 ffcc33 */
 }
 
-.iiDropDownLine.Hot
-{
-	background-color: #C2E4C1; /* #F0EFDD;*/
+.iiDropDownLine.Hot {
+	background-color: #FFDFAF; /* #F0EFDD;*/
 }
-

@@ -1,23 +1,4 @@
-﻿.header {
-	font-family: Verdana;
-	font-weight: bold;
-	font-size: 18px;	
-	color: #2C2F50;
-	text-align: center;
-	margin-bottom: 5px;
-}
-
-.subHeader {
-	font-family: Verdana;
-	font-weight: bold;
-	font-size: 13px;	
-	color: #2C2F50;
-	background: #C2E4C1;
-	margin: 5px;
-	padding: 3px;
-}
-
-.labelHeaderSmall {
+﻿.labelHeaderSmall {
 	float: left;
 	font-family: Verdana;
 	font-size: 11px;
@@ -145,26 +126,6 @@
 	width: 16px;
 	height: 16px;
 	margin: 1px;
-}
-
-.footer {
-    height: 20px;
-    font-family: Verdana;
-    font-size: 8pt;
-    font-weight: bold;
-    color: #ffffff;
-    background-color: #669b67;
-    text-align: left;
-}
-
-.borderHorizontal {
-    height: 1px;
-    background-color: #adaaad;
-}
-
-.borderVertical {
-    width: 1px;
-    background-color: #adaaad;
 }
 
 .view {

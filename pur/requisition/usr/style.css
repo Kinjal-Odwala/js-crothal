@@ -1,10 +1,4 @@
-﻿.pageHeader {
-	background-color: #9BCD9A;
-	padding-left: 6px;
-	height: 25px;
-}
-
-.subHeader {
+﻿.rowHeader {
     height: 30px;
     font-family: Verdana;
     font-size: 14px;
@@ -113,16 +107,6 @@
 	color: #032D23;
 }
 
-.footer {
-    height: 20px;
-    font-family: Verdana;
-    font-size: 8pt;
-    font-weight: bold;
-    color: #ffffff;
-    background-color: #669b67;
-    text-align: left;
-}
-
 .borderHorizontal {
     height: 1px;
     background-color: #adaaad;
@@ -134,12 +118,10 @@
 }
 
 .totalColumn {
-	height: 22px;
-	background-color: #669966;
-	color: white;
 	font-family: Verdana;
 	font-size: 12px;
 	font-weight: bold;
+	color: white;
 	text-align: right;
 	padding: 3px 2px 2px 0px;
 }

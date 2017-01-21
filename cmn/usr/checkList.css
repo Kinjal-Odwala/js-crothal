@@ -1,5 +1,4 @@
-
-.iiCheckListHeader{
+.iiCheckListHeader {
 	background-color: #669966;
 	border: 1px solid #AAAAAA;
 	border-right: none;
@@ -15,51 +14,42 @@
 	text-transform: uppercase;
 }		
 
-.iiCheckListBody
-{
-	border:solid #aaaaaa thin;
-	border-width:1px;
-	font-family:Verdana;
-	font-size:12px;
+.iiCheckListBody {
+	border: solid #aaaaaa thin;
+	border-width: 1px;
+	font-family: Verdana;
+	font-size: 12px;
 }
 
-.iiCheckListLine
-{
+.iiCheckListLine {
 	cursor: pointer;
 	padding-top: 1px;
 	padding-bottom: 2px;
-	height:22px;
-
+	height: 22px;
 	white-space: nowrap;
-	vertical-align:middle;
+	vertical-align: middle;
 }
 
-.iiCheckListLine.Odd
-	{ 
-		background-color:#F0EFDD;
-	}
+.iiCheckListLine.Odd { 
+	background-color: #D7E1EA;
+}
 
-.iiCheckListLine.Even
-	{ 
-		background-color:#FFFFFF;
-	}
-	
-.iiCheckListLine.Odd.MouseOver
-{
-	background-color: #C2E4C1;
+.iiCheckListLine.Even { 
+	background-color: #FFFFFF;
 }
 	
-.iiCheckListLine.Even.MouseOver
-{
-	background-color: #C2E4C1;
+.iiCheckListLine.Odd.MouseOver {
+	background-color: #FFDFAF;
 }
 	
-.iiCheckListLine.Odd.Selected
-{
-	background-color: #C2E4C1;
+.iiCheckListLine.Even.MouseOver {
+	background-color: #FFDFAF;
 }
 	
-.iiCheckListLine.Even.Selected
-{
-	background-color: #C2E4C1;
+.iiCheckListLine.Odd.Selected {
+	background-color: #6D94BA;
+}
+	
+.iiCheckListLine.Even.Selected {
+	background-color: #6D94BA;
 }

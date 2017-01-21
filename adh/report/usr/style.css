@@ -19,33 +19,6 @@
 	z-index: 11111;
 }
 
-.ui-state-default, .ui-widget-content .ui-state-default { 
-	border: 1px solid #d3d3d3; 
-	font-family: Verdana;
-	font-size: 12px;
-	background: #ffffff;
-	font-weight: normal; 
-	color: #000000; 
-	outline: none; 
-}
-
-.ui-corner-all {
-	-moz-border-radius: 0px;
-}
-
-.ui-icon.ui-icon-triangle-2-n-s {
-	background-image: url(/fin/cmn/usr/media/DropDown/dropDownEnabled.gif);
-	background-repeat: no-repeat;
-	background-position: right;
-}
-
-.ui-multiselect { 
-	padding: 0px; 
-	text-align: left;
-	border: solid #aaaaaa thin;
-	border-width: 1px;
-}
-
 .iiInputText.Loading {
 	background-image: url(/fin/cmn/usr/media/common/indicator.gif);
 	background-repeat: no-repeat;
@@ -113,90 +86,13 @@
     width: 180px;
 }
 
-.gridBorder {
-	border: solid #AAAAAA thin;
-	border-width: 1px;
-}
-
-.gridRow { 
-	background-color: #F0EFDD;
-}
-
-.alternateGridRow { 
-	background-color: #FFFFFF;
-}
-
-.gridHeaderColumn {
-	background-color: #669966;
-	border-right: solid #AAAAAA thin;
-	border-width: 1px;
-	border-bottom: solid #AAAAAA thin;
-	border-width: 1px;
-	border-spacing: 0px 0px;
-	border-collapse: collapse;
-	font-family: Verdana;
-	font-size: 8pt;
-	font-weight: bold;
-	color: white;	
-	text-align: center;
-	padding: 3px 2px 3px 2px;
-	height: 30px;
+.gridHeaderCell, .gridHeaderCellRight, .gridCell, .gridCellRight  {
 	cursor: pointer;
 }
 
-.gridHeaderColumnRight {
-	background-color: #669966;
-	border-bottom: solid #AAAAAA thin;
-	border-width: 1px;
-	border-spacing: 0px 0px;
-	border-collapse: collapse;
-	font-family: Verdana;
-	font-size: 8pt;
-	font-weight: bold;
-	color: white;	
-	text-align: center;
-	padding: 3px 2px 3px 2px;
-	height: 30px;
-	cursor: pointer;
-}
-
-.gridHeaderColumnSub {
-	background-color: #669966;
-	border-right: solid #AAAAAA thin;
-	border-width: 1px;	
-	border-spacing: 0px 0px;
-	border-collapse: collapse;
-	font-family: Verdana;
-	font-size: 10px;
-	font-weight: bold;
-	color: white;	
-	text-align: center;
-	padding: 3px 2px 3px 2px;
-	height: 30px;
-	width: 200px;
-	vertical-align: text-top;
-}
-
-.gridHeaderColumnSubRight {
-	background-color: #669966;
-	border-spacing: 0px 0px;
-	border-collapse: collapse;
-	font-family: Verdana;
-	font-size: 10px;
-	font-weight: bold;
-	color: white;	
-	text-align: center;
-	padding: 3px 2px 3px 2px;
-	height: 30px;
-	width: 200px;
-	vertical-align: text-top;
-}
-
-.gridColumnHidden {
-	display: none;
-}
-
-.gridColumn {	
+.gridColumnOperator {
+	width: 22%;
+	height: 20px;
 	border-right: solid #AAAAAA thin;
 	border-width: 1px;
 	border-spacing: 0px 0px;
@@ -206,11 +102,12 @@
 	color: #032D23;	
 	vertical-align: middle;
 	padding: 3px 2px 3px 2px;
-	height: 20px;
 	cursor: pointer;
 }
 
-.gridColumnFilter {	
+.gridColumnValue {
+	width: 40%;
+	height: 20px;
 	border-right: solid #AAAAAA thin;
 	border-width: 1px;
 	border-spacing: 0px 0px;
@@ -220,76 +117,11 @@
 	color: #032D23;	
 	vertical-align: middle;
 	padding: 3px 2px 3px 2px;
-	height: 20px;
-	cursor: pointer;
-	width:200px;
-}
-
-.gridColumnOperator {	
-	border-right: solid #AAAAAA thin;
-	border-width: 1px;
-	border-spacing: 0px 0px;
-	border-collapse: collapse;
-	font-family: Verdana;
-	font-size: 8pt;
-	color: #032D23;	
-	vertical-align: middle;
-	padding: 3px 2px 3px 2px;
-	height: 20px;
-	cursor: pointer;
-	width:22%;
-}
-
-.gridColumnValue {	
-	border-right: solid #AAAAAA thin;
-	border-width: 1px;
-	border-spacing: 0px 0px;
-	border-collapse: collapse;
-	font-family: Verdana;
-	font-size: 8pt;
-	color: #032D23;	
-	vertical-align: middle;
-	padding: 3px 2px 3px 2px;
-	height: 20px;
-	cursor: pointer;
-	width:40%;
-}
-
-.gridColumnRight {	
-	border-spacing: 0px 0px;
-	border-collapse: collapse;
-	font-family: Verdana;
-	font-size: 8pt;
-	color: #032D23;	
-	vertical-align: middle;
-	padding: 3px 2px 3px 2px;
-	height: 20px;
 	cursor: pointer;
 }
 
-.trover {
-	background-color: #C2E4C1;
-}
-
-.borderVertical {
-    width: 1px;
-    background-color: #adaaad;
-}
-
-.gridPagging {
-    height: 20px;
-    font-family: Verdana;
-    font-size: 8pt;
-    font-weight: bold;
-    color: #ffffff;
-    background-color: #669b67;
-    text-align: left;
-}
-
-.tbodyBorder {
-	height: 390px;
-	width:537px;
-	overflow: auto;
+.invoiceTable {
+ 	border-collapse: collapse;
 }
 
 #HirOrgContainer {
@@ -370,8 +202,4 @@
 	z-index: 5025;
 	background-color: white;
 	display: none;
-}
-
-.invoiceTable {
- 	border-collapse:collapse;
 }

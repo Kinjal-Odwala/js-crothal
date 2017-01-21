@@ -78,17 +78,17 @@ body
 }
 #navbar
 {
-	border-top:5px solid #9CCF9C;
+	border-top:5px solid #C5D7EC;
     bottom: 0px ;
     width:100%;
 }
 #navbar #primaryNavBar
 {
-	background-color:#9CCF9C;
+	background-color:#C5D7EC;
 }
 #navbar #subNavBar
 {
-	background-color:#659A66;
+	background-color:#6D94BA;
 	clear:both;
 	color:#FFF;
 	padding:10px;
@@ -178,7 +178,7 @@ body
 }
 .primary-nav .x-btn
 {
-	background-color:#9CCF9C;
+	background-color:#C5D7EC;
 	margin-left:1px;
 }
 .primary-nav .x-btn td.x-btn-mc .x-btn-text
@@ -238,7 +238,7 @@ body
 
 .primary-nav .x-btn-active td
 {
-	background-color:#659A66;
+	background-color:#6D94BA;
 }
 .primary-nav .x-btn-over .x-btn-text
 {
@@ -304,7 +304,7 @@ body
 }
 .ux-button-1 .x-btn-over .x-btn-text
 {
-	color:#659A66;
+	color:#6D94BA;
 }
 
 .ux-tab-1 .x-tab-panel-header,
@@ -606,5 +606,3 @@ reference url : http://stackoverflow.com/questions/67665/ie7-css-scrolling-div-b
 .x-trigger-wrap-focus .x-form-spinner-splitter{
     background-position:-14px 0;
 }
-
-

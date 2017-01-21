@@ -122,7 +122,6 @@ body {
 	-moz-border-radius: 5px; -webkit-border-radius: 5px;
 }
 
-
 /* new styles for demo pages, added by Filament 12.29.08
 eventually we should convert the font sizes to ems -- using px for now to minimize style conflicts
 */
@@ -310,7 +309,6 @@ div.demo-description {
 .param-args { margin:0 0 1.5em; border-top:1px dotted #ccc;}
 .param-args td { padding:3px 30px 3px 5px; border-bottom:1px dotted #ccc;  }
 
-
 /* overrides for ui-tab styles */
 #widget-docs ul.ui-tabs-nav { padding:0 0 0 8px; }
 #widget-docs .ui-tabs-nav li { margin:5px 5px 0 0; }
@@ -331,4 +329,3 @@ div.demo-description {
 #widget-docs .ui-widget-content a:visited { color:#1b75bb; text-decoration:none; }
 #widget-docs .ui-widget-content a:hover,
 #widget-docs .ui-widget-content a:active { color:#0b559b; }
-

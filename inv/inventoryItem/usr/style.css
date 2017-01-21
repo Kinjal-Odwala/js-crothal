@@ -1,9 +1,4 @@
-﻿
-.header {
-	height: 25px;
-}
-
-.inputTextAreaHeader {
+﻿.inputTextAreaHeader {
 	float: left; 
 	width: 60px; 
 	padding: 3px 2px 2px 2px;	
@@ -58,12 +53,6 @@
 .borderVertical {
     width: 1px;
     background-color: #adaaad;
-}
-
-#actionHeader {
-	background-color: #9BCD9A;
-	padding-left: 6px;
-	height: 28px;
 }
 	
 #AnchorLoad	{

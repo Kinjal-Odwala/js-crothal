@@ -1,11 +1,25 @@
-﻿
-.header {
+﻿.labelMessage {
+	float: left;
 	font-family: Verdana;
-	font-weight: bold;
-	font-size: 18px;	
-	color: #2C2F50;
-	text-align: center;
-	margin-bottom: 5px;
+	font-size: 12px;
+	color: #032D23;
+	padding: 5px 0px 0px 10px;
+}
+
+.labelTextArea {
+	float: left;
+	width: 70px;
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding: 5px 0px 0px 10px;
+}
+
+.inputTextArea {
+	float: left;
+	width: 250px;
+	padding: 3px 2px 2px 2px;
 }
 
 #AnchorUpload {
@@ -95,109 +109,4 @@
 	position: absolute;
 	z-index: 5025;	
 	display: none;
-}
-
-.labelMessage {	
-	float: left;
-	font-family: Verdana;
-	font-size: 12px;
-	color: #032D23;	
-	padding: 5px 0px 0px 10px;
-}
-
-.labelTextArea {	
-	float: left;
-	width: 70px;
-	height: 27px;	
-	font-family: Verdana;
-	font-size: 12px;
-	color: #032D23;
-	padding: 5px 0px 0px 10px;
-}
-
-.inputTextArea {
-	float: left; 
-	width: 250px; 
-	padding: 3px 2px 2px 2px;	
-}
-
-.gridBorder {
-	border: solid #AAAAAA thin;
-	border-width: 1px;
-}
-
-.gridHeaderColumn {
-	background-color: #669966;
-	border-right: solid #AAAAAA thin;
-	border-width: 1px;
-	border-bottom: solid #AAAAAA thin;
-	border-width: 1px;
-	border-spacing: 0px 0px;
-	border-collapse: collapse;
-	font-family: Verdana;
-	font-size: 8pt;
-	font-weight: bold;
-	color: white;	
-	text-align: center;
-	padding: 3px 2px 3px 2px;
-}
-
-.gridHeaderColumnRight {
-	background-color: #669966;
-	border-bottom: solid #AAAAAA thin;
-	border-width: 1px;
-	border-spacing: 0px 0px;
-	border-collapse: collapse;
-	font-family: Verdana;
-	font-size: 8pt;
-	font-weight: bold;
-	color: white;	
-	text-align: center;
-	padding: 3px 2px 3px 2px;
-}
-
-.gridColumn {	
-	border-right: solid #AAAAAA thin;
-	border-width: 1px;
-	border-spacing: 0px 0px;
-	border-collapse: collapse;
-	font-family: Verdana;
-	font-size: 8pt;
-	color: #032D23;
-	height: 18px;
-	vertical-align: middle;
-	padding: 3px 2px 3px 2px;
-}
-
-.gridColumnRight {	
-	border-spacing: 0px 0px;
-	border-collapse: collapse;
-	font-family: Verdana;
-	font-size: 8pt;
-	color: #032D23;
-	height: 18px;
-	vertical-align: middle;
-	padding: 3px 2px 3px 2px;
-}
-
-.gridRow { 
-	background-color: #F0EFDD;
-}
-
-.gridRow input {
-    font-family: Verdana;
-    font-size: 8pt;
-	color: #032D23;
-	padding: 0px;
-}
-
-.alternateGridRow { 
-	background-color: #FFFFFF;
-}
-
-.alternateGridRow input {
-    font-family: Verdana;
-    font-size: 8pt;
-	color: #032D23;
-	padding: 0px;
 }

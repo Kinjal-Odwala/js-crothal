@@ -1,8 +1,21 @@
-﻿
-#actionHeader {
-	background-color: #9BCD9A;
-	padding-left: 6px;
-	height: 25px;
+﻿.iiGridHeaderColumn, .iiGridBodyColumn {
+	font-size: 8pt;
+}
+
+.taxLabel {
+	float: left;
+	width: 70px;
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding-left: 15px;
+}
+
+.inputTextArea {
+	float: left;
+	width: 200px;
+	height: 27px;
 }
 
 #AnchorUpload {
@@ -41,60 +54,16 @@
 	overflow-y: hidden;
 }
 
+/*
 #TaxGrid {
 	float: left;
 	width: 1500px;
 	position: relative;
 }
-
+*/
 #AnchorExportToExcel {
 	float: left;
 	width: 140px;
 	position: relative;
 	margin: 10px 10px 10px 0px;
-}
-
-.iiGridHeaderColumn, .iiGridBodyColumn {
-	font-size: 8pt;
-}
-
-.taxLabel {
-	float: left;
-	width: 70px;
-	height: 27px;
-	font-family: Verdana;
-	font-size: 12px;
-	color: #032D23;
-	padding-left: 15px;
-}
-
-.inputTextArea {
-	float: left;
-	width: 200px;
-	height: 27px;
-}
-
-.footer {
-    height: 20px;
-    font-family: Verdana;
-    font-size: 8pt;
-    font-weight: bold;
-    color: #ffffff;
-    background-color: #669b67;
-    text-align: left;
-}
-
-.footer select {
-    font-family: Verdana;
-    font-size: 8pt;
-}
-
-.borderHorizontal {
-    height: 1px;
-    background-color: #adaaad;
-}
-
-.borderVertical {
-    width: 1px;
-    background-color: #adaaad;
 }

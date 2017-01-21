@@ -1,9 +1,4 @@
-﻿
-.header {
-	height: 25px;
-}
-
-.inputTextAreaHeader {
+﻿.inputTextAreaHeader {
 	float: left; 
 	width: 60px; 
 	padding: 3px 2px 2px 2px;	
@@ -35,21 +30,6 @@
 	width: 140px;
 }
 
-.footer {
-    height: 20px;
-    font-family: Verdana;
-    font-size: 8pt;
-    font-weight: bold;
-    color: #ffffff;
-    background-color: #669b67;
-    text-align: left;
-}
-
-.footer select {
-    font-family: Verdana;
-    font-size: 8pt;
-}
-
 .borderHorizontal {
     height: 1px;
     background-color: #adaaad;
@@ -60,12 +40,6 @@
     background-color: #adaaad;
 }
 
-#actionHeader {
-	background-color: #9BCD9A;
-	padding-left: 6px;
-	height: 28px;
-}
-	
 #AnchorLoad	{
 	float: left; 
 	width: 68px;
