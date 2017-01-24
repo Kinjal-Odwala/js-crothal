@@ -502,20 +502,27 @@ fin.bud.modified = function () {
                 alert('Error: Budget Import worksheet does not exist!');
                 return;
             }
-
+            var fscAccountLkup = {};
             $.each(data, function (index, row) {
                 var item = {};
                 if (index == 0) {
                     me.keysForm.val('FscYeaTitle', row[2]);
                 }
-                item['FscAccCode'] = me.parseInt(row, 3);
+                var fscAccount = me.parseInt(row, 3);
+                var item = fscAccountLkup[fscAccount];
+                if (!item) {
+                    item = { FscAccCode: fscAccount };
+                    fscAccountLkup[fscAccount] = item;
+                    list.push(item);
+                }
+                //item['FscAccCode'] = me.parseInt(row, 3);
                 item['JobNumber'] = row[1];
                 item['HouseCodeBrief'] = row[0];
 
                 for (var i = 1; i <= 12; i++) {
-                    item['Period' + i] = me.parseFloat(row, i + 3);
+                    item['Period' + i] = (item['Period' + i] || 0) + me.parseFloat(row, i + 3);
                 }
-                list.push(item);
+                
 
             });
 
