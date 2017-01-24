@@ -323,3 +323,14 @@
 	background-color: black;
 	display: none;
 }
+
+#DeductionsGrid {
+	width: 505px;
+	margin-left: 10px;
+}
+
+#amountBodyColumn {
+    text-align: right;	
+}
+
+

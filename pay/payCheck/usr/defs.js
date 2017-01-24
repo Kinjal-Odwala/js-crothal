@@ -48,7 +48,7 @@ ii.init.register( function() {
 		, brief: {type: String}
 		, name: {type: String}		
 	};
-	
+
 	fin.pay.payCheck.payCheckRequestArgs = {
 		id: {type: Number}
 		, statusType: {type: Number, required: false, defaultValue: 0}
@@ -103,6 +103,12 @@ ii.init.register( function() {
 		, title: {type: String, required: false, defaultValue: ""}
 		, hours: {type: Number, required: false, defaultValue: 0}
 		, earnings: {type: Number, required: false, defaultValue: 0}
+	};
+
+	fin.pay.payCheck.deductionCodeDetailArgs = {
+	    id: { type: Number, required: false, defaultValue: 0 }
+		, deductionCode: { type: String, required: false, defaultValue: "" }
+		, amount: { type: Number, required: false, defaultValue: 0 }
 	};
 	
 	fin.pay.payCheck.payCheckRequestDocumentArgs = {
@@ -245,6 +251,16 @@ ii.Class({
 			$.extend(this, args);
 		}
 	}
+});
+
+ii.Class({
+    Name: "fin.pay.payCheck.DeductionCodeDetail",
+    Definition: {
+        init: function () {
+            var args = ii.args(arguments, fin.pay.payCheck.deductionCodeDetailArgs);
+            $.extend(this, args);
+        }
+    }
 });
 
 ii.Class({
