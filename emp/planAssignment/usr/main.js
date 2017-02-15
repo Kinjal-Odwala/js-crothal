@@ -52,7 +52,7 @@ var setStatus = function(status, message) {
 };
 
 var dirtyCheck = function() {
-    if (parent.fin.appUI !== undefined && parent.fin.appUI.modified) {
+    if (parent.fin !== undefined && parent.fin.appUI !== undefined && parent.fin.appUI.modified) {
         if (confirm("The current item was modified and you will lose unsaved data if you navigate from current item. Press OK to continue, or Cancel to remain on the current item.")) {
             parent.fin.appUI.modified = false;
             return true;
@@ -78,8 +78,14 @@ var checkStatus = function() {
     }
 };
 
-var modified = function(isModified) {
-    parent.fin.appUI.modified = isModified;
+var modified = function (isModified) {
+    var me = this;
+ 
+    if (parent.fin !== undefined) {
+        if (parent.fin.appUI !== undefined) {
+            parent.fin.appUI.modified = isModified;
+        }
+    }
 };
 
 var deserializeXml = function(xml, nodeName, options) {
