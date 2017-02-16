@@ -4354,7 +4354,7 @@ ii.Class({
 				}
 				
 				me.job.fetchingData();
-				me.houseCodeJobStore.fetch("userId:[user],houseCodeId:" + me.houseCodeSearchTemplate.houseCodeIdTemplate, me.houseCodeJobsLoaded, me);
+				me.houseCodeJobStore.fetch("userId:[user],houseCodeId:" + me.houseCodeSearchTemplate.houseCodeIdTemplate + ",module:Employee", me.houseCodeJobsLoaded, me);
 				
 				index = ii.ajax.util.findIndexById(me.employeeGenerals[0].unionType.toString(), me.unionTypes);
 				if (index != undefined) 
@@ -4937,7 +4937,7 @@ ii.Class({
 			me.hirNode = me.houseCodes[0].hirNode;	
 
 			me.job.fetchingData();
-			me.houseCodeJobStore.fetch("userId:[user],houseCodeId:" + me.houseCodeSearchTemplate.houseCodeIdTemplate, me.houseCodeJobsLoaded, me);
+			me.houseCodeJobStore.fetch("userId:[user],houseCodeId:" + me.houseCodeSearchTemplate.houseCodeIdTemplate + ",module:Employee", me.houseCodeJobsLoaded, me);
 			
 			me.employeePayrollCompany.fetchingData();
 			me.houseCodePayrollCompanyStore.fetch("userId:[user],houseCodeId:" + me.houseCodeSearchTemplate.houseCodeIdTemplate + ",listAssociatedCompanyOnly:true,", me.houseCodePayrollCompanysLoaded, me);
@@ -4958,7 +4958,7 @@ ii.Class({
 			me.houseCodeSearchTemplate.hirNodeTemplate = parent.fin.appUI.hirNode;	
 			
 			me.job.fetchingData();
-			me.houseCodeJobStore.fetch("userId:[user],houseCodeId:" + me.houseCodeSearchTemplate.houseCodeIdTemplate, me.houseCodeJobsLoaded, me);
+			me.houseCodeJobStore.fetch("userId:[user],houseCodeId:" + me.houseCodeSearchTemplate.houseCodeIdTemplate + ",module:Employee", me.houseCodeJobsLoaded, me);
 			me.houseCodeStateMinimumWageStore.fetch("houseCodeId:" + me.houseCodeSearchTemplate.houseCodeIdTemplate, me.houseCodeStateMinimumWagesLoaded, me);			
 
 			if (me.employeeGeneralId == 0) {//executed for new employee
