@@ -25,8 +25,7 @@
 	border-width: 1px;
 }
 
-.labelTextUnit
-{
+.labelTextUnit {
 	float: left;
 	position: relative;
 	margin-right: 10px;
@@ -38,8 +37,30 @@
 	text-align:justify;
 }
 
-#AppUnitLoader
-{
+#FiscalYear {
+	width: 100px;	
+}
+
+#Reason {
+	width: 250px;	
+}
+
+#contentAreaLeft {
+	float: left;
+	width: 47%;
+	vertical-align: top;
+	margin-top: 10px;
+	margin-right: 20px;
+}
+
+#contentAreaRight {
+	float: left;
+	width: 50%;
+	vertical-align: top;
+	margin-top: 10px;	
+}
+
+#AppUnitLoader {
 	float: left;
 	position: relative;
 	width: 230px;
@@ -51,23 +72,6 @@
 	width: 70px;
 	padding-left: 10px;
 }
-
-#contentAreaLeft
-{
-	float: left;
-	width: 47%;
-	vertical-align: top;
-	margin-top: 10px;
-	margin-right: 20px;
-}
-
-#contentAreaRight
-{
-	float: left;
-	width: 50%;
-	vertical-align: top;
-	margin-top: 10px;	
-}
 	
 #hirContainer, #detailContainer
 {
@@ -77,13 +81,16 @@
 	overflow: auto;
 }
 
-#FiscalYear
-{
-	width: 100px;	
-}
-
-#AnchorExport
+#InputTextDelete
 {
 	float: left;
-	width: 90px;
+	position: relative;
+}
+
+#Reason {
+	float: left;
+	width: 250px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: black;
 }

@@ -1,28 +1,27 @@
-ii.Import( "ii.krn.sys.ajax" );
-ii.Import( "ii.krn.sys.session" );
-ii.Import( "ui.ctl.usr.input" );
-ii.Import( "ui.ctl.usr.buttons" );
-ii.Import( "ui.cmn.usr.text" );
-ii.Import( "ui.ctl.usr.hierarchy" );
-ii.Import( "fin.cmn.usr.treeView" );
-ii.Import( "fin.cmn.usr.util" );
-ii.Import( "fin.cmn.usr.ui.core" );
-ii.Import( "fin.cmn.usr.ui.widget" );
-ii.Import( "fin.cmn.usr.multiselect" );
-ii.Import( "fin.bud.deleteBudget.usr.defs" );
+//ii.config.xmlTimeout = 600000;
+ii.Import("ii.krn.sys.ajax");
+ii.Import("ii.krn.sys.session");
+ii.Import("ui.ctl.usr.input");
+ii.Import("ui.ctl.usr.buttons");
+ii.Import("ui.cmn.usr.text");
+ii.Import("ui.ctl.usr.hierarchy");
+ii.Import("fin.cmn.usr.util");
+ii.Import("fin.cmn.usr.ui.core");
+ii.Import("fin.cmn.usr.ui.widget");
+ii.Import("fin.cmn.usr.multiselect");
+ii.Import("fin.bud.deleteBudget.usr.defs");
 
-ii.Style( "style", 1 );
-ii.Style( "fin.cmn.usr.common", 2 );
-ii.Style( "fin.cmn.usr.statusBar", 3 );
-ii.Style( "fin.cmn.usr.toolbar", 4 );
-ii.Style( "fin.cmn.usr.input", 5 );
-ii.Style( "fin.cmn.usr.hierarchy", 6 );
-ii.Style( "fin.cmn.usr.button", 7 );
-ii.Style( "fin.cmn.usr.dropDown", 8 );
-ii.Style( "fin.cmn.usr.treeview", 9 );
-ii.Style( "fin.cmn.usr.theme", 10 );
-ii.Style( "fin.cmn.usr.core", 11 );
-ii.Style( "fin.cmn.usr.multiselect", 12 );
+ii.Style("style", 1);
+ii.Style("fin.cmn.usr.common", 2);
+ii.Style("fin.cmn.usr.statusBar", 3);
+ii.Style("fin.cmn.usr.toolbar", 4);
+ii.Style("fin.cmn.usr.input", 5);
+ii.Style("fin.cmn.usr.hierarchy", 6);
+ii.Style("fin.cmn.usr.button", 7);
+ii.Style("fin.cmn.usr.dropDown", 8);
+ii.Style("fin.cmn.usr.theme", 9);
+ii.Style("fin.cmn.usr.core", 10);
+ii.Style("fin.cmn.usr.multiselect", 11);
 
 ii.Class({
     Name: "fin.bud.deleteBudget.UserInterface",
@@ -31,13 +30,13 @@ ii.Class({
             var args = ii.args(arguments, {});
             var me = this;
 
-            me.hirNodesList = [];
-            me.hirNodesTemp = [];
             me.hirNodeSelected = 0;
-            me.hirNodePreviousSelected = 0;
+            me.hirNodeTitle = "";
             me.fiscalYearId = 0;
+            me.houseCodeId = 0;
             me.jobId = 0;
-			me.loadCount = 0;
+            me.hirNodeCurrentId = 1;
+            me.loadCount = 0;
 
             me.gateway = ii.ajax.addGateway("bud", ii.config.xmlProvider);
             me.cache = new ii.ajax.Cache(me.gateway);
@@ -61,7 +60,7 @@ ii.Class({
             me.defineFormControls();
             me.configureCommunications();
             me.modified(false);
-			me.setStatus("Loading");
+            me.setStatus("Loading");
 
             $(window).bind("resize", me, me.resize);
             $(document).bind("keydown", me, me.controlKeyProcessor);
@@ -79,12 +78,9 @@ ii.Class({
                     me.anchorLoad.display(ui.cmn.behaviorStates.disabled);
                     $('#JDECompany').multiselect('enable');
                     $("#divJob").hide();
-                    me.anchorDelete.display(ui.cmn.behaviorStates.enabled);
-
                 }
 
                 $('#AppUnitText').attr('disabled', !isHouseCodeMode);
-
             };
 
             $('#rdHouseCode').change(function () {
@@ -97,7 +93,6 @@ ii.Class({
 
             $('#rdHouseCode').attr('checked', true);
             toggleDisplay();
-
         },
 
         authorizationProcess: function fin_bud_deleteBudget_UserInterface_authorizationProcess() {
@@ -105,25 +100,24 @@ ii.Class({
             var me = this;
 
             me.isAuthorized = me.authorizer.isAuthorized(me.authorizePath);
-			
-			$("#pageLoading").hide();
-			$("#pageLoading").css({
-				"opacity": "0.5",
-				"background-color": "black"
-			});
-			$("#messageToUser").css({ "color": "white" });
-			$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
-			$("#pageLoading").fadeIn("slow");
-			
+
+            $("#pageLoading").hide();
+            $("#pageLoading").css({
+                "opacity": "0.5",
+                "background-color": "black"
+            });
+            $("#messageToUser").css({ "color": "white" });
+            $("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
+            $("#pageLoading").fadeIn("slow");
+
             ii.timer.timing("Page displayed");
-			me.loadCount = 4;
+            me.loadCount = 1;
             me.session.registerFetchNotify(me.sessionLoaded, me);
-			me.fiscalYear.fetchingData();
+            me.fiscalYear.fetchingData();
             me.yearStore.fetch("userId:[user],", me.yearsLoaded, me);
             me.jdeCompanysStore.fetch("userId:[user],", me.jdeCompanysLoaded, me);
-            me.weekPeriodYearStore.fetch("userId:[user],", me.weekPeriodYearsLoaded, me);
             ii.trace("Hierarchy Nodes Loading", ii.traceTypes.Information, "Info");
-            me.hirNodeStore.fetch("userId:[user],hierarchy:2,", me.hirNodesLoaded, me);
+            me.hirOrgStore.fetch("userId:[user],hirOrgId:1,ancestors:true", me.hirOrgsLoaded, me);
         },
 
         sessionLoaded: function fin_bud_deleteBudget_UserInterface_sessionLoaded() {
@@ -145,12 +139,6 @@ ii.Class({
 
         defineFormControls: function fin_bud_deleteBudget_UserInterface_defineFormControls() {
             var me = this;
-
-            $("#ulEdit0").treeview({
-                animated: "medium",
-                persist: "location",
-                collapsed: true
-            });
 
             me.anchorLoad = new ui.ctl.buttons.Sizeable({
                 id: "AnchorLoad",
@@ -194,19 +182,18 @@ ii.Class({
 
             me.job = new ui.ctl.Input.DropDown.Filtered({
                 id: "Job",
-                formatFunction: function (type) { return (type.jobTitle == "[ALL]" ? type.jobTitle : type.jobNumber + " - " + type.jobTitle); },
+                formatFunction: function (job) { return (job.jobTitle == "[ALL]" ? job.jobTitle : job.jobNumber + " - " + job.jobTitle); },
                 changeFunction: function () { me.actionJobChanged(); },
                 required: false
             });
 
-            me.job.makeEnterTab()
-				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
-				.addValidation(function (isFinal, dataMap) {
-
-				    if (me.job.indexSelected == -1)
-				        this.setInvalid("Please select the correct Job.");
-				});
+            $("#JDECompany").multiselect({
+                minWidth: 255
+				, header: false
+				, noneSelectedText: ""
+				, selectedList: 4
+				, click: function () { me.modified(true); }
+            });
 
             me.reason = $("#Reason")[0];
 
@@ -217,15 +204,7 @@ ii.Class({
                     return false;
                 }
             });
-            $("#Reason").change(function () { me.modified(); });
-
-            $("#JDECompany").multiselect({
-                minWidth: 255
-				, header: false
-				, noneSelectedText: ""
-				, selectedList: 4
-				, click: function () { me.modified(true); }
-            });
+            $("#Reason").change(function () { me.modified(true); });
 
             ii.trace("Controls Loaded", ii.traceTypes.Information, "Info");
         },
@@ -245,14 +224,6 @@ ii.Class({
                 parentField: "parent",
                 multipleFetchesAllowed: true,
                 injectionArray: me.hirOrgs
-            });
-
-            me.hirNodes = [];
-            me.hirNodeStore = me.cache.register({
-                storeId: "hirNodes",
-                itemConstructor: fin.bud.deleteBudget.HirNode,
-                itemConstructorArgs: fin.bud.deleteBudget.hirNodeArgs,
-                injectionArray: me.hirNodes
             });
 
             me.units = [];
@@ -295,14 +266,6 @@ ii.Class({
                 injectionArray: me.years
             });
 
-            me.weekPeriodYears = [];
-            me.weekPeriodYearStore = me.cache.register({
-                storeId: "weekPeriodYears",
-                itemConstructor: fin.bud.deleteBudget.WeekPeriodYear,
-                itemConstructorArgs: fin.bud.deleteBudget.weekPeriodYearArgs,
-                injectionArray: me.weekPeriodYears
-            });
-
             me.annualBudgets = [];
             me.annualBudgetStore = me.cache.register({
                 storeId: "budAnnualBudgets",
@@ -311,12 +274,12 @@ ii.Class({
                 injectionArray: me.annualBudgets
             });
 
-            me.annualInformations = [];
-            me.annualInformationStore = me.cache.register({
-                storeId: "budAnnualInformations",
-                itemConstructor: fin.bud.deleteBudget.AnnualInformation,
-                itemConstructorArgs: fin.bud.deleteBudget.annualInformationArgs,
-                injectionArray: me.annualInformations
+            me.deletes = [];
+            me.deleteStore = me.cache.register({
+                storeId: "budAnnualBudgetDeletes",
+                itemConstructor: fin.bud.deleteBudget.Delete,
+                itemConstructorArgs: fin.bud.deleteBudget.deleteArgs,
+                injectionArray: me.deletes
             });
 
             ii.trace("Communication Configured", ii.traceTypes.Information, "Info");
@@ -324,7 +287,7 @@ ii.Class({
 
         controlKeyProcessor: function ii_ui_Layouts_ListItem_controlKeyProcessor() {
             var args = ii.args(arguments, {
-                event: { type: Object} // The (key) event object
+                event: { type: Object } // The (key) event object
             });
             var event = args.event;
             var me = event.data;
@@ -350,46 +313,46 @@ ii.Class({
             }
         },
 
-        setStatus: function(status) {
-			var me = this;
+        setStatus: function (status) {
+            var me = this;
 
-			fin.cmn.status.setStatus(status);
-		},
-		
-		dirtyCheck: function(me) {
+            fin.cmn.status.setStatus(status);
+        },
 
-			return !fin.cmn.status.itemValid();
-		},
-		
-		modified: function () {
+        dirtyCheck: function (me) {
+
+            return !fin.cmn.status.itemValid();
+        },
+
+        modified: function () {
             var args = ii.args(arguments, {
                 modified: { type: Boolean, required: false, defaultValue: true }
             });
             var me = this;
 
             parent.parent.fin.appUI.modified = args.modified;
-			if (args.modified)
-				me.setStatus("Edit");
+            if (args.modified)
+                me.setStatus("Edit");
         },
-		
-		setLoadCount: function(me, activeId) {
-			var me = this;
 
-			me.loadCount++;
-			me.setStatus("Loading");
-			$("#messageToUser").text("Loading");
-			$("#pageLoading").fadeIn("slow");
-		},
-		
-		checkLoadCount: function() {
-			var me = this;
+        setLoadCount: function (me, activeId) {
+            var me = this;
 
-			me.loadCount--;
-			if (me.loadCount <= 0) {
-				me.setStatus("Loaded");
-				$("#pageLoading").fadeOut("slow");
-			}
-		},
+            me.loadCount++;
+            me.setStatus("Loading");
+            $("#messageToUser").text("Loading");
+            $("#pageLoading").fadeIn("slow");
+        },
+
+        checkLoadCount: function () {
+            var me = this;
+
+            me.loadCount--;
+            if (me.loadCount <= 0) {
+                me.setStatus("Loaded");
+                $("#pageLoading").fadeOut("slow");
+            }
+        },
 
         resizeControls: function () {
             var me = this;
@@ -405,9 +368,7 @@ ii.Class({
             me.fiscalYear.setData(me.years);
             me.fiscalYear.select(0, me.fiscalYear.focused);
             me.fiscalYearId = me.fiscalYear.data[me.fiscalYear.indexSelected].id;
-            me.annualInformationStore.fetch("userId:[user],fscYear:" + me.fiscalYearId, me.annualInformationsLoaded, me);
             me.resizeControls();
-			me.checkLoadCount();
         },
 
         jdeCompanysLoaded: function (me, activeId) {
@@ -417,7 +378,7 @@ ii.Class({
             }
 
             $("#JDECompany").multiselect("refresh");
-			me.checkLoadCount();
+            me.checkLoadCount();
         },
 
         actionYearChanged: function () {
@@ -428,52 +389,36 @@ ii.Class({
             else
                 me.fiscalYearId = 0;
 
-            me.annualInformationStore.fetch("userId:[user],fscYear:" + me.fiscalYearId, me.annualInformationsLoaded, me);
-            me.hirNodeSingleLoaded(me.hirNodeSelected);
             me.modified(true);
-        },
-
-        weekPeriodYearsLoaded: function (me, activeId) {
-
-            me.currentFiscalYearId = me.weekPeriodYears[0].yearId;
-			me.checkLoadCount();
         },
 
         houseCodeLoaded: function (me, activeId) {
 
             if (me.houseCodes.length > 0) {
+                me.houseCodeId = me.houseCodes[0].id;
                 me.job.fetchingData();
                 me.houseCodeJobStore.reset();
-                me.houseCodeJobStore.fetch("userId:[user],houseCodeId:" + me.houseCodes[0].id, me.houseCodeJobsLoaded, me);
+                me.houseCodeJobStore.fetch("userId:[user],houseCodeId:" + me.houseCodeId, me.houseCodeJobsLoaded, me);
             }
         },
 
         houseCodeJobsLoaded: function (me, activeId) {
 
-            //me.houseCodeJobs.unshift(new fin.bud.deleteBudget.HouseCodeJob({ id: 0, jobNumber: "", jobTitle: "[ALL]", jobId: 0 }));
-            me.job.reset();
+            me.houseCodeJobs.unshift(new fin.bud.deleteBudget.HouseCodeJob({ id: 0, jobNumber: "", jobTitle: "[ALL]", jobId: 0 }));
             me.job.setData(me.houseCodeJobs);
-            if (me.houseCodeJobs.length > 0) {
-                me.job.select(0, me.job.focused);
-                me.jobId = me.houseCodeJobs[me.job.indexSelected].jobId;
-                me.annualBudgetStore.fetch("userId:[user],hcmHouseCode:" + me.houseCodes[0].id + ",fscYear:" + me.fiscalYearId + ",hcmJob:" + me.jobId, me.annualBudgetsLoaded, me);
-            }
-            else
-                me.jobId = 0;
-
-            //me.anchorDelete.display(ui.cmn.behaviorStates.enabled);
+            me.job.select(0, me.job.focused);
+            me.jobId = 0;
         },
 
         actionJobChanged: function () {
             var me = this;
 
-            if (me.job.indexSelected >= 0) {
+            if (me.job.indexSelected > 0) {
                 me.jobId = me.houseCodeJobs[me.job.indexSelected].jobId;
-                me.annualBudgetStore.fetch("userId:[user],hcmHouseCode:" + me.houseCodes[0].id + ",fscYear:" + me.fiscalYearId + ",hcmJob:" + me.jobId, me.annualBudgetsLoaded, me);
+                me.annualBudgetStore.fetch("userId:[user],hcmHouseCode:" + me.houseCodeId + ",fscYear:" + me.fiscalYearId + ",hcmJob:" + me.jobId, me.annualBudgetsLoaded, me);
             }
             else {
                 me.jobId = 0;
-                //me.anchorDelete.display(ui.cmn.behaviorStates.enabled);
             }
 
             me.modified(true);
@@ -481,32 +426,17 @@ ii.Class({
 
         annualBudgetsLoaded: function (me, activeId) {
 
-            if (me.validateBudget())
-                me.anchorDelete.display(ui.cmn.behaviorStates.enabled);
-            else
-                me.anchorDelete.display(ui.cmn.behaviorStates.disabled);
-        },
-
-        annualInformationsLoaded: function (me, activeId) {
-
-            if (me.annualInformations.length > 0)
-                me.cutOffDate = new Date(me.annualInformations[0].cutOffDate);
-            else
-                me.cutOffDate = "";
         },
 
         actionSearchItem: function fin_bud_deleteBudget_UserInterface_actionSearchItem() {
             var args = ii.args(arguments, {
-                event: { type: Object} // The (key) event object
+                event: { type: Object } // The (key) event object
             });
             var event = args.event;
             var me = event.data;
 
             if (event.keyCode == 13) {
-                if (!parent.fin.cmn.status.itemValid())
-                    me.appUnit.setValue("");
-                else
-                    me.actionUnitLoad();
+                me.actionUnitLoad();
             }
         },
 
@@ -516,7 +446,6 @@ ii.Class({
             if (me.appUnit.getValue() == "") return;
 
             $("#AppUnitText").addClass("Loading");
-
             me.unitStore.fetch("userId:[user],unitBrief:" + me.appUnit.getValue() + ",", me.actionUnitsLoaded, me);
         },
 
@@ -525,333 +454,184 @@ ii.Class({
             $("#AppUnitText").removeClass("Loading");
 
             if (me.units.length <= 0) {
-
-                ii.trace("Could not load the said House Code.", ii.traceTypes.Information, "Info");
-                alert("There is no corresponding House Code available or you do not have enough permission to access it.");
-
+                ii.trace("could not load the said Unit.", ii.traceTypes.Information, "Info");
+                alert("There is no corresponding Unit available or you do not have enough permission to access it.");
                 return;
             }
 
-            me.appUnit.setValue(me.units[0].description);
+            $("#HirUnit").val(me.units[0].description);
             me.hirNodeCurrentId = me.units[0].hirNode;
+            me.setLoadCount();
+            me.hirOrgLoad("search");
+        },
 
-            var found = false;
+        hirOrgLoad: function () {
+            var args = ii.args(arguments, {
+                flag: { type: String, required: false }
+            });
+            var me = this;
 
-            for (var index = 0; index < me.hirNodesList.length; index++) {
-                if (me.hirNodesList[index].id == me.hirNodeCurrentId) {
-                    found = true;
-                    break;
-                }
-            }
+            me.hirOrgStore.reset();
 
-            if (!found) {
-                ii.trace("Hirnodes Loading", ii.traceTypes.Information, "Info");
-                //$("#hirNodeLoading").show();
-				me.setLoadCount();
-                me.hirOrgStore.reset();
-                me.hirOrgStore.fetch("userId:[user],hirOrgId:" + me.hirNodeCurrentId + ",hirNodeSearchId:" + me.hirNodeCurrentId + ",ancestors:true", me.hirOrgsLoaded, me);
-            }
+            if (args.flag)
+                me.hirOrgStore.fetch("userId:[user],hirOrgId:" + me.hirNodeCurrentId + ",hirNodeSearchId:" + me.hirNodeCurrentId + ",ancestors:true,sFilter:false", me.hirOrgsLoaded, me);
             else
-                me.selectNode();
+                me.hirOrgStore.fetch("userId:[user],hirOrgId:" + me.hirNodeCurrentId + ",ancestors:true,sFilter:false", me.hirOrgsLoaded, me);
+
+            ii.trace("Organization nodes loading", ii.traceTypes.Information, "Info");
         },
 
-        hirOrgsLoaded: function fin_bud_deleteBudget_UserInterface_hirOrgsLoaded(me, activeId) {
+        hirOrgsLoaded: function (me, activeId) {
 
-            var childNodesCount = 0;
-            var found = false;
+            $("#hirOrg").html("");
 
-            me.hirNodesTemp = [];
+            if (me.orgHierarchy)
+                if (me.orgHierarchy.selectedNodes.length > 0)
+                    me.prevSelectedNodes = me.orgHierarchy.selectedNodes;
 
-            for (var index = 0; index < me.hirOrgs.length; index++) {
-                if (me.hirOrgs[index].hirLevel != -1) {
-                    found = false;
+            me.orgHierarchy = new ui.ctl.Hierarchy({
+                nodeStore: me.hirOrgStore,
+                domId: "hirOrg", //OrganizationHierarchy
+                baseClass: "iiHierarchy",
+                actionLevel: 9,
+                //actionCallback: function(node){ me.hirNodeOrgSelect(node); },
+                actionCallback: function (node) { me.hirNodeOrgSelect(node); },
+                topNode: me.hirOrgs[0],
+                currentNode: ii.ajax.util.findItemById(me.hirNodeCurrentId + "", me.hirOrgs),
+                hasSelectedState: false,
+                //sparse: false,
+                multiSelect: true,
+                //readOnly : me.userEditingOwnSecurity, //RMSESM
+                actionNodeSelect: function (node) { me.hirNodeOrgSelect(node); },
+                actionNodeChecked: function (node) { me.hirNodeOrgSelect(node); }
+            });
 
-                    for (var nodeIndex = 0; nodeIndex < me.hirNodesList.length; nodeIndex++) {
-                        if (me.hirNodesList[nodeIndex].id == me.hirOrgs[index].id) {
-                            found = true;
-                            break;
-                        }
-                    }
+            if (me.prevSelectedNodes)
+                me.orgHierarchy.setData(me.prevSelectedNodes);
 
-                    if (!found) {
-                        if (me.hirOrgs[index].hirLevel == 7)
-                            childNodesCount = 0;
-                        else
-                            childNodesCount = 1;
-
-                        var item = new fin.bud.deleteBudget.HirNode(me.hirOrgs[index].id
-							, me.hirOrgs[index].parent.id
-							, me.hirOrgs[index].hirLevel
-							, me.hirOrgs[index].hirLevelTitle
-							, 2
-							, me.hirOrgs[index].brief
-							, me.hirOrgs[index].title
-							, childNodesCount
-							)
-
-                        me.hirNodesTemp.push(item);
-                    }
-                }
-            }
-
-            me.actionAddNodes();
-            me.selectNode();
-
-            ii.trace("Hirnodes Loaded", ii.traceTypes.Information, "Info");
+            me.checkLoadCount();
         },
 
-        selectNode: function () {
+        lastSelectedNode: null,
+
+        isLevel7NodeSelected: function () {
             var me = this;
-            var hirNodeId = me.hirNodeCurrentId;
-            var found = true;
+            var selectedNodeId = me.lastSelectedNode.id;
+            var selectedNodes = me.orgHierarchy.selectedNodes;
 
-            while (found) {
-                for (var index = 0; index < me.hirNodesList.length; index++) {
-                    if (me.hirNodesList[index].id == hirNodeId) {
-                        var parentId = me.hirNodesList[index].nodeParentId;
-                        var parentNode = $("#liNode" + parentId)[0];
-                        hirNodeId = parentId;
-
-                        if (parentNode != undefined) {
-                            found = true;
-
-                            if (parentNode.className == "expandable" || parentNode.className == "expandable lastExpandable")
-                                $("#liNode" + hirNodeId).find(">.hitarea").click();
-                        }
-
-                        break;
-                    }
-                    else
-                        found = false;
-                }
-            }
-
-            me.hirNodeSingleLoaded(me.hirNodeCurrentId);
-            $("#liNode" + me.hirNodeCurrentId).focus();
+            return (me.lastSelectedNode.hirLevel == 7 && selectedNodes.length == 1 && selectedNodes[0].id == selectedNodeId);
         },
 
-        hirNodesLoaded: function (me, activeId) {
-
-            me.hirNodesTemp = me.hirNodes.slice();
-            me.actionAddNodes();
-        },
-
-        actionAddNodes: function () {
-            var me = this;
-            var index = -1;
-            var hirNode = 0;
-            var hirParentNode = 0;
-            var hirNodeTitle = "";
-            var childNodeCount = 0;
-            var nodeList = "";
-            var treeNode = null;
-
-            for (index = 0; index < me.hirNodesTemp.length; index++) {
-                hirNode = me.hirNodesTemp[index].id;
-                hirParentNode = me.hirNodesTemp[index].nodeParentId;
-                hirNodeTitle = me.hirNodesTemp[index].title;
-                childNodeCount = me.hirNodesTemp[index].childNodeCount;
-                nodeList = "";
-                treeNode = null;
-
-                //set up the edit tree
-                //add the item underneath the parent list
-                me.actionNodeAppend(hirNode, hirNodeTitle, hirParentNode, childNodeCount);
-            }
-
-            me.storeHirNodes();
-
-            if (me.hirNodePreviousSelected == 0) {
-                me.hirNodeSingleLoaded(me.hirNodesTemp[0].id);
-            }
-
-            //$("#pageLoading").hide();
-            //$("#hirNodeLoading").hide();
-			me.checkLoadCount();
-        },
-
-        actionNodeAppend: function () {
+        hirNodeOrgSelect: function () {
             var args = ii.args(arguments, {
-                hirNode: { type: Number }
-				, hirNodeTitle: { type: String }
-				, hirNodeParent: { type: Number }
-				, childNodeCount: { type: Number }
+                node: { type: ui.ctl.Hierarchy.Node }
             });
             var me = this;
 
-            nodeHtml = "<li id=\"liNode" + args.hirNode + "\">"
-		    	+ "<span id=\"span" + args.hirNode + "\" class='TreeNodeText'>" + args.hirNodeTitle + "</span>";
+            me.lastSelectedNode = args.node;
+            me.modified(true);
 
-            //add a list holder if the node has children
-            if (args.childNodeCount != 0) {
-                nodeHtml += "<ul id=\"ulEdit" + args.hirNode + "\"></ul>";
-            }
-
-            nodeHtml += "</li>";
-
-            if ($("#liNode" + args.hirNodeParent)[0] == undefined)
-                args.hirNodeParent = 0;
-
-            var treeNode = $(nodeHtml).appendTo("#ulEdit" + args.hirNodeParent);
-            $("#ulEdit0").treeview({ add: treeNode });
-
-            //link up the node
-            $("#span" + args.hirNode).bind("click", function () {
-                me.hirNodeSelect(args.hirNode);
-            });
-
-            $("#liNode" + args.hirNode).find(">.hitarea").bind("click", function () {
-                me.hitAreaSelect(args.hirNode);
-            });
-
-            return nodeHtml;
-        },
-
-        storeHirNodes: function () {
-            var me = this;
-            var index = 0;
-
-            for (index = 0; index < me.hirNodesTemp.length; index++) {
-                me.hirNodesList.push(me.hirNodesTemp[index]);
-            }
-        },
-
-        hirNodeSingleLoaded: function () {
-            var args = ii.args(arguments, {
-                hirNode: { type: Number }
-            });
-            var me = this;
-
-            if (!parent.fin.cmn.status.itemValid())
-                return;
-
-            var index = me.getNodeIndex(args.hirNode);
-            me.jobId = 0;
-            me.reason.value = "";
-            me.anchorDelete.display(ui.cmn.behaviorStates.disabled);
-            me.hirNodeSelected = me.hirNodesList[index].id;
-
-            if (me.hirNodesList[index].hirLevel == 7) {
+            if (me.isLevel7NodeSelected()) {
+                me.houseCodeStore.fetch("userId:[user],hirNodeId:" + args.node.id, me.houseCodeLoaded, me);
                 $("#divJob").show();
-                me.houseCodeStore.fetch("userId:[user],hirNodeId:" + me.hirNodeSelected, me.houseCodeLoaded, me);
             }
             else
                 $("#divJob").hide();
-
-            if (me.hirNodePreviousSelected > 0) {
-                $("#span" + me.hirNodePreviousSelected).replaceClass("TreeNodeTextSelected", "TreeNodeText");
-            }
-
-            me.hirNodePreviousSelected = me.hirNodeSelected;
-
-            $("#span" + me.hirNodeSelected).replaceClass("TreeNodeText", "TreeNodeTextSelected")
-        },
-
-        hitAreaSelect: function (nodeId) {
-            var me = this;
-
-            if ($("#ulEdit" + nodeId)[0].innerHTML == "") {
-                //$("#hirNodeLoading").show();
-				me.setLoadCount();
-                me.hirNodeStore.fetch("userId:[user],hirNodeParent:" + nodeId + ",", me.hirNodesLoaded, me);
-            }
-        },
-
-        hirNodeSelect: function (nodeId) {
-            var me = this;
-
-            me.hirNodeSingleLoaded(nodeId);
-        },
-
-        getNodeIndex: function () {
-            var args = ii.args(arguments, {
-                hirNode: { type: Number }
-            });
-            var me = this;
-            var index = 0;
-
-            for (index = 0; index < me.hirNodesList.length; index++) {
-                if (me.hirNodesList[index].id == args.hirNode)
-                    return index;
-            }
-
-            return 0;
-        },
-
-        validateBudget: function () {
-            var me = this;
-            var date = new Date();
-
-            if (me.currentFiscalYearId == me.fiscalYearId || date <= me.cutOffDate) {
-                return true;
-            }
-
-            return false;
-        },
-
-        actionClearItem: function () {
-            var me = this;
-
-            me.reason.value = "";
-            me.anchorDelete.display(ui.cmn.behaviorStates.disabled);
         },
 
         actionDeleteItem: function () {
-            var me = this;
-
-            var isHouseCodeMode = $('#rdHouseCode').is(':checked');
-            if (!isHouseCodeMode) {
-                if (!confirm("Are you sure you want to delete the budgeting information in selected JDE Company(s)  permanently?"))
-                    return false;
-
-                me.actionSaveItem();
-                return;
-            }
-
-
-            if (!me.hirNodeSelected)
-                return;
-
-            var jobTitle = me.houseCodeJobs[me.job.indexSelected].jobNumber + " - " + me.houseCodeJobs[me.job.indexSelected].jobTitle;
-
-            if (me.annualBudgets.length > 0) {
-                if (me.annualBudgets[0].approved) {
-                    alert("The selected budget is already approved. So you cannot delete this budget.");
-                    return;
-                }
-            }
-            else {
-                alert("Budgeting information is not available for the selected House Code [" + me.houseCodes[0].name + "] and Job [" + jobTitle + "].");
-                return;
-            }
-
-            if (!confirm("Are you sure you want to delete the budgeting information of the House Code [" + me.houseCodes[0].name + "] and Job [" + jobTitle + "] permanently?"))
-                return false;
-
-            me.actionSaveItem();
-        },
-
-        actionSaveItem: function () {
             var args = ii.args(arguments, {});
             var me = this;
             var item = [];
             var errorMessage = "";
+            var message = "";
+
+            me.validator.forceBlur();
+
+            var beforeSubmit = function () {
+                me.setStatus("Loading");
+                $("#messageToUser").text("Deleting");
+                $("#pageLoading").fadeIn("slow");
+            }
+
+            var afterSubmit = function () {
+                me.setStatus("Loaded");
+                $("#messageToUser").text("Normal");
+                $("#pageLoading").fadeOut("slow");
+            }
+
+            if (!me.reason.value) {
+                alert('Please enter delete reason');
+                return;
+            }
+
+            var budSubmit = function (submitXml, callback) {
+
+                beforeSubmit();
+                var data = 'moduleId=bud&requestId=1&requestXml=' + encodeURIComponent(submitXml) + '&&targetId=iiTransaction';
+                jQuery.post('/net/crothall/chimes/fin/bud/act/Provider.aspx', data, function (data, status) {
+
+                    if (status == "success") {
+                        me.modified(false);
+                        me.setStatus("Deleted");
+                        alert("Budgeting data deleted successfully.");
+                    }
+                    else {
+                        me.setStatus("Error");
+                        alert("Failed to delete budgets");
+                    }
+
+                    callback(data);
+                    afterSubmit();
+                });
+            }
 
             var isHouseCodeMode = $('#rdHouseCode').is(':checked');
 
-            me.validator.forceBlur();
+            if (!isHouseCodeMode) {
+
+                if (!confirm("Are you sure you want to delete the budgeting information on selected JDE company(s)?"))
+                    return false;
+
+                ///<transaction id="1"><budAnnualBudgetDelete id="0" houseCodeId="415" yearId="8" jobId="1" reason="test"/></transaction>
+
+                var criteriaXml = '<transaction id="1"><budAnnualBudgetDelete id="0" houseCodeId="0" jobId="0" \
+                        jdeCompanys="' + $('#JDECompany').val() + '" yearId="' + me.fiscalYearId + '" reason="' + me.reason.value + '" /></transaction>';
+
+                budSubmit(criteriaXml, function () {
+
+                });
+
+                //budRequest(criteriaXml, function (responseXml) {
+                //    partialBudgetDeleteed = $('item', $(responseXml)).length > 0;
+                //    if (partialBudgetDeleteed && !confirm('1 or more budget already deleteed, do you want to continue to delete all the selected budgets?')) {
+                //        me.setStatus("Loaded");
+                //        $("#pageLoading").fadeOut("slow");
+                //        return;
+                //    }
+                //    else {
+                //        me.deleteStore.reset();
+                //        me.deleteStore.fetch("userId:[user],hirNode:,jdeCompanys:" + $('#JDECompany').val() + ",yearId:" + me.fiscalYearId + ",jobId:0", me.deleteItemsLoaded, me);
+                //    }
+                //});
+                return;
+            }
 
             // Check to see if the data entered is valid
             if (isHouseCodeMode && !me.validator.queryValidity(true)) {
                 errorMessage += "In order to save, the errors on the page must be corrected.\n";
             }
 
-            if (me.reason.value == "") {
-                errorMessage += "Reason field is required. Please make an entry.\n";
-            }
+            var selectedNodes = [];
+            var selectedNames = [];
 
-            if (!me.hirNodeSelected && isHouseCodeMode) {
-                errorMessage += "Please select a house code on the left panel.\n";
+            $.each(me.orgHierarchy.selectedNodes, function (index, item) {
+                selectedNodes.push(item.id);
+                selectedNames.push(item.fullPath.substr(item.fullPath.lastIndexOf('\\') + 1));
+            });
+
+            if (selectedNodes.length == 0) {
+                errorMessage += "Please select a node on the left panel.\n";
             }
 
             if (errorMessage != "") {
@@ -859,12 +639,61 @@ ii.Class({
                 return false;
             }
 
-            me.setStatus("Saving");
-			
-			$("#messageToUser").text("Saving");
-			$("#pageLoading").fadeIn("slow");
+            if (!confirm("Are you sure you want to delete the budgeting information for the " + selectedNames.join(',') + "?"))
+                return false;
 
-            item = new fin.bud.deleteBudget.AnnualBudget(0, "", "", false, 0);
+            // me.setStatus("Loading");
+            // $("#messageToUser").text("Deleting");
+            // $("#pageLoading").fadeIn("slow");
+
+            var jobId = me.isLevel7NodeSelected() ? me.jobId : 0;
+            var criteriaXml = '<transaction id="1"><budAnnualBudgetDelete id="0" houseCodeId="0" jobId="0" \
+                        hirNodes="' + selectedNodes.join('~') + '" yearId="' + me.fiscalYearId + '" reason="' + me.reason.value + '" /></transaction>';
+
+            budSubmit(criteriaXml, function () {
+
+            });
+
+            //budRequest(criteriaXml, function (responseXml) {
+            //    partialBudgetDeleteed = $('item', $(responseXml)).length > 0;
+            //    if (partialBudgetDeleteed && !confirm('1 or more budget already deleteed, do you want to continue to delete all the selected budgets?')) {
+            //        me.setStatus("Loaded");
+            //        $("#pageLoading").fadeOut("slow");
+            //        return;
+            //    }
+            //    else {
+            //        me.deleteStore.reset();
+            //        me.deleteStore.fetch("userId:[user],hirNode:" + selectedNodes.join('~') + ",yearId:" + me.fiscalYearId + ",jobId:" + jobId, me.deleteItemsLoaded, me);
+            //    }
+            //});
+        },
+
+        deleteItemsLoaded: function (me, activeId) {
+
+            if (me.deletes.length <= 0) {
+                me.setStatus("Loaded");
+                $("#pageLoading").fadeOut("slow");
+                alert("Budgeting data is either already deleteed or not available or not approved.");
+                return;
+            }
+
+            var pItems = [];
+            $.each(me.deletes, function (index, bItem) {
+                if (bItem.currentDeleteed == "false")
+                    pItems.push(bItem.houseCode);
+            });
+
+            if (pItems.length > 0) {
+                alert(pItems.join(', ') + ' already deleteed!');
+            }
+
+            if (me.deletes.length == pItems.length) {
+                me.setStatus("Loaded");
+                $("#pageLoading").fadeOut("slow");
+                return;
+            }
+
+            var item = new fin.bud.deleteBudget.AnnualBudget(0, "", "", false, false);
             var xml = me.saveXmlBuild(item);
 
             // Send the object back to the server as a transaction
@@ -887,24 +716,27 @@ ii.Class({
             var xml = "";
 
             var isHouseCodeMode = $('#rdHouseCode').is(':checked');
-
-            xml += '<budAnnualBudgetDelete';
-            xml += ' id="' + item.id + '"';
-
-            if (isHouseCodeMode)
-                xml += ' houseCodeId="' + me.houseCodes[0].id + '"';
-            else {
-                xml += ' houseCodeId="0"';
+            if (!isHouseCodeMode) {
+                xml += '<budAnnualBudgetDeleteUpdate';
+                xml += ' id="' + item.id + '"';
+                xml += ' hirNode=""';
+                xml += ' yearId="' + me.fiscalYearId + '"';
+                xml += ' jobId="' + me.jobId + '"';
                 xml += ' jdeCompanys="' + $('#JDECompany').val() + '"';
+                xml += '/>';
+            }
+            else {
+                $.each(me.orgHierarchy.selectedNodes, function (index, node) {
+                    xml += '<budAnnualBudgetDeleteUpdate';
+                    xml += ' id="' + item.id + '"';
+                    xml += ' hirNode="' + node.id + '"';
+                    xml += ' yearId="' + me.fiscalYearId + '"';
+                    xml += ' jobId="' + me.jobId + '"';
+                    xml += '/>';
+                });
             }
 
-            xml += ' yearId="' + me.fiscalYearId + '"';
-            xml += ' jobId="' + me.jobId + '"';
-            xml += ' reason="' + ui.cmn.text.xml.encode(me.reason.value) + '"';
-            xml += '/>';
-
             ii.trace("Xml Build", ii.traceTypes.Information, "Info");
-
             return xml;
         },
 
@@ -918,23 +750,23 @@ ii.Class({
             var item = transaction.referenceData.item;
             var status = $(args.xmlNode).attr("status");
 
-           $("#pageLoading").fadeOut("slow");
+            $("#pageLoading").fadeOut("slow");
 
             if (status == "success") {
-                me.actionClearItem();
                 me.modified(false);
-				me.setStatus("Saved");
-                ii.trace("Budget Deleted", ii.traceTypes.Information, "Info");
+                me.setStatus("Deleteed");
+                ii.trace("Budget Deleteed", ii.traceTypes.Information, "Info");
+                alert("Budgeting data deleteed successfully.");
             }
             else {
-				me.setStatus("Error");
-                alert("[SAVE FAILURE] Error while deleting the budget information: " + $(args.xmlNode).attr("message"));
+                me.setStatus("Error");
+                alert("[SAVE FAILURE] Error while deleteing the budget information: " + $(args.xmlNode).attr("message"));
             }
         }
     }
 });
 
 function main() {
-	fin.deleteBudgetUi = new fin.bud.deleteBudget.UserInterface();
-	fin.deleteBudgetUi.resize();
+    fin.deleteBudgetUi = new fin.bud.deleteBudget.UserInterface();
+    fin.deleteBudgetUi.resize();
 }
