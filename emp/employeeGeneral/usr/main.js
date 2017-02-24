@@ -1892,7 +1892,7 @@ ii.Class({
 				}
 				
 				me.job.fetchingData();
-				me.houseCodeJobStore.fetch("userId:[user],houseCodeId:" + me.houseCodeId, me.houseCodeJobsLoaded, me);
+				me.houseCodeJobStore.fetch("userId:[user],houseCodeId:" + me.houseCodeId + ",module:Employee", me.houseCodeJobsLoaded, me);
 				
 				index = ii.ajax.util.findIndexById(me.employeeGenerals[0].unionType.toString(), me.unionTypes);
 				if (index != undefined) 
@@ -2044,7 +2044,7 @@ ii.Class({
 			me.hirNode = me.houseCodes[0].hirNode;	
 			
 			me.job.fetchingData();
-			me.houseCodeJobStore.fetch("userId:[user],houseCodeId:" + me.houseCodeId, me.houseCodeJobsLoaded, me);
+			me.houseCodeJobStore.fetch("userId:[user],houseCodeId:" + me.houseCodeId + ",module:Employee", me.houseCodeJobsLoaded, me);
 			
 			me.employeePayrollCompany.fetchingData();
 			me.houseCodePayrollCompanyStore.fetch("userId:[user],houseCodeId:" + me.houseCodeId + ",listAssociatedCompanyOnly:true,", me.houseCodePayrollCompanysLoaded, me);
