@@ -379,8 +379,8 @@ var getViewPort = function () {
              { Id: 3, Description: 'Medical 3' },
              { Id: 4, Description: 'Medical 4' },
              { Id: 5, Description: 'Medical 5' },
-             { Id: 6, Description: 'Detenal 1' },
-             { Id: 7, Description: 'Detenal 2' }
+             { Id: 6, Description: 'Dental 1' },
+             { Id: 7, Description: 'Dental 2' }
         ]
     });
 
