@@ -2,14 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>Annualized Budget</title>
-
     <!-- style -->
     <link href="../../res/css/ext-all.css" rel="stylesheet" type="text/css" />
     <link href="../../res/css/xtheme-gray.css" rel="stylesheet" type="text/css" />
     <link href="../../res/css/all.css" rel="stylesheet" type="text/css" />
         <link href="/fin/cmn/usr/common.css" rel="stylesheet" type="text/css" />
  <!-- js -->
-
     <script src="../../res/references/jquery-1.4.1.js" type="text/javascript"></script>
     <script src="../../res/references/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script>
     <script src="../../res/references/ext-jquery-adapter.js" type="text/javascript"></script>
@@ -163,23 +161,26 @@
                         //alert(record.get('id') + ', ' + record.get('name') + ', ' + record.get('appUnit') + ', ' + record.get('brief'));
                         Bud.Context.setStickyHouseCode(records[0].get('appUnit'), records[0].get('id'), records[0].get('name'), records[0].get('brief'), records[0].get('hirNode'));
                     }
-                    jobCodeStore.load(hcmHouseCode);
+                    jobCodeStore.loadLocalData(hcmHouseCode);
                     houseCodeDetailStore.load(hcmHouseCode);
+                    onContextDataChanged();
                 }
             });
             //  }
 
             var jobCodeStore = new Bud.data.JobCodeStore();
-            jobCodeStore.on('load', storeLoaded);
-            jobCodeStore.on('beforeload', storeBeforeLoad);
-            jobCodeStore.on('load', function (store, records, options) {
-                if (records.length > 0) {
-                    jobCodeComboBox.setValue(records[0].get('jobId'));
-                    onContextDataChanged();
-                } else {
-                    jobCodeComboBox.setValue('');
-                }
-            });
+            //jobCodeStore.on('load', storeLoaded);
+            //jobCodeStore.on('beforeload', storeBeforeLoad);
+            //jobCodeStore.on('load', function (store, records, options) {
+            //    if (records.length > 0) {
+            //        //jobCodeComboBox.setValue(records[0].get('jobId'));
+            //        jobCodeComboBox.setValue(1);
+            //        onContextDataChanged();
+            //    } else {
+            //        jobCodeComboBox.setValue('');
+            //    }
+            //});
+            jobCodeStore.loadLocalData();
             var jobCodeComboBox = new Ext.form.ComboBox({
                 store: jobCodeStore,
                 displayField: 'jobTitle',
@@ -195,6 +196,9 @@
                 width: 150,
                 applyTo: 'job-code-holder'
             });
+
+            jobCodeComboBox.setValue(1);
+
 
             var onhhcBeforeSelect = function () {
                 if (fin.bud.modified()) {
@@ -217,8 +221,9 @@
                 currentHcmHouseCode = record.get('id');
                 //alert(record.get('id') + ', ' + record.get('name') + ', ' + record.get('appUnit') + ', ' + record.get('brief'));
                 Bud.Context.setStickyHouseCode(record.get('appUnit'), record.get('id'), record.get('name'), record.get('brief'), record.get('hirNode'));
-                jobCodeStore.load(record.get('id'));
+                jobCodeStore.loadLocalData(record.get('id'));
                 houseCodeDetailStore.load(record.get('id'));
+                onContextDataChanged();
             });
 
             houseCodeComboBox.on('blur', function (combo) {
@@ -233,8 +238,9 @@
                         currentHcmHouseCode = combo.getValue();
                         var record = houseCodeStore.getById(currentHcmHouseCode);
                         Bud.Context.setStickyHouseCode(record.get('appUnit'), record.get('id'), record.get('name'), record.get('brief'), record.get('hirNode'));
-                        jobCodeStore.load(currentHcmHouseCode);
+                        jobCodeStore.loadLocalData(currentHcmHouseCode);
                         houseCodeDetailStore.load(currentHcmHouseCode);
+                        onContextDataChanged();
                     }
                 }
             });
@@ -326,10 +332,10 @@
                     <td style="width: 300px">
                         <input type="text" id="house-code-holder" size="50" />
                     </td>
-                    <td style="width: 50px;display:none" class="label" >
+                    <td style="width: 50px;display:none" class="label">
                         Job:
                     </td>
-                    <td style="width: 175px;display:none" >
+                    <td style="width: 175px;display:none">
                         <input type="text" id="job-code-holder" size="25" />
                     </td>
                     <td style="width: 100px" class="label">
