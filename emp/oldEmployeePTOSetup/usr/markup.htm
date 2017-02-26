@@ -1,0 +1,411 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>Employee PTO Setup</title>
+		<script type="text/javascript">
+			var globalContext = "/net/crothall/chimes/fin/emp/act";
+			var js = document.createElement("script");
+			js.id = "loader";
+			js.type = "text/javascript";
+			js.src = "/fin/ii/framework/core/krn/sys/cycligent.js";
+			document.getElementsByTagName("head")[0].appendChild(js);
+		</script>
+	</head>
+
+	<!-- onload is necessary to overcome jQuery/IE7 $(document).ready bug when page loaded into an IFrame -->
+	<body id="appBody">
+		<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: white;">
+		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
+		        <img id="imgLoading" src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+		        <div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
+		    </div>
+		</div>
+		<div id="popupLoading" style="position: absolute; top: 0px; left: 0px; z-index: 6001; width: 1000px; height: 600px; background-color: white; display: none;">
+		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
+		        <center><img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/></center>
+		        <div id="popupMessageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
+		    </div>
+		</div>
+        <div class="pageHeader">
+			 <div style="float: left; width: 10%;"><div id="actionMenu" title="Menu of actions that you can perform.">Actions<span>&nbsp;</span></div></div>
+			 <div style="float: left; width: 80%;"><div id="header" class="header"></div></div>
+			 <div style="float: left; width: 10%;">&nbsp;</div>
+        </div>
+		<div style="clear:both;"></div>
+		<div id="itemStatusDiv">
+			<div id="itemStatusImage" class="itemStatusImage"></div>
+			<div id="itemModifiedImage" class="itemModifiedImage"></div>
+			<div id="itemStatusText">Loading, please wait...</div>
+		</div>
+		<div style="clear:both;"></div>
+		<div class="pageBody">
+			<div id="HouseCode" class="body" style="display:none;">
+				<div class="tableEditArea">
+					<div id="HouseCodeSection">
+						<div class="labelTextAreaSearch">
+							<span class="requiredFieldIndicator">&#149;</span>House Code:
+						</div>
+						<div id="houseCodeContainer" class="HouseCodeContainer"></div>
+					</div>
+					<div id="SearchTemplate">
+						<div class="labelTextAreaSearch">
+							<span class="requiredFieldIndicator">&#149;</span>PTO Year:
+						</div>
+	                    <div class="inputTextAreaSmall">
+	                    	<div id="PTOYearSearch"></div>
+						</div>
+						<div id="PTOTypeSearchContainer">
+							<div class="labelTextAreaSearch">
+								<span id="nonRequiredFieldIndicator">PTO Type:</span>
+							</div>
+		                    <div class="inputTextAreaSmall">
+		                    	<div id="PTOTypeSearch"></div>
+							</div>
+						</div>
+						<div id="AnchorSearch"></div>
+					</div>
+				</div>
+				<div style="clear:both; height:10px;"></div>
+			</div>
+			<div style="clear:both;"></div>
+			<div class="leftContainer">
+				<div id="PTOYearContainerLeft" style="display:none;">
+					<div class="contentArea">
+	                    <div class="body">
+	                        <div id="PTOYearGrid"></div>
+							<div style="clear:both;"></div>
+	                    </div>
+	                </div>
+				</div>
+				<div id="PTOTypeContainerLeft" style="display:none;">
+					<div class="contentArea">
+	                    <div class="body">
+	                        <div id="PTOTypeGrid"></div>
+							<div style="clear:both;"></div>
+	                    </div>
+	                </div>
+				</div>
+				<div id="PTOPlanTypeContainerLeft" style="display:none;">
+				 	<div class="contentArea">
+	                    <div class="body">
+	                        <div id="PTOPlanTypeGrid"></div>
+							<div style="clear:both;"></div>
+	                    </div>
+	                </div>
+				</div>
+				<div id="PTOPlanContainerLeft" style="display:none;">
+				 	<div class="contentArea">
+	                    <div class="body">
+	                        <div id="PTOPlanGrid"></div>
+							<div style="clear:both;"></div>
+	                    </div>
+	                </div>
+				</div>
+				<div id="PTODaysContainerLeft" style="display:none;">
+					<div class="contentArea">
+	                    <div class="body">
+	                        <div id="EmployeeGrid"></div>
+							<div style="clear:both;"></div>
+	                    </div>
+	                </div>
+				</div>
+			</div>
+			<div class="rightContainer">
+				<div id="ContainerArea">
+					<div id="PTOYearContainerRight" style="display:none;">
+						<div class="contentArea">
+		                    <div class="body">
+		 						<div id="TableEditArea">
+		                            <div class="labelTextArea">
+		                            	<span class="requiredFieldIndicator">&#149;</span>Year:
+									</div>
+		                            <div class="inputTextArea">
+		                            	<div id="PTOYear"></div>
+									</div>
+		                        	<div style="clear:both;"></div>
+								</div>
+		                    </div>
+		                </div>
+					</div>
+					<div id="PTOTypeContainerRight" style="display:none;">
+						<div class="contentArea">
+		                    <div class="body">
+		 						<div id="TableEditArea">
+		                            <div class="labelTextArea">
+		                            	<span class="requiredFieldIndicator">&#149;</span>Pay Code:
+									</div>
+		                            <div class="inputTextArea">
+		                            	<!--<select id="PayCodeType" name="PayCode" multiple="multiple" tabindex="1"></select>-->
+										<div id="PayCodeType"></div>
+									</div>
+		                        	<div style="clear:both;"></div>
+								</div>
+		                    </div>
+		                </div>
+					</div>
+					<div id="PTOPlanTypeContainerRight" style="display:none;">
+						<div class="contentArea">
+		                    <div class="body">
+		 						<div id="TableEditArea">
+		                            <div class="labelTextArea">
+		                            	<span class="requiredFieldIndicator">&#149;</span>Title:
+									</div>
+		                            <div class="inputTextArea">
+										<div id="PlanTypeTitle"></div>
+									</div>
+		                        	<div style="clear:both;"></div>
+								</div>
+                                <div id="TableEditArea">
+							        <div class="labelTextArea">
+								        <span class="requiredFieldIndicator">&#149;</span>Category:
+							        </div>
+		                            <div class="inputTextArea">
+		                    	        <div id="Category"></div>
+							        </div>
+                                    <div style="clear:both;"></div>
+						        </div>
+								<div id="TableEditArea">
+		                            <div class="labelTextArea">
+		                            	<span class="requiredFieldIndicator">&#149;</span>Minimum Hours:
+									</div>
+		                            <div class="inputTextArea">
+										<div id="MinHours"></div>
+									</div>
+		                        	<div style="clear:both;"></div>
+								</div>
+								<div id="TableEditArea">
+		                            <div class="labelTextArea">
+		                            	<span class="requiredFieldIndicator">&#149;</span>Maximum Hours:
+									</div>
+		                            <div class="inputTextArea">
+										<div id="MaxHours"></div>
+									</div>
+		                        	<div style="clear:both;"></div>
+								</div>
+								<div id="TableEditArea">
+		                            <div class="labelTextArea">
+		                            	<span class="requiredFieldIndicator">&#149;</span>Active:
+									</div>
+		                            <div class="inputTextArea">
+		                            	<div id="PlanTypeActive"></div>
+									</div>
+		                        	<div style="clear:both;"></div>
+								</div>
+		                    </div>
+		                </div>
+					</div>
+					<div id="PTOPlanContainerRight" style="display:none;">
+						<div class="contentArea">
+		                    <div class="body">
+		                    	<div id="PlanTemplate">
+			 						<div id="TableEditArea">
+			                            <div class="labelTextArea">
+			                            	<span class="requiredFieldIndicator">&#149;</span>Plan Name:
+										</div>
+			                            <div class="inputTextArea">
+			                            	<div id="PlanName"></div>
+										</div>
+			                        	<div style="clear:both;"></div>
+									</div>
+									<div id="TableEditArea">
+			                            <div class="labelTextArea">
+			                            	<span class="requiredFieldIndicator">&#149;</span>Plan Type:
+										</div>
+			                            <div class="inputTextArea">
+			                            	<div id="PTOPlanType"></div>
+										</div>
+			                        	<div style="clear:both;"></div>
+									</div>
+									<div id="TableEditArea">
+			                            <div class="labelTextArea">
+			                            	<span class="requiredFieldIndicator">&#149;</span>PTO Type:
+										</div>
+			                            <div class="inputTextArea">
+			                            	<div id="PTOType"></div>
+										</div>
+			                        	<div style="clear:both;"></div>
+									</div>
+									<div id="TableEditArea">
+			                            <div class="labelTextArea">
+			                            	<span class="requiredFieldIndicator">&#149;</span>PTO Year:
+										</div>
+			                            <div class="inputTextArea">
+			                            	<div id="PTOPlanYear"></div>
+										</div>
+			                        	<div style="clear:both;"></div>
+									</div>
+									<div id="TableEditArea">
+			                            <div class="labelTextArea">
+			                            	<span class="requiredFieldIndicator">&#149;</span>Start Date:
+										</div>
+			                            <div class="inputTextArea">
+			                            	<div id="StartDate"></div>
+										</div>
+			                        	<div style="clear:both;"></div>
+									</div>
+									<div id="TableEditArea">
+			                            <div class="labelTextArea">
+			                            	<span class="requiredFieldIndicator">&#149;</span>End Date:
+										</div>
+			                            <div class="inputTextArea">
+			                            	<div id="EndDate"></div>
+										</div>
+			                        	<div style="clear:both;"></div>
+									</div>
+									<div id="TableEditArea">
+			                            <div class="labelTextArea">
+			                            	<span class="requiredFieldIndicator">&#149;</span>Plan Days:
+										</div>
+			                            <div class="inputTextArea">
+			                            	<div id="PlanDays"></div>
+										</div>
+			                        	<div style="clear:both;"></div>
+									</div>
+									<div id="TableEditArea">
+			                            <div class="labelTextArea">
+			                            	<span class="requiredFieldIndicator">&#149;</span>Accrual:
+										</div>
+			                            <div class="inputTextArea">
+			                            	<div id="Accrual"></div>
+										</div>
+			                        	<div style="clear:both;"></div>
+									</div>
+									<div id="TableEditArea">
+			                            <div class="labelTextArea">
+			                            	<span class="requiredFieldIndicator">&#149;</span>Accrual Interval:
+										</div>
+			                            <div class="inputTextArea">
+			                            	<div id="AccrualInterval"></div>
+										</div>
+			                        	<div style="clear:both;"></div>
+									</div>
+									<div id="TableEditArea">
+			                            <div class="labelTextArea">
+			                            	<span class="requiredFieldIndicator">&#149;</span>Active:
+										</div>
+			                            <div class="inputTextArea">
+			                            	<div id="Active"></div>
+										</div>
+			                        	<div style="clear:both;"></div>
+									</div>
+								</div>
+								<div id="CloneTemplate" style="display:none;">
+									<div id="TableEditArea">
+			                            <div class="labelTextArea">
+			                            	<span class="requiredFieldIndicator">&#149;</span>Clone Year (From):
+										</div>
+			                            <div class="inputTextArea">
+			                            	<div id="PTOPlanYearFrom"></div>
+										</div>
+			                        	<div style="clear:both;"></div>
+									</div>
+									<div id="TableEditArea">
+			                            <div class="labelTextArea">
+			                            	<span class="requiredFieldIndicator">&#149;</span>Clone Year (To):
+										</div>
+			                            <div class="inputTextArea">
+			                            	<div id="PTOPlanYearTo"></div>
+										</div>
+			                        	<div style="clear:both;"></div>
+									</div>
+								</div>
+		                    </div>
+						</div>
+					</div>
+					<div id="PTOAssignmentContainerRight" style="display:none;">
+						<div class="contentArea">
+		                    <div class="body">
+		 						<div id="PTOAssignmentGrid"></div>
+								<div id="Paging">							
+						            <table cellpadding="0" cellspacing="0" style="width: 100%">
+				                        <tr class="gridFooter">
+				                            <td class="borderVertical"></td>					                            
+				                            <td>
+				                                <table cellpadding="0" cellspacing="0" style="width: 100%">
+				                                    <tr class="gridFooter">
+				                                    	<td style="width: 50px">
+				                                            &nbsp;<img id="imgAddEmployees" src="/fin/cmn/usr/media/Common/add.png" style="cursor: pointer" alt="Add Employees" title="Add Employees" />
+															<img id="imgRemoveEmployees" src="/fin/cmn/usr/media/Common/delete.png" style="cursor: pointer" alt="Remove Employee" title="Remove Employee" />
+												         </td>
+				                                        <td align="center">&nbsp;</td>				                                        
+														<td style="width: 20px;">&nbsp;</td>
+				                                    </tr>
+				                                </table>
+				                            </td>
+				                            <td class="borderVertical"></td>
+				                        </tr>
+				                        <tr><td class="borderHorizontal" colspan="5"></td></tr>
+				                    </table>							        
+								</div>
+								<div style="clear:both;"></div>
+		                    </div>
+		                </div>
+					</div>
+					<div id="PTODaysContainerRight" style="display:none;">
+						<div class="contentArea">
+							<div class="body">
+		                        <div id="PTODaysGrid"></div>
+								<div style="clear:both;"></div>
+		                    </div>
+		                </div>
+					</div>
+					<div id="ManagementPTODaysContainerRight" style="display:none;">
+						<div class="contentArea">
+							<div class="body">
+		                        <div id="ManagementPTODaysGrid"></div>
+								<div style="clear:both;"></div>
+		                    </div>
+		                </div>
+					</div>
+					<div id="PTOBalanceHoursContainerRight" style="display:none;">
+						<div class="contentArea">
+							<div class="body">
+		                        <div id="PTOBalanceHoursGrid"></div>
+								<div style="clear:both;"></div>
+		                    </div>
+		                </div>
+					</div>
+					<div id="PTOStartDateContainer">
+						<div id="TableEditArea">
+		                    <div class="labelTextArea">
+		                    	<span class="requiredFieldIndicator">&#149;</span>PTO Start Date:
+							</div>
+		                    <div class="inputTextArea">
+		                    	<div id="PTOStartDate"></div>
+							</div>
+		                	<div style="clear:both;"></div>
+						</div>
+					</div>
+				</div>
+				<div class="footer">
+	                <div id="AnchorSave"></div>
+	                <div id="AnchorNew"></div>
+	                <div id="AnchorUndo"></div>
+					<div id="AnchorClone"></div>
+	                <div style="clear:both;"></div>
+	            </div>
+			</div>
+			<div id="popupEmployee">
+				<div class="contentArea">
+					<div class="body">
+						<div class="header">Employees</div>
+						<div style="clear:both;"></div>
+						<div id="UnassignedEmployeeGrid"></div>
+						<div id="SelectAllDiv">
+							<div id="SelectAll"></div>
+							<div class="checkBoxLabel">Select all employees</div>
+						</div>
+						<div style="clear:both;"></div>
+						<div>
+	                    	<div id="AnchorOk"></div>
+							<div id="AnchorCancel"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="iiInputValidationMaster"></div>
+		<div id="backgroundPopup"></div>
+	</body>
+</html>

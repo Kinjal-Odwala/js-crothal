@@ -84,6 +84,13 @@ ii.init.register( function() {
 		, jobTitle: {type: String, required: false, defaultValue: ""}
 		, modified: {type: Boolean, required: false, defaultValue: false}
 	};
+
+	fin.emp.employeePTOSetup.ptoPlanAssignmentArgs = {
+	    id: { type: Number, required: false, defaultValue: 0 }
+		, ptoPlanId: { type: Number, required: false, defaultValue: 0 }
+		, ptoType: { type: fin.emp.employeePTOSetup.PTOType, required: false }
+		, title: { type: String, required: false, defaultValue: "" }
+	};
 	
 	fin.emp.employeePTOSetup.ptoDayArgs = {
 		id: {type: Number, required: false, defaultValue: 0}
@@ -232,6 +239,16 @@ ii.Class({
 			$.extend(this, args);
 		}
 	}
+});
+
+ii.Class({
+    Name: "fin.emp.employeePTOSetup.PTOPlanAssignment",
+    Definition: {
+        init: function () {
+            var args = ii.args(arguments, fin.emp.employeePTOSetup.ptoPlanAssignmentArgs);
+            $.extend(this, args);
+        }
+    }
 });
 
 ii.Class({
