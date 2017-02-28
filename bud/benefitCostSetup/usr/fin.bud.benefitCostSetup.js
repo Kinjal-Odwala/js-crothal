@@ -1,4 +1,4 @@
-﻿window.__bt__4f8a5045 = ['<div style="margin: 15px;">    <div id="itemStatusDiv" style="padding: 10px;">        <div class="itemStatusImage Normal" id="itemStatusImage">        </div>        <div class="itemModifiedImage" id="itemModifiedImage">        </div>        <div id="itemStatusText" class="itemStatusText">            Normal        </div>    </div>    <div style="padding: 10px;margin-top: 20px;" id="fsc-year-form">        <span>Fiscal Year: </span>        <span id="fsc-year-form-fscYear" name="fscYear" style="display:inline-block;"></span></div>    <table class="bud-grid-1" style="">        <thead>            <tr>                 <th style="width: 100px">Type                </th>                <th style="width: 100px">Name                </th>                <th style="width: 110px">Single Coverage                </th>                <th style="width: 110px">Single + Spouse                </th>                <th style="width: 130px">Single + Dependant                </th>                <th style="width: 110px">Family Coverage                </th>                <th style="width: 80px">Life                </th>                                 <th style="width: 200px">Notes                </th>                <th style="width: 200px">House Codes                </th>                <th></th>            </tr>        </thead>        <tbody id="data-list">        </tbody>    </table>    <div style="padding: 10px">        <input type="button" id="addButton" value="Add New Row" />        <input type="button" id="submitButton" value="Submit" />    </div></div><div id="popup" class="popup">    <div class="housecodes-list-wrapper" style="width: 400px; padding: 20px; margin: 50px auto; background-color: white">        <h3>Edit House Codes</h3>        <div class="housecodes-list-container" style="overflow:auto;">            <table class="bud-grid-1" style="margin-top: 20px; width: 350px;">                <thead>                    <tr>                        <th style="width: 100px">House Code                        </th>                        <th><a href="#" id="addHouseCodeBtutton">Add</a></th>                    </tr>                </thead>                <tbody id="house-code-list">                </tbody>            </table>        </div>        <div style="padding: 10px">            <input type="button" id="applyHouseCodeButton" value="Apply" />            <input type="button" id="cancelHouseCodeButton" value="Cancel" />        </div>    </div></div>','<tr>     <td id="costType">    </td>     <td>        <input type="text" name="costName" />    </td>     <td>        <input type="text" name="singleCoverageCost" />    </td>    <td>        <input type="text" name="singleSpouseCost" />    </td>    <td>        <input type="text" name="singleDependantCost" />    </td>    <td>        <input type="text" name="familyCoverageCost" />    </td>    <td>        <input type="text" name="lifeCost" />    </td>       <td>        <input type="text" name="notes" maxlength="100"/>    </td>       <td >        <a href="#" id="houseCodes" name="houseCodes"></a>    </td></tr>','<tr>    <td id="houseCode">    </td></tr>',''];
+﻿window.__bt__c7e5aa1d = ['<div style="margin: 15px;">    <div id="itemStatusDiv" style="padding: 10px;">        <div class="itemStatusImage Normal" id="itemStatusImage">        </div>        <div class="itemModifiedImage" id="itemModifiedImage">        </div>        <div id="itemStatusText" class="itemStatusText">            Normal        </div>    </div>    <div style="padding: 10px;margin-top: 20px;" id="fsc-year-form">        <span>Fiscal Year: </span>        <span id="fsc-year-form-fscYear" name="fscYear" style="display:inline-block;"></span></div>    <table class="bud-grid-1" style="">        <thead>            <tr>                 <th style="width: 100px">Type                </th>                <th style="width: 100px">Name                </th>                <th style="width: 110px">Single Coverage                </th>                <th style="width: 110px">Single + Spouse                </th>                <th style="width: 130px">Single + Dependant                </th>                <th style="width: 110px">Family Coverage                </th>                <th style="width: 80px">Life                </th>                                 <th style="width: 200px">Notes                </th>                <th style="width: 200px">House Codes                </th>                <th></th>            </tr>        </thead>        <tbody id="data-list">        </tbody>    </table>    <div style="padding: 10px">        <input type="button" id="addButton" value="Add New Row" />        <input type="button" id="submitButton" value="Submit" />    </div></div><div id="popup" class="popup">    <div class="housecodes-list-wrapper" style="width: 400px; padding: 20px; margin: 50px auto; background-color: white">        <h3>Edit House Codes</h3>        <div class="housecodes-list-container" style="overflow:auto;">            <table class="bud-grid-1" style="margin-top: 20px; width: 350px;">                <thead>                    <tr>                        <th style="width: 100px">House Code                        </th>                        <th><a href="#" id="addHouseCodeBtutton">Add</a></th>                    </tr>                </thead>                <tbody id="house-code-list">                </tbody>            </table>        </div>        <div style="padding: 10px">            <input type="button" id="applyHouseCodeButton" value="Apply" />            <input type="button" id="cancelHouseCodeButton" value="Cancel" />        </div>    </div></div>','<tr>     <td id="costType">    </td>     <td>        <input type="text" name="costName" />    </td>     <td>        <input type="text" name="singleCoverageCost" />    </td>    <td>        <input type="text" name="singleSpouseCost" />    </td>    <td>        <input type="text" name="singleDependantCost" />    </td>    <td>        <input type="text" name="familyCoverageCost" />    </td>    <td>        <input type="text" name="lifeCost" />    </td>       <td>        <input type="text" name="notes" maxlength="100"/>    </td>       <td >        <a href="#" id="houseCodes" name="houseCodes"></a>    </td></tr>','<tr>    <td id="houseCode">    </td></tr>',''];
 
 if ((typeof Range !== "undefined") && !Range.prototype.createContextualFragment) {
     Range.prototype.createContextualFragment = function (html) {
@@ -379,8 +379,8 @@ var getViewPort = function () {
              { Id: 3, Description: 'Medical 3' },
              { Id: 4, Description: 'Medical 4' },
              { Id: 5, Description: 'Medical 5' },
-             { Id: 6, Description: 'Dental 1' },
-             { Id: 7, Description: 'Dental 2' }
+             { Id: 6, Description: 'Dental Only' },
+             { Id: 7, Description: 'Liberty Plan' }
         ]
     });
 
@@ -399,7 +399,7 @@ var getViewPort = function () {
     });
 
     bud.page.BenefitCostSetup = bine.extend(bine.Control, {
-        tpl: window.__bt__4f8a5045[0],
+        tpl: window.__bt__c7e5aa1d[0],
 
         dataList: null,
         $hcmHouseCodes: null,
@@ -529,21 +529,9 @@ var getViewPort = function () {
                         isValid: function (value) {
                             if (!value)
                                 return false;
-                            var dv = this;
 
-                            if (!dv.val('houseCodes'))
-                                return true;
-
-                            var duplicate = false;
-                            var houseCodes = (dv.val('houseCodes') || '').split(',');
-                            $.each(houseCodes, function (index, houseCode) {
-                                duplicate = bine.query(me.dataList.val()).where(function (i) { return i.costName == value && (i.houseCodes || '').split(',').indexOf(houseCode) >= 0; }).count() > 1;
-                                
-                                if (duplicate)
-                                    return false;
-                            });
+                            return true;
                             
-                            return !duplicate;
                             
                         }
                     };
@@ -591,7 +579,7 @@ var getViewPort = function () {
 
 
                     return new bine.DataView({
-                        tpl: window.__bt__4f8a5045[1], removable: true,
+                        tpl: window.__bt__c7e5aa1d[1], removable: true,
                         onDomReady: function () {
                             var dv = this;
                             dv.on('change', function (name,newValue) {
@@ -636,7 +624,7 @@ var getViewPort = function () {
 
                             });
 
-                            var costTypeComboBox = new ComboBox({ store: CostTypeStore, name: 'costType', editable: false, width: 80, listWidth: 80 });
+                            var costTypeComboBox = new ComboBox({ store: CostTypeStore, name: 'costType', editable: false, width: 110, listWidth: 110 });
                             dv.addField(costTypeComboBox);
                         }
                     }, {
@@ -649,7 +637,25 @@ var getViewPort = function () {
                         houseCodes: houseCodeConfig,
                         costType: {
                             type:'number',
-                            isValid: function (value) { return value; }
+                            isValid: function (value) {
+                                if (!value)
+                                    return false;
+                                var dv = this;
+
+                                if (!dv.val('houseCodes'))
+                                    return true;
+
+                                var duplicate = false;
+                                var houseCodes = (dv.val('houseCodes') || '').split(',');
+                                $.each(houseCodes, function (index, houseCode) {
+                                    duplicate = bine.query(me.dataList.val()).where(function (i) { return i.costType == value && (i.houseCodes || '').split(',').indexOf(houseCode) >= 0; }).count() > 1;
+
+                                    if (duplicate)
+                                        return false;
+                                });
+
+                                return !duplicate;
+                            }
                         }
                     });
 
@@ -697,7 +703,7 @@ var getViewPort = function () {
                     }
 
                     return new bine.DataView({
-                        tpl: window.__bt__4f8a5045[2], removable: true,
+                        tpl: window.__bt__c7e5aa1d[2], removable: true,
                         onDomReady: function () {
                             var dv = this;
                            
