@@ -203,11 +203,11 @@
                                 <input name="planTypeMaxHours" class="form-control input-sm" ng-model="ptoPlanType.ptoPlanTypeMaxHours" maxlength="2" ng-blur="onMaxHoursChange(ptoPlanType.ptoPlanTypeMaxHours)" pto-integer required/>
                             </div>
                         </div>
-                        <div class="row" ng-class="{'has-error':ptoForm.planTypeActive.$invalid}">
+                        <div class="row">
                             <label class="col-md-4 control-label">Active:</label>
                             <div class="col-md-4">
                                 <label>
-                                    <input name="planTypeActive" type="checkbox" ng-model="ptoPlanType.ptoPlanTypeActive" ng-value="ptoPlanType.ptoPlanTypeActive" ng-click="onPlanTypeActiveChange(ptoPlanType.ptoPlanTypeActive)" ng-required="true"/>
+                                    <input name="planTypeActive" type="checkbox" ng-model="ptoPlanType.ptoPlanTypeActive" ng-value="ptoPlanType.ptoPlanTypeActive" ng-click="onPlanTypeActiveChange(ptoPlanType.ptoPlanTypeActive)"/>
                                 </label>
                             </div>
                         </div>
@@ -431,24 +431,18 @@
                             </tbody>
                         </table>
                     </div>
+                </div>
             </div>
+        </tab>
+    </tabset>
+   </div>
+        <div ng-show="isPageLoading()">
+                <div class="overlay"></div>
+                <div class="spinner">
+                    <span class="glyphicon glyphicon-refresh glyphicon-spin"></span>{{loadingTitle}}
+                </div>
         </div>
-    </tab>
-</tabset>
-    
+    </form>
 </div>
-<div ng-show="isPageLoading()">
-        <div class="overlay"></div>
-        <div class="spinner">
-            <span class="glyphicon glyphicon-refresh glyphicon-spin"></span>{{loadingTitle}}
-        </div>
-</div>
-</form>
-</div>
-
-
-<script type="text/ng-template">
-    
-</script>
 
     
