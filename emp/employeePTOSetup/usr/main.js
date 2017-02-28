@@ -1,2589 +1,1391 @@
-ii.Import( "ii.krn.sys.ajax" );
-ii.Import( "ii.krn.sys.session" );
-ii.Import( "ui.ctl.usr.input" );
-ii.Import( "ui.ctl.usr.grid" );
-ii.Import( "fin.cmn.usr.util" );
-ii.Import( "ui.ctl.usr.toolbar" );
-ii.Import( "ui.cmn.usr.text" );
-ii.Import( "fin.cmn.usr.houseCodeSearch" );
-ii.Import( "fin.emp.employeePTOSetup.usr.defs" );
-
-ii.Style( "style", 1 );
-ii.Style( "fin.cmn.usr.common", 2 );
-ii.Style( "fin.cmn.usr.statusBar", 3 );
-ii.Style( "fin.cmn.usr.toolbar", 4 );
-ii.Style( "fin.cmn.usr.input", 5 );
-ii.Style( "fin.cmn.usr.grid", 6 );
-ii.Style( "fin.cmn.usr.dropDown", 7 );
-ii.Style( "fin.cmn.usr.dateDropDown", 8 );
-ii.Style( "fin.cmn.usr.button", 9 );
-ii.Style( "fin.cmn.usr.theme", 10 );
-ii.Style( "fin.cmn.usr.core", 11 );
-ii.Style( "fin.cmn.usr.multiselect", 12 );
-
-var importCompleted = false;
-var iiScript = new ii.Script( "fin.cmn.usr.ui.core", function() { coreLoaded(); });
-
-function coreLoaded() { 
-	var iiScript = new ii.Script( "fin.cmn.usr.ui.widget", function() { widgetLoaded(); });
-}
-
-function widgetLoaded() { 
-	var iiScript = new ii.Script( "fin.cmn.usr.multiselect", function() { importCompleted = true; }); 
-}
-
-ii.Class({
-    Name: "fin.emp.employeePTOSetup.UserInterface",
-	Extends: "ui.lay.HouseCodeSearch",
-    Definition: {
-	
-		init: function() {
-			var args = ii.args(arguments, {});
-			var me = this;
-			
-			me.status = "";
-			me.action = "";
-			me.lastSelectedRowIndex = -1;
-			me.loadCount = 0;
-			me.weekStartDate = new Date(parent.fin.appUI.glbWeekStartDate);
-			me.weekEndDate = new Date(parent.fin.appUI.glbWeekStartDate);
-			me.weekEndDate.setDate(me.weekEndDate.getDate() + 6);
-			
-			me.gateway = ii.ajax.addGateway("emp", ii.config.xmlProvider);
-			me.cache = new ii.ajax.Cache(me.gateway);
-			me.transactionMonitor = new ii.ajax.TransactionMonitor(
-				me.gateway
-				, function(status, errorMessage) { me.nonPendingError(status, errorMessage); }
-			);
-
-			me.validator = new ui.ctl.Input.Validation.Master();
-			me.session = new ii.Session(me.cache);
-			
-			me.authorizer = new ii.ajax.Authorizer( me.gateway );
-			me.authorizePath = "\\crothall\\chimes\\fin\\PTOSetup\\EmployeePTO";
-			me.authorizer.authorize([me.authorizePath],
-				function authorizationsLoaded() {
-					me.authorizationProcess.apply(me);
-				},
-				me);
-
-			me.defineFormControls();			
-			me.configureCommunications();
-			me.setStatus("Loading");
-			me.modified(false);
-			
-			me.houseCodeSearch = new ui.lay.HouseCodeSearch();
-			if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
-			
-			if (parent.fin.appUI.houseCodeId == 0) //usually happens on pageLoad			
-				me.houseCodeStore.fetch("userId:[user],defaultOnly:true,", me.houseCodesLoaded, me);
-			else
-				me.houseCodesLoaded(me, 0);
-
-			$(window).bind("resize", me, me.resize);
-			
-			if (top.ui.ctl.menu) {
-				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
-			}
-		},
-		
-		authorizationProcess: function fin_emp_employeePTOSetup_UserInterface_authorizationProcess() {
-			var args = ii.args(arguments,{});
-			var me = this;
-
-			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
-
-			if (me.isAuthorized) {
-				$("#pageLoading").hide();
-				$("#pageLoading").css({
-					"opacity": "0.5",
-					"background-color": "black"
-				});
-				$("#messageToUser").css({ "color": "white" });
-				$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
-				$("#pageLoading").fadeIn("slow");
-
-				ii.timer.timing("Page displayed");
-				me.loadCount = 4;
-				me.session.registerFetchNotify(me.sessionLoaded, me);
-				me.ptoTypeStore.fetch("userId:[user]", me.ptoTypesLoaded, me);
-				me.ptoYearStore.fetch("userId:[user]", me.ptoYearsLoaded, me);
-				me.payCodeTypeStore.fetch("userId:[user]", me.payCodeTypesLoaded, me);
-				me.ptoPlanTypeStore.fetch("userId:[user],active:0", me.ptoPlanTypesLoaded, me);
-			}				
-			else
-				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
-
-			me.ptoYearShow = me.authorizer.isAuthorized(me.authorizePath + "\\PTOYears");
-			me.ptoTypeShow = me.authorizer.isAuthorized(me.authorizePath + "\\PTOTypes");
-			me.ptoPlanTypeShow = me.authorizer.isAuthorized(me.authorizePath + "\\PTOPlanTypes");
-			me.ptoPlanShow = me.authorizer.isAuthorized(me.authorizePath + "\\PTOPlans");
-			me.ptoAssignmentShow = me.authorizer.isAuthorized(me.authorizePath + "\\PTOAssignments");
-			me.ptoDayShow = me.authorizer.isAuthorized(me.authorizePath + "\\PTODays");
-			me.managementPTOAssignmentShow = me.authorizer.isAuthorized(me.authorizePath + "\\ManagementPTOAssignments");
-			me.managementPTODayShow = me.authorizer.isAuthorized(me.authorizePath + "\\ManagementPTODays");
-			me.ptoBalanceHourShow = me.authorizer.isAuthorized(me.authorizePath + "\\PTOBalanceHours");
-			me.ptoStartDateShow = me.authorizer.isAuthorized(me.authorizePath + "\\PTOStartDate");
-
-			if (!me.ptoYearShow)
-				$("#ptoYearAction").hide();
-			if (!me.ptoTypeShow)
-				$("#ptoTypeAction").hide();
-			if (!me.ptoPlanTypeShow)
-				$("#ptoPlanTypeAction").hide();
-			if (!me.ptoPlanShow)
-				$("#ptoPlanAction").hide();
-			if (!me.ptoAssignmentShow)
-				$("#ptoAssignmentAction").hide();
-			if (!me.ptoDayShow)
-				$("#ptoDayAction").hide();
-			if (!me.managementPTOAssignmentShow)
-				$("#ptoManagementAssignmentAction").hide();
-			if (!me.managementPTODayShow)
-				$("#ptoManagementDayAction").hide();
-			if (!me.ptoBalanceHourShow)
-				$("#ptoBalanceHourAction").hide();
-			if (!me.ptoStartDateShow)
-				$("#ptoStartDateAction").hide();
-				
-			if (me.ptoYearShow)
-				me.actionMenuItem("PTO Years");
-			else if (me.ptoTypeShow)
-				me.actionMenuItem("PTO Types");
-			else if (me.ptoPlanTypeShow)
-				me.actionMenuItem("PTO Plan Types");
-			else if (me.ptoPlanShow)
-				me.actionMenuItem("PTO Plans");
-			else if (me.ptoAssignmentShow)
-				me.actionMenuItem("PTO Assignments");
-			else if (me.ptoDayShow)
-				me.actionMenuItem("PTO Days");
-			else if (me.managementPTOAssignmentShow)
-				me.actionMenuItem("Management PTO Assignments");
-			else if (me.managementPTODayShow)
-				me.actionMenuItem("Management PTO Days");
-			else if (me.ptoBalanceHourShow)
-				me.actionMenuItem("PTO Balance Hours");
-			else if (me.ptoStartDateShow)
-				me.actionMenuItem("PTO Start Date");
-		},
-		
-		sessionLoaded: function fin_emp_employeePTOSetup_UserInterface_sessionLoaded() {
-			var args = ii.args(arguments, {
-				me: {type: Object}
-			});
-
-			ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
-		},
-
-		resize: function() {
-			var me = fin.employeePTOSetupUi;
-
-			me.ptoYearGrid.setHeight($(window).height() - 78);
-			me.ptoTypeGrid.setHeight($(window).height() - 78);
-			me.ptoPlanTypeGrid.setHeight($(window).height() - 78);
-			me.ptoPlanGrid.setHeight($(window).height() - 115);
-			me.ptoAssignmentGrid.setHeight($(window).height() - 155);
-			me.employeeGrid.setHeight($(window).height() - 115);
-			me.ptoDaysGrid.setHeight($(window).height() - 165);
-			me.managementPTODaysGrid.setHeight($(window).height() - 165);
-			me.ptoBalanceHoursGrid.setHeight($(window).height() - 165);
-
-			if (me.action == "PTO Years" || me.action == "PTO Types" || me.action == "PTO Plan Types")
-				$("#ContainerArea").height($(window).height() - 123);
-			else if (me.action == "PTO Assignments" || me.action == "Management PTO Assignments")
-				$("#ContainerArea").height($(window).height() - 127);
-			else
-				$("#ContainerArea").height($(window).height() - 160);
-		},
-
-		defineFormControls: function() {
-			var me = this;
-				
-			me.actionMenu = new ui.ctl.Toolbar.ActionMenu({
-				id: "actionMenu"
-			});
-				
-			me.actionMenu
-				.addAction({
-					id: "ptoYearAction",
-					brief: "PTO Years",
-					title: "To view or modify the PTO year information.",
-					actionFunction: function() { me.actionMenuItem("PTO Years"); }
-				})
-				.addAction({
-					id: "ptoTypeAction",
-					brief: "PTO Types",
-					title: "To view or modify the PTO type and pay codes association.",
-					actionFunction: function() { me.actionMenuItem("PTO Types"); }
-				})
-				.addAction({
-					id: "ptoPlanTypeAction",
-					brief: "PTO Plan Types",
-					title: "To view or modify the PTO plan type information.",
-					actionFunction: function() { me.actionMenuItem("PTO Plan Types"); }
-				})
-				.addAction({
-					id: "ptoPlanAction",
-					brief: "PTO Plans",
-					title: "To view or modify the PTO plan information.",
-					actionFunction: function() { me.actionMenuItem("PTO Plans"); }
-				})
-				.addAction({
-					id: "ptoAssignmentAction",
-					brief: "PTO Assignments",
-					title: "To view or modify the PTO assignments.",
-					actionFunction: function() { me.actionMenuItem("PTO Assignments"); }
-				})
-				.addAction({
-					id: "ptoDayAction",
-					brief: "PTO Days",
-					title: "To view or modify the PTO days.",
-					actionFunction: function() { me.actionMenuItem("PTO Days"); }
-				})
-				.addAction({
-					id: "ptoBalanceHourAction",
-					brief: "PTO Balance Hours",
-					title: "To view or modify the PTO employee balance hours.",
-					actionFunction: function() { me.actionMenuItem("PTO Balance Hours"); }
-				})
-				.addAction({
-					id: "ptoManagementAssignmentAction",
-					brief: "Management PTO Assignments",
-					title: "To view or modify the management PTO assignments.",
-					actionFunction: function() { me.actionMenuItem("Management PTO Assignments"); }
-				})
-				.addAction({
-					id: "ptoManagementDayAction",
-					brief: "Management PTO Days",
-					title: "To view or modify the management PTO days.",
-					actionFunction: function() { me.actionMenuItem("Management PTO Days"); }
-				})
-				.addAction({
-					id: "ptoStartDateAction",
-					brief: "PTO Start Date - House Code",
-					title: "To view or modify the PTO start date at house code level.",
-					actionFunction: function() { me.actionMenuItem("PTO Start Date"); }
-				});
-			
-			me.anchorSearch = new ui.ctl.buttons.Sizeable({
-				id: "AnchorSearch",
-				className: "iiButton",
-				text: "<span>&nbsp;&nbsp;Search&nbsp;&nbsp;</span>",
-				clickFunction: function() { me.actionSearchItem(); },
-				hasHotState: true
-			});
-
-			me.anchorSave = new ui.ctl.buttons.Sizeable({
-				id: "AnchorSave",
-				className: "iiButton",
-				text: "<span>&nbsp;&nbsp;Save&nbsp;&nbsp;</span>",
-				clickFunction: function() { me.actionSaveItem(); },
-				hasHotState: true
-			});
-			
-			me.anchorNew = new ui.ctl.buttons.Sizeable({
-				id: "AnchorNew",
-				className: "iiButton",
-				text: "<span>&nbsp;&nbsp;New&nbsp;&nbsp;</span>",
-				clickFunction: function() { me.actionNewItem(); },				
-				hasHotState: true
-			});
-			
-			me.anchorUndo = new ui.ctl.buttons.Sizeable({
-				id: "AnchorUndo",
-				className: "iiButton",
-				text: "<span>&nbsp;&nbsp;Undo&nbsp;&nbsp;</span>",
-				clickFunction: function() { me.actionUndoItem(); },
-				hasHotState: true
-			});
-			
-			me.anchorClone = new ui.ctl.buttons.Sizeable({
-				id: "AnchorClone",
-				className: "iiButton",
-				text: "<span>&nbsp;&nbsp;Clone&nbsp;&nbsp;</span>",
-				clickFunction: function() { me.actionCloneItem(); },
-				hasHotState: true
-			});
-
-			me.ptoYearSearch = new ui.ctl.Input.DropDown.Filtered({
-		        id: "PTOYearSearch",
-				formatFunction: function(type) { return type.name; }
-		    });
-			
-			me.ptoYearSearch.makeEnterTab()
-				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
-				.addValidation(function( isFinal, dataMap) {				
-	
-				if (me.ptoYearSearch.indexSelected == -1)
-					this.setInvalid("Please select the correct Year.");
-			});
-			
-			me.ptoTypeSearch = new ui.ctl.Input.DropDown.Filtered({
-		        id: "PTOTypeSearch",
-				formatFunction: function(type) { return type.name; }
-		    });
-			
-			me.ptoYearGrid = new ui.ctl.Grid({
-				id: "PTOYearGrid",
-				appendToId: "divForm",
-				allowAdds: false,
-				selectFunction: function( index ) { me.itemYearSelect(index); },
-				validationFunction: function() {
-					if (me.status != "New") 
-						return parent.fin.cmn.status.itemValid(); 
-				}
-			});
-
-			me.ptoYearGrid.addColumn("name", "name", "PTO Year", "PTO Year", null);
-			me.ptoYearGrid.capColumns();
-
-			me.ptoYear = new ui.ctl.Input.Text({
-		        id: "PTOYear",
-		        maxLength: 4,
-				changeFunction: function() { me.modified(); }
-		    });
-			
-			me.ptoYear.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation(ui.ctl.Input.Validation.required)
-				.addValidation( function( isFinal, dataMap ) {
-
-				if (me.ptoYear.getValue() == "") 
-					return;
-
-				if (!(/^\d{4}$/.test(me.ptoYear.getValue()))) {
-					this.setInvalid("Please enter valid year.");
-				}
-			});
-			
-			me.ptoTypeGrid = new ui.ctl.Grid({
-				id: "PTOTypeGrid",
-				appendToId: "divForm",
-				allowAdds: false,
-				selectFunction: function( index ) { me.itemPTOTypeSelect(index); },
-				validationFunction: function() {
-					if (me.status != "New")
-						return parent.fin.cmn.status.itemValid(); 
-				}
-			});
-
-			me.ptoTypeGrid.addColumn("name", "name", "PTO Type", "PTO Type", null);
-			me.ptoTypeGrid.capColumns();
-			
-//			$("#PayCodeType").multiselect({
-//				minWidth: 300
-//				, header: false
-//				, noneSelectedText: ""
-//				, selectedList: 4
-//				, multiple: true
-//				, click: function() { me.modified(true); }
-//				, selectedText: function(selected, total, list) {
-//					var selectedTitle = "";
-//					for (var index =0; index < list.length; index++) {
-//						var title = list[index].title.substring(list[index].title.indexOf("-") + 2);
-//						selectedTitle += (selectedTitle == "" ? title : ", " + title);
-//					}
-//					return selectedTitle;
-//				}
-//			});
-
-			me.payCodeType = new ui.ctl.Input.DropDown.Filtered({
-		        id: "PayCodeType",
-				formatFunction: function(type) { return type.brief + " - " + type.name; },
-				changeFunction: function() { me.modified(); }
-		    });
-
-			me.payCodeType.makeEnterTab()
-				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
-				.addValidation(function( isFinal, dataMap) {				
-
-				if ((this.focused || this.touched) && me.payCodeType.indexSelected == -1)
-					this.setInvalid("Please select the correct Pay Code.");
-			});
-
-			me.ptoPlanTypeGrid = new ui.ctl.Grid({
-				id: "PTOPlanTypeGrid",
-				appendToId: "divForm",
-				allowAdds: false,
-				selectFunction: function( index ) { me.itemPTOPlanTypeSelect(index); },
-				validationFunction: function() {
-					if (me.status != "New")
-						return parent.fin.cmn.status.itemValid(); 
-				}
-			});
-
-			me.ptoPlanTypeGrid.addColumn("title", "title", "Plan Type", "Plan Type", null);
-			me.ptoPlanTypeGrid.addColumn("minHours", "minHours", "Min Hours", "Minimum Hours", 100);
-			me.ptoPlanTypeGrid.addColumn("maxHours", "maxHours", "Max Hours", "Maximum Hours", 100);
-			me.ptoPlanTypeGrid.capColumns();
-
-			me.planTypeTitle = new ui.ctl.Input.Text({
-		        id: "PlanTypeTitle",
-		        maxLength: 64,
-				changeFunction: function() { me.modified(); }
-		    });
-
-			me.planTypeTitle.makeEnterTab()
-				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
-
-			me.planTypeActive = new ui.ctl.Input.Check({
-		        id: "PlanTypeActive",
-				changeFunction: function() { me.modified(); }
-		    });
-
-			me.minHours = new ui.ctl.Input.Text({
-		        id: "MinHours",
-				changeFunction: function() { me.modified(); },
-		        maxLength: 2
-		    });
-			
-			me.minHours.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
-				.addValidation( function( isFinal, dataMap ) {
-
-					var enteredText = me.minHours.getValue();
-
-					if (enteredText == "") return;
-
-					if (!(ui.cmn.text.validate.generic(enteredText, "^\\d+$")))
-						this.setInvalid("Please enter valid Minimum Hours.");
-				});
-
-			me.maxHours = new ui.ctl.Input.Text({
-		        id: "MaxHours",
-				changeFunction: function() { me.modified(); },
-		        maxLength: 2
-		    });
-			
-			me.maxHours.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
-				.addValidation( function( isFinal, dataMap ) {
-
-					var enteredText = me.maxHours.getValue();
-
-					if (enteredText == "") return;
-
-					if (!(ui.cmn.text.validate.generic(enteredText, "^\\d+$")))
-						this.setInvalid("Please enter valid Maximum Hours.");
-					else if (me.minHours.valid && me.minHours.getValue() > enteredText)
-						this.setInvalid("Maximum Hours should not be less than Minimum Hours.");
-				});
-
-			me.ptoPlanGrid = new ui.ctl.Grid({
-				id: "PTOPlanGrid",
-				appendToId: "divForm",
-				allowAdds: false,
-				selectFunction: function( index ) { me.itemPlanSelect(index); },
-				validationFunction: function() {
-					if (me.status != "New") 
-						return parent.fin.cmn.status.itemValid(); 
-				}
-			});
-
-			me.ptoPlanGrid.addColumn("title", "title", "Plan Name", "Plan Name", null);
-			me.ptoPlanGrid.addColumn("ptoType", "ptoType", "PTO Type", "PTO Type", 150, function( type ) { return type.name; });
-			me.ptoPlanGrid.capColumns();
-			
-			me.planName = new ui.ctl.Input.Text({
-		        id: "PlanName",
-		        maxLength: 64,
-				changeFunction: function() { me.modified(); }
-		    });
-			
-			me.planName.makeEnterTab()
-				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
-			
-			me.ptoPlanType = new ui.ctl.Input.DropDown.Filtered({
-		        id: "PTOPlanType",
-				formatFunction: function(type) { return type.title; },
-				changeFunction: function() { me.modified(); }
-		    });
-			
-			me.ptoPlanType.makeEnterTab()
-				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
-				.addValidation(function( isFinal, dataMap) {				
-
-				if ((this.focused || this.touched) && me.ptoPlanType.indexSelected == -1)
-					this.setInvalid("Please select the correct Plan Type.");
-			});
-			
-			me.ptoType = new ui.ctl.Input.DropDown.Filtered({
-		        id: "PTOType",
-				formatFunction: function(type) { return type.name; },
-				changeFunction: function() { me.modified(); }
-		    });
-			
-			me.ptoType.makeEnterTab()
-				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
-				.addValidation(function( isFinal, dataMap) {				
-
-				if ((this.focused || this.touched) && me.ptoType.indexSelected == -1)
-					this.setInvalid("Please select the correct PTO Type.");
-			});
-			
-			me.ptoPlanYear = new ui.ctl.Input.DropDown.Filtered({
-		        id: "PTOPlanYear",
-				formatFunction: function(type) { return type.name; },
-				changeFunction: function() { me.modified(); }
-		    });
-			
-			me.ptoPlanYear.makeEnterTab()
-				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
-				.addValidation(function( isFinal, dataMap) {				
-	
-				if ((this.focused || this.touched) && me.ptoPlanYear.indexSelected == -1)
-					this.setInvalid("Please select the correct Year.");
-			});
-			
-			me.startDate = new ui.ctl.Input.Date({
-		        id: "StartDate",
-				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
-		    });
-			
-			me.startDate.makeEnterTab()
-				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
-				.addValidation( function( isFinal, dataMap ) {
-					var enteredText = me.startDate.text.value;
-					
-					if (enteredText == "") 
-						return;
-					
-					if (me.ptoPlanGrid.activeRowIndex != -1) {
-						var startDate = new Date(me.ptoPlanGrid.data[me.ptoPlanGrid.activeRowIndex].startDate);
-						if (ui.cmn.text.date.format(startDate, "mm/dd/yyyy") != ui.cmn.text.date.format(new Date(enteredText), "mm/dd/yyyy"))
-							me.modified(true);
-					}
-
-					if (ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false)
-						this.setInvalid("Please enter valid date.");
-				});
-			
-			me.endDate = new ui.ctl.Input.Date({
-		        id: "EndDate",
-				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
-		    });
-			
-			me.endDate.makeEnterTab()
-				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
-				.addValidation( function( isFinal, dataMap ) {
-					var enteredText = me.endDate.text.value;
-					
-					if (enteredText == "") 
-						return;
-
-					if (me.ptoPlanGrid.activeRowIndex != -1) {
-						var endDate = new Date(me.ptoPlanGrid.data[me.ptoPlanGrid.activeRowIndex].endDate);
-						if (ui.cmn.text.date.format(endDate, "mm/dd/yyyy") != ui.cmn.text.date.format(new Date(enteredText), "mm/dd/yyyy"))
-							me.modified(true);
-					}
-
-					if (ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false)
-						this.setInvalid("Please enter valid date.");
-
-					if (new Date(enteredText) < new Date(me.startDate.text.value)) 
-						this.setInvalid("The End Date should not be less than Start Date.");
-				});
-				
-			me.planDays = new ui.ctl.Input.Text({
-		        id: "PlanDays",
-		        maxLength: 2,
-				changeFunction: function() { me.modified(); }
-		    });
-
-			me.planDays.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation(ui.ctl.Input.Validation.required)
-				.addValidation( function( isFinal, dataMap ) {
-
-				if (me.planDays.getValue() == "") 
-					return;
-
-				if (!(/^\d{1,2}$/.test(me.planDays.getValue()))) {
-					this.setInvalid("Please enter valid Plan Days.");
-				}
-			});
-
-			me.accrual = new ui.ctl.Input.Check({
-		        id: "Accrual",
-				changeFunction: function() {
-					me.modified();
-					if (me.accrual.check.checked)
-						me.accrualInterval.text.readOnly = false;
-					else {
-						me.accrualInterval.text.readOnly = true;
-						me.accrualInterval.setValue("0");
-					}
-				}
-		    });
-
-			me.accrualInterval = new ui.ctl.Input.Text({
-		        id: "AccrualInterval",
-		        maxLength: 3,
-				changeFunction: function() { me.modified(); }
-		    });
-
-			me.accrualInterval.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation(ui.ctl.Input.Validation.required)
-				.addValidation( function( isFinal, dataMap ) {
-
-				if (me.accrualInterval.getValue() == "") 
-					return;
-
-				if (!(/^\d{1,3}$/.test(me.accrualInterval.getValue()))) {
-					this.setInvalid("Please enter valid Accrual Interval.");
-				}
-			});
-			
-			me.active = new ui.ctl.Input.Check({
-		        id: "Active",
-				changeFunction: function() { me.modified(); }
-		    });
-
-			me.ptoPlanYearFrom = new ui.ctl.Input.DropDown.Filtered({
-		        id: "PTOPlanYearFrom",
-				formatFunction: function(type) { return type.name; },
-				changeFunction: function() { me.modified(); }
-		    });
-
-			me.ptoPlanYearFrom.makeEnterTab()
-				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
-				.addValidation(function( isFinal, dataMap) {				
-
-				if ((this.focused || this.touched) && me.ptoPlanYearFrom.indexSelected == -1)
-					this.setInvalid("Please select the correct Year.");
-			});
-
-			me.ptoPlanYearTo = new ui.ctl.Input.DropDown.Filtered({
-		        id: "PTOPlanYearTo",
-				formatFunction: function(type) { return type.name; },
-				changeFunction: function() { me.modified(); }
-		    });
-
-			me.ptoPlanYearTo.makeEnterTab()
-				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
-				.addValidation(function( isFinal, dataMap) {				
-
-				if ((this.focused || this.touched) && me.ptoPlanYearTo.indexSelected == -1)
-					this.setInvalid("Please select the correct Year.");
-			});
-
-			me.ptoAssignmentGrid = new ui.ctl.Grid({
-				id: "PTOAssignmentGrid",
-				appendToId: "divForm",
-				allowAdds: false
-			});
-
-			me.ptoAssignmentGrid.addColumn("firstName", "firstName", "First Name", "First Name", 150);
-			me.ptoAssignmentGrid.addColumn("lastName", "lastName", "Last Name", "Last Name", 150);
-			me.ptoAssignmentGrid.addColumn("jobTitle", "jobTitle", "Job Title", "Job Title", null);
-			me.ptoAssignmentGrid.capColumns();
-			
-			me.employeeGrid = new ui.ctl.Grid({
-				id: "EmployeeGrid",
-				appendToId: "divForm",
-				allowAdds: false,
-				selectFunction: function( index ) { me.itemEmployeeSelect(index); },
-				validationFunction: function() {
-					if (me.status != "New") 
-						return parent.fin.cmn.status.itemValid(); 
-				}
-			});
-
-			me.employeeGrid.addColumn("firstName", "firstName", "First Name", "First Name", 150);
-			me.employeeGrid.addColumn("lastName", "lastName", "Last Name", "Last Name", 150);
-			me.employeeGrid.addColumn("jobTitle", "jobTitle", "Job Title", "Job Title", null);
-			me.employeeGrid.capColumns();
-
-			me.ptoDaysGrid = new ui.ctl.Grid({
-				id: "PTODaysGrid",
-				appendToId: "divForm",
-				allowAdds: true,
-				createNewFunction: fin.emp.employeePTOSetup.PTODay,
-				selectFunction: function( index ) { me.itemPTODaysSelect(index); }
-			});
-
-			me.daysPTOType = new ui.ctl.Input.DropDown.Filtered({
-		        id: "DaysPTOType",
-				appendToId: "PTODaysGridControlHolder",
-				formatFunction: function(type) { return type.name; },
-				changeFunction: function() { me.modified(); }
-		    });	
-			
-			me.daysPTOType.makeEnterTab()
-				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
-				.addValidation(function( isFinal, dataMap) {				
-	
-				if (me.daysPTOType.indexSelected == -1)
-					this.setInvalid("Please select the correct PTO Type.");
-			});
-			
-			me.ptoDate = new ui.ctl.Input.Date({
-		        id: "PTODate",
-				appendToId: "PTODaysGridControlHolder",
-				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
-		    });
-			
-			me.ptoDate.makeEnterTab()
-				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
-				.addValidation( function( isFinal, dataMap ) {
-					var enteredText = me.ptoDate.text.value;
-
-					if (enteredText == "") 
-						return;
-
-					if (me.ptoDaysGrid.activeRowIndex != -1 
-						&& me.ptoDaysGrid.data[me.ptoDaysGrid.activeRowIndex] != undefined
-						&& me.ptoDaysGrid.data[me.ptoDaysGrid.activeRowIndex].weeklyPayrollId > 0) {
-						this.valid = true;
-					}
-					else {
-						if (this.focused || this.touched) 
-							me.modified();
-
-						if (ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) 
-							this.setInvalid("Please enter valid date.");
-						else {
-							var ptoDateSelected = new Date(enteredText);
-							
-							if (ptoDateSelected >= me.periodStartDate) 
-								this.setInvalid("Please enter valid date. PTO Date should not be with in current pay period.");
-						}
-					}
-				});
-
-			me.ptoHours = new ui.ctl.Input.Text({
-				id: "PTOHours",
-				appendToId: "PTODaysGridControlHolder",
-				changeFunction: function() { me.modified(); }
-			});
-			
-			me.ptoHours.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
-				.addValidation( function( isFinal, dataMap ){
-
-					var enteredText = me.ptoHours.getValue();
-
-					if (enteredText == "")
-						return;
-
-					if (!(/^((\d+(\.\d+)?)|(\.\d+))$/.test(enteredText)))
-						this.setInvalid("Please enter valid number.");
-					else if (parseFloat(enteredText) <= 0)
-						this.setInvalid("Hours should be greater than zero.");
-				});	
-			
-			me.ptoDaysGrid.addColumn("ptoType", "ptoType", "PTO Type", "PTO Type", null, function( type ) { return type.name; }, me.daysPTOType);
-			me.ptoDaysGrid.addColumn("ptoDate", "ptoDate", "PTO Date", "PTO Date", 200, function( type ) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }, me.ptoDate);
-			me.ptoDaysGrid.addColumn("hours", "hours", "Hours", "Hours", 100, null, me.ptoHours);
-			me.ptoDaysGrid.capColumns();
-
-			me.managementPTODaysGrid = new ui.ctl.Grid({
-				id: "ManagementPTODaysGrid",
-				appendToId: "divForm",
-				allowAdds: true,
-				createNewFunction: fin.emp.employeePTOSetup.ManagementPTODay,
-				selectFunction: function( index ) { me.itemManagementPTODaysSelect(index); }
-			});
-
-			me.managementDaysPTOType = new ui.ctl.Input.DropDown.Filtered({
-		        id: "ManagementDaysPTOType",
-				appendToId: "ManagementPTODaysGridControlHolder",
-				formatFunction: function(type) { return type.name; },
-				changeFunction: function() { me.modified(); }
-		    });	
-			
-			me.managementDaysPTOType.makeEnterTab()
-				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
-				.addValidation(function( isFinal, dataMap) {				
-	
-				if (me.managementDaysPTOType.indexSelected == -1)
-					this.setInvalid("Please select the correct PTO Type.");
-			});
-			
-			me.managementPTOStartDate = new ui.ctl.Input.Date({
-		        id: "ManagementPTOStartDate",
-				appendToId: "ManagementPTODaysGridControlHolder",
-				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
-		    });
-			
-			me.managementPTOStartDate.makeEnterTab()
-				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
-				.addValidation( function( isFinal, dataMap ) {
-					var enteredText = me.managementPTOStartDate.text.value;
-
-					if (enteredText == "") 
-						return;
-
-					if (this.focused || this.touched) 
-						me.modified();
-
-					if (ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) 
-						this.setInvalid("Please enter valid date.");
-					else
-						me.calcualteTotalHours();
-				});
-
-			me.managementPTOEndDate = new ui.ctl.Input.Date({
-		        id: "ManagementPTOEndDate",
-				appendToId: "ManagementPTODaysGridControlHolder",
-				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
-		    });
-
-			me.managementPTOEndDate.makeEnterTab()
-				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
-				.addValidation( function( isFinal, dataMap ) {
-					var enteredText = me.managementPTOEndDate.text.value;
-
-					if (enteredText == "") 
-						return;
-
-					if (this.focused || this.touched) 
-						me.modified();
-
-					if (ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false)
-						this.setInvalid("Please enter valid date.");
-					else if (me.managementPTOStartDate.valid && new Date(enteredText) < new Date(me.managementPTOStartDate.text.value))
-						this.setInvalid("The End Date should not be less than Start Date.");
-					else
-						me.calcualteTotalHours();
-				});
-
-			me.managementPTOHours = new ui.ctl.Input.Text({
-				id: "ManagementPTOHours",
-				appendToId: "ManagementPTODaysGridControlHolder",
-				changeFunction: function() { me.modified(); }
-			});
-			
-			me.managementPTOHours.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
-				.addValidation( function( isFinal, dataMap ){
-
-					var enteredText = me.managementPTOHours.getValue();
-
-					if (enteredText == "")
-						return;
-
-					if (!(/^((\d+(\.\d+)?)|(\.\d+))$/.test(enteredText)))
-						this.setInvalid("Please enter valid number.");
-					else if (parseFloat(enteredText) <= 0)
-						this.setInvalid("Hours should be greater than zero.");
-				});	
-			
-			me.managementPTODaysGrid.addColumn("ptoType", "ptoType", "PTO Type", "PTO Type", null, function( type ) { return type.name; }, me.managementDaysPTOType);
-			me.managementPTODaysGrid.addColumn("startDate", "startDate", "PTO Start Date", "PTO Start Date", 150, function( type ) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }, me.managementPTOStartDate);
-			me.managementPTODaysGrid.addColumn("endDate", "endDate", "PTO End Date", "PTO End Date", 150, function( type ) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }, me.managementPTOEndDate);
-			me.managementPTODaysGrid.addColumn("hours", "hours", "Hours", "Hours", 100, null, me.managementPTOHours);
-			me.managementPTODaysGrid.capColumns();
-
-			me.ptoBalanceHoursGrid = new ui.ctl.Grid({
-				id: "PTOBalanceHoursGrid",
-				appendToId: "divForm",
-				allowAdds: true,
-				createNewFunction: fin.emp.employeePTOSetup.PTOEmployeeBalanceHour,
-				selectFunction: function( index ) { me.itemPTOBalanceHoursSelect(index); }
-			});
-
-			me.balanceHoursPTOType = new ui.ctl.Input.DropDown.Filtered({
-		        id: "BalanceHoursPTOType",
-				appendToId: "PTOBalanceHoursGridControlHolder",
-				formatFunction: function(type) { return type.name; },
-				changeFunction: function() { me.modified(); }
-		    });	
-			
-			me.balanceHoursPTOType.makeEnterTab()
-				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
-				.addValidation(function( isFinal, dataMap) {				
-	
-				if (me.balanceHoursPTOType.indexSelected == -1)
-					this.setInvalid("Please select the correct PTO Type.");
-			});
-	
-			me.ptoBalanceHours = new ui.ctl.Input.Text({
-				id: "PTOBalanceHours",
-				appendToId: "PTOBalanceHoursGridControlHolder",
-				maxLength: 3,
-				changeFunction: function() { me.modified(); }
-			});
-			
-			me.ptoBalanceHours.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
-				.addValidation( function( isFinal, dataMap ){
-
-					var enteredText = me.ptoBalanceHours.getValue();
-
-					if (enteredText == "")
-						return;
-
-					if (!(/^\d{1,3}$/.test(enteredText)))
-						this.setInvalid("Please enter valid Balance Hours.");
-					else if (parseInt(enteredText) <= 0)
-						this.setInvalid("Balance Hours should be greater than zero.");
-				});	
-
-			me.ptoBalanceHoursGrid.addColumn("ptoType", "ptoType", "PTO Type", "PTO Type", null, function( type ) { return type.name; }, me.balanceHoursPTOType);
-			me.ptoBalanceHoursGrid.addColumn("balanceHours", "balanceHours", "Balance Hours", "Balance Hours", 150, null, me.ptoBalanceHours);
-			me.ptoBalanceHoursGrid.capColumns();
-
-			me.ptoStartDate = new ui.ctl.Input.Date({
-		        id: "PTOStartDate",
-				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
-		    });
-
-			me.ptoStartDate.makeEnterTab()
-				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
-				.addValidation( function( isFinal, dataMap ) {
-					var enteredText = me.ptoStartDate.text.value;
-					var ptoStartDateTemp = new Date("01/01/1900");
-					
-					if (enteredText == "") 
-						return;
-	
-					if (me.houseCodeDetails.length > 0) {
-						ptoStartDateTemp = new Date(me.houseCodeDetails[0].ptoStartDate);
-					}
-					
-					if (ui.cmn.text.date.format(ptoStartDateTemp, "mm/dd/yyyy") != ui.cmn.text.date.format(new Date(enteredText), "mm/dd/yyyy"))
-						me.modified(true);
-
-					if (ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false)
-						this.setInvalid("Please enter valid date.");
-				});
-
-			me.unassignedEmployeeGrid = new ui.ctl.Grid({
-				id: "UnassignedEmployeeGrid",
-				appendToId: "divForm",
-				allowAdds: false				
-			});
-						
-			me.unassignedEmployeeGrid.addColumn("assigned", "assigned", "", "", 30, function() {
-				var index = me.unassignedEmployeeGrid.rows.length - 1;
-                return "<input type=\"checkbox\" id=\"assignInputCheck" + index + "\" class=\"iiInputCheck\" onclick=\"fin.employeePTOSetupUi.actionClickItem(this);\"/>";
-            });
-			me.unassignedEmployeeGrid.addColumn("firstName", "firstName", "First Name", "First Name", 150);
-			me.unassignedEmployeeGrid.addColumn("lastName", "lastName", "Last Name", "Last Name", 150);
-			me.unassignedEmployeeGrid.addColumn("jobTitle", "jobTitle", "Job Title", "Job Title", null);
-			me.unassignedEmployeeGrid.capColumns();
-
-			me.selectAll = new ui.ctl.Input.Check({
-		        id: "SelectAll",
-				changeFunction: function() { me.actionSelectAllItem(); }
-		    });
-			
-			me.anchorOk = new ui.ctl.buttons.Sizeable({
-				id: "AnchorOk",
-				className: "iiButton",
-				text: "<span>&nbsp;&nbsp;Save&nbsp;&nbsp;</span>",
-				clickFunction: function() { me.actionSaveItem(); },
-				hasHotState: true
-			});	
-			
-			me.anchorCancel = new ui.ctl.buttons.Sizeable({
-				id: "AnchorCancel",
-				className: "iiButton",
-				text: "<span>&nbsp;&nbsp;Cancel&nbsp;&nbsp;</span>",
-				clickFunction: function() { me.actionCancelItem(); },
-				hasHotState: true
-			});
-
-			$("#imgAddEmployees").bind("click", function() { me.actionAddItem(); });
-			$("#imgRemoveEmployees").bind("click", function() { me.actionRemoveItem(); });
-		},
-
-		configureCommunications: function fin_emp_UserInterface_configureCommunications() {
-			var args = ii.args(arguments, {});
-			var me = this;
-
-			me.hirNodes = [];
-			me.hirNodeStore = me.cache.register({
-				storeId: "hirNodes",
-				itemConstructor: fin.emp.employeePTOSetup.HirNode,
-				itemConstructorArgs: fin.emp.employeePTOSetup.hirNodeArgs,
-				injectionArray: me.hirNodes
-			});
-
-			me.houseCodes = [];
-			me.houseCodeStore = me.cache.register({
-				storeId: "hcmHouseCodes",
-				itemConstructor: fin.emp.employeePTOSetup.HouseCode,
-				itemConstructorArgs: fin.emp.employeePTOSetup.houseCodeArgs,
-				injectionArray: me.houseCodes			
-			});
-
-			me.houseCodeDetails = [];
-			me.houseCodeDetailStore = me.cache.register({
-				storeId: "houseCodes",
-				itemConstructor: fin.emp.employeePTOSetup.HouseCodeDetail,
-				itemConstructorArgs: fin.emp.employeePTOSetup.houseCodeDetailArgs,
-				injectionArray: me.houseCodeDetails
-			});
-
-			me.ptoTypes = [];
-			me.ptoTypeStore = me.cache.register({
-				storeId: "ptoTypes",
-				itemConstructor: fin.emp.employeePTOSetup.PTOType,
-				itemConstructorArgs: fin.emp.employeePTOSetup.ptoTypeArgs,
-				injectionArray: me.ptoTypes
-			});
-
-			me.ptoYears = [];
-			me.ptoYearStore = me.cache.register({
-				storeId: "ptoYears",
-				itemConstructor: fin.emp.employeePTOSetup.PTOYear,
-				itemConstructorArgs: fin.emp.employeePTOSetup.ptoYearArgs,
-				injectionArray: me.ptoYears
-			});
-
-			me.ptoPlanTypes = [];
-			me.ptoPlanTypeStore = me.cache.register({
-				storeId: "ptoPlanTypes",
-				itemConstructor: fin.emp.employeePTOSetup.PTOPlanType,
-				itemConstructorArgs: fin.emp.employeePTOSetup.ptoPlanTypeArgs,
-				injectionArray: me.ptoPlanTypes
-			});
-			
-			me.ptoEmployees = [];
-			me.ptoEmployeeStore = me.cache.register({
-				storeId: "ptoEmployees",
-				itemConstructor: fin.emp.employeePTOSetup.PTOEmployee,
-				itemConstructorArgs: fin.emp.employeePTOSetup.ptoEmployeeArgs,
-				injectionArray: me.ptoEmployees
-			});
-
-			me.ptoPlans = [];
-			me.ptoPlanStore = me.cache.register({
-				storeId: "ptoPlans",
-				itemConstructor: fin.emp.employeePTOSetup.PTOPlan,
-				itemConstructorArgs: fin.emp.employeePTOSetup.ptoPlanArgs,
-				injectionArray: me.ptoPlans,
-				lookupSpec: { ptoType: me.ptoTypes, ptoYear: me.ptoYears, ptoPlanType: me.ptoPlanTypes }
-			});
-
-			me.ptoAssignments = [];
-//			me.ptoAssignmentStore = me.cache.register({
-//				storeId: "ptoAssignments",
-//				itemConstructor: fin.emp.employeePTOSetup.PTOAssignment,
-//				itemConstructorArgs: fin.emp.employeePTOSetup.ptoAssignmentArgs,
-//				injectionArray: me.ptoAssignments
-//			});
-
-			me.ptoDays = [];
-			me.ptoDayStore = me.cache.register({
-				storeId: "ptoDays",
-				itemConstructor: fin.emp.employeePTOSetup.PTODay,
-				itemConstructorArgs: fin.emp.employeePTOSetup.ptoDayArgs,
-				injectionArray: me.ptoDays,
-				lookupSpec: { ptoType: me.ptoTypes }
-			});
-
-			me.managementPTOAssignments = [];
-			me.managementPTODays = [];
-			me.managementPTODayStore = me.cache.register({
-				storeId: "managementPTODays",
-				itemConstructor: fin.emp.employeePTOSetup.ManagementPTODay,
-				itemConstructorArgs: fin.emp.employeePTOSetup.managementPTODayArgs,
-				injectionArray: me.managementPTODays,
-				lookupSpec: { ptoType: me.ptoTypes }
-			});
-
-			me.ptoEmployeeBalanceHours = [];
-			me.ptoEmployeeBalanceHourStore = me.cache.register({
-				storeId: "ptoEmployeeBalanceHours",
-				itemConstructor: fin.emp.employeePTOSetup.PTOEmployeeBalanceHour,
-				itemConstructorArgs: fin.emp.employeePTOSetup.ptoEmployeeBalanceHourArgs,
-				injectionArray: me.ptoEmployeeBalanceHours,
-				lookupSpec: { ptoType: me.ptoTypes }
-			});
-
-			me.payCodeTypes = [];
-			me.payCodeTypeStore = me.cache.register({
-				storeId: "payCodes",
-				itemConstructor: fin.emp.employeePTOSetup.PayCodeType,
-				itemConstructorArgs: fin.emp.employeePTOSetup.payCodeTypeArgs,
-				injectionArray: me.payCodeTypes
-			});
-
-			me.ptoTypePayCodes = [];
-			me.ptoTypePayCodeStore = me.cache.register({
-				storeId: "ptoTypePayCodes",
-				itemConstructor: fin.emp.employeePTOSetup.PTOTypePayCode,
-				itemConstructorArgs: fin.emp.employeePTOSetup.ptoTypePayCodeArgs,
-				injectionArray: me.ptoTypePayCodes
-			});
-
-			me.employeePayPeriods = [];
-			me.employeePayPeriodStore = me.cache.register({
-				storeId: "employeePayPeriods",
-				itemConstructor: fin.emp.employeePTOSetup.EmployeePayPeriod,
-				itemConstructorArgs: fin.emp.employeePTOSetup.employeePayPeriodArgs,
-				injectionArray: me.employeePayPeriods
-			});
-		},
-
-		setStatus: function(status) {
-			var me = this;
-
-			fin.cmn.status.setStatus(status);
-		},
-
-		dirtyCheck: function(me) {
-
-			return !fin.cmn.status.itemValid();
-		},
-
-		modified: function() {
-			var args = ii.args(arguments, {
-				modified: {type: Boolean, required: false, defaultValue: true}
-			});
-			var me = this;
-
-			parent.fin.appUI.modified = args.modified;
-			if (args.modified)
-				me.setStatus("Edit");
-		},
-		
-		setLoadCount: function(me, activeId) {
-			var me = this;
-
-			me.loadCount++;
-			me.setStatus("Loading");
-			$("#messageToUser").text("Loading");
-			$("#pageLoading").fadeIn("slow");
-		},
-		
-		checkLoadCount: function() {
-			var me = this;
-
-			if (me.loadCount == 0)
-				return;
-
-			me.loadCount--;
-			if (me.loadCount == 0) {
-				me.setStatus("Loaded");
-				$("#pageLoading").fadeOut("slow");
-			}
-		},
-
-		resizeControls: function() {
-			var me = this;
-
-			me.ptoYearSearch.resizeText();
-			me.ptoTypeSearch.resizeText();
-			me.ptoYear.resizeText();
-			me.planTypeTitle.resizeText();
-			me.minHours.resizeText();
-			me.maxHours.resizeText();
-			me.planName.resizeText();
-			me.ptoPlanType.resizeText();
-			me.ptoType.resizeText();
-			me.ptoPlanYear.resizeText();
-			me.startDate.resizeText();
-			me.endDate.resizeText();
-			me.planDays.resizeText();
-			me.accrualInterval.resizeText();
-			me.ptoPlanYearFrom.resizeText();
-			me.ptoPlanYearTo.resizeText();
-			me.ptoStartDate.resizeText();
-			me.resize();
-		},
-
-		resetControls: function() {
-			var me = this;
-
-			me.validator.reset();
-
-			if (me.action == "PTO Years") {
-				me.ptoYear.setValue("");
-				me.ptoYearGrid.body.deselectAll();
-			}
-			else if (me.action == "PTO Types") {
-				me.payCodeType.reset();
-				me.ptoTypeGrid.body.deselectAll();
-				//$("#PayCodeType").multiselect("uncheckAll");
-			}
-			else if (me.action == "PTO Plan Types") {
-				me.planTypeTitle.setValue("");
-				me.minHours.setValue("");
-				me.maxHours.setValue("");
-				me.planTypeActive.setValue("true");
-				me.ptoPlanTypeGrid.body.deselectAll();
-			}
-			else if (me.action == "PTO Plans") {
-				me.planName.setValue("");
-				me.ptoPlanType.valid = true;
-				me.ptoPlanType.updateStatus();
-				me.ptoPlanType.reset();
-				me.ptoType.valid = true;
-				me.ptoType.updateStatus();
-				me.ptoType.reset();
-				me.ptoPlanYear.valid = true;
-				me.ptoPlanYear.updateStatus();
-				me.ptoPlanYear.reset();
-				me.startDate.setValue("");
-				me.endDate.setValue("");
-				me.planDays.setValue("");
-				me.accrual.setValue("true");
-				me.accrualInterval.setValue("");
-				me.active.setValue("true");
-				me.ptoPlanGrid.body.deselectAll();
-			}
-			else if (me.action == "PTO Assignments" || me.action == "Management PTO Assignments") {
-				me.ptoAssignmentGrid.setData([]);
-			}
-			else if (me.action == "PTO Days") {
-				me.employeeGrid.body.deselectAll();
-				if (me.ptoDaysGrid.activeRowIndex != -1)
-					me.ptoDaysGrid.body.deselect(me.ptoDaysGrid.activeRowIndex, true);
-				me.ptoDaysGrid.setData([]);
-			}
-			else if (me.action == "Management PTO Days") {
-				me.employeeGrid.body.deselectAll();
-				if (me.managementPTODaysGrid.activeRowIndex != -1)
-					me.managementPTODaysGrid.body.deselect(me.managementPTODaysGrid.activeRowIndex, true);
-				me.managementPTODaysGrid.setData([]);
-			}
-			else if (me.action == "PTO Balance Hours") {
-				me.employeeGrid.body.deselectAll();
-				if (me.ptoBalanceHoursGrid.activeRowIndex != -1)
-					me.ptoBalanceHoursGrid.body.deselect(me.ptoBalanceHoursGrid.activeRowIndex, true);
-				me.ptoBalanceHoursGrid.setData([]);
-			}
-		},
-
-		actionMenuItem: function(section) {
-			var me = this;
-
-			if (!parent.fin.cmn.status.itemValid())
-				return;
-
-			me.lastSelectedRowIndex = -1;
-			me.action = section;
-			me.setStatus("Normal");
-			$("#header").html(section);
-			$("#PTOYearContainerLeft").hide();
-			$("#PTOTypeContainerLeft").hide();
-			$("#PTOPlanTypeContainerLeft").hide();
-			$("#PTOPlanContainerLeft").hide();
-			$("#PTOAssignmentContainerLeft").hide();
-			$("#PTODaysContainerLeft").hide();
-			$("#PTOYearContainerRight").hide();
-			$("#PTOTypeContainerRight").hide();
-			$("#PTOPlanTypeContainerRight").hide();
-			$("#PTOPlanContainerRight").hide();
-			$("#PTOAssignmentContainerRight").hide();
-			$("#PTODaysContainerRight").hide();
-			$("#ManagementPTODaysContainerRight").hide();
-			$("#PTOBalanceHoursContainerRight").hide();
-			$("#PTOStartDateContainer").hide();
-			$("#AnchorClone").hide();
-			$("#AnchorNew").show();
-			$("#AnchorSave").show();
-			$("#AnchorUndo").show();
-			
-			if (section == "PTO Years") {
-				$("#HouseCode").hide();
-				$("#PTOYearContainerLeft").show();
-				$("#PTOYearContainerRight").show();
-			}
-			else if (section == "PTO Types") {
-				$("#AnchorNew").hide();
-				$("#HouseCode").hide();
-				$("#PTOTypeContainerLeft").show();
-				$("#PTOTypeContainerRight").show();
-			}
-			else if (section == "PTO Plan Types") {
-				$("#HouseCode").hide();
-				$("#PTOPlanTypeContainerLeft").show();
-				$("#PTOPlanTypeContainerRight").show();
-				me.loadPlanTypes();
-			}
-			else if (section == "PTO Plans") {
-				$("#HouseCode").show();
-				$("#SearchTemplate").show();
-				$("#HouseCodeSection").hide();
-				$("#PTOTypeSearchContainer").hide();
-				$("#PTOPlanContainerLeft").show();
-				$("#PTOPlanContainerRight").show();
-				$("#AnchorClone").show();
-				me.loadPlanTypes();
-				me.loadPlans(true);
-			}
-			else if (section == "PTO Assignments" || section == "Management PTO Assignments") {
-				$("#AnchorNew").hide();
-				$("#AnchorSave").hide();
-				$("#AnchorUndo").hide();
-				$("#HouseCode").show();
-				$("#HouseCodeSection").show();
-				$("#PTOTypeSearchContainer").hide();
-				$("#SearchTemplate").show();
-				$("#PTOPlanContainerLeft").show();
-				$("#PTOAssignmentContainerRight").show();
-				me.loadPlans(true);
-			}
-			else if (section == "PTO Days") {
-				$("#PTOTypeSearchContainer").show();
-				$("#SearchTemplate").show();
-				$("#AnchorNew").hide();
-				$("#HouseCode").show();
-				$("#HouseCodeSection").show();
-				$("#PTODaysContainerLeft").show();
-				$("#PTODaysContainerRight").show();
-				me.loadEmployees();
-			}
-			else if (section == "Management PTO Days") {
-				$("#PTOTypeSearchContainer").show();
-				$("#SearchTemplate").show();
-				$("#AnchorNew").hide();
-				$("#HouseCode").show();
-				$("#HouseCodeSection").show();
-				$("#PTODaysContainerLeft").show();
-				$("#ManagementPTODaysContainerRight").show();
-				me.loadEmployees();
-			}
-			else if (section == "PTO Balance Hours") {
-				$("#SearchTemplate").hide();
-				$("#AnchorNew").hide();
-				$("#HouseCode").show();
-				$("#HouseCodeSection").show();
-				$("#PTODaysContainerLeft").show();
-				$("#PTOBalanceHoursContainerRight").show();
-				me.loadEmployees();
-			}
-			else if (section == "PTO Start Date") {
-				$("#HouseCode").show();
-				$("#HouseCodeSection").show();
-				$("#SearchTemplate").hide();
-				$("#PTOStartDateContainer").show();
-				$("#AnchorNew").hide();
-				$("#AnchorUndo").hide();
-
-				me.setLoadCount();
-				me.houseCodeDetailStore.fetch("userId:[user],unitId:" + parent.fin.appUI.unitId, me.houseCodeDetailsLoaded, me);
-			}
-			
-			me.resetControls();
-			me.resizeControls();
-		},
-		
-		actionSearchItem: function() {
-			var me = this;
-			
-			if (me.action == "PTO Plans" || me.action == "PTO Assignments" ||  me.action == "Management PTO Assignments")
-				me.loadPlans(true);
-			else if (me.action == "PTO Days" || me.action == "Management PTO Days")
-				me.loadPTODays();
-		},
-		
-		houseCodesLoaded: function(me, activeId) {
-
-			if (parent.fin.appUI.houseCodeId == 0) {
-				if (me.houseCodes.length <= 0) {				
-					return me.houseCodeSearchError();
-				}
-
-				me.houseCodeGlobalParametersUpdate(false, me.houseCodes[0]);
-			}
-
-			me.houseCodeGlobalParametersUpdate(false);
-		},
-		
-		houseCodeChanged: function() {
-			var args = ii.args(arguments,{});
-			var me = this;
-
-			if (parent.fin.appUI.houseCodeId <= 0) return;
-			me.actionMenuItem(me.action);
-		},
-
-		houseCodeDetailsLoaded: function(me, activeId) {
-
-			me.ptoStartDate.setValue(me.houseCodeDetails[0].ptoStartDate);
-			me.checkLoadCount();
-		},
-
-		ptoTypesLoaded: function(me, activeId) {
-
-			me.checkLoadCount();
-			me.ptoTypeGrid.setData(me.ptoTypes);
-			me.ptoType.setData(me.ptoTypes);
-			me.daysPTOType.setData(me.ptoTypes);
-			me.managementDaysPTOType.setData(me.ptoTypes);
-			me.ptoTypeSearch.setData(me.ptoTypes);
-			me.balanceHoursPTOType.setData(me.ptoTypes);
-		},
-		
-		ptoYearsLoaded: function(me, activeId) {
-
-			me.ptoYearSearch.setData(me.ptoYears);
-			me.ptoYearGrid.setData(me.ptoYears);
-			me.ptoPlanYear.setData(me.ptoYears);
-			me.ptoPlanYearFrom.setData(me.ptoYears);
-			me.ptoPlanYearTo.setData(me.ptoYears);
-			me.resizeControls();
-			me.checkLoadCount();
-
-			if (me.ptoYears.length > 0)
-				me.ptoYearSearch.select(0, me.ptoYearSearch.focused);
-		},
-		
-		loadPlanTypes: function() {
-			var me = this;
-
-			me.setLoadCount();
-			if (me.action == "PTO Plan Types") {
-				me.ptoPlanTypeStore.fetch("userId:[user],active:0", me.ptoPlanTypesLoaded, me);
-			}
-			else if (me.action == "PTO Plans") {
-				me.ptoPlanTypeStore.fetch("userId:[user],active:1", me.ptoPlanTypesLoaded, me);
-			}
-		},
-		
-		ptoPlanTypesLoaded: function(me, activeId) {
-
-			me.ptoPlanType.setData(me.ptoPlanTypes);
-			me.ptoPlanTypeGrid.setData(me.ptoPlanTypes);
-			me.checkLoadCount();
-		},
-
-		payCodeTypesLoaded: function(me, activeId) {
-
-//			$("#PayCodeType").html("");
-//			for (var index = 0; index < me.payCodeTypes.length; index++) {
-//				$("#PayCodeType").append("<option title='" + me.payCodeTypes[index].name + "' value='" + me.payCodeTypes[index].id + "'>" + me.payCodeTypes[index].brief + " - " + me.payCodeTypes[index].name + "</option>");
-//			}
-//			$("#PayCodeType").multiselect("refresh");
-			me.payCodeType.setData(me.payCodeTypes);
-			me.checkLoadCount();
-		},
-
-		loadEmployees: function() {
-			var me = this;
-
-			me.setLoadCount();
-			if (me.action == "PTO Days" || me.action == "PTO Balance Hours")
-				me.ptoEmployeeStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId + ",ptoPlanId:-1,searchType:Employee", me.ptoEmployeesLoaded, me);
-			else if (me.action == "Management PTO Days")
-				me.ptoEmployeeStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId + ",ptoPlanId:-1,searchType:Management", me.ptoEmployeesLoaded, me);
-		},
-		
-		ptoEmployeesLoaded: function(me, activeId) {
-
-			me.employeeGrid.setData(me.ptoEmployees);
-			me.checkLoadCount();
-		},
-
-		loadPlans: function(showLoading) {
-			var me = this;
-			var active = -1;
-			var houseCodeId = parent.fin.appUI.houseCodeId;
-
-			if (me.ptoYearSearch.indexSelected == -1)
-				return;
-
-			if (showLoading)
-				me.setLoadCount();
-			else {
-				me.ptoPlanYearFrom.reset();
-				me.ptoPlanYearTo.reset();
-			}
-
-			if (me.action == "PTO Plans")
-				houseCodeId = 0;
-			if (me.action == "PTO Assignments" || me.action == "Management PTO Assignments")
-				active = 1;
-			me.ptoPlanStore.fetch("userId:[user],houseCodeId:" + houseCodeId + ",ptoYearId:" + me.ptoYears[me.ptoYearSearch.indexSelected].id + ",active:" + active, me.ptoPlansLoaded, me);
-		},
-
-		ptoPlansLoaded: function(me, activeId) {
-
-			me.resetControls();
-			me.ptoPlanGrid.setData(me.ptoPlans);
-			me.checkLoadCount();
-		},
-
-		loadPTODays: function() {
-			var me = this;
-
-			if (me.ptoYearSearch.indexSelected == -1 || me.employeeGrid.activeRowIndex == -1)
-				return;
-
-			var workDay = ui.cmn.text.date.format(new Date(parent.fin.appUI.glbCurrentDate), "mm/dd/yyyy");
-			var employeeId = me.employeeGrid.data[me.employeeGrid.activeRowIndex].id;
-			var ptoTypeId = 0;
-			
-			if (me.ptoTypeSearch.indexSelected >= 0)
-				ptoTypeId = me.ptoTypes[me.ptoTypeSearch.indexSelected].id;
-
-			me.setLoadCount();
-			if (me.action == "PTO Days") {
-				me.ptoDayStore.fetch("userId:[user],employeeId:" + employeeId + ",ptoYearId:" + me.ptoYears[me.ptoYearSearch.indexSelected].id + ",ptoTypeId:" + ptoTypeId,  me.ptoDaysLoaded, me);
-				me.employeePayPeriodStore.fetch("userId:[user],empEmployee:" + employeeId + ",workDay:" + workDay, me.employeePayPeriodLoaded, me);
-			}
-			else if (me.action == "Management PTO Days") {
-				me.managementPTODayStore.fetch("userId:[user],employeeId:" + employeeId + ",ptoYearId:" + me.ptoYears[me.ptoYearSearch.indexSelected].id + ",ptoTypeId:" + ptoTypeId,  me.managementPTODaysLoaded, me);
-			}
-		},
-		
-		ptoDaysLoaded: function(me, activeId) {
-
-			me.ptoDaysGrid.setData(me.ptoDays);
-			me.checkLoadCount();
-		},
-		
-		managementPTODaysLoaded: function(me, activeId) {
-
-			me.managementPTODaysGrid.setData(me.managementPTODays);
-			me.checkLoadCount();
-		},
-		
-		employeePayPeriodLoaded: function(me, activeId) {
-
-			if (me.employeePayPeriods.length > 0) {
-				me.periodStartDate = new Date(me.employeePayPeriods[0].payPeriodStartDate);
-			}
-		},
-		
-		loadPTOBalanceHours: function() {
-			var me = this;
-
-			if (me.employeeGrid.activeRowIndex == -1)
-				return;
-
-			var employeeId = me.employeeGrid.data[me.employeeGrid.activeRowIndex].id;
-			me.setLoadCount();
-			me.ptoEmployeeBalanceHourStore.fetch("userId:[user],employeeId:" + employeeId,  me.ptoEmployeeBalanceHoursLoaded, me);
-		},
-		
-		ptoEmployeeBalanceHoursLoaded: function(me, activeId) {
-
-			me.ptoBalanceHoursGrid.setData(me.ptoEmployeeBalanceHours);
-			me.checkLoadCount();
-		},
-		
-		itemYearSelect: function() { 
-			var args = ii.args(arguments, {
-				index: {type: Number}  // The index of the data subItem to select
-			});
-			var me = this;
-			var index = args.index;
-
-			me.status = "";
-			me.setStatus("Normal");
-
-			if (me.ptoYearGrid.data[index] != undefined) {
-				me.lastSelectedRowIndex = me.ptoYearGrid.activeRowIndex;
-				me.ptoYear.setValue(me.ptoYearGrid.data[index].name);
-			}
-		},
-		
-		itemPTOTypeSelect: function() { 
-			var args = ii.args(arguments, {
-				index: {type: Number}  // The index of the data subItem to select
-			});
-			var me = this;
-			var index = args.index;
-
-			me.status = "";
-
-			if (me.ptoTypeGrid.data[index] != undefined) {
-				me.lastSelectedRowIndex = me.ptoTypeGrid.activeRowIndex;
-				me.setLoadCount();
-				me.ptoTypePayCodeStore.fetch("userId:[user],ptoTypeId:" + me.ptoTypeGrid.data[index].id, me.ptoTypePayCodesLoaded, me);
-			}
-		},
-		
-		ptoTypePayCodesLoaded: function(me, activeId) {
-
-			me.setPayCodes();
-			me.checkLoadCount();
-		},
-		
-		setPayCodes: function() {
-			var me = this;
-//			var payCodesTemp = [];
-//
-//			for (var index = 0; index < me.ptoTypePayCodes.length; index++) {
-//				payCodesTemp.push(me.ptoTypePayCodes[index].payCodeId.toString());
-//			}
-//			$("#PayCodeType").multiselect("uncheckAll");
-//			$("#PayCodeType").multiselect("widget").find(":checkbox").each(function() {
-//		 		if ($.inArray(this.value, payCodesTemp) >= 0) {
-//		 			this.click();
-//		 		}
-//			});
-			
-			me.payCodeType.reset();
-			if (me.ptoTypePayCodes.length > 0) {
-				var index = ii.ajax.util.findIndexById(me.ptoTypePayCodes[0].payCodeId.toString(), me.payCodeTypes);
-				if (index != undefined && index >= 0) 
-					me.payCodeType.select(index, me.payCodeType.focused);
-			}
-
-			me.modified(false);
-		},
-
-		itemPTOPlanTypeSelect: function() { 
-			var args = ii.args(arguments, {
-				index: {type: Number}  // The index of the data subItem to select
-			});
-			var me = this;
-			var index = args.index;
-
-			me.status = "";
-			me.setStatus("Normal");
-
-			if (me.ptoPlanTypeGrid.data[index] != undefined) {
-				me.lastSelectedRowIndex = me.ptoPlanTypeGrid.activeRowIndex;
-				me.planTypeTitle.setValue(me.ptoPlanTypeGrid.data[index].title);
-				me.minHours.setValue(me.ptoPlanTypeGrid.data[index].minHours);
-				me.maxHours.setValue(me.ptoPlanTypeGrid.data[index].maxHours);
-				me.planTypeActive.setValue(me.ptoPlanTypeGrid.data[index].active.toString());
-			}
-		},
-		
-		itemPlanSelect: function() { 
-			var args = ii.args(arguments, {
-				index: {type: Number}  // The index of the data subItem to select
-			});
-			var me = this;
-			var index = args.index;
-
-			me.status = "";
-			me.setStatus("Normal");
-
-			if (me.ptoPlanGrid.data[index] != undefined) {
-				if (me.action == "PTO Plans") {
-					$("#PlanTemplate").show();
-					$("#CloneTemplate").hide();
-					me.lastSelectedRowIndex = me.ptoPlanGrid.activeRowIndex;
-					me.planName.setValue(me.ptoPlanGrid.data[index].title);
-
-					var itemIndex = ii.ajax.util.findIndexById(me.ptoPlanGrid.data[index].ptoPlanType.id.toString(), me.ptoPlanTypes);
-					if (itemIndex >= 0 && itemIndex != undefined) 
-						me.ptoPlanType.select(itemIndex, me.ptoPlanType.focused);
-						
-					itemIndex = ii.ajax.util.findIndexById(me.ptoPlanGrid.data[index].ptoType.id.toString(), me.ptoTypes);
-					if (itemIndex >= 0 && itemIndex != undefined) 
-						me.ptoType.select(itemIndex, me.ptoType.focused);
-					
-					itemIndex = ii.ajax.util.findIndexById(me.ptoPlanGrid.data[index].ptoYear.id.toString(), me.ptoYears);
-					if (itemIndex >= 0 && itemIndex != undefined) 
-						me.ptoPlanYear.select(itemIndex, me.ptoPlanYear.focused);
-					
-					me.startDate.setValue(me.ptoPlanGrid.data[index].startDate);
-					me.endDate.setValue(me.ptoPlanGrid.data[index].endDate);
-					me.planDays.setValue(me.ptoPlanGrid.data[index].days);
-					me.accrual.setValue(me.ptoPlanGrid.data[index].accrual.toString());
-					me.accrualInterval.setValue(me.ptoPlanGrid.data[index].accrualInterval);
-					me.active.setValue(me.ptoPlanGrid.data[index].active.toString());
-					me.accrualInterval.text.readOnly = !me.accrual.check.checked;
-				}
-				else if (me.action == "PTO Assignments" || me.action == "Management PTO Assignments") {
-					me.setLoadCount();
-					me.loadPTOAssignments();
-				}
-			}
-		},
-
-		loadPTOAssignments: function() {
-			var me = this;
-
-			if (me.action == "PTO Assignments")
-				me.ptoEmployeeStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId + ",assigned:1,searchType:Employee,ptoPlanId:" + me.ptoPlanGrid.data[me.ptoPlanGrid.activeRowIndex].id, me.ptoAssignmentsLoaded, me);
-			else if (me.action == "Management PTO Assignments")
-				me.ptoEmployeeStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId + ",assigned:1,searchType:Management,ptoPlanId:" + me.ptoPlanGrid.data[me.ptoPlanGrid.activeRowIndex].id, me.ptoAssignmentsLoaded, me);
-			//me.ptoAssignmentStore.fetch("userId:[user],planId:" + me.ptoPlanGrid.data[me.ptoPlanGrid.activeRowIndex].id, me.ptoAssignmentsLoaded, me);
-		},
-		
-		ptoAssignmentsLoaded: function(me, activeId) {
-
-			me.ptoAssignments = me.ptoEmployees.slice();
-			me.ptoAssignmentGrid.setData(me.ptoAssignments);
-			me.checkLoadCount();
-		},
-
-		itemEmployeeSelect: function() {
-			var args = ii.args(arguments, {
-				index: {type: Number}  // The index of the data subItem to select
-			});
-			var me = this;
-			var index = args.index;
-
-			me.lastSelectedRowIndex = index;
-			me.status = "";
-
-			if (me.action == "PTO Days") {
-				if (me.ptoDaysGrid.activeRowIndex != -1)
-					me.ptoDaysGrid.body.deselect(me.ptoDaysGrid.activeRowIndex, true);
-				me.loadPTODays();
-			}
-			else if (me.action == "Management PTO Days") {
-				if (me.managementPTODaysGrid.activeRowIndex != -1)
-					me.managementPTODaysGrid.body.deselect(me.managementPTODaysGrid.activeRowIndex, true);
-				me.loadPTODays();
-			}
-			else if (me.action == "PTO Balance Hours") {
-				if (me.ptoBalanceHoursGrid.activeRowIndex != -1)
-					me.ptoBalanceHoursGrid.body.deselect(me.ptoBalanceHoursGrid.activeRowIndex, true);
-				me.loadPTOBalanceHours();
-			}
-		},
-
-		itemPTODaysSelect: function() {
-			var args = ii.args(arguments, {
-				index: {type: Number}  // The index of the data subItem to select
-			});
-			var me = this;
-			var index = args.index;
-
-			if (me.ptoDaysGrid.data[index] != undefined) {
-				if (me.ptoDaysGrid.data[index].weeklyPayrollId > 0) {
-					$("#DaysPTOTypeAction").removeClass("iiInputAction");
-                    $("#DaysPTOTypeText").attr("disabled", true);
-					$("#PTODateAction").removeClass("iiInputAction");
-                    $("#PTODateText").attr("disabled", true);
-					$("#PTOHoursText").attr("disabled", true);
-					me.ptoDate.valid = true;
-					me.ptoDate.updateStatus();
-				}
-				else {
-					$("#DaysPTOTypeAction").addClass("iiInputAction");
-                    $("#DaysPTOTypeText").attr("disabled", false);
-					$("#PTODateAction").addClass("iiInputAction");
-                    $("#PTODateText").attr("disabled", false);
-					$("#PTOHoursText").attr("disabled", false);
-					me.ptoDaysGrid.data[index].modified = true;
-				}
-			}
-			else {
-				$("#DaysPTOTypeAction").addClass("iiInputAction");
-                $("#DaysPTOTypeText").attr("disabled", false);
-				$("#PTODateAction").addClass("iiInputAction");
-                $("#PTODateText").attr("disabled", false);
-				$("#PTOHoursText").attr("disabled", false);
-			}
-
-			me.daysPTOType.resizeText();
-			me.ptoDate.resizeText();
-			me.ptoHours.resizeText();
-		},
-
-		itemManagementPTODaysSelect: function() {
-			var args = ii.args(arguments, {
-				index: {type: Number}  // The index of the data subItem to select
-			});
-			var me = this;
-			var index = args.index;
-
-			me.managementDaysPTOType.resizeText();
-			me.managementPTOStartDate.resizeText();
-			me.managementPTOEndDate.resizeText();
-			me.managementPTOHours.resizeText();
-		},
-
-		calcualteTotalHours: function() {
-			var me = this;
-			var hours = 0;
-
-			if (me.managementPTOStartDate.lastBlurValue != "" && me.managementPTOEndDate.lastBlurValue != "" 
-				&& me.managementPTOStartDate.valid && me.managementPTOEndDate.valid) {
-				var startDate = new Date(me.managementPTOStartDate.lastBlurValue);
-				var endDate = new Date(me.managementPTOEndDate.lastBlurValue);
-
-				while (startDate <= endDate) {
-				 	if (startDate.getDay() != 0 && startDate.getDay() != 6)
-						hours += 8;
-					startDate.setDate(startDate.getDate() + 1);
-				}
-				me.managementPTOHours.setValue(hours.toFixed(2));
-			}
-			else {
-				me.managementPTOHours.setValue("");
-			}
-		},
-
-		itemPTOBalanceHoursSelect: function() {
-			var args = ii.args(arguments, {
-				index: {type: Number}  // The index of the data subItem to select
-			});
-			var me = this;
-			var index = args.index;
-
-			if (me.ptoBalanceHoursGrid.data[index] != undefined) 
-				me.ptoBalanceHoursGrid.data[index].modified = true;
-			me.balanceHoursPTOType.resizeText();
-			me.ptoBalanceHours.resizeText();
-		},
-
-		actionAddItem: function() {
-			var me = this;
-
-			if (!parent.fin.cmn.status.itemValid())
-				return;
-
-			if (me.ptoPlanGrid.activeRowIndex == -1)
-				return;
-
-			loadPopup();
-			me.selectAll.setValue("false");
-			me.setStatus("Loading");
-			if (me.action == "PTO Assignments")
-				me.ptoEmployeeStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId + ",searchType:Employee,ptoPlanId:" + me.ptoPlanGrid.data[me.ptoPlanGrid.activeRowIndex].id, me.ptoUnassignedEmployeesLoaded, me);
-			else if (me.action == "Management PTO Assignments")
-				me.ptoEmployeeStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId + ",searchType:Management,ptoPlanId:" + me.ptoPlanGrid.data[me.ptoPlanGrid.activeRowIndex].id, me.ptoUnassignedEmployeesLoaded, me);
-		},
-		
-		ptoUnassignedEmployeesLoaded: function(me, activeId) {
-
-			me.setStatus("Normal");
-			me.unassignedEmployeeGrid.setData(me.ptoEmployees);
-			me.unassignedEmployeeGrid.setHeight($("#popupEmployee").height() - 120);
-			$("#popupLoading").fadeOut("slow");
-		},
-		
-		actionRemoveItem: function() {
-			var me = this;
-
-			if (!parent.fin.cmn.status.itemValid())
-				return;
-
-			if (me.ptoAssignmentGrid.activeRowIndex == -1)
-				return;
-
-			me.status = "Delete";
-			me.actionSaveItem();
-		},
-		
-		actionClickItem: function(objCheckBox) {
-			var me = this;
-			var allSelected = true;
-		
-			if (objCheckBox.checked) {
-				for (var index = 0; index < me.ptoEmployees.length; index++) {
-					if ($("#assignInputCheck" + index)[0].checked == false) {
-						allSelected = false;
-						break;
-					}
-				}
-			}
-			else
-				allSelected = false;
-		
-			me.modified(true);
-			me.selectAll.setValue(allSelected.toString());
-		},
-
-		actionSelectAllItem: function() {
-			var args = ii.args(arguments,{});
-			var me = this;
-
-			me.modified(true);
-
-			for (var index = 0; index < me.ptoEmployees.length; index++) {
-				$("#assignInputCheck" + index)[0].checked = me.selectAll.check.checked;
-			}
-		},
-		
-		actionCancelItem: function() {
-			var me = this;
-			var index = -1;			
-
-			if (!parent.fin.cmn.status.itemValid())
-				return;
-
-			hidePopup();
-			me.setStatus("Loaded");
-		},
-		
-		actionNewItem: function(me, activeId) {
-			var args = ii.args(arguments, {});
-			var me = this;
-
-			if (!parent.fin.cmn.status.itemValid())
-				return;
-
-			if (me.action == "PTO Years") {
-				me.ptoYearGrid.body.deselectAll();
-				me.ptoYear.setValue("");
-			}
-			else if (me.action == "PTO Plans") {
-				$("#PlanTemplate").show();
-				$("#CloneTemplate").hide();
-				me.ptoPlanGrid.body.deselectAll();
-				me.resetControls();
-			}
-			else if (me.action == "PTO Plan Types") {
-				me.ptoPlanTypeGrid.body.deselectAll();
-				me.resetControls();
-			}
-			me.status = "New";
-		},
-
-		actionUndoItem: function() {
-			var args = ii.args(arguments, {});
-			var me = this;
-
-			if (!parent.fin.cmn.status.itemValid())
-				return;
-
-			if (me.action == "PTO Years") {
-				if (me.lastSelectedRowIndex >= 0) {
-					me.ptoYearGrid.body.select(me.lastSelectedRowIndex);
-					me.itemYearSelect(me.lastSelectedRowIndex);
-				}
-			}
-			else if (me.action == "PTO Types") {
-				if (me.lastSelectedRowIndex >= 0) {
-					me.setPayCodes();
-				}
-			}
-			else if (me.action == "PTO Plans") {
-				$("#PlanTemplate").show();
-				$("#CloneTemplate").hide();
-				
-				if (me.lastSelectedRowIndex >= 0) {
-					me.ptoPlanGrid.body.select(me.lastSelectedRowIndex);
-					me.itemPlanSelect(me.lastSelectedRowIndex);
-				}
-			}
-			else if (me.action == "PTO Plan Types") {
-				if (me.lastSelectedRowIndex >= 0) {
-					me.ptoPlanTypeGrid.body.select(me.lastSelectedRowIndex);
-					me.itemPTOPlanTypeSelect(me.lastSelectedRowIndex);
-				}
-			}
-			else if (me.action == "PTO Days") {
-				if (me.lastSelectedRowIndex >= 0) {
-					if (me.ptoDaysGrid.activeRowIndex != -1)
-						me.ptoDaysGrid.body.deselect(me.ptoDaysGrid.activeRowIndex, true);
-					me.itemEmployeeSelect(me.lastSelectedRowIndex);
-				}
-			}
-			else if (me.action == "Management PTO Days") {
-				if (me.lastSelectedRowIndex >= 0) {
-					if (me.managementPTODaysGrid.activeRowIndex != -1)
-						me.managementPTODaysGrid.body.deselect(me.managementPTODaysGrid.activeRowIndex, true);
-					me.itemEmployeeSelect(me.lastSelectedRowIndex);
-				}
-			}
-			else if (me.action == "PTO Balance Hours") {
-				if (me.lastSelectedRowIndex >= 0) {
-					if (me.ptoBalanceHoursGrid.activeRowIndex != -1)
-						me.ptoBalanceHoursGrid.body.deselect(me.ptoBalanceHoursGrid.activeRowIndex, true);
-					me.itemEmployeeSelect(me.lastSelectedRowIndex);
-				}
-			}
-
-			me.status = "";
-			me.setStatus("Loaded");
-		},
-		
-		actionCloneItem: function() {
-			var args = ii.args(arguments, {});
-			var me = this;
-			
-			$("#PlanTemplate").hide();
-			$("#CloneTemplate").show();
-			me.ptoPlanGrid.body.deselectAll();
-			me.ptoPlanYearFrom.reset();
-			me.ptoPlanYearTo.reset();
-			me.ptoPlanYearFrom.resizeText();
-			me.ptoPlanYearTo.resizeText();
-			me.status = "Clone";
-			
-			$("#PTOPlanYearFromText").attr("readonly", true);
-			$("#PTOPlanYearFromAction").removeClass("iiInputAction");
-			$("#PTOPlanYearToText").attr("readonly", true);
-			$("#PTOPlanYearToAction").removeClass("iiInputAction");
-
-			var currentYear = new Date(parent.fin.appUI.glbCurrentDate).getFullYear();
-			for (var index = 0; index < me.ptoYears.length; index++) {
-				if (me.ptoYears[index].name == currentYear.toString()) {
-					me.ptoPlanYearFrom.select(index, me.ptoPlanYearFrom.focused);
-					break;
-				}
-			}
-			
-			for (var index = 0; index < me.ptoYears.length; index++) {
-				if (me.ptoYears[index].name == (currentYear + 1).toString()) {
-					me.ptoPlanYearTo.select(index, me.ptoPlanYearTo.focused);
-					break;
-				}
-			}
-		},
-
-		actionSaveItem: function() {
-			var args = ii.args(arguments, {});
-			var me = this;
-			var item = [];
-			var xml = "";
-
-			// Check to see if the data entered is valid
-			me.validator.forceBlur();
-			me.validator.queryValidity(true);
-
-			if (me.action == "PTO Years") {
-				if (!me.ptoYear.valid) {
-					alert("In order to save, the errors on the page must be corrected.");
-					return false;
-				}
-				if (me.ptoYearGrid.activeRowIndex == -1)
-					me.status = "New";
-				item = new fin.emp.employeePTOSetup.PTOYear(
-					(me.status == "New" ? 0 : me.ptoYearGrid.data[me.ptoYearGrid.activeRowIndex].id)
-					, me.ptoYear.getValue()			
-				);
-			}
-			else if (me.action == "PTO Types") {
-				if (me.ptoTypeGrid.activeRowIndex == -1)
-					return;
-				else if (!me.payCodeType.valid) {
-					alert("In order to save, the errors on the page must be corrected.");
-					return false;
-				}
-			}
-			else if (me.action == "PTO Plan Types") {
-				if (!me.planTypeTitle.valid || !me.minHours.valid || !me.maxHours.valid) {
-					alert("In order to save, the errors on the page must be corrected.");
-					return false;
-				}
-
-				if (me.ptoPlanTypeGrid.activeRowIndex == -1)
-					me.status = "New";
-
-				for (var index = 0; index < me.ptoPlanTypes.length; index++) {
-					if (me.status == "New" || index != me.ptoPlanTypeGrid.activeRowIndex) {
-						if (me.ptoPlanTypes[index].title == me.planTypeTitle.getValue()) {
-							alert("The Plan Type [" + me.planTypeTitle.getValue() + "] already exists. Please enter unique Plan Type and Save again.");
-							return false;
-						}
-						else if (me.ptoPlanTypes[index].minHours == me.minHours.getValue() && me.ptoPlanTypes[index].maxHours == me.maxHours.getValue()) {
-							alert("The Minimum and Maximum Hours range already exists in Plan Type [" + me.ptoPlanTypes[index].title + "]. Please enter unique range and Save again.");
-							return false;
-						}
-					}
-				}
-
-				item = new fin.emp.employeePTOSetup.PTOPlanType(
-					(me.status == "New" ? 0 : me.ptoPlanTypeGrid.data[me.ptoPlanTypeGrid.activeRowIndex].id)
-					, me.planTypeTitle.getValue()
-					, me.minHours.getValue()
-					, me.maxHours.getValue()
-					, me.planTypeActive.check.checked
-				);
-			}
-			else if (me.action == "PTO Plans") {
-				if (me.status == "Clone") {
-					if (!me.ptoPlanYearFrom.valid || !me.ptoPlanYearTo.valid) {
-						alert("In order to save, the errors on the page must be corrected.");
-						return false;
-					}
-				}
-				else {
-					if (!me.ptoPlanYear.valid || !me.ptoPlanType.valid || !me.ptoType.valid || !me.planName.valid 
-						|| !me.startDate.valid || !me.endDate.valid || !me.planDays.valid || !me.accrualInterval.valid) {
-						alert("In order to save, the errors on the page must be corrected.");
-						return false;
-					}
-	
-					if (me.ptoPlanGrid.activeRowIndex == -1)
-						me.status = "New";
-
-					for (var index = 0; index < me.ptoPlans.length; index++) {
-						if (me.status == "New" || index != me.ptoPlanGrid.activeRowIndex) {
-							if (me.ptoPlans[index].title == me.planName.getValue()) {
-								alert("The Plan Name [" + me.planName.getValue() + "] already exists. Please enter unique Plan Name and Save again.");
-								return false;
-							}
-						}
-					}
-
-					item = new fin.emp.employeePTOSetup.PTOPlan(
-						(me.status == "New" ? 0 : me.ptoPlanGrid.data[me.ptoPlanGrid.activeRowIndex].id)
-						, parent.fin.appUI.houseCodeId
-						, new fin.emp.employeePTOSetup.PTOYear(me.ptoYears[me.ptoPlanYear.indexSelected].id)
-						, new fin.emp.employeePTOSetup.PTOType(me.ptoTypes[me.ptoType.indexSelected].id, me.ptoTypes[me.ptoType.indexSelected].name)
-						, new fin.emp.employeePTOSetup.PTOPlanType(me.ptoPlanTypes[me.ptoPlanType.indexSelected].id, me.ptoPlanTypes[me.ptoPlanType.indexSelected].name)
-						, me.planName.getValue()
-						, me.startDate.lastBlurValue
-						, me.endDate.lastBlurValue
-						, me.planDays.getValue()
-						, me.accrual.check.checked
-						, me.accrualInterval.getValue()
-						, me.active.check.checked
-					);
-				}
-			}
-			else if (me.action == "PTO Days") {
-				me.ptoDaysGrid.body.deselectAll();
-
-				// Check to see if the data entered is valid
-				if (!me.validator.queryValidity(true) && me.ptoDaysGrid.activeRowIndex >= 0) {
-					alert("In order to save, the errors on the page must be corrected.");
-					return false;
-				}
-				item = new fin.emp.employeePTOSetup.PTODay(
-					0	
-				);
-			}
-			else if (me.action == "Management PTO Days") {
-				me.managementPTODaysGrid.body.deselectAll();
-
-				// Check to see if the data entered is valid
-				if (!me.validator.queryValidity(true) && me.managementPTODaysGrid.activeRowIndex >= 0) {
-					alert("In order to save, the errors on the page must be corrected.");
-					return false;
-				}
-				item = new fin.emp.employeePTOSetup.ManagementPTODay(
-					0	
-				);
-			}
-			else if (me.action == "PTO Balance Hours") {
-				me.ptoBalanceHoursGrid.body.deselectAll();
-
-				// Check to see if the data entered is valid
-				if (!me.validator.queryValidity(true) && me.ptoBalanceHoursGrid.activeRowIndex >= 0) {
-					alert("In order to save, the errors on the page must be corrected.");
-					return false;
-				}
-				
-				for (var index = 0; index < me.ptoEmployeeBalanceHours.length; index++) {
-					for (var iIndex = index + 1; iIndex < me.ptoEmployeeBalanceHours.length; iIndex++) {
-						if (me.ptoEmployeeBalanceHours[index].ptoType.id == me.ptoEmployeeBalanceHours[iIndex].ptoType.id) {
-							alert("Duplicate PTO Types are not allowed.");
-							return false;
-						}
-					}
-				}
-			}
-			else if (me.action == "PTO Assignments" || me.action == "Management PTO Assignments") {
-				hidePopup();
-			}
-			else if (me.action == "PTO Start Date") {
-				if (!me.ptoStartDate.valid) {
-					alert("In order to save, the errors on the page must be corrected.");
-					return false;
-				}
-
-				me.houseCodeDetails[0].ptoStartDate = me.ptoStartDate.lastBlurValue;
-			}
-
-			if (me.action == "PTO Years") {
-				xml += '<ptoYear';
-				xml += ' id="' + item.id + '"';
-				xml += ' title="' + item.name + '"';
-				xml += ' displayOrder="1"';
-				xml += ' active="true"';
-				xml += '/>';
-			}
-			else if (me.action == "PTO Types") {
-				//var payCodes = $("#PayCodeType").val();
-				var payCodes = [];
-				payCodes.push(me.payCodeTypes[me.payCodeType.indexSelected].id);
-
-				for (var index = 0; index < me.ptoTypePayCodes.length; index++) {
-					if ($.inArray(me.ptoTypePayCodes[index].payCodeId, payCodes) == -1)
-						me.ptoTypePayCodes[index].status = "remove";
-					xml += '<ptoTypePayCode';
-					xml += ' id="' + me.ptoTypePayCodes[index].id + '"';
-					xml += ' ptoTypeId="' + me.ptoTypePayCodes[index].ptoTypeId + '"';
-					xml += ' payCodeId="' + me.ptoTypePayCodes[index].payCodeId + '"';
-					xml += ' add="' + (($.inArray(me.ptoTypePayCodes[index].payCodeId, payCodes) > -1) ? "true" : "false") + '"';
-					xml += '/>';
-				}
-
-				if (payCodes != null) {
-					for (var index = 0; index < payCodes.length; index++) {
-						var found = false;
-						for (var iIndex = 0; iIndex < me.ptoTypePayCodes.length; iIndex++) {
-							if (me.ptoTypePayCodes[iIndex].payCodeId.toString() == payCodes[index]) {
-								found = true;
-								break;
-							}
-						}
-	
-						if (!found) {
-							xml += '<ptoTypePayCode';
-							xml += ' id="0"';
-							xml += ' ptoTypeId="' + me.ptoTypeGrid.data[me.ptoTypeGrid.activeRowIndex].id + '"';
-							xml += ' payCodeId="' + payCodes[index] + '"';
-							xml += ' add="true"';
-							xml += '/>';
-						}
-					}
-				}
-			}
-			else if (me.action == "PTO Plan Types") {
-				xml += '<ptoPlanType';
-				xml += ' id="' + item.id + '"';
-				xml += ' title="' + ui.cmn.text.xml.encode(item.title) + '"';
-				xml += ' minHours="' + item.minHours + '"';
-				xml += ' maxHours="' + item.maxHours + '"';
-				xml += ' active="' + item.active + '"';
-				xml += '/>';
-			}
-			else if (me.action == "PTO Plans") {
-				if (me.status == "Clone") {
-					xml += '<ptoPlanClone';
-					xml += ' houseCodeId="' + parent.fin.appUI.houseCodeId + '"';
-					xml += ' ptoYearIdFrom="' + me.ptoYears[me.ptoPlanYearFrom.indexSelected].id + '"';
-					xml += ' ptoYearIdTo="' + me.ptoYears[me.ptoPlanYearTo.indexSelected].id + '"';
-					xml += '/>';
-				}
-				else {
-					xml += '<ptoPlan';
-					xml += ' id="' + item.id + '"';
-					xml += ' houseCodeId="' + item.houseCodeId + '"';
-					xml += ' ptoYearId="' + item.ptoYear.id + '"';
-					xml += ' ptoTypeId="' + item.ptoType.id + '"';
-					xml += ' ptoPlanTypeId="' + item.ptoPlanType.id + '"';
-					xml += ' title="' + ui.cmn.text.xml.encode(item.title) + '"';
-					xml += ' startDate="' + item.startDate + '"';
-					xml += ' endDate="' + item.endDate + '"';
-					xml += ' days="' + item.days + '"';
-					xml += ' accrual="' + item.accrual + '"';
-					xml += ' accrualInterval="' + item.accrualInterval + '"';
-					xml += ' active="' + item.active + '"';
-					xml += '/>';
-				}
-			}
-			else if (me.action == "PTO Days") {
-				for (var index = 0; index < me.ptoDays.length; index++) {
-					if (me.ptoDays[index].modified || me.ptoDays[index].id == 0) {
-						me.ptoDays[index].modified = true;
-						xml += '<ptoDay';
-						xml += ' id="' + me.ptoDays[index].id + '"';
-						xml += ' houseCodeId="' + parent.fin.appUI.houseCodeId + '"';
-						xml += ' employeeId="' + me.employeeGrid.data[me.employeeGrid.activeRowIndex].id + '"';
-						xml += ' employeeNumber="' + me.employeeGrid.data[me.employeeGrid.activeRowIndex].employeeNumber + '"';
-						xml += ' ptoYearId="' + me.ptoYears[me.ptoYearSearch.indexSelected].id + '"';
-						xml += ' ptoTypeId="' + me.ptoDays[index].ptoType.id + '"';
-						xml += ' ptoDate="' + ui.cmn.text.date.format(me.ptoDays[index].ptoDate, "mm/dd/yyyy") + '"';
-						xml += ' hours="' + me.ptoDays[index].hours + '"';
-						xml += ' weekStartDate="' + ui.cmn.text.date.format(me.weekStartDate, "mm/dd/yyyy") + '"';
-						xml += ' weekEndDate="' + ui.cmn.text.date.format(me.weekEndDate, "mm/dd/yyyy") + '"';
-						xml += '/>';
-					}
-					//<weeklyPayroll id="1" houseCodeId="12351" weekStartDate="11/09/2014" weekEndDate="11/15/2014" houseCodeJob="23996|23996|23996|23996|23996|23996|23996|" houseCodeWorkOrder="0|0|0|0|0|0|0|" hourly="H|H|H|H|H|H|H|" employeeId="630842|630842|630842|630842|630842|630842|630842|" payCode="2|2|2|2|2|2|2|" payrollHcmHouseCode="12351|12351|12351|12351|12351|12351|12351|" weekDay="1|2|3|4|5|6|7|" value="7|0|0|0|0|0|0|" transactionId="9638205|9638206|9638207|9638208|9638209|9638210|9638211|"/>
-				}
-			}
-			else if (me.action == "Management PTO Days") {
-				for (var index = 0; index < me.managementPTODays.length; index++) {
-					if (me.managementPTODays[index].modified || me.managementPTODays[index].id == 0) {
-						me.managementPTODays[index].modified = true;
-						xml += '<managementPTODay';
-						xml += ' id="' + me.managementPTODays[index].id + '"';
-						xml += ' houseCodeId="' + parent.fin.appUI.houseCodeId + '"';
-						xml += ' employeeId="' + me.employeeGrid.data[me.employeeGrid.activeRowIndex].id + '"';
-						xml += ' ptoYearId="' + me.ptoYears[me.ptoYearSearch.indexSelected].id + '"';
-						xml += ' ptoTypeId="' + me.managementPTODays[index].ptoType.id + '"';
-						xml += ' startDate="' + ui.cmn.text.date.format(me.managementPTODays[index].startDate, "mm/dd/yyyy") + '"';
-						xml += ' endDate="' + ui.cmn.text.date.format(me.managementPTODays[index].endDate, "mm/dd/yyyy") + '"';
-						xml += ' hours="' + me.managementPTODays[index].hours + '"';
-						xml += '/>';
-					}
-				}
-			}
-			else if (me.action == "PTO Balance Hours") {
-				for (var index = 0; index < me.ptoEmployeeBalanceHours.length; index++) {
-					if (me.ptoEmployeeBalanceHours[index].modified || me.ptoEmployeeBalanceHours[index].id == 0) {
-						me.ptoEmployeeBalanceHours[index].modified = true;
-						xml += '<ptoEmployeeBalanceHour';
-						xml += ' id="' + me.ptoEmployeeBalanceHours[index].id + '"';
-						xml += ' employeeId="' + me.employeeGrid.data[me.employeeGrid.activeRowIndex].id + '"';
-						xml += ' ptoTypeId="' + me.ptoEmployeeBalanceHours[index].ptoType.id + '"';
-						xml += ' balanceHours="' + me.ptoEmployeeBalanceHours[index].balanceHours + '"';
-						xml += '/>';
-					}
-				}
-			}
-			else if (me.action == "PTO Assignments") {
-				if (me.status == "Delete") {
-					xml += '<ptoAssignmentDelete';
-					xml += ' id="' + me.ptoAssignments[me.ptoAssignmentGrid.activeRowIndex].ptoAssignmentId + '"';
-					xml += '/>';
-				}
-				else {
-					for (var index = 0; index < me.ptoEmployees.length; index++) {
-						if ($("#assignInputCheck" + index)[0].checked) {
-							xml += '<ptoAssignment';
-							xml += ' employeeId="' + me.ptoEmployees[index].id + '"';
-							xml += ' ptoPlanId="' + me.ptoPlanGrid.data[me.ptoPlanGrid.activeRowIndex].id + '"';
-							xml += '/>';
-						}
-					}
-				}
-			}
-			else if (me.action == "Management PTO Assignments") {
-				if (me.status == "Delete") {
-					xml += '<managementPTOAssignmentDelete';
-					xml += ' id="' + me.ptoAssignments[me.ptoAssignmentGrid.activeRowIndex].ptoAssignmentId + '"';
-					xml += '/>';
-				}
-				else {
-					for (var index = 0; index < me.ptoEmployees.length; index++) {
-						if ($("#assignInputCheck" + index)[0].checked) {
-							xml += '<managementPTOAssignment';
-							xml += ' employeeId="' + me.ptoEmployees[index].id + '"';
-							xml += ' ptoPlanId="' + me.ptoPlanGrid.data[me.ptoPlanGrid.activeRowIndex].id + '"';
-							xml += '/>';
-						}
-					}
-				}
-			}
-			else if (me.action == "PTO Start Date") {
-				xml += '<houseCodePTOStartDateUpdate';
-				xml += ' id="' + parent.fin.appUI.houseCodeId + '"';
-				xml += ' ptoStartDate="' + me.ptoStartDate.lastBlurValue + '"';
-				xml += '/>';
-			}
-			
-			if (xml == "")
-				return;
-
-			me.setStatus("Saving");
-			$("#messageToUser").text("Saving");
-			$("#pageLoading").fadeIn("slow");
-
-			// Send the object back to the server as a transaction
-			me.transactionMonitor.commit({
-				transactionType: "itemUpdate",
-				transactionXml: xml,
-				responseFunction: me.saveResponse,
-				referenceData: {me: me, item: item}
-			});
-			
-			return true;
-		},
-
-		saveResponse: function() {
-			var args = ii.args(arguments, {
-				transaction: {type: ii.ajax.TransactionMonitor.Transaction},
-				xmlNode: {type: "XmlNode:transaction"}
-			});
-			var transaction = args.transaction;
-			var me = transaction.referenceData.me;
-			var item = transaction.referenceData.item;
-			var status = $(args.xmlNode).attr("status");
-			var invalidPTODay = false;
-
-			if (status == "success") {
-				me.modified(false);
-
-				$(args.xmlNode).find("*").each(function() {
-					switch (this.tagName) {
-						case "empPTOYear":
-							if (me.status == "New") {
-								item.id = parseInt($(this).attr("id"), 10);
-								me.ptoYears.unshift(item);
-								me.lastSelectedRowIndex = 0;
-							}
-							else {
-								me.ptoYears[me.lastSelectedRowIndex] = item;
-								me.ptoYearGrid.body.renderRow(me.lastSelectedRowIndex, me.lastSelectedRowIndex);
-							}
-
-							me.ptoYearGrid.setData(me.ptoYears);
-							me.ptoYearGrid.body.select(me.lastSelectedRowIndex);
-							break;
-							
-						case "empPTOPlan":
-							if (me.status == "Clone") {
-								me.loadPlans(false);
-							}
-							else {
-								if (me.status == "New") {
-									item.id = parseInt($(this).attr("id"), 10);
-									me.ptoPlans.push(item);
-									me.lastSelectedRowIndex = me.ptoPlans.length - 1;
-								}
-								else {
-									me.ptoPlans[me.lastSelectedRowIndex] = item;
-									me.ptoPlanGrid.body.renderRow(me.lastSelectedRowIndex, me.lastSelectedRowIndex);
-								}
-	
-								me.ptoPlanGrid.setData(me.ptoPlans);
-								me.ptoPlanGrid.body.select(me.lastSelectedRowIndex);
-							}
-							break;
-
-						case "empPTOPlanType":
-							if (me.status == "New") {
-								item.id = parseInt($(this).attr("id"), 10);
-								me.ptoPlanTypes.push(item);
-								me.lastSelectedRowIndex = me.ptoPlanTypes.length - 1;
-							}
-							else {
-								me.ptoPlanTypes[me.lastSelectedRowIndex] = item;
-								me.ptoPlanTypeGrid.body.renderRow(me.lastSelectedRowIndex, me.lastSelectedRowIndex);
-							}
-
-							me.ptoPlanTypeGrid.setData(me.ptoPlanTypes);
-							me.ptoPlanTypeGrid.body.select(me.lastSelectedRowIndex);
-							break;
-
-						case "empPTODay":
-							if (me.action == "PTO Days") {
-								var id = parseInt($(this).attr("id"), 10);
-
-								if (id == 0) {
-									invalidPTODay = true;
-									var index = ii.ajax.util.findIndexById($(this).attr("ptoTypeId"), me.ptoTypes);
-									alert("Either PTO plan is not assigned to the employee for the PTO type [" +  me.ptoTypes[index].name + "] or PTO date is not within the plan start and end date. Please verify.")
-								}
-								for (var index = 0; index < me.ptoDaysGrid.data.length; index++) {
-									if (me.ptoDaysGrid.data[index].modified) {
-										if (me.ptoDaysGrid.data[index].id == 0)
-											me.ptoDaysGrid.data[index].id = id;
-										me.ptoDaysGrid.data[index].modified = false;
-										break;
-									}
-								}
-							}
-							break;
-						
-						case "empManagementPTODay":
-							if (me.action == "Management PTO Days") {
-								var id = parseInt($(this).attr("id"), 10);
-
-								if (id == 0) {
-									invalidPTODay = true;
-									var index = ii.ajax.util.findIndexById($(this).attr("ptoTypeId"), me.ptoTypes);
-									alert("Either PTO plan is not assigned to the employee for the PTO type [" +  me.ptoTypes[index].name + "] or PTO date is not within the plan start and end date. Please verify.")
-								}
-								for (var index = 0; index < me.managementPTODaysGrid.data.length; index++) {
-									if (me.managementPTODaysGrid.data[index].modified) {
-										if (me.managementPTODaysGrid.data[index].id == 0)
-											me.managementPTODaysGrid.data[index].id = id;
-										me.managementPTODaysGrid.data[index].modified = false;
-										break;
-									}
-								}
-							}
-							break;
-
-						case "empPTOEmployeeBalanceHour":
-							if (me.action == "PTO Balance Hours") {
-								var id = parseInt($(this).attr("id"), 10);
-
-								for (var index = 0; index < me.ptoBalanceHoursGrid.data.length; index++) {
-									if (me.ptoBalanceHoursGrid.data[index].modified) {
-										if (me.ptoBalanceHoursGrid.data[index].id == 0)
-											me.ptoBalanceHoursGrid.data[index].id = id;
-										me.ptoBalanceHoursGrid.data[index].modified = false;
-										break;
-									}
-								}
-							}
-							break;
-
-						case "empPTOAssignment":
-						case "empManagementPTOAssignment":
-							if (me.status == "Delete") {
-								me.ptoAssignments.splice(me.ptoAssignmentGrid.activeRowIndex, 1);
-								me.ptoAssignmentGrid.setData(me.ptoAssignments);
-							}
-							else {
-								me.loadPTOAssignments();
-							}
-							break;
-							
-						case "empPTOTypePayCode":
-							var id = parseInt($(this).attr("id"), 10);
-							var payCodeId = parseInt($(this).attr("payCodeId"), 10);
-							var itemIndex = ii.ajax.util.findIndexById(id.toString(), me.ptoTypePayCodes);
-							
-							if (itemIndex == undefined)
-								me.ptoTypePayCodes.push(new fin.emp.employeePTOSetup.PTOTypePayCode(id, me.ptoTypeGrid.data[me.ptoTypeGrid.activeRowIndex].id, payCodeId));
-							else if (itemIndex != undefined && me.ptoTypePayCodes[itemIndex].status == "remove")
-								me.ptoTypePayCodes.splice(itemIndex, 1);
-							break;
-					}
-				});
-
-				me.status = "";
-				if (invalidPTODay)
-					me.setStatus("Error");
-				else
-					me.setStatus("Saved");
-			}
-			else {
-				me.setStatus("Error");
-				alert("[SAVE FAILURE] Error while updating Employee PTO details: " + $(args.xmlNode).attr("message"));
-			}
-
-			$("#pageLoading").fadeOut("slow");
-		}
+var pto = angular.module('pto', ['ui.bootstrap', 'ngRoute']);
+
+pto.config(['$routeProvider', function($routeProvider) {
+    $routeProvider
+    .otherwise({
+        controller: 'employeePTOCtrl',
+        templateUrl: 'employeePTO.htm'
+    });
+}]);
+
+var setStatus = function(status, message) {
+	var me = this;
+
+	me.$itemStatusImage = $("#itemStatusImage");
+	me.$itemModifiedImage = $("#itemModifiedImage");
+	me.$itemStatusText = $("#itemStatusText");
+
+	if (message === "" || message === undefined) {
+		if (status === "New")
+			message = "New";
+		else if (status === "Loading" || status === "Saving" || status === "Exporting" || status === "Importing" || status === "Validating" || status === "Uploading" || status === "Downloading" || status === "Generating")
+			message = status + ", please wait...";
+		else if (status === "Saved")
+			message = "Data saved successfully.";
+		else if (status === "Imported")
+			message = "Data imported successfully.";
+		else if (status === "Exported")
+			message = "Data exported successfully.";
+		else if (status === "Locked")
+			message = "The current page is Readonly.";
+		else if (status === "Error")
+			message = "Error while updating the data.";
+		else
+			message = "Normal";
 	}
-});
 
-function loadPopup() {
-	
-	centerPopup();
-	
-	$("#backgroundPopup").css({
-		"opacity": "0.5"
-	});
-	$("#backgroundPopup").fadeIn("slow");
-	$("#popupEmployee").fadeIn("slow");
-	$("#popupLoading").fadeIn("slow");
+	if (status === "Locked")
+		me.$itemModifiedImage.addClass("Locked");
+	else
+		me.$itemModifiedImage.removeClass("Locked");
+
+	if (status === "Edit")
+		me.$itemModifiedImage.addClass("Modified");
+	else
+		me.$itemModifiedImage.removeClass("Modified");
+
+	if (status === "Edit" || status === "Loaded" || status === "Saved" || status === "Imported" || status === "Exported")
+	    status = "Normal";
+
+	me.$itemStatusImage.attr("class", "itemStatusImage " + status);
+	me.$itemStatusText.text(message);
+};
+
+var dirtyCheck = function() {
+    if (parent.fin !== undefined && parent.fin.appUI !== undefined && parent.fin.appUI.modified) {
+        if (confirm("The current item was modified and you will lose unsaved data if you navigate from current item. Press OK to continue, or Cancel to remain on the current item.")) {
+            parent.fin.appUI.modified = false;
+            return true;
+        }
+        else
+            return false;
+    }
+    else
+        return true;
+};
+
+var editStatus = function() {
+    return !dirtyCheck();
+};
+
+var checkStatus = function() {
+    var me = this;
+
+    if (top.ii !== undefined) {
+        if (top.ui.ctl.menu) {
+            top.ui.ctl.menu.Dom.me.registerDirtyCheck(editStatus, me);
+        }
+    }
+};
+
+var modified = function (isModified) {
+    var me = this;
+ 
+    if (parent.fin !== undefined) {
+        if (parent.fin.appUI !== undefined) {
+            parent.fin.appUI.modified = isModified;
+        }
+    }
+};
+
+var getCurrentYear = function () {
+    var currentYear = "";
+
+    if (parent.fin !== undefined) {
+        if (parent.fin.appUI !== undefined) {
+            var currentYear = new Date(parent.fin.appUI.glbCurrentDate).getFullYear();
+        }
+    }
+    return currentYear;
+};
+
+if (!window.top.fin) {
+    window.top.fin = { appUI: { houseCodeId: 415, glbFscYear: 4, glbFscPeriod: 45, glbWeek: 2 } };
 }
 
-function hidePopup() {
-
-	$("#backgroundPopup").fadeOut("slow");
-	$("#popupEmployee").fadeOut("slow");
+var getCurrentHcmHouseCode = function () {
+    return window.top.fin.appUI.houseCodeId;
 }
 
-function centerPopup() {
-	var windowWidth = document.documentElement.clientWidth;
-	var windowHeight = document.documentElement.clientHeight;
-	var popupWidth = windowWidth - 100;
-	var popupHeight = windowHeight - 100;
-	
-	$("#popupLoading, #popupEmployee").css({
-		"width": popupWidth,
-		"height": popupHeight,
-		"top": windowHeight/2 - popupHeight/2,
-		"left": windowWidth/2 - popupWidth/2
-	});
-	
-	$("#backgroundPopup").css({
-		"height": windowHeight
-	});
-}
+var encode = function (value) {
+    var returnValue = value.replace(/&/g, "&amp;");
+    returnValue = returnValue.replace(/'/g, "&apos;");
+    returnValue = returnValue.replace(/"/g, "&quot;");
+    returnValue = returnValue.replace(/</g, "&lt;");
+    returnValue = returnValue.replace(/>/g, "&gt;");
 
-function main() {
-	var intervalId = setInterval(function() {
-		if (importCompleted) {
-			clearInterval(intervalId);
-			fin.employeePTOSetupUi = new fin.emp.employeePTOSetup.UserInterface();
-			fin.employeePTOSetupUi.resize();
-			fin.houseCodeSearchUi = fin.employeePTOSetupUi;
-		}
-	}, 100);
-}
+    return returnValue;
+};
+
+var deserializeXml = function(xml, nodeName, options) {
+    options = options || {};
+
+    var upperCaseItems = function(input) {
+        var items = [];
+        if (input && input.length) {
+            $.each(input, function(index, item) {
+                items.push(item.toUpperCase());
+            });
+        }
+        return items;
+    };
+
+    var convertAttrName = function(name) {
+        if (options.upperFirstLetter)
+            return uppercaseFirstLetter(name);
+        else
+            return name;
+    };
+
+    var intItems = upperCaseItems(options.intItems);
+    var boolItems = upperCaseItems(options.boolItems);
+    var dateItems = upperCaseItems(options.dateItems);
+    var jsonItems = upperCaseItems(options.jsonItems);
+    var $xml = null;
+
+    if (angular.isString(xml)) {
+        xml = $.parseXML(xml);
+    }
+
+    $xml = $(xml);
+
+    var $el = $xml.find(nodeName);
+    var items = [];
+
+    $el.each(function(index, element) {
+        var obj = {};
+        $.each(element.attributes, function(index, key) {
+            var value = key.value;
+
+            if (boolItems.indexOf(key.name.toUpperCase()) >= 0)
+                value = key.value === '1' || key.value === 'true';
+
+            if (intItems.indexOf(key.name.toUpperCase()) >= 0)
+                value = key.value === 0 ? null : parseInt(key.value);
+
+            if (jsonItems.indexOf(key.name.toUpperCase()) >= 0) {
+                if (!key.value)
+                    value = {};
+                else
+                    value = angular.fromJson(key.value.replace(/###/gi, '"'));
+            }
+
+            if (dateItems.indexOf(key.name.toUpperCase()) >= 0) {
+                value = !key.value || key.value.substr(0, 8) === '1/1/1900' ? null : key.value;
+            }
+            obj[convertAttrName(key.name)] = value;
+        });
+
+        if (Object.keys(obj).length > 0)
+            items.push(obj);
+    });
+    return items;
+};
+
+pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$modal', function ($scope, EmpActions, $filter, $sce, $modal) {
+    $scope.ptoYears = [];
+    $scope.selectedYear = null;
+    $scope.ptoTypePayCodes = null;
+    modified(false);
+    checkStatus();
+    setStatus("Loading");
+    $scope.loadingTitle = " Loading...";
+    $scope.isPageLoading = function () {
+        return ($scope.loadingCount > 0 || $scope.pageLoading);
+    };
+    $scope.isClone = false;
+    $scope.empPTOYear = {};
+    $scope.empPTOYear.ptoYearSelected = "";
+    $scope.ptoType = {};
+    $scope.ptoType.payCode = "";
+    $scope.selectedptoTypePayCode = "";
+    $scope.selectedptoTypePayCodeId = "";
+    $scope.ptoPlanType = {};
+    $scope.ptoPlanType.ptoPlanTypeTitle = "";
+    $scope.ptoPlanType.ptoPlanTypeMinHours = "";
+    $scope.ptoPlanType.ptoPlanTypeMaxHours = "";
+    $scope.ptoPlanType.Salary = false;
+    $scope.ptoPlanType.Hourly = false;
+    $scope.ptoPlanType.ptoPlanTypeActive = true;
+    $scope.mainViewHeight = $(window).height() - 180;
+    $scope.gridHeight = $(window).height() - 310;
+    $scope.ptoYearDetailHeight = $(window).height() - 355;
+    $scope.payCodeDetailHeight = $(window).height() - 370;
+    $scope.ptoPlanGridHeight = $(window).height() - 340;
+    $scope.ptoPlanDetailHeight = $(window).height() - 355;
+    $scope.PlanTypeDetailHeight = $(window).height() - 325;
+    $scope.ptoPlan = {};
+    $scope.ptoPlan.ptoYear = "";
+    $scope.assignment = {};
+    $scope.assignment.hcmHouseCode = "";
+    $scope.currentHouseCode = typeof getCurrentHcmHouseCode() == "undefined" ? null : getCurrentHcmHouseCode();
+
+    var setCurrentHcmHouseCode = function (callback) {
+        EmpActions.setCurrentHcmHouseCode(function (response) {
+            callback(response);
+        });
+    };
+    
+    if ($scope.currentHouseCode === null) {
+        setCurrentHcmHouseCode(function (response) {
+            if (!angular.isDefined(response)) {
+                return;
+            }
+            $scope.currentHouseCode = response.id;
+        });
+    }
+
+    EmpActions.getAuthorizations(function (result) {
+        $scope.authorizations = result;
+        authorizationsLoaded();
+        $scope.pageStatus = 'Normal';
+        setStatus('Normal');
+    });
+
+    var isAuthorized = function (path) {
+        var authorized = false;
+
+        for (var index = 0; index < $scope.authorizations.length; index++) {
+            if ($scope.authorizations[index].path.indexOf(path) >= 0) {
+                authorized = true;
+                break;
+            }
+        }
+
+        return authorized;
+    };
+
+    var authorizationsLoaded = function () {
+        var authorizePath = "\\crothall\\chimes\\fin\\PTOSetup\\EmployeePTO";
+        $scope.showPTOYears = isAuthorized(authorizePath + "\\PTOYears");
+        $scope.showPTOTypes = isAuthorized(authorizePath + "\\PTOTypes");
+        $scope.showPTOPlanTypes = isAuthorized(authorizePath + "\\PTOPlanTypes");
+        $scope.showPTOPlans = isAuthorized(authorizePath + "\\PTOPlans");
+        $scope.showPTOAssignments = isAuthorized(authorizePath + "\\PTOAssignments");
+    };
+    
+    EmpActions.getPTOYears(function (result) {
+        $scope.ptoYears = result;
+        if (angular.isDefined(result)) {
+            $scope.ptoYear = result[0].id;
+            $scope.ptoAssignYear = result[0].id;
+        }
+    });
+
+    $scope.onYearSelected = function (item) {
+        if ($scope.selectedYear !== null && $scope.selectedYear !== undefined)
+            if (editStatus())
+                return;
+        $scope.selectedYear = item;
+        $scope.empPTOYear.ptoYearSelected = $scope.selectedYear.brief;
+        setStatus('Normal');
+        modified(false);
+        $scope.ptoForm.selectedPTOYear.$setValidity("required", true);
+    };
+
+    $scope.newPTOYear = function () {
+        $scope.selectedYear = null;
+        $scope.empPTOYear.ptoYearSelected = "";
+    };
+
+    $scope.onPTOYearChanged = function (year) {
+        setStatus('Edit');
+        modified(true);
+    };
+
+    $scope.undoPTOYear = function () {
+        if (editStatus())
+            return;
+        if ($scope.selectedYear !== null && $scope.selectedYear !== undefined) {
+            $scope.empPTOYear.ptoYearSelected = $scope.selectedYear.brief;
+            $scope.ptoForm.selectedPTOYear.$setValidity("required", true);
+        }
+        setStatus('Normal');
+        modified(false);
+    };
+    
+    $scope.savePTOYear = function () {
+        if ($scope.ptoForm.selectedPTOYear.$valid) {
+            $scope.years = $scope.ptoYears;
+            EmpActions.actionSaveItem($scope, "PTO Years", function (data, status) {
+                EmpActions.getPTOYears(function (result) {
+                    $scope.ptoYears = result;
+                    if (angular.isDefined(result)) {
+                        $scope.ptoYear = result[0].id;
+                        if ($scope.selectedYear === null || $scope.selectedYear === undefined) {
+                            for (var year = 0; year < $scope.ptoYears.length; year++) {
+                                var found = false;
+                                for (var oldYear = 0; oldYear < $scope.years.length; oldYear++) {
+                                    if ($scope.years[oldYear].id == $scope.ptoYears[year].id) {
+                                        found = true;
+                                        break;
+                                    }
+                                }
+                                if (!found) {
+                                    $scope.selectedYear = $scope.ptoYears[year];
+                                    break;
+                                }
+                            }
+                        }
+                        else {
+                            for (var year = 0; year < $scope.ptoYears.length; year++) {
+                                if ($scope.selectedYear.id === $scope.ptoYears[year].id) {
+                                    $scope.selectedYear = $scope.ptoYears[year];
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    $scope.pageLoading = false;
+                    setStatus("Saved");
+                    modified(false);
+                });
+            });
+        }
+    };
+
+    $scope.onPTOYearsTabClick = function () {
+        $scope.selectedYear = null;
+        $scope.empPTOYear.ptoYearSelected = "";
+    };
+
+    $scope.onPtoTypesTabClick = function () {
+        $scope.loadingTitle = " Loading...";
+        $scope.pageStatus = 'Loading, Please Wait...';
+        setStatus("Loading");
+        $scope.selectedPTOtype = null;
+        $scope.ptoType.payCode = null;
+        $scope.selectedptoTypePayCode = null;
+        $scope.selectedptoTypePayCodeId = null;
+
+        EmpActions.getPTOTypes(function (result) {
+            $scope.ptoTypes = result;
+        });
+
+        EmpActions.getPayCodes(function (result) {
+            $scope.payCodes = result;
+            $scope.pageStatus = 'Normal';
+            setStatus("Normal");
+        });
+    };
+
+    $scope.onPTOtypeSelected = function (item) {
+        if ($scope.selectedPTOtype !== null && $scope.selectedPTOtype !== undefined)
+            if (editStatus())
+                return;
+        $scope.selectedPTOtype = item;
+        $scope.loadingTitle = " Loading...";
+        $scope.pageStatus = 'Loading, Please Wait...';
+        setStatus("Loading");
+        EmpActions.getPTOTypePayCodes(item.id, function (result) {
+            $scope.ptoTypePayCodes = result;
+            $scope.ptoType.payCode = $scope.ptoTypePayCodes[0].payCodeId;
+            $scope.selectedptoTypePayCode = $scope.ptoTypePayCodes[0].payCodeId;
+            $scope.selectedptoTypePayCodeId = $scope.ptoTypePayCodes[0].id;
+            $scope.pageStatus = 'Normal';
+            setStatus("Normal");
+        });
+    };
+
+    $scope.onPayCodeChange = function (payCode) {
+        $scope.ptoType.payCode = payCode;
+        setStatus('Edit');
+        modified(true);
+    }
+
+    $scope.undoPTOType = function () {
+        if (editStatus())
+            return;
+        if ($scope.selectedPTOtype !== null && $scope.selectedPTOtype !== undefined)
+            $scope.ptoType.payCode = $scope.selectedptoTypePayCode;
+        setStatus('Normal');
+        modified(false);
+    };
+
+    $scope.savePTOType = function () {
+        if ($scope.ptoForm.payCode.$valid && $scope.selectedPTOtype !== null && $scope.selectedPTOtype !== undefined) {
+            EmpActions.actionSaveItem($scope, "PTO Types", function (data, status) {
+                EmpActions.getPTOTypes(function (result) {
+                    $scope.ptoTypes = result;
+                    $scope.$apply(function () {
+                        $scope.pageLoading = false;
+                    });
+                    setStatus("Saved");
+                    modified(false);
+                });
+            });
+        }
+
+    };
+
+    $scope.onPlanTypeTabClick = function () {
+        $scope.loadingTitle = " Loading...";
+        $scope.pageStatus = 'Loading, Please Wait...';
+        setStatus("Loading");
+        $scope.pageLoading = true;
+        $scope.selectedPTOPlanType = null;
+        $scope.ptoPlanType.ptoPlanTypeTitle = null;
+        $scope.ptoPlanType.ptoPlanTypeMinHours = null;
+        $scope.ptoPlanType.ptoPlanTypeMaxHours = null;
+        $scope.ptoPlanType.Status = "";
+        $scope.ptoPlanType.Salary = false;
+        $scope.ptoPlanType.Hourly = false;
+        $scope.ptoPlanType.ptoPlanTypeActive = true;
+        EmpActions.getPTOPlanTypes(function (result) {
+            $scope.ptoPlanTypes = result;
+            angular.forEach($scope.ptoPlanTypes, function (planType, index) {
+                if (planType.statusCategory === "0") {
+                    planType.statusCategory = "";
+                }
+                else if (planType.statusCategory === "1") {
+                    planType.statusCategory = "Full Time";
+                }
+                else if (planType.statusCategory === "2") {
+                    planType.statusCategory = "Part Time";
+                }
+
+                if (planType.payStatusSalary === true) {
+                    planType.payStatus = "Salary";
+                    if (planType.payStatusHourly === true)
+                        planType.payStatus = "Salary, Hourly";
+                }
+                else if (planType.payStatusHourly === true) {
+                    planType.payStatus = "Hourly";
+                }
+            });
+            setStatus("Normal");
+            $scope.pageStatus = 'Normal';
+            $scope.pageLoading = false;
+        });
+    };
+
+    $scope.onPTOPlanTypeSelected = function (item) {
+        if ($scope.selectedPTOPlanType !== null && $scope.selectedPTOPlanType !== undefined)
+            if (editStatus())
+                return;
+        $scope.selectedPTOPlanType = item;
+        $scope.ptoPlanType.ptoPlanTypeTitle = item.title;
+        
+        if (item.statusCategory === "Full Time")
+            $scope.ptoPlanType.Status = 1;
+        else if (item.statusCategory === "Part Time")
+            $scope.ptoPlanType.Status = 2;
+        else
+            $scope.ptoPlanType.Status = "";
+
+        $scope.ptoPlanType.Hourly = item.payStatusHourly;
+        $scope.ptoPlanType.Salary = item.payStatusSalary;
+        $scope.ptoPlanType.ptoPlanTypeMinHours = item.minHours;
+        $scope.ptoPlanType.ptoPlanTypeMaxHours = item.maxHours;
+        $scope.ptoPlanType.ptoPlanTypeActive = item.active;
+    };
+
+    $scope.onMinHoursChange = function (hours) {
+        if (hours > $scope.ptoPlanType.ptoPlanTypeMaxHours && $scope.ptoPlanType.ptoPlanTypeMaxHours !== null && $scope.ptoPlanType.ptoPlanTypeMaxHours !== undefined)
+            $scope.ptoForm.planTypeMinHours.$setValidity("required", false);
+        else if ($scope.ptoPlanType.ptoPlanTypeMinHours !== null && $scope.ptoPlanType.ptoPlanTypeMinHours !== undefined)
+            $scope.ptoForm.planTypeMinHours.$setValidity("required", true);
+           
+        setStatus('Edit');
+        modified(true);
+    };
+
+    $scope.onMaxHoursChange = function (hours) {
+        if (hours < $scope.ptoPlanType.ptoPlanTypeMinHours && $scope.ptoPlanType.ptoPlanTypeMaxHours !== null && $scope.ptoPlanType.ptoPlanTypeMaxHours !== undefined)
+            $scope.ptoForm.planTypeMaxHours.$setValidity("required", false);
+        else if ($scope.ptoPlanType.ptoPlanTypeMaxHours !== null && $scope.ptoPlanType.ptoPlanTypeMaxHours !== undefined)
+            $scope.ptoForm.planTypeMinHours.$setValidity("required", true);
+            
+        setStatus('Edit');
+        modified(true);
+    }
+
+    $scope.payTypeHourlyChanged = function (hourly) {
+        $scope.isHourly = hourly;
+        setStatus('Edit');
+        modified(true);
+    };
+
+    $scope.payTypeSalaryChanged = function (salary) {
+        setStatus('Edit');
+        modified(true);
+        if (salary && !$scope.isHourly) {
+            $scope.ptoPlanType.ptoPlanTypeMinHours = 0;
+            $scope.ptoPlanType.ptoPlanTypeMaxHours = 0;
+        }
+    };
+
+    $scope.onPlanTypeActiveChange = function (active) {
+        setStatus('Edit');
+        modified(true);
+    };
+
+    $scope.newPTOPlanType = function () {
+        $scope.selectedPTOPlanType = null;
+        $scope.ptoPlanType.ptoPlanTypeTitle = null;
+        $scope.ptoPlanType.ptoPlanTypeMinHours = null;
+        $scope.ptoPlanType.ptoPlanTypeMaxHours = null;
+        $scope.ptoPlanType.Status = "";
+        $scope.ptoPlanType.Salary = false;
+        $scope.ptoPlanType.Hourly = false;
+        $scope.ptoPlanType.ptoPlanTypeActive = true;
+    };
+
+    $scope.undoPTOPlanType = function () {
+        if (editStatus())
+            return;
+        if ($scope.selectedPTOPlanType !== null && $scope.selectedPTOPlanType !== undefined) {
+            $scope.ptoPlanType.ptoPlanTypeTitle = $scope.selectedPTOPlanType.title;
+            $scope.ptoPlanType.Salary = $scope.selectedPTOPlanType.payStatusSalary;
+            $scope.ptoPlanType.Hourly = $scope.selectedPTOPlanType.payStatusHourly;
+            if ($scope.selectedPTOPlanType.statusCategory === "Full Time")
+                $scope.ptoPlanType.Status = 1;
+            else if ($scope.selectedPTOPlanType.statusCategory === "Part Time")
+                $scope.ptoPlanType.Status = 2;
+            else
+                $scope.ptoPlanType.Status = "";
+            $scope.ptoPlanType.ptoPlanTypeMinHours = $scope.selectedPTOPlanType.minHours;
+            $scope.ptoPlanType.ptoPlanTypeMaxHours = $scope.selectedPTOPlanType.maxHours;
+            $scope.ptoPlanType.ptoPlanTypeActive = $scope.selectedPTOPlanType.active;
+        }
+        setStatus('Normal');
+        modified(false);
+    };
+
+    $scope.savePTOPlanType = function () {
+        if ($scope.ptoForm.planTypeMinHours.$valid && $scope.ptoForm.planTypeMaxHours.$valid && $scope.ptoForm.planTypeTitle.$valid) {
+            $scope.planTypes = $scope.ptoPlanTypes;
+            EmpActions.actionSaveItem($scope, "PTO Plan Types", function (data, status) {
+                EmpActions.getPTOPlanTypes(function (result) {
+                        $scope.ptoPlanTypes = result;
+                        angular.forEach($scope.ptoPlanTypes, function (planType, index) {
+                            if (planType.statusCategory === "0") {
+                                planType.statusCategory = "";
+                            }
+                            else if (planType.statusCategory === "1") {
+                                planType.statusCategory = "Full Time";
+                            }
+                            else if (planType.statusCategory === "2") {
+                                planType.statusCategory = "Part Time";
+                            }
+
+                            if (planType.payStatusSalary === true) {
+                                planType.payStatus = "Salary";
+                                if (planType.payStatusHourly === true)
+                                    planType.payStatus = "Salary, Hourly";
+                            }
+                            else if (planType.payStatusHourly === true) {
+                                planType.payStatus = "Hourly";
+                            }
+
+                            if ($scope.selectedPTOPlanType !== null && $scope.selectedPTOPlanType !== undefined) {
+                                if ($scope.selectedPTOPlanType.id === planType.id)
+                                    $scope.selectedPTOPlanType = planType;
+                            }
+                            else {
+                                var found = false;
+                                for (var oldPlanType = 0; oldPlanType < $scope.planTypes.length; oldPlanType++) {
+                                    if ($scope.planTypes[oldPlanType].id == planType.id) {
+                                        found = true;
+                                        break;
+                                    }
+                                }
+                                if (!found)
+                                    $scope.selectedPTOPlanType = planType;
+                            }
+                        });
+                        $scope.pageLoading = false;
+                        setStatus("Saved");
+                        modified(false);
+                });
+            });
+        }
+    };
+
+    $scope.onPlanTypeChange = function () {
+        setStatus('Edit');
+        modified(true);
+    };
+
+    $scope.onPTOPlanTabClick = function () {
+        $scope.ptoPlan.ptoYear = $scope.ptoYears[0].id;
+        $scope.selectedPTOPlan = null;
+        $scope.ptoPlan.ptoPlanName = null;
+        $scope.ptoPlan.ptoPlanType = null;
+        $scope.ptoPlan.ptoType = null;
+        $scope.ptoPlan.planPtoYear = null;
+        $scope.ptoPlan.ptoPlanDays = null;
+        $scope.ptoPlan.ptoPlanAccrual = true;
+        $scope.ptoPlan.ptoPlanAccrualInterval = null;
+        $scope.ptoPlan.ptoPlanActive = true;
+        $scope.ptoPlan.startDate = null;
+        $scope.ptoPlan.endDate = null;
+        $scope.isClone = false;
+        $scope.loadingTitle = " Loading...";
+        $scope.pageStatus = 'Loading, Please Wait...';
+        setStatus("Loading");
+        EmpActions.getPTOPlans($scope.ptoYears[0].id, function (result) {
+            $scope.ptoPlans = result;
+            $scope.pageStatus = 'Normal';
+            setStatus("Normal");
+        });
+        EmpActions.getPTOPlanTypes(function (result) {
+            $scope.ptoPlanTypes = result;
+        });
+        EmpActions.getPTOTypes(function (result) {
+            $scope.ptoTypes = result;
+        });
+    };
+
+    $scope.yearSearch = function () {
+        $scope.loadingTitle = " Loading...";
+        $scope.pageStatus = 'Loading, Please Wait...';
+        setStatus("Loading");
+        EmpActions.getPTOPlans($scope.ptoPlan.ptoYear, function (result) {
+            $scope.ptoPlans = result;
+            $scope.pageStatus = "Normal";
+            setStatus("Normal");
+        });
+    }
+
+    $scope.onPTOPlanSelected = function (item) {
+        if ($scope.selectedPTOPlan !== null && $scope.selectedPTOPlan !== undefined)
+            if (editStatus())
+                return; 
+        $scope.selectedPTOPlan = item;
+        $scope.ptoPlan.ptoPlanName = item.title;
+        $scope.ptoPlan.ptoPlanType = item.ptoPlanType;
+        $scope.ptoPlan.ptoType = item.ptoType;
+        $scope.ptoPlan.planPtoYear = item.ptoYear;
+        $scope.ptoPlan.ptoPlanDays = item.days;
+        $scope.ptoPlan.ptoPlanAccrual = item.accrual;
+        $scope.ptoPlan.ptoPlanAccrualInterval = item.accrualInterval;
+        $scope.ptoPlan.ptoPlanActive = item.active;
+        $scope.ptoPlan.startDate = item.startDate;
+        $scope.ptoPlan.endDate = item.endDate;
+        $scope.isClone = false;
+    };
+
+    $scope.newPTOPlan = function () {
+        $scope.selectedPTOPlan = null;
+        $scope.ptoPlan.ptoPlanName = null;
+        $scope.ptoPlan.ptoPlanType = null;
+        $scope.ptoPlan.ptoType = null;
+        $scope.ptoPlan.planPtoYear = null;
+        $scope.ptoPlan.ptoPlanDays = null;
+        $scope.ptoPlan.ptoPlanAccrual = true;
+        $scope.ptoPlan.ptoPlanAccrualInterval = null;
+        $scope.ptoPlan.ptoPlanActive = true;
+        $scope.ptoPlan.startDate = null;
+        $scope.ptoPlan.endDate = null;
+        $scope.cloneToYear = "";
+        $scope.ptoPlan.cloneFromYear = null;
+        $scope.isClone = false;
+    };
+
+    $scope.undoPTOPlan = function () {
+        if (editStatus())
+            return;
+        if ($scope.selectedPTOPlan !== null && $scope.selectedPTOPlan !== undefined) {
+            $scope.ptoPlan.ptoPlanName = $scope.selectedPTOPlan.title;
+            $scope.ptoPlan.ptoPlanType = $scope.selectedPTOPlan.ptoPlanType;
+            $scope.ptoPlan.ptoType = $scope.selectedPTOPlan.ptoType;
+            $scope.ptoPlan.planPtoYear = $scope.selectedPTOPlan.ptoYear;
+            $scope.ptoPlan.ptoPlanDays = $scope.selectedPTOPlan.days;
+            $scope.ptoPlan.ptoPlanAccrual = $scope.selectedPTOPlan.accrual;
+            $scope.ptoPlan.ptoPlanAccrualInterval = $scope.selectedPTOPlan.accrualInterval;
+            $scope.ptoPlan.ptoPlanActive = $scope.selectedPTOPlan.active;
+            $scope.ptoPlan.startDate = $scope.selectedPTOPlan.startDate;
+            $scope.ptoPlan.endDate = $scope.selectedPTOPlan.endDate;
+            $scope.isClone = false;
+        }
+        setStatus('Normal');
+        modified(false);
+    };
+
+    $scope.savePTOPlan = function () {
+        if ($scope.isClone === true && $scope.ptoForm.toYear.$valid && $scope.ptoForm.fromYear.$valid) {
+            angular.forEach($scope.ptoYears, function (item) {
+                if (item.name == $scope.ptoPlan.cloneFromYear.name)
+                    $scope.cloneFromYearId = item.id;
+                else if (item.name == $scope.cloneToYear)
+                    $scope.cloneToYearId = item.id;
+            });
+            $scope.cloneFromYearId = $scope.ptoPlan.cloneFromYear.id;
+            EmpActions.actionSaveItem($scope, "PTO Plan", function (data, status) {
+                if ($scope.cloneToYearId == $scope.ptoPlan.ptoYear) {
+                    EmpActions.getPTOPlans($scope.ptoPlan.ptoYear, function (result) {
+                        $scope.ptoPlans = result;
+                        $scope.pageLoading = false;
+                    });
+                }
+                $scope.cloneToYear = "";
+                $scope.hasPlans = true;
+                $scope.$apply(function () {
+                    $scope.pageLoading = false;
+                    setStatus("Saved");
+                    modified(false);
+                    $scope.ptoPlan.cloneFromYear = null;
+                });
+            });
+        }
+        else if ($scope.ptoForm.planName.$valid && $scope.ptoForm.planType.$valid && $scope.ptoForm.planPTOType.$valid && $scope.ptoForm.planPtoYear.$valid
+            && $scope.ptoForm.startDate.$valid && $scope.ptoForm.endDate.$valid && $scope.ptoForm.planDays.$valid && $scope.ptoForm.accrualInterval.$valid) {
+            EmpActions.getPTOPlans($scope.ptoPlan.planPtoYear, function (result) {
+                $scope.plans = result;
+            });
+            EmpActions.actionSaveItem($scope, "PTO Plan", function (data, status) {
+                if ($scope.selectedPTOPlan !== null && $scope.selectedPTOPlan !== undefined) {
+                    EmpActions.getPTOPlans($scope.selectedPTOPlan.ptoYear, function (result) {
+                        $scope.ptoPlans = result;
+                        for (var plan = 0; plan < $scope.ptoPlans.length; plan++) {
+                            if ($scope.selectedPTOPlan.id === $scope.ptoPlans[plan].id) {
+                                $scope.selectedPTOPlan = $scope.ptoPlans[plan];
+                                break;
+                            }
+                        }
+                    });
+                }
+                else {
+                    EmpActions.getPTOPlans($scope.ptoPlan.planPtoYear, function (result) {
+                        $scope.newPlans = result;
+                        for (var plan = 0; plan < $scope.newPlans.length; plan++) {
+                            var found = false;
+                            for (var oldPlan = 0; oldPlan < $scope.plans.length; oldPlan++) {
+                                if ($scope.plans[oldPlan].id == $scope.newPlans[plan].id) {
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            if (!found) {
+                                $scope.selectedPTOPlan = $scope.newPlans[plan];
+                                $scope.ptoPlans.push($scope.newPlans[plan]);
+                                break;
+                            }
+                        }
+                    });
+                }
+                $scope.$apply(function () {
+                    $scope.pageLoading = false;
+                    setStatus("Saved");
+                    modified(false);
+                });
+            });
+        }
+    };
+
+    $scope.onPTOPlanChange = function () {
+        setStatus('Edit');
+        modified(true);
+    };
+
+    $scope.onAccrualChange = function (selected) {
+        setStatus('Edit');
+        modified(true);
+        if (!selected)
+            $scope.ptoPlan.ptoPlanAccrualInterval = 0;
+    };
+
+    $scope.getDate = function (date) {
+        if (!angular.isDefined(date))
+            return;
+
+        date = new Date(date);
+        return $filter('date')(date, 'yyyy-MM-dd');
+    };
+
+    $scope.onStartDateChange = function () {
+        setStatus('Edit');
+        modified(true);
+        if ($scope.getDate($scope.ptoPlan.startDate) > $scope.getDate($scope.ptoPlan.endDate) && $scope.ptoPlan.endDate !== null && $scope.ptoPlan.endDate !== undefined) {
+            $scope.ptoForm.startDate.$setValidity("required", false);
+        }
+        else if ($scope.ptoPlan.startDate !== null && $scope.ptoPlan.startDate !== undefined)
+            $scope.ptoForm.startDate.$setValidity("required", true);
+    };
+
+    $scope.onEndDateChange = function () {
+        setStatus('Edit');
+        modified(true);
+        if ($scope.getDate($scope.ptoPlan.startDate) > $scope.getDate($scope.ptoPlan.endDate) && $scope.ptoPlan.startDate !== null && $scope.ptoPlan.startDate !== undefined) {
+            $scope.ptoForm.endDate.$setValidity("required", false);
+        }
+        else if ($scope.ptoPlan.endDate !== null && $scope.ptoPlan.endDate !== undefined)
+            $scope.ptoForm.startDate.$setValidity("required", true);
+    };
+
+    $scope.clonePTOPlan = function () {
+        $scope.hasPlans = true;
+        $scope.isClone = true;
+        $scope.selectedPTOPlan = null;
+        $scope.ptoPlan.cloneFromYear = null;
+        $scope.cloneToYear = null;
+    }
+
+    $scope.cloneFromYears = [{ id: 1, name: getCurrentYear() }, { id: 2, name: parseInt(getCurrentYear())-1 }];
+
+    $scope.fromYearChangedValue = function (item) {
+        $scope.ptoPlan.cloneFromYear = item;
+        $scope.cloneToYear = parseInt(item.name) + 1;
+        $scope.hasPlans = false;
+        var found = false;
+        $scope.loadingTitle = " Loading...";
+        $scope.pageStatus = 'Loading, Please Wait...';
+        setStatus("Loading");
+        for (var year = 0; year < $scope.ptoYears.length; year++) {
+            if ($scope.cloneToYear == $scope.ptoYears[year].name) {
+                EmpActions.getPTOPlans($scope.ptoYears[year].id, function (ptoPlans) {
+                    if (ptoPlans.length > 0) {
+                        $scope.hasPlans = true;
+                        $scope.pageStatus = 'Normal';
+                        setStatus("Normal");
+                        alert("Plans are already available for year " + $scope.ptoYears[year].name);
+                    }
+                });
+                found = true;
+                break;
+            }
+        }
+
+        if (found == false) {
+            $scope.hasPlans = true;
+            alert("PTO year [" + $scope.cloneToYear + "] is not available");
+        }
+    }
+
+    $scope.assignmentsTabClick = function () {
+        $scope.assignment.ptoAssignYear = $scope.ptoYears[0].id;
+        $scope.ptoPlanAssignments = [];
+        $scope.loadingTitle = " Loading...";
+        $scope.pageStatus = 'Loading, Please Wait...';
+        setStatus("Loading");
+        EmpActions.getHcmHouseCodes(function (result) {
+            $scope.hcmHouseCodes = result;
+            $scope.assignment.hcmHouseCode = result[0].id;
+
+            EmpActions.getPlanAssignments($scope.assignment.ptoAssignYear, function (result) {
+                $scope.planAssignments = result;
+                angular.forEach($scope.planAssignments, function (item) {
+                    if (item.active !== 0 && item.houseCodeId == $scope.assignment.hcmHouseCode)
+                        $scope.ptoPlanAssignments.push(item);
+                });
+                $scope.pageLoading = false;
+                $scope.pageStatus = 'Normal';
+                setStatus("Normal");
+            });
+        });
+    };
+
+    $scope.onPTOPlanAssignmentSelected = function (item) {
+        $scope.selectedPTOPlanAssignment = item;
+        $scope.employees = [];
+        $scope.loadingTitle = " Loading...";
+        $scope.pageStatus = 'Loading, Please Wait...';
+        setStatus("Loading");
+        EmpActions.getEmployees(item.houseCodeId, item.ptoPlanId, function (employees) {
+            angular.forEach(employees, function (employee) {
+                $scope.employees.push(employee);
+            });
+            $scope.pageLoading = false;
+            $scope.pageStatus = 'Normal';
+            setStatus("Normal");
+        });
+    };
+
+    $scope.assignmentSearch = function () {
+        $scope.ptoPlanAssignments = [];
+        $scope.loadingTitle = " Loading...";
+        $scope.pageStatus = 'Loading, Please Wait...';
+        setStatus("Loading");
+        EmpActions.getPlanAssignments($scope.assignment.ptoAssignYear, function (result) {
+            $scope.planAssignments = result;
+            angular.forEach($scope.planAssignments, function (item) {
+                if (item.active !== 0 && item.houseCodeId == $scope.assignment.hcmHouseCode)
+                    $scope.ptoPlanAssignments.push(item);
+            });
+            $scope.pageLoading = false;
+            $scope.pageStatus = 'Normal';
+            setStatus("Normal");
+        });
+    };
+
+}])
+.directive('minLength', function () {
+    return {
+        require: '?ngModel',
+        link: function (scope, element, attrs, modelCtrl) {
+            modelCtrl.$parsers.push(function (inputValue) {
+                if (inputValue == undefined || inputValue == "") {
+                    modelCtrl.$setValidity(attrs.name, true);
+                    return "";
+                }
+                var min = parseInt(attrs.minLength);
+                var firstNumber = inputValue.substring(0, 1);
+                if (inputValue.length == min && firstNumber != 0) {
+                    modelCtrl.$setValidity(attrs.name, true);
+                    return inputValue;
+                }
+                else {
+                    modelCtrl.$setValidity(attrs.name, false);
+                    return inputValue;
+                }
+            });
+        }
+    };
+})
+.directive('ptoTypeahead', ['$filter', function ($filter) {
+    return {
+        restrict: 'ACE',
+        scope: {
+            source: '=',
+            model: '=ngModel',
+            onBlur: '&',
+            disabled: '=ngDisabled',
+            change: '=ngChange',
+            required: '=ngRequired'
+        },
+        template: '<div><input ng-model="model" ng-required="required" name="{{inputName}}" class="hide"/><input type="text" class="form-control input-sm" ng-model="TypeaheadModel" ng-disabled="disabled" ng-change="change" typeahead-input-formatter="inputFormatter($model)" typeahead="item as item[displayField] for item in source|filter:itemFilter($viewValue)| limitTo:10" ng-blur="onBlur()" /></div>',
+        replace: true,
+        link: function (scope, elem, attrs) {
+
+            var option = scope.$eval(attrs.typeaheadOption);
+            scope.displayField = '';
+            scope.inputName = '';
+
+            if (angular.isDefined(option)) {
+                scope.displayField = option.displayField;
+                scope.inputName = option.name;
+            }
+
+            scope.inputFormatter = function ($model) {
+                if ($model) {
+                    scope.model = $model[option.valueField];
+
+                    return $model[scope.displayField];
+                }
+
+                return '';
+            }
+
+            scope.itemFilter = function (value) {
+                return function (item) {
+                    return item[scope.displayField].toUpperCase().indexOf(value.toUpperCase()) >= 0;
+                }
+            }
+
+            var setModelValue = function (source, modelVal) {
+                if (angular.isDefined(source) && source != null && angular.isDefined(modelVal) && modelVal != null) {
+                    var modelValue = $filter('filter')(source, function (item) {
+                        return item[option.valueField] == modelVal;
+                    });
+
+                    scope.TypeaheadModel = typeof modelValue == "undefined" ? null : modelValue[0];
+
+                    if (scope.inputName == "HcmHouseCode" && scope.TypeaheadModel != null) {
+                        parent.fin.appUI.hirNode = parseInt(modelValue[0].hirNode, 10);
+                        parent.fin.appUI.unitId = parseInt(modelValue[0].appUnit, 10);
+                        parent.fin.appUI.houseCodeId = parseInt(modelValue[0].id, 10);
+                        parent.fin.appUI.houseCodeBrief = modelValue[0].brief;
+                        parent.fin.appUI.houseCodeTitle = modelValue[0].name;
+                    }
+                }
+            }
+
+            scope.$watch(function () { return scope.model }, function (value) {
+                if (angular.isDefined(value) && value != null) {
+                    setModelValue(scope.source, scope.model);
+                }
+            });
+
+            scope.$watch(function () { return scope.source }, function (value) {
+                if (angular.isDefined(value) && value != null) {
+                    setModelValue(scope.source, scope.model);
+                }
+            });
+
+            scope.$watch('TypeaheadModel', function (value) {
+                if (typeof (value) == "string" && value.length == 0) {
+                    scope.model = null;
+                }
+            });
+        }
+    }
+}])
+.directive('ptoDatepicker', ['$timeout', '$filter', function ($timeout, $filter) {
+    return {
+        scope: {
+            dtOption: '=',
+            dtModel: '=dtModel',
+            minDate: '=',
+            dtChange: '&dtChange',
+            dtBlur: '&dtBlur',
+            maxDate: '='
+        },
+        restrict: 'E',
+        require: '?ngModel',
+        template: '<p class="input-group" style="margin-bottom:0px;"><input class="form-control input-sm" name="{{dtName}}" min-date="minDate" max-date="maxDate" ng-change="dtChange()" ng-blur="dtBlur()" ng-required="dtRequired" datepicker-popup="MM/dd/yyyy" pdf-datepicker-popup-config ng-model="dtModel" is-open="opened"  show-button-bar="{{showButtonBar}}" datepicker-append-to-body="false" datepicker-options="dateOptions" date-disabled="disabled(date, mode)"  close-text="Close" /><span class="input-group-btn"><button type="button" class="btn btn-default btn-sm" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button></span></p>',
+        link: function (scope, elem, attrs, ngModel) {
+            scope.opened = false;
+            scope.dtPopup = "dd-MMMM-yyyy";
+            scope.showButtonBar = false;
+            scope.open = function ($event) {
+                $event.preventDefault();
+                $event.stopPropagation();
+                scope.opened = true;
+            }
+
+            if (angular.isDefined(attrs.dtPopup)) {
+                scope.dtPopup = attrs.dtPopup;
+            }
+
+            if (angular.isDefined(attrs.dtName)) {
+                scope.dtName = attrs.dtName;
+            }
+
+            if (angular.isDefined(attrs.dtRequired)) {
+                scope.dtRequired = attrs.dtRequired;
+            }
+        }
+    }
+}])
+.directive('pdfDatepickerPopupConfig', ['$filter', function ($filter) {
+    return {
+        restrict: 'A',
+        require: '^ngModel',
+        link: function (scope, elem, attrs, ngModel) {
+
+            var dateFormat = attrs.datepickerPopup || "MM/dd/yyyy";
+            ngModel.$formatters.push(function (value) {
+                if (value && value != null)
+                    return $filter('date')(new Date(value), dateFormat);
+                return null;
+            });
+        }
+    }
+}])
+.directive('ptoEnter', function () {
+    return {
+        link: function (scope, element, attrs) {
+            element.bind("keydown keypress", function (event) {
+                if (event.which === 13) {
+                    scope.$apply(function () {
+                        scope.$eval(attrs.ptoEnter);
+                    });
+
+                    event.preventDefault();
+                }
+            });
+        }
+    }
+})
+.directive('ptoInvalid', ['$rootScope', function ($rootScope) {
+    return {
+        restrict: 'A',
+        link: function (scope, element, attrs) {
+
+            var errorClass = 'has-error';
+
+            var toggleClsss = function () {
+                var hasError = Object.byString(scope, attrs.ptoInvalid + '.$invalid');
+                hasError ? element.addClass(errorClass) : element.removeClass(errorClass);
+            }
+            scope.$watch(attrs.ptoInvalid + '.$invalid', toggleClsss);
+        }
+    }
+}])
+.directive('ptoInteger', function () {
+    return {
+        require: '?ngModel',
+        link: function (scope, element, attrs, modelCtrl) {
+            modelCtrl.$parsers.push(function (inputValue) {
+                if (inputValue == undefined) return ''
+                var transformedInput = inputValue.replace(/[^0-9]/g, '');
+                if (transformedInput != inputValue) {
+                    modelCtrl.$setViewValue(transformedInput);
+                    modelCtrl.$render();
+                }
+
+                return transformedInput;
+            });
+        }
+    };
+})
+
+pto.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $filter, $rootScope) {
+    var cache = {};
+    var ptoTypes = null;
+    var payCodes = null;
+    var ptoTypePayCodes = null;
+    var ptoPlanTypes = null;
+    var houseCodes = null;
+    var authorizations = null;
+
+    var apiRequest = function(moduleId, targetId, requestXml, callback) {
+        if (top.ii !== undefined) {
+            top.ii.Session.singleton.ajaxStart();
+            top.ii.Session.singleton.ajaxSend();
+        }
+        $rootScope.loadingCount = $rootScope.loadingCount || 0;
+        $rootScope.loadingCount++;
+        $http({
+            method: 'POST',
+            url: '/net/crothall/chimes/fin/' + moduleId + '/act/Provider.aspx',
+            data: "moduleId=" + moduleId + "&requestId=1&targetId=" + targetId
+                + "&requestXml=" + encodeURIComponent(requestXml),
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+            }
+        }).success(function(result) {
+            callback(result);
+            $rootScope.loadingCount--;
+            if (top.ii !== undefined) {
+                top.ii.Session.singleton.ajaxComplete();
+                top.ii.Session.singleton.ajaxStop();
+            }
+        })
+        .error(function(error) {
+            $rootScope.loadingCount--;
+            if (top.ii !== undefined) {
+                top.ii.Session.singleton.ajaxComplete();
+                top.ii.Session.singleton.ajaxStop();
+            }
+        });
+    }
+
+    var getAuthorizations = function (callback) {
+        if (cache.authorizations) {
+            callback(cache.authorizations);
+            return;
+        }
+        apiRequest('emp', 'iiAuthorization', '<authorization id="1"><authorize path="\\crothall\\chimes\\fin\\PTOSetup\\EmployeePTO" />', function (xml) {
+            cache.authorizations = deserializeXml(xml, 'authorize', { upperFirstLetter: false, intItems: ['id'] });
+            getAuthorizations(callback);
+        });
+    };
+
+    var getPTOYears = function (callback) {
+        apiRequest('emp', 'iiCache', '<criteria>storeId:ptoYears,userId:[user]'
+			+ ',</criteria>', function (xml) {
+			    if (callback) {
+			        callback(deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id'] }));
+			    }
+			});
+    };
+
+    var getPTOTypes = function (callback) {
+        if (cache.ptoTypes) {
+            callback(cache.ptoTypes);
+            return;
+        }
+        apiRequest('emp', 'iiCache', '<criteria>storeId:ptoTypes,userId:[user]'
+			+ ',</criteria>', function (xml) {
+			    if (callback) {
+			        cache.ptoTypes = deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id'] });
+			        callback(cache.ptoTypes);
+			    }
+			});
+    };
+
+    var getPayCodes = function (callback) {
+        if (cache.payCodes) {
+            callback(cache.payCodes);
+            return;
+        }
+        apiRequest('emp', 'iiCache', '<criteria>storeId:payCodes,userId:[user]'
+			+ ',</criteria>', function (xml) {
+			    if (callback) {
+			        cache.payCodes = deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id'] });
+			        callback(cache.payCodes);
+			    }
+			});
+    };
+
+    var getPTOTypePayCodes = function (ptoTypeId, callback) {
+        apiRequest('emp', 'iiCache', '<criteria>storeId:ptoTypePayCodes,userId:[user]'
+             + ',ptoTypeId:' + ptoTypeId
+			+ ',</criteria>', function (xml) {
+			    if (callback) {
+			        callback(deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id', 'payCodeId'] }));
+			    }
+			});
+    };
+
+    var getPTOPlanTypes = function (callback) {
+        apiRequest('emp', 'iiCache', '<criteria>storeId:ptoPlanTypes,userId:[user]'
+			+ ',</criteria>', function (xml) {
+			    if (callback) {
+			        callback(deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id'], boolItems: ['active', 'payStatusHourly', 'payStatusSalary'] }));
+			    }
+			});
+    };
+
+    var getPTOPlans = function (ptoYearId, callback) {
+        apiRequest('emp', 'iiCache', '<criteria>storeId:ptoPlans,userId:[user]'
+			+ ',houseCodeId:' + 0
+			+ ',ptoYearId:' + ptoYearId
+			+ ',active:' + -1
+			+ ',</criteria>', function (xml) {
+			    if (callback) {
+			        cache.ptoPlans = deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id', 'houseCodeId', 'ptoYear', 'ptoType', 'ptoPlanType'], boolItems: ['accrual', 'active'] });
+			        callback(cache.ptoPlans);
+			    }
+			});
+    };
+
+    var getHcmHouseCodes = function (callback) {
+
+        if (cache.houseCodes) {
+            callback(cache.houseCodes);
+            return;
+        }
+
+        var criteriaXml = '<criteria>appUnitBrief:,storeId:hcmHouseCodes,userId:[user],</criteria>';
+        var data = 'moduleId=hcm&requestId=1&requestXml=' + encodeURIComponent(criteriaXml) + '&targetId=iiCache';
+
+        apiRequest('hcm', 'iiCache', criteriaXml, function (xml) {
+            cache.houseCodes = deserializeXml(xml, 'item', { upperFirstLetter: false });
+            getHcmHouseCodes(callback);
+        });
+    };
+
+    var getPlanAssignments = function (ptoYearId, callback) {
+        apiRequest('emp', 'iiCache', '<criteria>storeId:ptoPlanAssignments,userId:[user]'
+           + ',ptoYearId:' + ptoYearId
+           + ',stateType:' + 0
+           + ',groupType:' + 5
+		   + ',clonePlan:' + 0
+           + ',</criteria>', function (xml) {
+               if (callback) {
+                   callback(deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id', 'ptoYearId', 'houseCodeId', 'ptoPlanId'], boolItems: ['active'] }));
+               }
+           });
+    };
+
+    var getEmployees = function (houseCodeId, ptoPlanId, callback) {
+        apiRequest('emp', 'iiCache', '<criteria>storeId:ptoEmployees,userId:[user]'
+           + ',houseCodeId:' + houseCodeId
+           + ',ptoPlanId:' + ptoPlanId
+           + ',assigned:' + 1
+		   + ',searchType:' + 'Employee'
+           + ',</criteria>', function (xml) {
+               if (callback) {
+                   callback(deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id', 'ptoAssignmentId', 'employeeNumber'], boolItems: ['active'] }));
+               }
+           });
+    };
+
+    var setCurrentHcmHouseCode = function (callback) {
+
+        apiRequest('hcm', 'iiCache', '<criteria>storeId:hcmHouseCodes,userId:[user],defaultOnly:true,</criteria>', function (xml) {
+            if (callback)
+                callback(deserializeXml(xml, 'item', { upperFirstLetter: false })[0]);
+        });
+    };
+
+    var transactionMonitor = function ($scope, data, callback) {
+        jQuery.post('/net/crothall/chimes/fin/emp/act/Provider.aspx', data, function (data, status, xhr) {
+            var transactionNode = $(xhr.responseXML).find("transaction")[0];
+
+            if (transactionNode !== undefined) {
+                if ($(transactionNode).attr("status") === "success") {
+                    if (callback)
+                        callback(data, status);
+                }
+                else {
+                    status = "error";
+                    if (callback)
+                        callback(data, status, $(transactionNode).attr("error"));
+                }
+            }
+            else {
+                var transmissionNode = $(xhr.responseXML).find("transmission")[0];
+                if (transmissionNode !== undefined && $(transmissionNode).attr("Error") !== "") {
+                    status = "error";
+                    if (callback)
+                        callback(data, status, $(transmissionNode).attr("Error"));
+                }
+            }
+        });
+    };
+
+    var actionSaveItem = function ($scope, action, callback) {
+        var xml = "";
+
+        if (action === "PTO Years") {
+            xml += '<ptoYear';
+            xml += ' id="' + (($scope.selectedYear === undefined || $scope.selectedYear === null) ? "0" : $scope.selectedYear.id) + '"';
+            xml += ' title="' + $scope.empPTOYear.ptoYearSelected + '"';
+            xml += ' displayOrder="1"';
+            xml += ' active="true"';
+            xml += '/>';
+        }
+        else if (action === "PTO Types") {
+            xml += '<ptoTypePayCode';
+            xml += ' id="' + $scope.selectedptoTypePayCodeId + '"';
+            xml += ' ptoTypeId="' + $scope.selectedPTOtype.id + '"';
+            xml += ' payCodeId="' + $scope.ptoType.payCode + '"';
+            xml += ' add="true"';
+            xml += '/>';
+        }
+        else if (action === "PTO Plan Types") {
+            xml += '<ptoPlanType';
+            xml += ' id="' + (($scope.selectedPTOPlanType === undefined || $scope.selectedPTOPlanType === null) ? "0" : $scope.selectedPTOPlanType.id) + '"';
+            xml += ' title="' + encode($scope.ptoPlanType.ptoPlanTypeTitle) + '"'; 
+            xml += ' payStatusHourly="' + $scope.ptoPlanType.Hourly + '"';
+            xml += ' payStatusSalary="' + $scope.ptoPlanType.Salary + '"';
+            xml += ' statusCategory="' + $scope.ptoPlanType.Status + '"';
+            xml += ' minHours="' + $scope.ptoPlanType.ptoPlanTypeMinHours + '"';
+            xml += ' maxHours="' + $scope.ptoPlanType.ptoPlanTypeMaxHours + '"';
+            xml += ' active="' + $scope.ptoPlanType.ptoPlanTypeActive + '"';
+            xml += '/>';
+        }
+        else if (action === "PTO Plan" && $scope.isClone === false) {
+            xml += '<ptoPlan';
+            xml += ' id="' + (($scope.selectedPTOPlan === undefined || $scope.selectedPTOPlan === null) ? "0" : $scope.selectedPTOPlan.id) + '"';
+            xml += ' houseCodeId="' + (($scope.selectedPTOPlan === undefined || $scope.selectedPTOPlan === null) ? $scope.currentHouseCode : $scope.selectedPTOPlan.houseCodeId) + '"';
+            xml += ' ptoYearId="' + $scope.ptoPlan.planPtoYear + '"';
+            xml += ' ptoTypeId="' + $scope.ptoPlan.ptoType + '"';
+            xml += ' ptoPlanTypeId="' + $scope.ptoPlan.ptoPlanType + '"';
+            xml += ' title="' + encode($scope.ptoPlan.ptoPlanName) + '"';
+            xml += ' startDate="' + $filter("date")(new Date($scope.ptoPlan.startDate), "MM/dd/yyyy") + '"';
+            xml += ' endDate="' + $filter("date")(new Date($scope.ptoPlan.endDate), "MM/dd/yyyy") + '"';
+            xml += ' days="' + $scope.ptoPlan.ptoPlanDays + '"';
+            xml += ' accrual="' + $scope.ptoPlan.ptoPlanAccrual + '"';
+            xml += ' accrualInterval="' + $scope.ptoPlan.ptoPlanAccrualInterval + '"';
+            xml += ' active="' + $scope.ptoPlan.ptoPlanActive + '"';
+            xml += '/>';
+        }
+        else if (action === "PTO Plan" && $scope.isClone === true) {
+            xml += '<ptoPlanClone';
+            xml += ' houseCodeId="' + (typeof getCurrentHcmHouseCode() == "undefined" ? null : getCurrentHcmHouseCode()) + '"';
+            xml += ' ptoYearIdFrom="' + $scope.cloneFromYearId + '"';
+            xml += ' ptoYearIdTo="' + $scope.cloneToYearId + '"';
+            xml += '/>';
+        }
+
+        if (xml === "")
+            return;
+        xml = '<transaction id="1">' + xml + '</transaction>';
+        console.log(xml)
+        var data = 'moduleId=emp&requestId=1&requestXml=' + encodeURIComponent(xml) + '&targetId=iiTransaction';
+        setStatus("Saving");
+        $scope.loadingTitle = " Saving...";
+        $scope.pageLoading = true;
+        transactionMonitor($scope, data, callback);
+    };
+
+    return {
+        getPTOYears: getPTOYears,
+        getPTOTypes: getPTOTypes,
+        getPayCodes: getPayCodes,
+        getPTOTypePayCodes: getPTOTypePayCodes,
+        getPTOPlanTypes: getPTOPlanTypes,
+        getPTOPlans: getPTOPlans,
+        getHcmHouseCodes: getHcmHouseCodes,
+        getPlanAssignments: getPlanAssignments,
+        getEmployees: getEmployees,
+        actionSaveItem: actionSaveItem,
+        getAuthorizations: getAuthorizations,
+        setCurrentHcmHouseCode: setCurrentHcmHouseCode
+    }
+}]);
