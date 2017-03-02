@@ -483,8 +483,12 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
     $scope.onMinHoursChange = function (hours) {
         if (hours > $scope.ptoPlanType.ptoPlanTypeMaxHours && $scope.ptoPlanType.ptoPlanTypeMaxHours !== null && $scope.ptoPlanType.ptoPlanTypeMaxHours !== undefined)
             $scope.ptoForm.planTypeMinHours.$setValidity("required", false);
-        else if ($scope.ptoPlanType.ptoPlanTypeMinHours !== null && $scope.ptoPlanType.ptoPlanTypeMinHours !== undefined)
-            $scope.ptoForm.planTypeMinHours.$setValidity("required", true);
+        else {
+            if ($scope.ptoPlanType.ptoPlanTypeMinHours !== null && $scope.ptoPlanType.ptoPlanTypeMinHours !== undefined)
+                $scope.ptoForm.planTypeMinHours.$setValidity("required", true);
+            if ($scope.ptoPlanType.ptoPlanTypeMaxHours !== null && $scope.ptoPlanType.ptoPlanTypeMaxHours !== undefined)
+                $scope.ptoForm.planTypeMaxHours.$setValidity("required", true);
+        }
            
         setStatus('Edit');
         modified(true);
@@ -493,8 +497,12 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
     $scope.onMaxHoursChange = function (hours) {
         if (hours < $scope.ptoPlanType.ptoPlanTypeMinHours && $scope.ptoPlanType.ptoPlanTypeMaxHours !== null && $scope.ptoPlanType.ptoPlanTypeMaxHours !== undefined)
             $scope.ptoForm.planTypeMaxHours.$setValidity("required", false);
-        else if ($scope.ptoPlanType.ptoPlanTypeMaxHours !== null && $scope.ptoPlanType.ptoPlanTypeMaxHours !== undefined)
-            $scope.ptoForm.planTypeMinHours.$setValidity("required", true);
+        else {
+            if ($scope.ptoPlanType.ptoPlanTypeMaxHours !== null && $scope.ptoPlanType.ptoPlanTypeMaxHours !== undefined)
+                $scope.ptoForm.planTypeMaxHours.$setValidity("required", true);
+            if ($scope.ptoPlanType.ptoPlanTypeMinHours !== null && $scope.ptoPlanType.ptoPlanTypeMinHours !== undefined)
+                $scope.ptoForm.planTypeMinHours.$setValidity("required", true);
+        }
             
         setStatus('Edit');
         modified(true);
@@ -553,6 +561,10 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
     };
 
     $scope.savePTOPlanType = function () {
+        if ($scope.ptoPlanType.Hourly === null || $scope.ptoPlanType.Hourly === undefined || $scope.ptoPlanType.Hourly === false) {
+            $scope.ptoPlanType.ptoPlanTypeMinHours = 0;
+            $scope.ptoPlanType.ptoPlanTypeMaxHours = 0;
+        }
         if ($scope.ptoForm.planTypeMinHours.$valid && $scope.ptoForm.planTypeMaxHours.$valid && $scope.ptoForm.planTypeTitle.$valid) {
             $scope.planTypes = $scope.ptoPlanTypes;
             EmpActions.actionSaveItem($scope, "PTO Plan Types", function (data, status) {
@@ -800,8 +812,12 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         if ($scope.getDate($scope.ptoPlan.startDate) > $scope.getDate($scope.ptoPlan.endDate) && $scope.ptoPlan.endDate !== null && $scope.ptoPlan.endDate !== undefined) {
             $scope.ptoForm.startDate.$setValidity("required", false);
         }
-        else if ($scope.ptoPlan.startDate !== null && $scope.ptoPlan.startDate !== undefined)
-            $scope.ptoForm.startDate.$setValidity("required", true);
+        else {
+            if ($scope.ptoPlan.startDate !== null && $scope.ptoPlan.startDate !== undefined)
+                $scope.ptoForm.startDate.$setValidity("required", true);
+            if ($scope.ptoPlan.endDate !== null && $scope.ptoPlan.endDate !== undefined)
+                $scope.ptoForm.endDate.$setValidity("required", true);
+        }
     };
 
     $scope.onEndDateChange = function () {
@@ -810,8 +826,12 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         if ($scope.getDate($scope.ptoPlan.startDate) > $scope.getDate($scope.ptoPlan.endDate) && $scope.ptoPlan.startDate !== null && $scope.ptoPlan.startDate !== undefined) {
             $scope.ptoForm.endDate.$setValidity("required", false);
         }
-        else if ($scope.ptoPlan.endDate !== null && $scope.ptoPlan.endDate !== undefined)
-            $scope.ptoForm.startDate.$setValidity("required", true);
+        else {
+            if ($scope.ptoPlan.endDate !== null && $scope.ptoPlan.endDate !== undefined)
+                $scope.ptoForm.endDate.$setValidity("required", true);
+            if ($scope.ptoPlan.startDate !== null && $scope.ptoPlan.startDate !== undefined)
+                $scope.ptoForm.startDate.$setValidity("required", true);
+        }
     };
 
     $scope.clonePTOPlan = function () {
