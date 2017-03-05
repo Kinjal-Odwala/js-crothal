@@ -573,29 +573,27 @@ dl.editArea dd
 	display: block;
 }
 
-/*.nav-tabs {
-  background-color: #C5D7EC;
-}*/
-
 .nav-tabs > li > a {
-    background-color: #6D94BA;
-  color: white;
+    background-color: #5f86ab;
+    color: white;
+    padding-top: 5px; 
+    padding-bottom: 5px;
 }
 
 .nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
-        background-color:white;
-        color:#4e4343;
-        background-position: 100% -156px;
+    background-color:white;
+    color:#4e4343;
+    background-position: 100% -156px;
 }
 
 .nav-tabs > li > a:hover, .nav-tabs > li > a:focus {
-        background-color:#AAAAAA;
-        color:#032D23;
-        background-position: 100% -156px;
+    background-color:#AAAAAA;
+    color:#032D23;
+    background-position: 100% -156px;
 }
 
 .table > thead {
-    background-color: #6D94BA;
+    background-color: #5f86ab;
 }
 
 .table > thead > tr {
@@ -619,18 +617,29 @@ dl.editArea dd
 .table > thead > tr.warning > th,
 .table > tbody > tr.warning > th,
 .table > tfoot > tr.warning > th {
-  background-color: lightblue;
+  background-color: #6D94BA;
 }
 
 .table-hover > tbody > tr > td.warning:hover,
 .table-hover > tbody > tr > th.warning:hover,
 .table-hover > tbody > tr.warning:hover > td,
 .table-hover > tbody > tr.warning:hover > th {
-  background-color: lightblue;
+  background-color: #6D94BA;
 }
 
 .table-hover > tbody > tr:hover > td,
 .table-hover > tbody > tr:hover > th {
-  background-color: #f5dbdb;
+  background-color: #FFDFAF;
 }
+
+.table > thead > tr > th,
+.table > tbody > tr > th,
+.table > tfoot > tr > th,
+.table > thead > tr > td,
+.table > tbody > tr > td,
+.table > tfoot > tr > td {
+  line-height: 1;
+}
+
+
 
