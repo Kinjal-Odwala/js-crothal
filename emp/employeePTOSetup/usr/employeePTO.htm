@@ -12,9 +12,9 @@
     </div>
     <div id="empPTOView">
     <tabset class="margin-bottom10">
-        <tab heading="PTO Years" ng-show="showPTOYears" ng-click="onPTOYearsTabClick('ptoYear')">
+        <tab heading="PTO Years" ng-show="showPTOYears" ng-click="onPTOYearsTabClick('ptoYear');">
            <div id="mainView" ng-style="{'max-height': mainViewHeight + 'px'}">
-            <div class="row header" style="background-color: #d0dded;">
+            <div class="row header bgcolor">
                 <h6 class="text-center header">PTO Years</h6>
             </div>
             <div class="row margin-bottom10" style="padding-top:15px;">
@@ -39,7 +39,7 @@
                      <div class="col-md-12" style="border:1px solid rgba(0,0,0,.175);">
                         <div class="row margin-bottom10" style="padding-bottom: 15px;"></div>
                         <div class="form-group" style="font-weight:100" ng-class="{'has-error':ptoForm.selectedPTOYear.$invalid}">
-                             <label class="col-md-2">PTO Year:</label>
+                             <label class="col-md-2 control-label">PTO Year:</label>
                             <div class="col-md-2">
                                 <input class="form-control input-sm" name="selectedPTOYear" ng-blur="onPTOYearChanged(empPTOYear.ptoYearSelected)" maxlength="4" minLength="4" ng-model="empPTOYear.ptoYearSelected" pto-integer/>
                             </div>
@@ -58,7 +58,7 @@
         </tab>
         <tab heading="PTO Types" ng-click="onPtoTypesTabClick('ptoTypes')" ng-show="showPTOTypes">
             <div id="mainView" ng-style="{'max-height': mainViewHeight + 'px'}">
-              <div class="row header" style="background-color: #d0dded;">
+              <div class="row header bgcolor">
                 <h6 class="text-center header">PTO Types</h6>
               </div>     
             <div class="row margin-bottom10" style="padding-top:15px;">
@@ -103,7 +103,7 @@
         </tab>
         <tab heading="PTO Plan Types" ng-click="onPlanTypeTabClick('ptoPlanType')" ng-show="showPTOPlanTypes">
             <div id="mainView" ng-style="{'max-height': mainViewHeight + 'px'}">
-                <div class="row header" style="background-color: #d0dded;">
+                <div class="row header bgcolor">
                     <h6 class="text-center header">PTO Plan Types</h6>
                 </div>
                 <div class="row margin-bottom10">
@@ -206,8 +206,8 @@
         </tab>
         <tab heading="PTO Plans" ng-show="showPTOPlans" ng-click="onPTOPlanTabClick('ptoPlan')">
              <div id="mainView" ng-style="{'max-height': mainViewHeight + 'px'}" ng-form="planForm">
-                <div class="row header" style="background-color: #d0dded;">
-                    <h4 class="text-center header">PTO Plans</h6>
+                <div class="row header bgcolor">
+                    <h6 class="text-center header">PTO Plans</h6>
                 </div>
                 <div class="row margin-bottom10" style="padding-top:10px;">
                     <label class="col-md-1 control-label">PTO Year:</label>
@@ -348,8 +348,8 @@
         </tab>
         <tab heading="PTO Assignments" ng-show="showPTOAssignments" ng-click="assignmentsTabClick('ptoAssignments')">
             <div id="mainView" ng-style="{'max-height': mainViewHeight + 'px'}">
-            <div class="row header" style="background-color: #d0dded;">
-                <h4 class="text-center header">PTO Assignments</h6>
+            <div class="row header bgcolor">
+                <h6 class="text-center header">PTO Assignments</h6>
             </div>
             <div class="row margin-bottom10" style="padding-top:10px;">
                 <label class="col-md-1 control-label">House Code:</label>
