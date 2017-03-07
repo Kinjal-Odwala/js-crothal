@@ -189,7 +189,7 @@ li {
     border-bottom-width: 0;
     margin: 1px 1px 0px 1px;
     padding: 2px 2px 0px 2px;
-    height: 32px;
+    height: 33px;
 }
 #mainView {
     border: 1px solid rgba(0,0,0,.175);
@@ -200,7 +200,7 @@ li {
 }
 
 .header h6 {
-    font-weight:800;
+    font-weight:700;
     font-size:medium;
 }
 
@@ -211,6 +211,12 @@ li {
 .dropdown-menu > li > div {
     background-color: #ffffff;
 }
+
+.bgcolor {
+    background-color: #9ccf9c;
+}
+
+
 
 
 
