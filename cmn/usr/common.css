@@ -81,16 +81,16 @@
 		padding-left:6px;
 		height:25px;
 	}
-	.sectionHeader /* should be named rowHeader & a new one for pageHeader*/
-	{
-		font-family:Verdana, Geneva, Arial, Helvetica, sans-serif;nt-weight:bold;
-		font-weight:bold;
-		font-size:18px;	
-		color:#2C2F50;
-		text-align:center;
-		margin-bottom:5px;
-		background:#C2E4C1;
-	}
+.sectionHeader /* should be named rowHeader & a new one for pageHeader*/
+{
+	font-family:Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-weight:bold;
+	font-size:18px;	
+	color:#2C2F50;
+	text-align:center;
+	margin-bottom:5px;
+	background:#C2E4C1;
+}
 .pageHeaderText /* should be named rowHeader & a new one for pageHeader*/
 	{
 		font-family:Verdana;
@@ -573,6 +573,10 @@ dl.editArea dd
 	display: block;
 }
 
+.nav-tabs {
+    border-bottom: 0px solid black;
+}
+
 .nav-tabs > li > a {
     background-color: #659a66;
     color: white;
@@ -598,11 +602,6 @@ dl.editArea dd
 
 .table > thead > tr {
     color: white;
-}
-
-.table > tbody > tr > td,
-.table > tbody > tr > th {
-    height:1px;
 }
 
 .table-striped > tbody > tr:nth-child(even) > td,
@@ -648,7 +647,7 @@ dl.editArea dd
 .table > thead > tr > td,
 .table > tbody > tr > td,
 .table > tfoot > tr > td {
-  line-height: 1;
+  line-height: 0.7;
 }
 
 .btn-primary {

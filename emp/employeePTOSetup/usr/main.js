@@ -213,7 +213,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
     $scope.payCodeDetailHeight = $(window).height() - 305;
     $scope.ptoPlanGridHeight = $(window).height() - 270;
     $scope.ptoPlanDetailHeight = $(window).height() - 285;
-    $scope.planTypeGridHeight = $(window).height() - 240;
+    $scope.planTypeGridHeight = $(window).height() - 220;
     $scope.PlanTypeDetailHeight = $(window).height() - 240;
     $scope.assignmentGridHeight = $(window).height() - 270;
     $scope.ptoPlan = {};
@@ -222,6 +222,9 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
     $scope.assignment.hcmHouseCode = "";
     $scope.currentHouseCode = typeof getCurrentHcmHouseCode() == "undefined" ? null : getCurrentHcmHouseCode();
     $scope.authorizations = [];
+    $scope.lastSelectedYear = null;
+    $scope.lastSelectedPlanType = null;
+    $scope.lastSelectedPlan = null;
 
     $scope.dateOptions = {
         formatYear: 'yy',
@@ -285,18 +288,21 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         if (editStatus())
             return;
         $scope.pageStatus = 'Normal';
-        setStatus("Normal");
+        setStatus('Normal');
+        modified(false);
         $scope.selectedYear = null;
         $scope.empPTOYear.ptoYearSelected = "";
         $scope.ptoForm.selectedPTOYear.$setValidity("required", true);
+        $scope.lastSelectedYear = null;
     };
 
     $scope.onYearSelected = function (item) {
-        if ($scope.selectedYear !== null && $scope.selectedYear !== undefined)
-            if (editStatus())
-                return;
+        if (editStatus())
+            return;
         $scope.selectedYear = item;
+        $scope.lastSelectedYear = item;
         $scope.empPTOYear.ptoYearSelected = $scope.selectedYear.brief;
+        $scope.pageStatus = 'Normal';
         setStatus('Normal');
         modified(false);
         $scope.ptoForm.selectedPTOYear.$setValidity("required", true);
@@ -308,6 +314,9 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.selectedYear = null;
         $scope.empPTOYear.ptoYearSelected = "";
         $scope.ptoForm.selectedPTOYear.$setValidity("required", true);
+        $scope.pageStatus = 'Normal';
+        setStatus('Normal');
+        modified(false);
     };
 
     $scope.onPTOYearChanged = function (year) {
@@ -325,10 +334,15 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
             return;
         if ($scope.selectedYear !== null && $scope.selectedYear !== undefined)
             $scope.empPTOYear.ptoYearSelected = $scope.selectedYear.brief;
+        else if ($scope.lastSelectedYear !== null) {
+            $scope.selectedYear = $scope.lastSelectedYear;
+            $scope.onYearSelected($scope.selectedYear);
+        }
         else
             $scope.empPTOYear.ptoYearSelected = "";
 
         $scope.ptoForm.selectedPTOYear.$setValidity("required", true);
+        $scope.pageStatus = 'Normal';
         setStatus('Normal');
         modified(false);
     };
@@ -337,10 +351,12 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         if ($scope.ptoForm.selectedPTOYear.$valid && $scope.empPTOYear.ptoYearSelected !== null && $scope.empPTOYear.ptoYearSelected !== "") {
             $scope.years = $scope.ptoYears;
             var duplicate = false;
-            for (var index = 0; index < $scope.ptoYears.length; index++) {
-                if ($scope.empPTOYear.ptoYearSelected == $scope.ptoYears[index].brief) {
-                    duplicate = true;
-                    break;
+            if ($scope.selectedYear === null || $scope.selectedYear === "" || $scope.selectedYear === undefined) {
+                for (var index = 0; index < $scope.ptoYears.length; index++) {
+                    if ($scope.empPTOYear.ptoYearSelected == $scope.ptoYears[index].brief) {
+                        duplicate = true;
+                        break;
+                    }
                 }
             }
             
@@ -361,6 +377,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
                                     }
                                     if (!found) {
                                         $scope.selectedYear = $scope.ptoYears[year];
+                                        $scope.lastSelectedYear = $scope.selectedYear;
                                         break;
                                     }
                                 }
@@ -369,6 +386,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
                                 for (var year = 0; year < $scope.ptoYears.length; year++) {
                                     if ($scope.selectedYear.id === $scope.ptoYears[year].id) {
                                         $scope.selectedYear = $scope.ptoYears[year];
+                                        $scope.lastSelectedYear = $scope.selectedYear;
                                         break;
                                     }
                                 }
@@ -408,15 +426,15 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         EmpActions.getPayCodes(function (result) {
             $scope.payCodes = result;
             $scope.pageStatus = 'Normal';
-            setStatus("Normal");
+            setStatus('Normal');
+            modified(false);
         });
         $scope.ptoForm.payCode.$setValidity("required", true);
     };
 
     $scope.onPTOtypeSelected = function (item) {
-        if ($scope.selectedPTOtype !== null && $scope.selectedPTOtype !== undefined)
-            if (editStatus())
-                return;
+        if (editStatus())
+            return;
         $scope.selectedPTOtype = item;
         $scope.loadingTitle = " Loading...";
         $scope.pageStatus = 'Loading, Please Wait...';
@@ -429,6 +447,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
             $scope.ptoForm.payCode.$setValidity("required", true);
             $scope.pageStatus = 'Normal';
             setStatus("Normal");
+            modified(false);
         });
     };
 
@@ -446,12 +465,14 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
     $scope.undoPTOType = function () {
         if (editStatus())
             return;
+
         if ($scope.selectedPTOtype !== null && $scope.selectedPTOtype !== undefined)
-            $scope.ptoType.payCode = $scope.selectedptoTypePayCode;
+                $scope.ptoType.payCode = $scope.selectedptoTypePayCode;
         else
             $scope.ptoType.payCode = "";
 
         $scope.ptoForm.payCode.$setValidity("required", true);
+        $scope.pageStatus = 'Normal';
         setStatus('Normal');
         modified(false);
     };
@@ -461,6 +482,12 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
             EmpActions.actionSaveItem($scope, "PTO Types", function (data, status) {
                 EmpActions.getPTOTypes(function (result) {
                     $scope.ptoTypes = result;
+                    EmpActions.getPTOTypePayCodes($scope.selectedPTOtype.id, function (result) {
+                        $scope.ptoTypePayCodes = result;
+                        $scope.ptoType.payCode = $scope.ptoTypePayCodes[0].payCodeId;
+                        $scope.selectedptoTypePayCode = $scope.ptoTypePayCodes[0].payCodeId;
+                        $scope.selectedptoTypePayCodeId = $scope.ptoTypePayCodes[0].id;
+                    });
                     $scope.$apply(function () {
                         $scope.pageLoading = false;
                     });
@@ -499,6 +526,8 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.ptoForm.payType.$setValidity("required", true);
         $scope.ptoForm.status.$setValidity("required", true);
         $scope.statusCategoryTypes = [];
+        $scope.lastSelectedPlanType = null;
+
         EmpActions.getStatusCategoryTypes(function (result) {
             $scope.statusCategoryTypes = result;
         });
@@ -534,10 +563,10 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
     };
 
     $scope.onPTOPlanTypeSelected = function (item) {
-        if ($scope.selectedPTOPlanType !== null && $scope.selectedPTOPlanType !== undefined)
-            if (editStatus())
-                return;
+        if (editStatus())
+            return;
         $scope.selectedPTOPlanType = item;
+        $scope.lastSelectedPlanType = item;
         $scope.ptoPlanType.ptoPlanTypeTitle = item.title;
         
         if (item.statusCategory === "Full Time")
@@ -553,6 +582,9 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.ptoPlanType.ptoPlanTypeMaxHours = item.maxHours;
         $scope.ptoPlanType.ptoPlanTypeActive = item.active;
         $scope.validatePTOPlanType();
+        setStatus("Normal");
+        modified(false);
+        $scope.pageStatus = 'Normal';
     };
 
     $scope.onMinHoursChange = function (hours) {
@@ -635,12 +667,16 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.ptoForm.planTypeTitle.$setValidity("required", true);
         $scope.ptoForm.payType.$setValidity("required", true);
         $scope.ptoForm.status.$setValidity("required", true);
+        $scope.pageStatus = 'Normal';
+        setStatus('Normal');
+        modified(false);
     };
 
     $scope.undoPTOPlanType = function () {
         if (editStatus())
             return;
 
+        $scope.pageStatus = 'Normal';
         setStatus('Normal');
         modified(false);
 
@@ -657,6 +693,10 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
             $scope.ptoPlanType.ptoPlanTypeMinHours = $scope.selectedPTOPlanType.minHours;
             $scope.ptoPlanType.ptoPlanTypeMaxHours = $scope.selectedPTOPlanType.maxHours;
             $scope.ptoPlanType.ptoPlanTypeActive = $scope.selectedPTOPlanType.active;
+        }
+        else if ($scope.lastSelectedPlanType !== null) {
+            $scope.selectedPTOPlanType = $scope.lastSelectedPlanType;
+            $scope.onPTOPlanTypeSelected($scope.selectedPTOPlanType);
         }
         else
             $scope.newPTOPlanType();
@@ -745,8 +785,10 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
                             }
 
                             if ($scope.selectedPTOPlanType !== null && $scope.selectedPTOPlanType !== undefined) {
-                                if ($scope.selectedPTOPlanType.id === planType.id)
+                                if ($scope.selectedPTOPlanType.id === planType.id) {
                                     $scope.selectedPTOPlanType = planType;
+                                    $scope.lastSelectedPlanType = $scope.selectedPTOPlanType;
+                                }
                             }
                             else {
                                 var found = false;
@@ -756,8 +798,10 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
                                         break;
                                     }
                                 }
-                                if (!found)
+                                if (!found) {
                                     $scope.selectedPTOPlanType = planType;
+                                    $scope.lastSelectedPlanType = $scope.selectedPTOPlanType;
+                                }
                             }
                         });
                         $scope.pageLoading = false;
@@ -814,6 +858,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.ptoForm.planForm.planDays.$setValidity("required", true);
         $scope.ptoForm.planForm.accrualInterval.$setValidity("required", true);
         $scope.ptoForm.planForm.fromYear.$setValidity("required", true);
+        $scope.lastSelectedPlan = null;
 
         $scope.loadingTitle = " Loading...";
         $scope.pageStatus = 'Loading, Please Wait...';
@@ -821,7 +866,8 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         EmpActions.getPTOPlans($scope.ptoYears[0].id, function (result) {
             $scope.ptoPlans = result;
             $scope.pageStatus = 'Normal';
-            setStatus("Normal");
+            setStatus('Normal');
+            modified(false);
         });
         EmpActions.getPTOPlanTypes(function (result) {
             $scope.ptoPlanTypes = result;
@@ -840,14 +886,15 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
             $scope.pageStatus = "Normal";
             setStatus("Normal");
             $scope.newPTOPlan();
+            $scope.lastSelectedYear = null;
         });
     }
 
     $scope.onPTOPlanSelected = function (item) {
-        if ($scope.selectedPTOPlan !== null && $scope.selectedPTOPlan !== undefined)
-            if (editStatus())
-                return; 
+        if (editStatus())
+            return; 
         $scope.selectedPTOPlan = item;
+        $scope.lastSelectedPlan = item;
         $scope.ptoPlan.ptoPlanName = item.title;
         $scope.ptoPlan.ptoPlanType = item.ptoPlanType;
         $scope.ptoPlan.ptoType = item.ptoType;
@@ -867,6 +914,9 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.ptoForm.planForm.endDate.$setValidity("required", true);
         $scope.ptoForm.planForm.planDays.$setValidity("required", true);
         $scope.ptoForm.planForm.accrualInterval.$setValidity("required", true);
+        $scope.pageStatus = "Normal";
+        setStatus("Normal");
+        modified(false);
     };
 
     $scope.newPTOPlan = function () {
@@ -894,12 +944,16 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.ptoForm.planForm.endDate.$setValidity("required", true);
         $scope.ptoForm.planForm.planDays.$setValidity("required", true);
         $scope.ptoForm.planForm.accrualInterval.$setValidity("required", true);
+        $scope.pageStatus = 'Normal';
+        setStatus('Normal');
+        modified(false);
     };
 
     $scope.undoPTOPlan = function () {
         if (editStatus())
             return;
 
+        $scope.pageStatus = 'Normal';
         setStatus('Normal');
         modified(false);
 
@@ -916,8 +970,17 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
             $scope.ptoPlan.endDate = $scope.selectedPTOPlan.endDate;
             $scope.isClone = false;
         }
+        else if ($scope.lastSelectedPlan !== null && $scope.isClone == false) {
+            $scope.selectedPTOPlan = $scope.lastSelectedPlan;
+            $scope.onPTOPlanSelected($scope.selectedPTOPlan);
+        }
+        else if ($scope.isClone == true) {
+            $scope.ptoPlan.cloneFromYear = null;
+            $scope.cloneToYear = null;
+            $scope.hasPlans = true;
+        }
         else
-            $scope.newPTOPlan();       
+            $scope.newPTOPlan();
     };
 
     $scope.savePTOPlan = function () {
@@ -958,6 +1021,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
                             for (var plan = 0; plan < $scope.ptoPlans.length; plan++) {
                                 if ($scope.selectedPTOPlan.id === $scope.ptoPlans[plan].id) {
                                     $scope.selectedPTOPlan = $scope.ptoPlans[plan];
+                                    $scope.lastSelectedPlan = $scope.selectedPTOPlan;
                                     break;
                                 }
                             }
@@ -977,6 +1041,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
                                 }
                                 if (!found) {
                                     $scope.selectedPTOPlan = $scope.newPlans[plan];
+                                    $scope.lastSelectedPlan = $scope.selectedPTOPlan;
                                     $scope.ptoPlans.push($scope.newPlans[plan]);
                                     break;
                                 }
@@ -1215,7 +1280,8 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
                 });
                 $scope.pageLoading = false;
                 $scope.pageStatus = 'Normal';
-                setStatus("Normal");
+                setStatus('Normal');
+                modified(false);
             });
         });
     };
