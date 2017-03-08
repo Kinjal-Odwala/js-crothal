@@ -199,11 +199,6 @@ li {
     padding-bottom: 15px;
 }
 
-.header h6 {
-    font-weight:700;
-    font-size:medium;
-}
-
 .control-label {
     font-weight:100;
 }
@@ -212,9 +207,10 @@ li {
     background-color: #ffffff;
 }
 
-.bgcolor {
-    background-color: #d0dded;
+.btn-primary {
+  line-height: 1;
 }
+
 
 
 

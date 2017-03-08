@@ -805,6 +805,10 @@ dl.editArea dd {
 	padding: 1px 0px 0px 5px;
 }
 
+.nav-tabs {
+    border-bottom: 0px solid black;
+}
+
 .nav-tabs > li > a {
     background-color: #5f86ab;
     color: white;
@@ -830,11 +834,6 @@ dl.editArea dd {
 
 .table > thead > tr {
     color: white;
-}
-
-.table > tbody > tr > td,
-.table > tbody > tr > th {
-    height:1px;
 }
 
 .table-striped > tbody > tr:nth-child(even) > td,
@@ -880,6 +879,6 @@ dl.editArea dd {
 .table > thead > tr > td,
 .table > tbody > tr > td,
 .table > tfoot > tr > td {
-  line-height: 1;
+  line-height: 0.7;
 }
 
