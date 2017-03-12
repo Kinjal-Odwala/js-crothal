@@ -179,3 +179,20 @@
     height: auto;
 }
 
+.sectionHeader {
+    background-color:white;
+    padding-right: 50px;
+}
+
+.btn-default {
+    line-height: 1;
+}
+
+
+.sort {
+    color: white;
+}
+
+.tableData {
+    color: black;
+}

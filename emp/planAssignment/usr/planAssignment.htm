@@ -2,14 +2,10 @@
     <div class="row margin-bottom10 form-horizontal">
         <div class="col-md-12">
             <div class="form-group">
-                <div class="col-md-4">
-                    <div id="itemStatusImage" class="itemStatusImage"></div>
-                    <div id="itemModifiedImage" class="itemModifiedImage"></div>
-                    <div id="itemStatusText"></div>
-                </div>
-                <div class="col-md-8" style="padding-left: 200px; font: bold; font-size: larger">
-                   <label class="control-label">PLAN ASSIGNMENTS</label>
-                </div>
+                <div id="itemStatusImage" class="itemStatusImage"></div>
+                <div id="itemModifiedImage" class="itemModifiedImage"></div>
+                <div id="itemStatusText"></div>
+                <div class="sectionHeader">PLAN ASSIGNMENTS</div>
              </div>
         </div>
         <div class="col-md-12">
@@ -37,11 +33,11 @@
 	<div class="row margin-bottom10" ng-if="showCompanyGrid">
         <div class="col-md-9">
             <table ng-table="companyTable" class="table-scroll table table-bordered table-condensed table-striped table-hover margin-bottom10" style="width: 1100px;">
-                <thead style="color:#3276b1;">
-                    <tr class="heading" bgcolor="rgba(141,192,219,.25)" role="row">
+                <thead>
+                    <tr class="subHeader" role="row">
                         <th style="text-align:center">Company Plan Details</th>
                     </tr>
-                    <tr bgcolor="#ffffe0" style="color:#3276b1; font: bold" class="heading" role="row">
+                    <tr class="subHeader" role="row">
                         <th width="297px" style="text-align:center"><label>Plan Name</label></th>
                         <th width="297px" style="text-align:center"><label>PTO Type</label></th>
                         <th width="297px" style="text-align:center"><label>Plan Type</label></th>
@@ -73,8 +69,8 @@
     <div class="row margin-bottom10" ng-if="showStateGrid">
         <div class="col-md-4">
             <table class="table-scroll table table-striped table-bordered table-hover">
-                <thead bgcolor="rgba(141,192,219,.25)" style="color:#3276b1;">
-                    <tr class="heading" role="row">
+                <thead>
+                    <tr class="subHeader" role="row">
                         <th width="2%" style="text-align:center">#</th>
                         <th width="10%" style="text-align:center">Brief</th>
                         <th width="15%" style="text-align:center">Title</th>
@@ -92,8 +88,8 @@
         </div>
         <div class="col-md-8">
             <table class="table-scroll table table-bordered table-striped table-hover margin-bottom10 table-condensed" style="width: 1100px;">
-                <thead style="color:#3276b1;">
-                    <tr class="heading" bgcolor="rgba(141,192,219,.25)" role="row">
+                <thead>
+                    <tr class="gridHeader" role="row">
                         <th style="text-align:center">
                             <label>State Plan Details</label>
                             <button class="btn btn-default btn-xs pull-right" ng-click="showState = !showState; setHeight('state', showState)" title="Hide/Show State Plans">
@@ -104,7 +100,7 @@
                             </button>
                         </th> 
                     </tr>
-                    <tr bgcolor="#ffffe0" ng-show="showState" style="color:#3276b1; font: bold" class="heading" role="row">
+                    <tr class="gridHeader" role="row">
                         <th width="297px" style="text-align:center"><label>Plan Name</label></th>
                         <th width="297px" style="text-align:center"><label>PTO Type</label></th>
                         <th width="297px" style="text-align:center"><label>Plan Type</label></th>
@@ -116,8 +112,8 @@
                     <tr ng-show="showStateName">
                         <td colspan="3">
                             <a href="" ng-click="stateExpanded = !stateExpanded">
-                                <span class="glyphicon" ng-class="{ 'glyphicon-chevron-right': !stateExpanded, 'glyphicon-chevron-down': stateExpanded }"></span>
-                                <strong>{{ stateName }}</strong>
+                                <span class="glyphicon tableData" ng-class="{ 'glyphicon-chevron-right': !stateExpanded, 'glyphicon-chevron-down': stateExpanded }"></span>
+                                <label class="tableData">{{ stateName }}</label>
                             </a>
                         </td>
                     </tr>
@@ -141,14 +137,14 @@
             </table>
             <div class="row margin-bottom10"></div>
             <table class="table-scroll table table-bordered table-striped table-hover margin-bottom10" style="width: 1100px;">
-                <thead style="color:#3276b1;">
-                    <tr class="heading" bgcolor="rgba(141,192,219,.25)" role="row">
+                <thead>
+                    <tr class="gridHeader" role="row">
                         <td>
                             <div>
                                <div ng-show="showCounty" class="pull-left">
-                                    <a href="#" ng-click="sortType = 'County'; sortCountyReverse = !sortCountyReverse;" target="_self"><label>County</label>
-                                        <span ng-show="sortType == 'County' && !sortCountyReverse">&#9660;</span>
-                                        <span ng-show="sortType == 'County' && sortCountyReverse">&#9650;</span>
+                                    <a href="#" ng-click="sortType = 'County'; sortCountyReverse = !sortCountyReverse;" target="_self"><label class="sort">County</label>
+                                        <span class="sort" ng-show="sortType == 'County' && !sortCountyReverse">&#9660;</span>
+                                        <span class="sort" ng-show="sortType == 'County' && sortCountyReverse">&#9650;</span>
                                     </a>
                                 </div>
                                 <label ng-style="showCounty ? { 'padding-left':'347px' } : { 'padding-left':'395px' }">County Plan Details</label>
@@ -166,7 +162,7 @@
                              </div>
                         </td>
                     </tr>
-                    <tr bgcolor="#ffffe0" ng-show="showCounty" style="color:#3276b1; font: bold" class="heading" role="row">
+                    <tr ng-show="showCounty" class="gridHeader" role="row">
                         <th width="300px" style="text-align:center"><label>Plan Name</label></th>
                         <th width="300px" style="text-align:center"><label>PTO Type</label></th>
                         <th width="300px" style="text-align:center"><label>Plan Type</label></th>
@@ -178,8 +174,8 @@
                     <tr ng-repeat-start="county in countys | orderBy:sortCountyBy:sortCountyReverse" ng-click="countySelected(county)" ng-class="{'warning':selectedCounty == county};" expandcounty>
                         <td colspan="4">
                             <a href="" ng-click="countyExpanded = !countyExpanded">
-                                <span class="glyphicon" ng-class="{ 'glyphicon-chevron-right': !countyExpanded, 'glyphicon-chevron-down': countyExpanded }"></span>
-                                <strong>{{ county.name }}</strong>
+                                <span class="glyphicon tableData" ng-class="{ 'glyphicon-chevron-right': !countyExpanded, 'glyphicon-chevron-down': countyExpanded }"></span>
+                                <label class="tableData">{{ county.name }}</label>
                             </a>
                         </td>
                     </tr>
@@ -204,14 +200,14 @@
             </table>
             <div class="row margin-bottom10"></div>
             <table class="table-scroll table table-bordered table-striped table-hover margin-bottom10" style="width: 1100px;">
-                <thead style="color:#3276b1;">
-                    <tr class="heading" bgcolor="rgba(141,192,219,.25)" role="row">
+                <thead>
+                    <tr class="gridHeader" role="row">
                         <td>
                             <div>
 								<div ng-show="showCity" class="pull-left">
-                                    <a href="#" ng-click="sortType = 'City'; sortCityReverse = !sortCityReverse;" target="_self"><label>City</label>
-                                        <span ng-show="sortType == 'City' && !sortCityReverse">&#9660;</span>
-                                        <span ng-show="sortType == 'City' && sortCityReverse">&#9650;</span>
+                                    <a href="#" ng-click="sortType = 'City'; sortCityReverse = !sortCityReverse;" target="_self"><label class="sort">City</label>
+                                        <span class="sort" ng-show="sortType == 'City' && !sortCityReverse">&#9660;</span>
+                                        <span class="sort" ng-show="sortType == 'City' && sortCityReverse">&#9650;</span>
                                     </a>
                                 </div>
                                 <label ng-style="showCity ? { 'padding-left':'379px' } : { 'padding-left':'405px' }">City Plan Details</label>
@@ -230,7 +226,7 @@
                              </div>
                         </td>
                     </tr>
-                    <tr bgcolor="#ffffe0" ng-show="showCity" style="color:#3276b1; font: bold" class="heading" role="row">
+                    <tr ng-show="showCity" class="gridHeader" role="row">
                         <th width="300px" style="text-align:center"><label>Plan Name</label></th>
                         <th width="300px" style="text-align:center"><label>PTO Type</label></th>
                         <th width="300px" style="text-align:center"><label>Plan Type</label></th>
@@ -242,8 +238,8 @@
                     <tr ng-repeat-start="city in cities track by $index | orderBy:sortCityBy:sortCityReverse" ng-click="citySelected(city)" ng-class="{'warning':selectedCity == city};" expandcity>
                         <td colspan="4">
                             <a href="" ng-click="cityExpanded = !cityExpanded">
-                                <span class="glyphicon" ng-class="{ 'glyphicon-chevron-right': !cityExpanded, 'glyphicon-chevron-down': cityExpanded }"></span>
-                                <strong>{{ city.name }}</strong>
+                                <span class="glyphicon tableData" ng-class="{ 'glyphicon-chevron-right': !cityExpanded, 'glyphicon-chevron-down': cityExpanded }"></span>
+                                <label class="tableData">{{ city.name }}</label>
                             </a>
                         </td>
                     </tr>
@@ -268,14 +264,14 @@
             </table>
             <div class="row margin-bottom10"></div>
             <table class="table-scroll table table-bordered table-striped table-hover margin-bottom10" style="width: 1100px;">
-                <thead style="color:#3276b1;">
-                    <tr class="heading" bgcolor="rgba(141,192,219,.25)" role="row">
+                <thead>
+                    <tr class="gridHeader" role="row">
                         <td>
                             <div>
                                  <div ng-show="showHouseCode" class="pull-left">
-                                     <a href="#" ng-click="sortType = 'HouseCode'; sortHouseCodeReverse = !sortHouseCodeReverse;" target="_self"><label>House Code</label>
-                                        <span ng-show="sortType == 'HouseCode' && !sortHouseCodeReverse">&#9660;</span>
-                                        <span ng-show="sortType == 'HouseCode' && sortHouseCodeReverse">&#9650;</span>
+                                     <a href="#" ng-click="sortType = 'HouseCode'; sortHouseCodeReverse = !sortHouseCodeReverse;" target="_self"><label class="sort">House Code</label>
+                                        <span class="sort" ng-show="sortType == 'HouseCode' && !sortHouseCodeReverse">&#9660;</span>
+                                        <span class="sort" ng-show="sortType == 'HouseCode' && sortHouseCodeReverse">&#9650;</span>
                                     </a>
                                  </div>
                                 <label ng-style="showHouseCode ? { 'padding-left':'298px' } : { 'padding-left':'380px' }">House Code Plan Details</label>
@@ -294,7 +290,7 @@
                              </div>
                         </td>
                     </tr>
-                    <tr bgcolor="#ffffe0" ng-show="showHouseCode" style="color:#3276b1; font: bold" class="heading" role="row">
+                    <tr ng-show="showHouseCode" class="gridHeader" role="row">
                         <th width="300px" style="text-align:center"><label>Plan Name</label></th>
                         <th width="300px" style="text-align:center"><label>PTO Type</label></th>
                         <th width="300px" style="text-align:center"><label>Plan Type</label></th>
@@ -306,8 +302,8 @@
                     <tr ng-repeat-start="houseCode in houseCodes | orderBy:sortHouseCodeBy:sortHouseCodeReverse" ng-click="houseCodeSelected(houseCode)" ng-class="{'warning':selectedHouseCode == houseCode};" expandhousecode="">
                         <td colspan="4">
                             <a href="" ng-click="houseCodeExpanded = !houseCodeExpanded">
-                                <span class="glyphicon" ng-class="{ 'glyphicon-chevron-right': !houseCodeExpanded, 'glyphicon-chevron-down': houseCodeExpanded }"></span>
-                                <strong>{{ houseCode.name }}</strong>
+                                <span class="glyphicon tableData" ng-class="{ 'glyphicon-chevron-right': !houseCodeExpanded, 'glyphicon-chevron-down': houseCodeExpanded }"></span>
+                                <label class="tableData">{{ houseCode.name }}</label>
                             </a>
                         </td>
                     </tr>
@@ -346,8 +342,8 @@
 	        <div style="font-weight:bold;font-size: 18px;text-align: center;font-family: Verdana;">Select Plan</div>
 	        <div class="modal-body" id="planTable">
 	        	<table class="table-scroll table table-striped table-bordered table-hover">
-			        <thead bgcolor="#ffffe0" style="color:#3276b1;">
-			            <tr class="heading" role="row">
+			        <thead>
+			            <tr class="gridHeader" role="row">
 			                <th width="2%" style="text-align:center">#</th>
 			                <th width="5%" style="text-align:center"></th>
 			                <th width="15%" style="text-align:center">Plan Name</th>
@@ -402,8 +398,8 @@
                     </div>
                 </div>
                      <table class="table-scroll table table-striped table-bordered table-hover">
-                        <thead bgcolor="#ffffe0" style="color:#3276b1;">
-                            <tr class="heading" role="row">
+                        <thead>
+                            <tr class="gridHeader" role="row">
                                 <th width="2%" style="text-align:center">#</th>
                                 <th width="5%" style="text-align:center"><input type="checkbox" ng-true-value="true" ng-false-value="false" ng-model="allSelected" ng-click="toggleAll(allSelected)" /></th>
                                 <th width="15%" style="text-align:center">Plan Name</th>

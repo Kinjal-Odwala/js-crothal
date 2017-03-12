@@ -626,14 +626,14 @@ dl.editArea dd
 .table > thead > tr.warning > th,
 .table > tbody > tr.warning > th,
 .table > tfoot > tr.warning > th {
-  background-color: #659a66;
+  background-color: #9bcd9a;
 }
 
 .table-hover > tbody > tr > td.warning:hover,
 .table-hover > tbody > tr > th.warning:hover,
 .table-hover > tbody > tr.warning:hover > td,
 .table-hover > tbody > tr.warning:hover > th {
-  background-color: #659a66;
+  background-color: #9bcd9a;
 }
 
 .table-hover > tbody > tr:hover > td,
