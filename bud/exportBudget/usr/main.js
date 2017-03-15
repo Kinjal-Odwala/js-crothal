@@ -6,9 +6,6 @@ ii.Import( "ui.ctl.usr.buttons" );
 ii.Import( "ui.cmn.usr.text" );
 ii.Import( "ui.ctl.usr.hierarchy" );
 ii.Import( "fin.cmn.usr.util" );
-ii.Import( "fin.cmn.usr.ui.core" );
-ii.Import( "fin.cmn.usr.ui.widget" );
-ii.Import( "fin.cmn.usr.multiselect" );
 ii.Import( "fin.bud.exportBudget.usr.defs" );
 
 ii.Style( "style", 1 );
@@ -22,6 +19,17 @@ ii.Style( "fin.cmn.usr.dropDown", 8 );
 ii.Style( "fin.cmn.usr.theme", 9 );
 ii.Style( "fin.cmn.usr.core", 10 );
 ii.Style( "fin.cmn.usr.multiselect", 11 );
+
+var importCompleted = false;
+var iiScript = new ii.Script( "fin.cmn.usr.ui.core", function() { coreLoaded(); });
+
+function coreLoaded() { 
+	var iiScript = new ii.Script( "fin.cmn.usr.ui.widget", function() { widgetLoaded(); });
+}
+
+function widgetLoaded() { 
+	var iiScript = new ii.Script( "fin.cmn.usr.multiselect", function() { importCompleted = true; }); 
+}
 
 ii.Class({
     Name: "fin.bud.exportBudget.UserInterface",
@@ -714,6 +722,11 @@ ii.Class({
 });
 
 function main() {
-	fin.exportBudgetUi = new fin.bud.exportBudget.UserInterface();
-	fin.exportBudgetUi.resize();
+	var intervalId = setInterval(function() {
+		if (importCompleted) {
+			clearInterval(intervalId);
+			fin.exportBudgetUi = new fin.bud.exportBudget.UserInterface();
+			fin.exportBudgetUi.resize();
+		}
+	}, 100);
 }
