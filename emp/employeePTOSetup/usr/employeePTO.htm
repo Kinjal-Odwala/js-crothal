@@ -12,34 +12,32 @@
     </div>
     <div id="empPTOView">
     <tabset class="margin-bottom10">
-        <tab heading="PTO Years" ng-show="showPTOYears" ng-click="onPTOYearsTabClick('ptoYear')">
+        <tab heading="PTO Years" ng-show="showPTOYears" ng-click="onPTOYearsTabClick('ptoYear');">
            <div id="mainView" ng-style="{'max-height': mainViewHeight + 'px'}">
-            <div class="row header" style="background-color: #d0dded;">
-                <h6 class="text-center header">PTO Years</h6>
-            </div>
+            <div class="row sectionHeader">PTO Years</div>
             <div class="row margin-bottom10" style="padding-top:15px;">
-                <div class="col-md-4">
-                    <table class="table-scroll table table-striped table-bordered table-hover" style="width: 500px;">
+                <div class="col-md-6">
+                    <table class="table-scroll table table-striped table-bordered table-hover" style="width: 700px;">
                         <thead>
                             <tr class="heading" role="row">
                                 <th width="50px" style="text-align:center">#</th>
-                                <th width="440px" style="text-align:center">PTO Year</th>
+                                <th width="650px" style="text-align:center">PTO Year</th>
                                 <th width="10px"></th>
                             </tr>
                         </thead>
                         <tbody style="width:100%;" ng-style="{'min-height': gridHeight + 'px'}">
                             <tr ng-repeat="item in ptoYears" ng-click="onYearSelected(item)" ng-class="{'warning':selectedYear == item};" ng-style="{'min-height': '5px'}">
                                 <td width="50px" align ="center">{{$index + 1}}</td>
-                                <td width="450px" style="text-align:left">{{item.brief}}</td>
+                                <td width="650px" style="text-align:left">{{item.brief}}</td>
                              </tr>
                         </tbody>
                     </table>
                 </div>
-                <div class="col-md-8" style="padding-top: 13px; padding-right:15px;">
+                <div class="col-md-6" style="padding-top: 13px; padding-right:15px;">
                      <div class="col-md-12" style="border:1px solid rgba(0,0,0,.175);">
                         <div class="row margin-bottom10" style="padding-bottom: 15px;"></div>
                         <div class="form-group" style="font-weight:100" ng-class="{'has-error':ptoForm.selectedPTOYear.$invalid}">
-                             <label class="col-md-2">PTO Year:</label>
+                             <label class="col-md-2 control-label">PTO Year:</label>
                             <div class="col-md-2">
                                 <input class="form-control input-sm" name="selectedPTOYear" ng-blur="onPTOYearChanged(empPTOYear.ptoYearSelected)" maxlength="4" minLength="4" ng-model="empPTOYear.ptoYearSelected" pto-integer/>
                             </div>
@@ -58,28 +56,26 @@
         </tab>
         <tab heading="PTO Types" ng-click="onPtoTypesTabClick('ptoTypes')" ng-show="showPTOTypes">
             <div id="mainView" ng-style="{'max-height': mainViewHeight + 'px'}">
-              <div class="row header" style="background-color: #d0dded;">
-                <h6 class="text-center header">PTO Types</h6>
-              </div>     
+              <div class="row sectionHeader">PTO Types</div>     
             <div class="row margin-bottom10" style="padding-top:15px;">
-                <div class="col-md-4">
-                    <table class="table-scroll table table-striped table-bordered table-hover" style="width:500px;">
+                <div class="col-md-6">
+                    <table class="table-scroll table table-striped table-bordered table-hover" style="width: 700px;">
                         <thead>
                             <tr class="heading" role="row">
                                 <th width="50px" style="text-align:center">#</th>
-                                <th width="450px" style="text-align:center">PTO Type</th>
+                                <th width="650px" style="text-align:center">PTO Type</th>
                                 <th width="10px"></th>
                             </tr>
                         </thead>
                         <tbody style="width:100%;" ng-style="{'min-height': gridHeight + 'px'}">
                             <tr ng-repeat="item in ptoTypes" ng-click="onPTOtypeSelected(item)" ng-class="{'warning':selectedPTOtype == item};">
                                 <td width="50px" align ="center">{{$index + 1}}</td>
-                                <td width="450px" align ="left">{{item.brief}}</td>
+                                <td width="650px" align ="left">{{item.brief}}</td>
                              </tr>
                         </tbody>
                     </table>
                 </div>
-                <div class="col-md-8" style="padding-top: 13px; padding-right:15px;">
+                <div class="col-md-6" style="padding-top: 13px; padding-right:15px;">
                     <div class="col-md-12" style="border:1px solid rgba(0,0,0,.175);">
                         <div class="row margin-bottom10" style="padding-bottom: 15px;"></div>
                         <div class="row" ng-class="{'has-error':ptoForm.payCode.$invalid}">
@@ -103,20 +99,16 @@
         </tab>
         <tab heading="PTO Plan Types" ng-click="onPlanTypeTabClick('ptoPlanType')" ng-show="showPTOPlanTypes">
             <div id="mainView" ng-style="{'max-height': mainViewHeight + 'px'}">
-                <div class="row header" style="background-color: #d0dded;">
-                    <h6 class="text-center header">PTO Plan Types</h6>
-                </div>
+                <div class="row sectionHeader">PTO Plan Types</div>
                 <div class="row margin-bottom10">
-                    <div class="col-md-8">
-                        <table class="table-scroll table table-striped table-bordered table-hover" style="width: 900px;">
+                    <div class="col-md-6">
+                        <table class="table-scroll table table-striped table-bordered table-hover" style="width: 700px;">
                             <thead>
                                 <tr class="heading" role="row">
                                     <th width="15px" style="text-align:center">#</th>
-                                    <th width="285px" style="text-align:center">PLAN TYPE</th>
-                                    <th width="200px" style="text-align:center">PAY TYPE</th>
-                                    <th width="250px" style="text-align:center">STATUS CATEGORY</th>
-                                    <th width="100px" style="text-align:center">MIN HOURS</th>
-                                    <th width="100px" style="text-align:center">MAX HOURS</th>
+                                    <th width="285px" style="text-align:center">Plan Type</th>
+                                    <th width="250px" style="text-align:center">Pay Type</th>
+                                    <th width="150px" style="text-align:center">Status Category</th>
                                     <th width="10px"></th>
                                 </tr>
                             </thead>
@@ -124,27 +116,25 @@
                                 <tr ng-repeat="item in ptoPlanTypes" ng-click="onPTOPlanTypeSelected(item)" ng-class="{'warning':selectedPTOPlanType == item};">
                                     <td width="15px" align ="center">{{$index + 1}}</td>
                                     <td width="285px" align ="left">{{item.title}}</td>
-                                    <td width="200px" align ="left">{{item.payStatus}}</td>
-                                    <td width="250px" align ="left">{{item.statusCategory}}</td>
-                                    <td width="100px" align ="left">{{item.minHours}}</td>
-                                    <td width="100px" align ="left">{{item.maxHours}}</td>
+                                    <td width="250px" align ="left">{{item.payStatus}}</td>
+                                    <td width="150px" align ="left">{{item.statusCategory}}</td>
                                  </tr>
                             </tbody>
                         </table>
                     </div>
-                    <div class="col-md-4" style="padding-top: 13px; padding-right:15px;">
+                    <div class="col-md-6" style="padding-top: 13px; padding-right:15px;">
                      <div class="col-md-12" ng-style="{'border':'1px solid rgba(0,0,0,.175)', 'min-height': PlanTypeDetailHeight + 'px'}">
                         <div class="row margin-bottom10" style="padding-bottom: 15px;"></div>
                         <div>
                         <div class="row">
-                             <label class="col-md-4 control-label">Title:</label>
-                            <div class="col-md-6" ng-class="{'has-error':ptoForm.planTypeTitle.$invalid}">
+                             <label class="col-md-3 control-label">Title:</label>
+                            <div class="col-md-4" ng-class="{'has-error':ptoForm.planTypeTitle.$invalid}">
                                 <input name="planTypeTitle" class="form-control input-sm" ng-model="ptoPlanType.ptoPlanTypeTitle" ng-blur="onPlanTypeTitleChange(ptoPlanType.ptoPlanTypeTitle)"/>
                             </div>
                         </div>
                         <div class="row" style="padding-top:10px;"></div>
                         <div class="row">
-                            <label class="col-md-4 control-label">Pay Type:</label>
+                            <label class="col-md-3 control-label">Pay Type:</label>
                             <div class="col-md-5">
                                 <div class="form-group" ng-class="{'has-error':ptoForm.payType.$invalid}">
                                     <label class="checkbox-inline">
@@ -157,7 +147,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <label class="col-md-4 control-label">Status Category:</label>
+                            <label class="col-md-3 control-label">Status Category:</label>
                             <div class="col-md-6">
                                 <div class="form-group" ng-class="{'has-error':ptoForm.status.$invalid}">
                                     <label class="radio-inline">
@@ -171,21 +161,21 @@
                             </div>
                         </div>
                         <div class="row" ng-show="ptoPlanType.Hourly" ng-class="{'has-error':ptoForm.planTypeMinHours.$invalid}">
-                             <label class="col-md-4 control-label">Minimum Hours:</label>
+                             <label class="col-md-3 control-label">Minimum Hours:</label>
                             <div class="col-md-6">
                                 <input name="planTypeMinHours" class="form-control input-sm" ng-model="ptoPlanType.ptoPlanTypeMinHours" maxlength="2" ng-blur="onMinHoursChange(ptoPlanType.ptoPlanTypeMinHours)" pto-integer/>
                             </div>
                             <div class="row" style="padding-bottom:10px;"></div>
                         </div>
                         <div class="row" ng-show="ptoPlanType.Hourly" ng-class="{'has-error':ptoForm.planTypeMaxHours.$invalid}">
-                             <label class="col-md-4 control-label">Maximum Hours:</label>
+                             <label class="col-md-3 control-label">Maximum Hours:</label>
                             <div class="col-md-6">
                                 <input name="planTypeMaxHours" class="form-control input-sm" ng-model="ptoPlanType.ptoPlanTypeMaxHours" maxlength="2" ng-blur="onMaxHoursChange(ptoPlanType.ptoPlanTypeMaxHours)" pto-integer/>
                             </div>
                             <div class="row" style="padding-bottom:10px;"></div>
                         </div>
                         <div class="row">
-                            <label class="col-md-4 control-label">Active:</label>
+                            <label class="col-md-3 control-label">Active:</label>
                             <div class="col-md-4">
                                 <label>
                                     <input name="planTypeActive" type="checkbox" ng-model="ptoPlanType.ptoPlanTypeActive" ng-value="ptoPlanType.ptoPlanTypeActive" ng-click="onPlanTypeActiveChange(ptoPlanType.ptoPlanTypeActive)"/>
@@ -206,9 +196,7 @@
         </tab>
         <tab heading="PTO Plans" ng-show="showPTOPlans" ng-click="onPTOPlanTabClick('ptoPlan')">
              <div id="mainView" ng-style="{'max-height': mainViewHeight + 'px'}" ng-form="planForm">
-                <div class="row header" style="background-color: #d0dded;">
-                    <h4 class="text-center header">PTO Plans</h6>
-                </div>
+                <div class="row sectionHeader">PTO Plans</div>
                 <div class="row margin-bottom10" style="padding-top:10px;">
                     <label class="col-md-1 control-label">PTO Year:</label>
                     <div class="col-md-1">
@@ -224,8 +212,8 @@
                             <thead>
                                 <tr class="heading" role="row">
                                     <th width="30px" style="text-align:center">#</th>
-                                    <th width="470px" style="text-align:center">PLAN Name</th>
-                                    <th width="200px" style="text-align:center">PTO TYPE</th>
+                                    <th width="470px" style="text-align:center">Plan Name</th>
+                                    <th width="200px" style="text-align:center">PTO Type</th>
                                     <th width="10px"></th>
                                 </tr>
                             </thead>
@@ -348,9 +336,7 @@
         </tab>
         <tab heading="PTO Assignments" ng-show="showPTOAssignments" ng-click="assignmentsTabClick('ptoAssignments')">
             <div id="mainView" ng-style="{'max-height': mainViewHeight + 'px'}">
-            <div class="row header" style="background-color: #d0dded;">
-                <h4 class="text-center header">PTO Assignments</h6>
-            </div>
+            <div class="row sectionHeader">PTO Assignments</div>
             <div class="row margin-bottom10" style="padding-top:10px;">
                 <label class="col-md-1 control-label">House Code:</label>
                 <div class="col-md-2">
@@ -370,8 +356,8 @@
                             <thead>
                                 <tr class="heading" role="row">
                                     <th width="30px" style="text-align:center">#</th>
-                                    <th width="470px" style="text-align:center">PLAN Name</th>
-                                    <th width="200px" style="text-align:center">PTO TYPE</th>
+                                    <th width="470px" style="text-align:center">Plan Name</th>
+                                    <th width="200px" style="text-align:center">PTO Type</th>
                                     <th width="10px"></th>
                                 </tr>
                             </thead>
@@ -385,13 +371,13 @@
                         </table>
                     </div>
                     <div class="col-md-6">
-                        <table class="table-scroll table table-striped table-bordered table-hover" style="width: 800px;">
+                        <table class="table-scroll table table-striped table-bordered table-hover" style="width: 750px;">
                             <thead>
                                 <tr class="heading" role="row">
                                     <th width="30px" style="text-align:center">#</th>
                                     <th width="235px" style="text-align:center">First Name</th>
                                     <th width="235px" style="text-align:center">Last Name</th>
-                                    <th width="300px" style="text-align:center">Job Title</th>
+                                    <th width="250px" style="text-align:center">Job Title</th>
                                     <th width="10px"></th>
                                </tr>
                             </thead>
@@ -400,7 +386,7 @@
                                     <td width="30px" align ="center">{{$index + 1}}</td>
                                     <td width="235px" align ="left">{{item.firstName}}</td>
                                     <td width="235px" align ="left">{{item.lastName}}</td>
-                                    <td width="300px" align ="left">{{item.jobTitle}}</td>
+                                    <td width="250px" align ="left">{{item.jobTitle}}</td>
                                  </tr>
                             </tbody>
                         </table>
