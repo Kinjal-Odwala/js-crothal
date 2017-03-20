@@ -211,6 +211,15 @@ li {
   line-height: 1;
 }
 
+#dateModal {
+    left: 35%;
+    position: fixed;
+    top: 25%;
+    height: auto;
+    max-height: 500px;
+}
+
+
 
 
 
