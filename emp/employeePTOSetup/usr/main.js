@@ -225,6 +225,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
     $scope.lastSelectedYear = null;
     $scope.lastSelectedPlanType = null;
     $scope.lastSelectedPlan = null;
+    $scope.ptoDay = {};
 
     $scope.dateOptions = {
         formatYear: 'yy',
@@ -274,6 +275,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.showPTOPlanTypes = isAuthorized(authorizePath + "\\PTOPlanTypes");
         $scope.showPTOPlans = isAuthorized(authorizePath + "\\PTOPlans");
         $scope.showPTOAssignments = isAuthorized(authorizePath + "\\PTOAssignments");
+        $scope.showPTODays = isAuthorized(authorizePath + "\\PTODays");
     };
     
     EmpActions.getPTOYears(function (result) {
@@ -1320,6 +1322,147 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         });
     };
 
+    $scope.daysTabClick = function () {
+        if (editStatus())
+            return;
+        $scope.ptoDay.ptoYear = $scope.ptoYears[0].id;
+        $scope.dayEmployees = [];
+        $scope.employeePTOs = [];
+        $scope.loadingTitle = " Loading...";
+        $scope.pageStatus = 'Loading, Please Wait...';
+        setStatus("Loading");
+        EmpActions.getHcmHouseCodes(function (result) {
+            $scope.hcmHouseCodes = result;
+            $scope.ptoDay.hcmHouseCode = result[0].id;
+            EmpActions.getPlanAssignments($scope.ptoDay.ptoYear, function (result) {
+                $scope.planAssignments = result;
+                angular.forEach($scope.planAssignments, function (item) {
+                    if (item.active !== 0 && item.houseCodeId == $scope.ptoDay.hcmHouseCode) {
+                        EmpActions.getEmployees(item.houseCodeId, item.ptoPlanId, function (employees) {
+                            angular.forEach(employees, function (employee) {
+                                $scope.dayEmployees.push(employee);
+                            });
+                        });
+                    }
+                });
+                $scope.pageLoading = false;
+                $scope.pageStatus = 'Normal';
+                setStatus('Normal');
+                modified(false);
+            });
+        });
+    };
+
+    $scope.ptoDaySearch = function () {
+        $scope.dayEmployees = [];
+        $scope.loadingTitle = " Loading...";
+        $scope.pageStatus = 'Loading, Please Wait...';
+        setStatus("Loading");
+        EmpActions.getPlanAssignments($scope.ptoDay.ptoYear, function (result) {
+            $scope.planAssignments = result;
+            angular.forEach($scope.planAssignments, function (item) {
+                if (item.active !== 0 && item.houseCodeId == $scope.ptoDay.hcmHouseCode) {
+                    EmpActions.getEmployees(item.houseCodeId, item.ptoPlanId, function (employees) {
+                        angular.forEach(employees, function (employee) {
+                            $scope.dayEmployees.push(employee);
+                        });
+                    });
+                }
+            });
+            $scope.employees = [];
+            $scope.pageLoading = false;
+            $scope.pageStatus = 'Normal';
+            setStatus("Normal");
+        });
+    };
+
+    $scope.onEmployeeSelected = function (item) {
+        $scope.selectedEmployee = item;
+        $scope.ptoDays = [];
+        $scope.employeePTOs = [];
+        $scope.balanceDays = [];
+        $scope.ptoPlans = [];
+        $scope.loadingTitle = " Loading...";
+        $scope.pageStatus = 'Loading, Please Wait...';
+        setStatus("Loading");
+
+        EmpActions.getPTOPlans($scope.ptoDay.ptoYear, function (plans) {
+            $scope.ptoPlans = plans;
+
+            EmpActions.getPTODays($scope.selectedEmployee.id, function (result) {
+                $scope.ptoDays = result;
+                angular.forEach($scope.ptoDays, function (ptoDay) {
+                    ptoDay.totalPTOTaken = 0;
+                    if ($scope.employeePTOs.length === 0) {
+                        for (var index = 0; index < $scope.ptoDays.length; index++) {
+                            if ($scope.ptoDays[index].ptoType == ptoDay.ptoType) {
+                                ptoDay.totalPTOTaken++;
+                            }
+                        }
+                        for (var index = 0; index < $scope.ptoPlans.length; index++) {
+                            if ($scope.ptoPlans[index].ptoType == ptoDay.ptoType) {
+                                ptoDay.balanceDays = $scope.ptoPlans[index].days - ptoDay.totalPTOTaken;
+                                if (ptoDay.balanceDays < 0)
+                                    ptoDay.balanceDays = 0;
+                            }
+                        }
+                        $scope.employeePTOs.push(ptoDay);
+                    }
+                    else {
+                        for (var index = 0; index < $scope.employeePTOs.length; index++) {
+                            if (ptoDay.ptoType !== $scope.employeePTOs[index].ptoType) {
+                                for (var index = 0; index < $scope.ptoDays.length; index++) {
+                                    if ($scope.ptoDays[index].ptoType == ptoDay.ptoType) {
+                                        ptoDay.totalPTOTaken++;
+                                    }
+                                }
+                                for (var index = 0; index < $scope.ptoPlans.length; index++) {
+                                    if ($scope.ptoPlans[index].ptoType == ptoDay.ptoType) {
+                                        ptoDay.balanceDays = $scope.ptoPlans[index].days - ptoDay.totalPTOTaken;
+                                        if (ptoDay.balanceDays < 0)
+                                            ptoDay.balanceDays = 0;
+                                    }
+                                }
+                                $scope.employeePTOs.push(ptoDay);
+                            }
+                            else
+                                break;
+                        }
+                    }
+                    $scope.pageLoading = false;
+                    $scope.pageStatus = 'Normal';
+                    setStatus("Normal");
+                });
+            });
+        });
+    };
+
+    $scope.getPTODate = function (date) {
+        if (!angular.isDefined(date))
+            return;
+
+        date = new Date(date);
+        return $filter('date')(date, 'MM/dd/yyyy');
+    };
+
+    $scope.showPTODates = function (ptoTypeId) {
+        $scope.ptoDates = [];
+        angular.forEach($scope.ptoDays, function (ptoDay) {
+            if (ptoDay.ptoType == ptoTypeId)
+                $scope.ptoDates.push($scope.getPTODate(ptoDay.ptoDate));
+        });
+
+        var ptoModalInstance = $modal.open({
+            templateUrl: 'ptoDates.html',
+            controller: 'modalInstanceCtrl',
+            title: "PTO Taken",
+            size: 'sm',
+            backdrop: 'static',
+            keyboard: false,
+            scope: $scope
+        });
+    };
+
     var showToaster = function () {
         var modalInstance = $modal.open({
             template: '<div class="toaster"><div class="header">WARNING</div><div class="content">In order to save, the errors on the page must be corrected.</div></div>',
@@ -1534,6 +1677,17 @@ pto.directive('ptoDatepicker', ['$timeout', '$filter', function ($timeout, $filt
         }
     }
 }])
+pto.controller('modalInstanceCtrl', function ($scope, $modalInstance) {
+    $scope.ok = function () {
+        if ($scope.closeDialog) {
+            $modalInstance.close();
+        }
+    };
+
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
+});
 
 pto.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $filter, $rootScope) {
     var cache = {};
@@ -1710,6 +1864,26 @@ pto.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
            });
     };
 
+    var getPTODays = function (employeeId, callback) {
+        apiRequest('emp', 'iiCache', '<criteria>storeId:ptoDays,userId:[user]'
+           + ',employeeId:' + employeeId
+           + ',</criteria>', function (xml) {
+               if (callback) {
+                   callback(deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id'] }));
+               }
+        });
+    };
+
+    var getPTOBalanceHours = function (employeeId, callback) {
+        apiRequest('emp', 'iiCache', '<criteria>storeId:ptoEmployeeBalanceHours,userId:[user]'
+           + ',employeeId:' + employeeId
+           + ',</criteria>', function (xml) {
+               if (callback) {
+                   callback(deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id'] }));
+               }
+           });
+    };
+
     var setCurrentHcmHouseCode = function (callback) {
 
         apiRequest('hcm', 'iiCache', '<criteria>storeId:hcmHouseCodes,userId:[user],defaultOnly:true,</criteria>', function (xml) {
@@ -1823,6 +1997,7 @@ pto.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         actionSaveItem: actionSaveItem,
         getAuthorizations: getAuthorizations,
         setCurrentHcmHouseCode: setCurrentHcmHouseCode,
-        getStatusCategoryTypes: getStatusCategoryTypes
+        getStatusCategoryTypes: getStatusCategoryTypes,
+        getPTODays: getPTODays
     }
 }]);
