@@ -1347,6 +1347,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
 
     $scope.ptoDaySearch = function () {
         $scope.dayEmployees = [];
+        $scope.employeePTOs = [];
         $scope.loadingTitle = " Loading...";
         $scope.pageStatus = 'Loading, Please Wait...';
         setStatus("Loading");
