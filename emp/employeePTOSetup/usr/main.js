@@ -1334,17 +1334,9 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         EmpActions.getHcmHouseCodes(function (result) {
             $scope.hcmHouseCodes = result;
             $scope.ptoDay.hcmHouseCode = result[0].id;
-            EmpActions.getPlanAssignments($scope.ptoDay.ptoYear, function (result) {
-                $scope.planAssignments = result;
-                angular.forEach($scope.planAssignments, function (item) {
-                    if (item.active !== 0 && item.houseCodeId == $scope.ptoDay.hcmHouseCode) {
-                        EmpActions.getEmployees(item.houseCodeId, item.ptoPlanId, function (employees) {
-                            angular.forEach(employees, function (employee) {
-                                $scope.dayEmployees.push(employee);
-                            });
-                        });
-                    }
-                });
+           
+            EmpActions.getEmployees($scope.ptoDay.hcmHouseCode, -1, function (employees) {
+                $scope.dayEmployees = employees;
                 $scope.pageLoading = false;
                 $scope.pageStatus = 'Normal';
                 setStatus('Normal');
@@ -1355,21 +1347,13 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
 
     $scope.ptoDaySearch = function () {
         $scope.dayEmployees = [];
+        $scope.employeePTOs = [];
         $scope.loadingTitle = " Loading...";
         $scope.pageStatus = 'Loading, Please Wait...';
         setStatus("Loading");
-        EmpActions.getPlanAssignments($scope.ptoDay.ptoYear, function (result) {
-            $scope.planAssignments = result;
-            angular.forEach($scope.planAssignments, function (item) {
-                if (item.active !== 0 && item.houseCodeId == $scope.ptoDay.hcmHouseCode) {
-                    EmpActions.getEmployees(item.houseCodeId, item.ptoPlanId, function (employees) {
-                        angular.forEach(employees, function (employee) {
-                            $scope.dayEmployees.push(employee);
-                        });
-                    });
-                }
-            });
-            $scope.employees = [];
+        
+        EmpActions.getEmployees($scope.ptoDay.hcmHouseCode, -1, function (employees) {
+            $scope.dayEmployees = employees;
             $scope.pageLoading = false;
             $scope.pageStatus = 'Normal';
             setStatus("Normal");
@@ -1382,15 +1366,28 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.employeePTOs = [];
         $scope.balanceDays = [];
         $scope.ptoPlans = [];
+        $scope.empPTODays = [];
         $scope.loadingTitle = " Loading...";
         $scope.pageStatus = 'Loading, Please Wait...';
         setStatus("Loading");
+        $scope.currentYear = "";
+
+        for (var index = 0; index < $scope.ptoYears.length; index++) {
+            if ($scope.ptoYears[index].id == $scope.ptoDay.ptoYear) {
+                $scope.currentYear = $scope.ptoYears[index].name;
+                break;
+            }
+        }
 
         EmpActions.getPTOPlans($scope.ptoDay.ptoYear, function (plans) {
             $scope.ptoPlans = plans;
 
             EmpActions.getPTODays($scope.selectedEmployee.id, function (result) {
-                $scope.ptoDays = result;
+                $scope.empPTODays = result;
+                angular.forEach($scope.empPTODays, function (empPTODay) {
+                    if ($scope.getPTOYear(empPTODay.ptoDate) == $scope.currentYear)
+                        $scope.ptoDays.push(empPTODay);
+                });
                 angular.forEach($scope.ptoDays, function (ptoDay) {
                     ptoDay.totalPTOTaken = 0;
                     if ($scope.employeePTOs.length === 0) {
@@ -1402,8 +1399,6 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
                         for (var index = 0; index < $scope.ptoPlans.length; index++) {
                             if ($scope.ptoPlans[index].ptoType == ptoDay.ptoType) {
                                 ptoDay.balanceDays = $scope.ptoPlans[index].days - ptoDay.totalPTOTaken;
-                                if (ptoDay.balanceDays < 0)
-                                    ptoDay.balanceDays = 0;
                             }
                         }
                         $scope.employeePTOs.push(ptoDay);
@@ -1419,8 +1414,6 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
                                 for (var index = 0; index < $scope.ptoPlans.length; index++) {
                                     if ($scope.ptoPlans[index].ptoType == ptoDay.ptoType) {
                                         ptoDay.balanceDays = $scope.ptoPlans[index].days - ptoDay.totalPTOTaken;
-                                        if (ptoDay.balanceDays < 0)
-                                            ptoDay.balanceDays = 0;
                                     }
                                 }
                                 $scope.employeePTOs.push(ptoDay);
@@ -1429,10 +1422,17 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
                                 break;
                         }
                     }
-                    $scope.pageLoading = false;
-                    $scope.pageStatus = 'Normal';
-                    setStatus("Normal");
                 });
+                if ($scope.employeePTOs.length === 0) {
+                    var pto = {};
+                    pto.ptoTypeTitle = "No plan assigned to the employee";
+                    pto.totalPTOTaken = 0;
+                    pto.balanceDays = 0;
+                    $scope.employeePTOs.push(pto);
+                }
+                $scope.pageLoading = false;
+                $scope.pageStatus = 'Normal';
+                setStatus("Normal");
             });
         });
     };
@@ -1445,22 +1445,32 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         return $filter('date')(date, 'MM/dd/yyyy');
     };
 
+    $scope.getPTOYear = function (date) {
+        if (!angular.isDefined(date))
+            return;
+
+        date = new Date(date);
+        return $filter('date')(date, 'yyyy');
+    };
+
     $scope.showPTODates = function (ptoTypeId) {
         $scope.ptoDates = [];
-        angular.forEach($scope.ptoDays, function (ptoDay) {
-            if (ptoDay.ptoType == ptoTypeId)
-                $scope.ptoDates.push($scope.getPTODate(ptoDay.ptoDate));
-        });
+        if (ptoTypeId !== undefined && ptoTypeId !== null && ptoTypeId !== "") {
+            angular.forEach($scope.ptoDays, function (ptoDay) {
+                if (ptoDay.ptoType == ptoTypeId)
+                    $scope.ptoDates.push($scope.getPTODate(ptoDay.ptoDate));
+            });
 
-        var ptoModalInstance = $modal.open({
-            templateUrl: 'ptoDates.html',
-            controller: 'modalInstanceCtrl',
-            title: "PTO Taken",
-            size: 'sm',
-            backdrop: 'static',
-            keyboard: false,
-            scope: $scope
-        });
+            var ptoModalInstance = $modal.open({
+                templateUrl: 'ptoDates.html',
+                controller: 'modalInstanceCtrl',
+                title: "PTO Taken",
+                size: 'sm',
+                backdrop: 'static',
+                keyboard: false,
+                scope: $scope
+            });
+        }
     };
 
     var showToaster = function () {
