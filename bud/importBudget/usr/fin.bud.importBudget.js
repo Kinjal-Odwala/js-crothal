@@ -1,4 +1,4 @@
-﻿window.__bt__316a6fc6 = ['<div style="margin: 15px;">    <div id="itemStatusDiv" style="padding: 10px;">        <div class="itemStatusImage Normal" id="itemStatusImage">        </div>        <div class="itemModifiedImage" id="itemModifiedImage">        </div>        <div id="itemStatusText" class="itemStatusText">            Normal</div>    </div>    <div id="uploader">    </div>    <div id="keys-form" style="margin: 15px 0">        <fieldset class="l2r">            <div class="field">                <label>                    Fiscal Year</label>                <div class="item">                    <input type="text" name="FscYeaTitle" style="width: 80px" /></div>            </div>        </fieldset>    </div>    <table class="bud-grid-1">        <thead>            <tr>                <th style="width: 100px">                    House Code                </th>                <th style="width: 50px">                    Job                </th>                <th style="width: 95px">                    Fsc Account                </th>                <th style="width: 70px">                    Period 1                </th>                <th style="width: 70px">                    Period 2                </th>                <th style="width: 70px">                    Period 3                </th>                <th style="width: 70px">                    Period 4                </th>                <th style="width: 70px">                    Period 5                </th>                <th style="width: 70px">                    Period 6                </th>                <th style="width: 70px">                    Period 7                </th>                <th style="width: 70px">                    Period 8                </th>                <th style="width: 70px">                    Period 9                </th>                <th style="width: 70px">                    Period 10                </th>                <th style="width: 70px">                    Period 11                </th>                <th style="width: 70px">                    Period 12                </th>                <th>                </th>            </tr>        </thead>        <tbody id="data-list">        </tbody>    </table>    <div style="padding: 10px">        <input type="button" id="submitButton" value="Submit" />    </div></div>','<tr>     <td>        <input type="text" name="HouseCodeBrief" />    </td>     <td>        <input type="text" name="JobNumber" />    </td>    <td>        <input type="text" name="FscAccCode" />    </td>    <td>        <input type="text" name="Period1" />    </td>    <td>        <input type="text" name="Period2" />    </td>    <td>        <input type="text" name="Period3" />    </td>    <td>        <input type="text" name="Period4" />    </td>    <td>        <input type="text" name="Period5" />    </td>    <td>        <input type="text" name="Period6" />    </td>    <td>        <input type="text" name="Period7" />    </td>    <td>        <input type="text" name="Period8" />    </td>    <td>        <input type="text" name="Period9" />    </td>    <td>        <input type="text" name="Period10" />    </td>    <td>        <input type="text" name="Period11" />    </td>    <td>        <input type="text" name="Period12" />    </td></tr>',''];
+﻿window.__bt__8c60c5ac = ['<div style="margin: 15px;">    <div id="itemStatusDiv" style="padding: 10px;">        <div class="itemStatusImage Normal" id="itemStatusImage">        </div>        <div class="itemModifiedImage" id="itemModifiedImage">        </div>        <div id="itemStatusText" class="itemStatusText">            Normal</div>    </div>    <div id="uploader">    </div>    <div id="keys-form" style="margin: 15px 0">        <fieldset class="l2r">            <div class="field">                <label>                    Fiscal Year</label>                <div class="item">                    <input type="text" name="FscYeaTitle" style="width: 80px" /></div>            </div>        </fieldset>    </div>    <table class="bud-grid-1">        <thead>            <tr>                <th style="width: 100px">                    House Code                </th>                <th style="width: 50px">                    Job                </th>                <th style="width: 95px">                    Fsc Account                </th>                <th style="width: 70px">                    Period 1                </th>                <th style="width: 70px">                    Period 2                </th>                <th style="width: 70px">                    Period 3                </th>                <th style="width: 70px">                    Period 4                </th>                <th style="width: 70px">                    Period 5                </th>                <th style="width: 70px">                    Period 6                </th>                <th style="width: 70px">                    Period 7                </th>                <th style="width: 70px">                    Period 8                </th>                <th style="width: 70px">                    Period 9                </th>                <th style="width: 70px">                    Period 10                </th>                <th style="width: 70px">                    Period 11                </th>                <th style="width: 70px">                    Period 12                </th>                <th>                </th>            </tr>        </thead>        <tbody id="data-list">        </tbody>    </table>    <div style="padding: 10px">        <input type="button" id="submitButton" value="Submit" />    </div></div>','<tr>     <td>        <input type="text" name="HouseCodeBrief" />    </td>     <td>        <input type="text" name="JobNumber" />    </td>    <td>        <input type="text" name="FscAccCode" />    </td>    <td>        <input type="text" name="Period1" />    </td>    <td>        <input type="text" name="Period2" />    </td>    <td>        <input type="text" name="Period3" />    </td>    <td>        <input type="text" name="Period4" />    </td>    <td>        <input type="text" name="Period5" />    </td>    <td>        <input type="text" name="Period6" />    </td>    <td>        <input type="text" name="Period7" />    </td>    <td>        <input type="text" name="Period8" />    </td>    <td>        <input type="text" name="Period9" />    </td>    <td>        <input type="text" name="Period10" />    </td>    <td>        <input type="text" name="Period11" />    </td>    <td>        <input type="text" name="Period12" />    </td></tr>',''];
 
 if ((typeof Range !== "undefined") && !Range.prototype.createContextualFragment) {
     Range.prototype.createContextualFragment = function (html) {
@@ -62,6 +62,15 @@ fin.bud.fscRequest = function (requestXml, callback) {
     });
 }
 
+fin.bud.glmRequest = function (requestXml, callback) {
+    var data = String.format('moduleId=glm&requestId=1&requestXml={0}&&targetId=iiCache', encodeURIComponent(requestXml));
+    fin.bud.loading();
+    jQuery.post('/net/crothall/chimes/fin/glm/act/Provider.aspx', data, function (data, status) {
+        callback(data);
+        fin.bud.loaded();
+    });
+}
+
 fin.bud.rptRequest = function (callback) {
     var data = String.format('moduleId=rpt&requestId=1&requestXml={0}&&targetId=iiCache', encodeURIComponent('<criteria>storeId:rptReports,userId:[user],</criteria>'));
     fin.bud.loading();
@@ -83,7 +92,7 @@ fin.bud.budSubmit = function (submitXml, callback) {
 
 if (!window.top.fin.appUI) {
     //window.top.fin = { appUI: { houseCodeId: 227, glbFscYear: 2, glbFscPeriod: 18} };
-    window.top.fin.appUI = { houseCodeId: 415, glbFscYear: 5, glbFscPeriod: 57, glbWeek: 2 };
+    window.top.fin.appUI = { houseCodeId: 415, glbFscYear: 4, glbFscPeriod: 45, glbWeek: 2 };
 }
 
 fin.bud.Context = {
@@ -100,7 +109,7 @@ fin.bud.Context = {
         var week = window.top.fin.appUI.glbWeek;
         if (!week)
             return 1;
-        return week;    
+        return week;
     },
 
     getFscYear: function () {
@@ -238,18 +247,18 @@ if (document.location.host == 'localhost')
     window.__fin_modified = false;
 
 
-var globalLoadingCounter = 0;
+window.globalLoadingCounter = 0;
 window.isSavedSuccessfully = false;
 
 fin.bud.loading = function () {
-    globalLoadingCounter++;
+    window.globalLoadingCounter++;
     $('.itemStatusImage').removeClass('Normal').addClass('Loading');
     $('.itemModifiedImage').removeClass('Modified');
     $('.itemStatusText').html('Loading, please wait...');
 }
 
 fin.bud.saving = function () {
-    globalLoadingCounter++;
+    window.globalLoadingCounter++;
     $('.itemStatusImage').removeClass('Normal').addClass('Loading');
     $('.itemModifiedImage').removeClass('Modified');
     $('.itemStatusText').html('Saving, please wait...');
@@ -257,17 +266,19 @@ fin.bud.saving = function () {
 
 
 fin.bud.saved = function () {
-    globalLoadingCounter--;
+    window.globalLoadingCounter--;
     window.isSavedSuccessfully = true;
 
-    setTimeout(function () {
-        if (globalLoadingCounter <= 0) {
-            fin.bud.normal(window.__fin_modified);
-            globalLoadingCounter = 0;
+    //    if (window.globalLoadingCounter <= 0) {
+    //        setTimeout(function () {
+    //            window.isSavedSuccessfully = false;
+    //        }, 5000);
+    //    }
 
-            setTimeout(function () {
-                window.isSavedSuccessfully = false;
-            }, 5000);
+    setTimeout(function () {
+        if (window.globalLoadingCounter <= 0) {
+            fin.bud.normal(window.__fin_modified);
+            window.globalLoadingCounter = 0;
         }
     }, 20);
 }
@@ -275,7 +286,8 @@ fin.bud.saved = function () {
 
 fin.bud.normal = function (isModified) {
     $('.itemStatusImage').removeClass('Loading').addClass('Normal');
-    $('.itemStatusText').css('color', '#032D23').html(window.isSavedSuccessfully && !isModified ? 'Data saved successfully.' : 'Normal');
+    $('.itemStatusText').css('color', '#032D23');
+    $('.itemStatusText').html(window.isSavedSuccessfully && !isModified ? 'Data saved successfully.' : 'Normal');
     if (isModified === true) {
         $('.itemModifiedImage').addClass('Modified');
     }
@@ -285,13 +297,18 @@ fin.bud.normal = function (isModified) {
 }
 
 fin.bud.loaded = function () {
-    globalLoadingCounter--;
+    window.globalLoadingCounter--;
 
     setTimeout(function () {
-        if (globalLoadingCounter <= 0) {
+        if (window.globalLoadingCounter <= 0) {
             fin.bud.normal(window.__fin_modified);
-            globalLoadingCounter = 0;
+            window.globalLoadingCounter = 0;
+
+            if (window.isSavedSuccessfully) {
+                window.isSavedSuccessfully = false;
+            }
         }
+
     }, 20);
 };
 
@@ -316,10 +333,25 @@ fin.bud.modified = function () {
     }
 }
 
+
+var getViewPort = function () {
+    var e = window,
+        a = 'inner';
+    if (!('innerWidth' in window)) {
+        a = 'client';
+        e = document.documentElement || document.body;
+    }
+
+    return {
+        width: e[a + 'Width'],
+        height: e[a + 'Height']
+    };
+};
+
 !function (bud) {
 
     bud.page.ImportBudget = bine.extend(bine.Control, {
-        tpl: window.__bt__316a6fc6[0],
+        tpl: window.__bt__8c60c5ac[0],
 
         dataList: null,
         $fscAccounts: null,
@@ -459,7 +491,7 @@ fin.bud.modified = function () {
 
 
                     return new bine.DataView({
-                        tpl: window.__bt__316a6fc6[1], removable: true,
+                        tpl: window.__bt__8c60c5ac[1], removable: true,
                         onDomReady: function () {
                             var dv = this;
                             dv.on('change', function (name) {
@@ -502,27 +534,32 @@ fin.bud.modified = function () {
                 alert('Error: Budget Import worksheet does not exist!');
                 return;
             }
+
             var fscAccountLkup = {};
             $.each(data, function (index, row) {
-                var item = {};
+
                 if (index == 0) {
                     me.keysForm.val('FscYeaTitle', row[2]);
                 }
+
+                var houseCode = row[0];
+                var jobNumber = row[1];
+
                 var fscAccount = me.parseInt(row, 3);
-                var item = fscAccountLkup[fscAccount];
+                var lkupKey = houseCode + '_' + fscAccount;
+                var item = fscAccountLkup[lkupKey];
                 if (!item) {
-                    item = { FscAccCode: fscAccount };
-                    fscAccountLkup[fscAccount] = item;
+                    item = { FscAccCode: fscAccount, JobNumber: jobNumber, HouseCodeBrief: houseCode };
+                    fscAccountLkup[lkupKey] = item;
                     list.push(item);
                 }
-                //item['FscAccCode'] = me.parseInt(row, 3);
-                item['JobNumber'] = row[1];
-                item['HouseCodeBrief'] = row[0];
+
+                //item['JobNumber'] = row[1];
+                //item['HouseCodeBrief'] = row[0];
 
                 for (var i = 1; i <= 12; i++) {
-                    item['Period' + i] = (item['Period' + i] || 0) + me.parseFloat(row, i + 3);
+                    item['Period' + i] = ( item['Period' + i] || 0) + me.parseFloat(row, i + 3);
                 }
-                
 
             });
 
