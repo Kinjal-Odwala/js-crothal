@@ -382,8 +382,9 @@
                         </div>
                         <div class="col-md-2">
                             <div class="form-group" ng-class="{'has-error':cloneInfoForm.fromYear.$invalid}">
-                                <input class="form-control input-sm" name="fromYear" ng-disabled="true" ng-model="cloneFromYear" ng-required="true"></input>
-                            </div>
+ <select class="form-control input-sm" name="fromYear" ng-model="ptoPlan.cloneFromYear" ng-blur="fromYearChangedValue(ptoPlan.cloneFromYear)" 
+                                     data-ng-options="item as item.name for item in cloneFromYears"></select>
+                                </div>
                         </div>
                     </div>
                     <div class="row">
@@ -392,7 +393,7 @@
                         </div>
                         <div class="col-md-2">
                             <div class="form-group" ng-class="{'has-error':cloneInfoForm.toYear.$invalid}">
-                                <input class="form-control input-sm" name="toYear" ng-disabled="true" ng-model="cloneToYear" ng-required="true"></input>
+                                    <input class="form-control input-sm" name="toYear" ng-disabled="true" ng-model="cloneToYear"/>
                             </div>
                         </div>
                     </div>
