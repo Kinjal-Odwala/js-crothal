@@ -200,11 +200,11 @@
                 <div class="row margin-bottom10" style="padding-top:10px;">
                     <label class="col-md-1 control-label">PTO Year:</label>
                     <div class="col-md-1">
-                         <select class="form-control input-sm" ng-model="ptoPlan.ptoYear" ng-options="item.id as item.name for item in ptoYears" ng-change="onYearChange()"></select>  
+                         <select class="form-control input-sm" ng-model="ptoPlan.ptoYear" ng-options="item.id as item.name for item in ptoYears" ng-change="yearSearch()"></select>  
                     </div>
-                    <div class="col-md-2">
+                    <!--<div class="col-md-2">
                         <a class="btn btn-primary" ng-click="yearSearch()">Search</a>
-                    </div>
+                    </div>-->
                 </div>
                 <div class="row margin-bottom10">
                     <div class="col-md-6">

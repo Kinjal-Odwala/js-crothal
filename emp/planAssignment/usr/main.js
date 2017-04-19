@@ -227,19 +227,19 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
             $scope.ptoYear = result[0].id;
         }
        
-        if (result[0].name !== getCurrentYear() && result[0].name !== parseInt(getCurrentYear()) + 1) {
-            $scope.disableCompanyCloneButton = true;
-            $scope.disableStateCloneButton = true;
-            $scope.disableCountyCloneButton = true;
-            $scope.disableCityCloneButton = true;
-            $scope.disableHouseCodeCloneButton = true;
-        }
-        else {
+        if (result[0].name == getCurrentYear() || result[0].name == parseInt(getCurrentYear()) + 1) {
             $scope.disableCompanyCloneButton = false;
             $scope.disableStateCloneButton = false;
             $scope.disableCountyCloneButton = false;
             $scope.disableCityCloneButton = false;
             $scope.disableHouseCodeCloneButton = false;
+        }
+        else {
+            $scope.disableCompanyCloneButton = true;
+            $scope.disableStateCloneButton = true;
+            $scope.disableCountyCloneButton = true;
+            $scope.disableCityCloneButton = true;
+            $scope.disableHouseCodeCloneButton = true;
         }
 
         EmpActions.getPlanAssignments($scope.ptoYear, 0, 1, 0, function(result) {
@@ -868,7 +868,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 						$scope.disableStateCloneButton = true;
 					}
 					else if ($scope.levelSelected === "county") {
-					    if ($scope.statePlans.length > 0)
+					    if ($scope.statePlans.length > 0 || $scope.companyPlans.length > 0)
 					        if (!confirm("Plans are assigned at higher level. Do you want to override the assigned plans?"))
 					            return;
 	                    item["stateType"] = $scope.selectedState.id;
@@ -879,12 +879,18 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 	                    $scope.disableCountyCloneButton = true;
 	                }
 					else if ($scope.levelSelected === "city") {
-					    for (var index = 0; index < $scope.countys.length; index++) {
-					        if ($scope.countys[index].name === $scope.selectedCity.name.substring($scope.selectedCity.name.indexOf("(") + 1, $scope.selectedCity.name.indexOf(")")))
-					            if ($scope.countys[index].countyPlans.length > 0) {
-					                if (!confirm("Plans are assigned at higher level. Do you want to override the assigned plans?"))
-					                    return;
-					            }
+					    if ($scope.statePlans.length > 0 || $scope.companyPlans.length > 0) {
+					        if (!confirm("Plans are assigned at higher level. Do you want to override the assigned plans?"))
+					            return;
+					    }
+					    else {
+					        for (var index = 0; index < $scope.countys.length; index++) {
+					            if ($scope.countys[index].name === $scope.selectedCity.name.substring($scope.selectedCity.name.indexOf("(") + 1, $scope.selectedCity.name.indexOf(")")))
+					                if ($scope.countys[index].countyPlans.length > 0) {
+					                    if (!confirm("Plans are assigned at higher level. Do you want to override the assigned plans?"))
+					                        return;
+					                }
+					        }
 					    }
 
                         item["stateType"] = $scope.selectedState.id;
@@ -895,11 +901,17 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                         $scope.disableCityCloneButton = true;
 	                }
 					else if ($scope.levelSelected === "houseCode") {
-					    EmpActions.getPTOPlans($scope.selectedHouseCode, $scope.ptoYear, $scope.selectedState.id, 0, 0, function (result) {
-					        if (result.length > 0)
-					            if (!confirm("Plans are assigned at higher level. Do you want to override the assigned plans?"))
-					                return;
-					    });
+					    if ($scope.statePlans.length > 0 || $scope.companyPlans.length > 0) {
+					        if (!confirm("Plans are assigned at higher level. Do you want to override the assigned plans?"))
+					            return;
+					    }
+					    else {
+					        EmpActions.getPTOPlans($scope.selectedHouseCode, $scope.ptoYear, $scope.selectedState.id, 0, 0, function (result) {
+					            if (result.length > 0)
+					                if (!confirm("Plans are assigned at higher level. Do you want to override the assigned plans?"))
+					                    return;
+					        });
+					    }
                         item["stateType"] = $scope.selectedState.id;
 						item["houseCodeId"] = $scope.selectedHouseCode.houseCodeId;
                         item["groupType"] = 5;
