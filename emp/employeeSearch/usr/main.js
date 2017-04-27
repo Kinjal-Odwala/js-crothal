@@ -230,6 +230,8 @@ ii.Class({
 			me.employeeWizardBasicLifeIndicator = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\Wizard\\BasicLifeIndicator");
 			me.employeeWizardReverseTermination = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\Wizard\\ReverseTermination");
 			me.employeeWizardSSNModification = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\Wizard\\SSNModification");
+			me.employeeWizardHRNewHire = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\Wizard\\HRNewHire");
+			me.employeeWizardHRReHire = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\Wizard\\HRReHire");
 			
 			me.employeeSearchType = 'AccessDenied';
 			if (me.employeeSearchSalaried) me.employeeSearchType = 'SearchSalaried';
@@ -277,7 +279,7 @@ ii.Class({
 
 			var contextMenuItems = '';
 			
-			if (me.employeeWizardNewHire) {
+			if (me.employeeWizardHRNewHire) {
 				me.actionMenu.addAction({
 					id: "hireAction",
 					brief: "New Hire",
@@ -287,8 +289,19 @@ ii.Class({
 				
 				contextMenuItems += '<tr id="menuNewHire" height="20px"><td class="tdBorder">&nbsp;&nbsp;New Hire</td></tr>';
 			}
+			
+			if (!me.employeeWizardHRNewHire && me.employeeWizardNewHire) {
+				me.actionMenu.addAction({
+					id: "hireAction",
+					brief: "New Hire",
+					title: "Employee New Hire.",
+					actionFunction: function() { me.actionWizardSelect("NewHireDisabled"); }
+				});
+				
+				contextMenuItems += '<tr id="menuNewHireDisabled" height="20px"><td class="tdBorder">&nbsp;&nbsp;New Hire</td></tr>';
+			}
 
-			if (me.employeeWizardReHire) {
+			if (me.employeeWizardHRReHire) {
 				me.actionMenu.addAction({
 					id: "rehireAction",
 					brief: "Rehire",
@@ -297,6 +310,17 @@ ii.Class({
 				});
 				
 				contextMenuItems += '<tr id="menuRehire" height="20px"><td class="tdBorder">&nbsp;&nbsp;Rehire</td></tr>';
+			}
+			
+			if (!me.employeeWizardHRReHire && me.employeeWizardReHire) {
+				me.actionMenu.addAction({
+					id: "rehireAction",
+					brief: "Rehire",
+					title: "Employee Rehire.",
+					actionFunction: function() { me.actionWizardSelect("RehireDisabled"); }
+				});
+				
+				contextMenuItems += '<tr id="menuRehireDisabled" height="20px"><td class="tdBorder">&nbsp;&nbsp;Rehire</td></tr>';
 			}
 			
 			if (me.employeeWizardHouseCodeTransfer) {
@@ -520,6 +544,14 @@ ii.Class({
 				className: "iiButton",
 				text: "<span>&nbsp;&nbsp;Close&nbsp;&nbsp;</span>",
 				clickFunction: function() { me.actionCloseItem(); },
+				hasHotState: true
+			});
+			
+			me.anchorOK = new ui.ctl.buttons.Sizeable({
+				id: "AnchorOK",
+				className: "iiButton",
+				text: "<span>&nbsp;&nbsp;OK&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionOKItem(); },
 				hasHotState: true
 			});
 
@@ -3051,6 +3083,11 @@ ii.Class({
 				hidePopup("history");
 			else
 				$("#popupHistory").hide();
+		},
+		
+		actionOKItem: function() {
+
+			hidePopup("message");
 		},
 
 		setPersonBrief: function fin_emp_UserInterface_setPersonBrief() {
@@ -5995,7 +6032,12 @@ ii.Class({
 				actionType: {type: String}
 			});			
 			var me = this;
-			
+
+			if (args.actionType == "NewHireDisabled" || args.actionType == "RehireDisabled") {
+				loadPopup("message");
+				return;
+			}
+
 			$("#EmployeeNumber").show();
 			$("#EmployeeNumberMask").hide();
 			$("#ViewHistory").hide();
@@ -8070,7 +8112,11 @@ ii.Class({
 					me.actionWizardSelect("ReverseTermination");
 				else if (this.id == "menuSSNModification")
                     me.actionWizardSelect("SSNModification");
-					
+				else if (this.id == "menuNewHireDisabled")
+					me.actionWizardSelect("NewHireDisabled");
+				else if (this.id == "menuRehireDisabled")
+					me.actionWizardSelect("RehireDisabled");
+
 				$("#EmployeeSearchContext").hide();
 			});
 	
@@ -8108,6 +8154,8 @@ function loadPopup(type) {
 		$("#popupHistory").fadeIn("slow");
 		$("#popupLoading").show();
 	}
+	else if (type == "message")
+		$("#popupMessage").fadeIn("slow");
 }
 
 function hidePopup(type) {
@@ -8117,6 +8165,8 @@ function hidePopup(type) {
 		$("#popupEmployee").fadeOut("slow");
 	else if (type == "history")
 		$("#popupHistory").fadeOut("slow");
+	else if (type == "message")
+		$("#popupMessage").fadeOut("slow");
 }
 
 function centerPopup() {
@@ -8130,7 +8180,7 @@ function centerPopup() {
 		"left": windowWidth/2 - popupWidth/2
 	});
 
-	$("#popupLoading, #popupHistory").css({
+	$("#popupLoading, #popupHistory, #popupMessage").css({
 		"top": windowHeight/2 - popupHeight/2,
 		"left": windowWidth/2 - popupWidth/2
 	});
