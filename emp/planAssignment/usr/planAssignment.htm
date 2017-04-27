@@ -237,7 +237,7 @@
                 <tbody id="cityPlanDetailsGrid" ng-show="showCity" ng-style="{'max-height': '200px', 'min-height': cityPlanGridMinHeight + 'px'}">
                     <tr ng-repeat-start="city in cities track by $index | orderBy:sortCityBy:sortCityReverse" ng-click="citySelected(city)" ng-class="{'warning':selectedCity == city};" expandcity>
                         <td colspan="4">
-                            <a href="" ng-click="cityExpanded = !cityExpanded">
+                            <a href="" ng-click="cityExpanded = !cityExpanded" data-placement="bottom" title="{{ city.tooltipText }}" tooltip>
                                 <span class="glyphicon tableData" ng-class="{ 'glyphicon-chevron-right': !cityExpanded, 'glyphicon-chevron-down': cityExpanded }"></span>
                                 <label class="tableData">{{ city.name }}</label>
                             </a>
@@ -301,7 +301,7 @@
                 <tbody id="houseCodePlanDetailsGrid" ng-show="showHouseCode" ng-style="{'max-height': '200px', 'min-height': houseCodePlanGridMinHeight + 'px'}">
                     <tr ng-repeat-start="houseCode in houseCodes | orderBy:sortHouseCodeBy:sortHouseCodeReverse" ng-click="houseCodeSelected(houseCode)" ng-class="{'warning':selectedHouseCode == houseCode};" expandhousecode="">
                         <td colspan="4">
-                            <a href="" ng-click="houseCodeExpanded = !houseCodeExpanded">
+                            <a href="" ng-click="houseCodeExpanded = !houseCodeExpanded" data-placement="right" title="{{ houseCode.tooltipText.join('\u000A') }}" tooltip>
                                 <span class="glyphicon tableData" ng-class="{ 'glyphicon-chevron-right': !houseCodeExpanded, 'glyphicon-chevron-down': houseCodeExpanded }"></span>
                                 <label class="tableData">{{ houseCode.name }}</label>
                             </a>
@@ -346,9 +346,9 @@
 			            <tr class="gridHeader" role="row">
 			                <th width="2%" style="text-align:center">#</th>
 			                <th width="5%" style="text-align:center"></th>
-			                <th width="15%" style="text-align:center">Plan Name</th>
+			                <th width="35%" style="text-align:center">Plan Name</th>
 			                <th width="15%" style="text-align:center">PTO Type</th>
-			                <th width="15%" style="text-align:center">Plan Type</th>
+			                <th width="35%" style="text-align:center">Plan Type</th>
 			                <th width="1%"></th>
 			            </tr>
 			        </thead>
@@ -356,9 +356,9 @@
 			            <tr ng-repeat="item in plans track by $index" ng-click="planSelected(item)" ng-class="{'warning':selectedPlan == item};">
 			                <td width="2%" align ="center">{{$index + 1}}</td>
 			                <td width="5%" align="center"><input type="checkbox" ng-true-value="true" ng-false-value="false" ng-model="item.isChecked" /></td>
-			                <td width="15%">{{item.title}}</td>
+			                <td width="35%">{{item.title}}</td>
 			                <td width="15%">{{item.ptoTypeTitle}}</td>
-			                <td width="15%">{{item.ptoPlanTypeTitle}}</td>
+			                <td width="35%">{{item.ptoPlanTypeTitle}}</td>
 			             </tr>
 			        </tbody>
 	    		</table>

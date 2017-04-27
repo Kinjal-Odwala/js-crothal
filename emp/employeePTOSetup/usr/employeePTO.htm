@@ -102,22 +102,22 @@
                 <div class="row sectionHeader">PTO Plan Types</div>
                 <div class="row margin-bottom10">
                     <div class="col-md-6">
-                        <table class="table-scroll table table-striped table-bordered table-hover" style="width: 700px;">
+                        <table class="table-scroll table table-striped table-bordered table-hover">
                             <thead>
                                 <tr class="heading" role="row">
-                                    <th width="15px" style="text-align:center">#</th>
-                                    <th width="285px" style="text-align:center">Plan Type</th>
-                                    <th width="250px" style="text-align:center">Pay Type</th>
-                                    <th width="150px" style="text-align:center">Status Category</th>
-                                    <th width="10px"></th>
+                                    <th width="5%" style="text-align:center">#</th>
+                                    <th width="50%" style="text-align:center">Plan Type</th>
+                                    <th width="25%" style="text-align:center">Pay Type</th>
+                                    <th width="20%" style="text-align:center">Status Category</th>
+                                    <th width="1%"></th>
                                 </tr>
                             </thead>
-                            <tbody style="width:100%" ng-style="{'min-height': planTypeGridHeight + 'px'}">
+                            <tbody ng-style="{'min-height': planTypeGridHeight + 'px'}">
                                 <tr ng-repeat="item in ptoPlanTypes" ng-click="onPTOPlanTypeSelected(item)" ng-class="{'warning':selectedPTOPlanType == item};">
-                                    <td width="15px" align ="center">{{$index + 1}}</td>
-                                    <td width="285px" align ="left">{{item.title}}</td>
-                                    <td width="250px" align ="left">{{item.payStatus}}</td>
-                                    <td width="150px" align ="left">{{item.statusCategory}}</td>
+                                    <td width="5%" align ="center">{{$index + 1}}</td>
+                                    <td width="50%" align ="left">{{item.title}}</td>
+                                    <td width="25%" align ="left">{{item.payStatus}}</td>
+                                    <td width="20%" align ="left">{{item.statusCategory}}</td>
                                  </tr>
                             </tbody>
                         </table>
@@ -208,20 +208,20 @@
                 </div>
                 <div class="row margin-bottom10">
                     <div class="col-md-6">
-                        <table class="table-scroll table table-striped table-bordered table-hover" style="width: 700px;">
+                        <table class="table-scroll table table-striped table-bordered table-hover">
                             <thead>
                                 <tr class="heading" role="row">
-                                    <th width="30px" style="text-align:center">#</th>
-                                    <th width="470px" style="text-align:center">Plan Name</th>
-                                    <th width="200px" style="text-align:center">PTO Type</th>
-                                    <th width="10px"></th>
+                                    <th width="5%" style="text-align:center">#</th>
+                                    <th width="70%" style="text-align:center">Plan Name</th>
+                                    <th width="30%" style="text-align:center">PTO Type</th>
+                                    <th width="1%"></th>
                                 </tr>
                             </thead>
-                            <tbody style="width: 100%;" ng-style="{'min-height': ptoPlanGridHeight + 'px'}">
+                            <tbody ng-style="{'min-height': ptoPlanGridHeight + 'px'}">
                                 <tr ng-repeat="item in ptoPlans" ng-click="onPTOPlanSelected(item)" ng-class="{'warning':selectedPTOPlan == item};">
-                                    <td width="30px" align ="center">{{$index + 1}}</td>
-                                    <td width="470px" align ="left">{{item.title}}</td>
-                                    <td width="200px" align ="left">{{item.ptoTypeTitle}}</td>
+                                    <td width="5%" align ="center">{{$index + 1}}</td>
+                                    <td width="70%" align ="left">{{item.title}}</td>
+                                    <td width="30%" align ="left">{{item.ptoTypeTitle}}</td>
                                  </tr>
                             </tbody>
                         </table>
@@ -360,8 +360,9 @@
                                 <tr class="heading" role="row">
                                     <th width="30px" style="text-align:center">#</th>
                                     <th width="370px" style="text-align:center">Plan Name</th>
-                                    <th width="200px" style="text-align:center">PTO Type</th>
+                                    <th width="100px" style="text-align:center">PTO Type</th>
                                     <th width="100px" style="text-align:center">Active</th>
+                                    <th width="100px" style="text-align:center">Level</th>
                                     <th width="10px"></th>
                                 </tr>
                             </thead>
@@ -369,8 +370,9 @@
                                 <tr ng-repeat="item in ptoPlanAssignments" ng-click="onPTOPlanAssignmentSelected(item)" ng-class="{'warning':selectedPTOPlanAssignment == item};">
                                     <td width="30px" align ="center">{{$index + 1}}</td>
                                     <td width="370px" align ="left">{{item.ptoPlanTitle}}</td>
-                                    <td width="200px" align ="left">{{item.ptoTypeTitle}}</td>
+                                    <td width="100px" align ="left">{{item.ptoTypeTitle}}</td>
                                     <td width="100px" align ="left">{{item.active}}</td>
+                                    <td width="100px" align ="left">{{item.level}}</td>
                                  </tr>
                             </tbody>
                         </table>
@@ -420,19 +422,19 @@
                     <table class="table-scroll table table-striped table-bordered table-hover" style="width: 750px;">
                         <thead>
                             <tr class="heading" role="row">
-                                <th width="30px" style="text-align:center">#</th>
-                                <th width="235px" style="text-align:center">First Name</th>
-                                <th width="235px" style="text-align:center">Last Name</th>
-                                <th width="250px" style="text-align:center">Job Title</th>
+                                <th width="50px" style="text-align:center">#</th>
+                                <th width="300px" style="text-align:center">First Name</th>
+                                <th width="200px" style="text-align:center">Last Name</th>
+                                <th width="200px" style="text-align:center">Job Title</th>
                                 <th width="10px"></th>
                             </tr>
                         </thead>
                         <tbody style="width: 100%;" ng-style="{'min-height': assignmentGridHeight + 'px'}">
                             <tr ng-repeat="item in dayEmployees" ng-click="onEmployeeSelected(item)" ng-class="{'warning':selectedEmployee == item};">
-                                <td width="30px" align ="center">{{$index + 1}}</td>
-                                <td width="235px" align ="left">{{item.firstName}}</td>
-                                <td width="235px" align ="left">{{item.lastName}}</td>
-                                <td width="250px" align ="left">{{item.jobTitle}}</td>
+                                <td width="50px" align ="center">{{$index + 1}}</td>
+                                <td width="300px" align ="left">{{item.firstName}}</td>
+                                <td width="200px" align ="left">{{item.lastName}}</td>
+                                <td width="200px" align ="left">{{item.jobTitle}}</td>
                                 </tr>
                         </tbody>
                     </table>
@@ -505,5 +507,35 @@
 	    </div>
 	</form>
 </script>
-
+<script type="text/ng-template" id="unAssignedEmployee.html">
+    <form name="employeesInfoForm">
+	    <div id="employeeModal" class="modal-content" style="width:800px;" ng-style="{'max-height': employeeModalHeight + 'px'}">
+	        <div style="font-weight:bold;font-size: 18px;text-align: center;font-family: Verdana;">Unassigned Employees</div>
+	        <div class="modal-body" id="employeesTable">
+	        	 <table class="table-scroll table table-striped table-bordered table-hover" style="width: 750px;">
+                            <thead>
+                                <tr class="heading" role="row">
+                                    <th width="30px" style="text-align:center">#</th>
+                                    <th width="235px" style="text-align:center">First Name</th>
+                                    <th width="235px" style="text-align:center">Last Name</th>
+                                    <th width="250px" style="text-align:center">Job Title</th>
+                                    <th width="10px"></th>
+                               </tr>
+                            </thead>
+                            <tbody style="width:100%;" ng-style="{'max-height': employeeTableHeight + 'px'}">
+                                <tr ng-repeat="item in unAssignedEmployees">
+                                    <td width="30px" align ="center">{{$index + 1}}</td>
+                                    <td width="235px" align ="left">{{item.firstName}}</td>
+                                    <td width="235px" align ="left">{{item.lastName}}</td>
+                                    <td width="250px" align ="left">{{item.jobTitle}}</td>
+                                 </tr>
+                            </tbody>
+                    </table>
+	    	    </div>
+	        <div class="modal-footer">
+	            <button type="button" class="btn btn-primary" ng-click="cancel()">Close</button>
+	        </div>
+	    </div>
+	</form>
+</script>
     

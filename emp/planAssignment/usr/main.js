@@ -274,35 +274,35 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
         $scope.resetSelection();
         $scope.loadingTitle = " Loading...";
         setStatus("Loading");
-        
-        EmpActions.getPlanAssignments($scope.ptoYear, 0, 1, 0, function (result) {
-            $scope.companyPlans = result;
-            if ($scope.companyPlans.length > 0)
-                $scope.disableCompanyCloneButton = true;
-            else
-                $scope.disableCompanyCloneButton = false;
-            $scope.pageLoading = false;
-            setStatus("Normal");
-        });
 
         for (var index = 0; index < $scope.ptoYears.length; index++) {
             if ($scope.ptoYears[index].id == $scope.ptoYear) {
-                if ($scope.ptoYears[index].name !== getCurrentYear() && $scope.ptoYears[index].name !== parseInt(getCurrentYear()) + 1) {
-                    $scope.disableCompanyCloneButton = true;
-                    $scope.disableStateCloneButton = true;
-                    $scope.disableCountyCloneButton = true;
-                    $scope.disableCityCloneButton = true;
-                    $scope.disableHouseCodeCloneButton = true;
-                }
-                else {
+                if ($scope.ptoYears[index].name == getCurrentYear() || $scope.ptoYears[index].name == parseInt(getCurrentYear()) + 1) {
                     $scope.disableCompanyCloneButton = false;
                     $scope.disableStateCloneButton = false;
                     $scope.disableCountyCloneButton = false;
                     $scope.disableCityCloneButton = false;
                     $scope.disableHouseCodeCloneButton = false;
                 }
+                else {
+                    $scope.disableCompanyCloneButton = true;
+                    $scope.disableStateCloneButton = true;
+                    $scope.disableCountyCloneButton = true;
+                    $scope.disableCityCloneButton = true;
+                    $scope.disableHouseCodeCloneButton = true;
+                }
+                break;
             }
         }
+        
+        EmpActions.getPlanAssignments($scope.ptoYear, 0, 1, 0, function (result) {
+            $scope.companyPlans = result;
+            if ($scope.companyPlans.length > 0)
+                $scope.disableCompanyCloneButton = true;
+         
+            $scope.pageLoading = false;
+            setStatus("Normal");
+        });
     };
 
     $scope.onLevelChange = function(level) {
@@ -468,23 +468,33 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 	
 	$scope.getCityPlanAssignments = function() {
 		EmpActions.getPlanAssignments($scope.ptoYear, $scope.selectedState.id, 4, 0, function(data) {
-            $scope.cities = [];
+		    $scope.cities = [];
+		    $scope.citiesNames = [];
 
             angular.forEach(data, function(city, index) {
                 var found = false;
-                if ($scope.cities.length > 0) {
- 					for (var index = 0; index < $scope.cities.length; index++) {
-						if ($scope.cities[index].name === city.name) {
-							found = true;
-							break;
-						}  
-					}
- 					if (!found) {
- 					        $scope.cities.push(city);
- 					}
+                if ($scope.citiesNames.length > 0) {
+                    for (var index = 0; index < $scope.citiesNames.length; index++) {
+                        if ($scope.citiesNames[index] === city.name) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        $scope.citiesNames.push(city.name);
+                        var county = city.name.substring(city.name.indexOf("(") + 1, city.name.indexOf(")"));
+                        city.tooltipText = "County: " + county;
+                        city.name = city.name.slice(0, city.name.indexOf("("));
+                        $scope.cities.push(city);
+                    }
                 }
-                else
+                else {
+                    $scope.citiesNames.push(city.name);
+                    var county = city.name.substring(city.name.indexOf("(") + 1, city.name.indexOf(")"));
+                    city.tooltipText = "County: " + county;
+                    city.name = city.name.slice(0, city.name.indexOf("("));
                     $scope.cities.push(city);
+                }
             });
 
             angular.forEach($scope.cities, function(city, index) {
@@ -514,17 +524,27 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
             angular.forEach(data, function(houseCode, index) {
                 var found = false;
                 if (houseCode.ptoPlanId > 0 && $scope.houseCodes.length > 0) {
-					for (var index = 0; index < $scope.houseCodes.length; index++) {
-						if ($scope.houseCodes[index].name === houseCode.name) {
-							found = true;
-							break;
-						}  
-					}
-                    if (!found)
+                    for (var index = 0; index < $scope.houseCodes.length; index++) {
+                        if ($scope.houseCodes[index].name === houseCode.name) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        var county = houseCode.name.substring(houseCode.name.indexOf("(") + 1, houseCode.name.indexOf(")"));
+                        var city = houseCode.name.substring(houseCode.name.indexOf("{") + 1, houseCode.name.indexOf("}"));
+                        houseCode.tooltipText = ["County: " + county, "City: " + city];
+                        houseCode.name = houseCode.name.slice(0, houseCode.name.indexOf("("));
                         $scope.houseCodes.push(houseCode);
+                    }
                 }
-                else
+                else {
+                    var county = houseCode.name.substring(houseCode.name.indexOf("(") + 1, houseCode.name.indexOf(")"));
+                    var city = houseCode.name.substring(houseCode.name.indexOf("{") + 1, houseCode.name.indexOf("}"));
+                    houseCode.tooltipText = ["County: " + county, "City: " + city];
+                    houseCode.name = houseCode.name.slice(0, houseCode.name.indexOf("("));
                     $scope.houseCodes.push(houseCode);
+                }
             });
 
             angular.forEach($scope.houseCodes, function(houseCode, index) {
@@ -812,6 +832,33 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 		return !found;
 	};
 
+	$scope.validateHigherLevelPlan = function (level, plan) {
+	    if (level === "state" || level === "county" || level === "city" || level === "houseCode") {
+	        for (var index = 0; index < $scope.companyPlans.length; index++) {
+	            if ($scope.companyPlans[index].ptoTypeTitle === plan.ptoTypeTitle && plan.ptoPlanTypeTitle === $scope.companyPlans[index].ptoPlanTypeTitle
+                    && plan.minHours <= $scope.companyPlans[index].minHours && plan.maxHours <= $scope.companyPlans[index].maxHours
+                    && plan.hourly === $scope.companyPlans[index].hourly && plan.salary === $scope.companyPlans[index].salary
+                    && plan.statusCategoryTypeId === $scope.companyPlans[index].statusCategoryTypeId) {
+	                if (!confirm("Plans are assigned at higher level. Do you want to override the assigned plans?"))
+	                    return;
+	                break;
+	            }
+	        }
+	    }
+	    if (level === "county" || level === "city" || level === "houseCode") {
+	        for (var index = 0; index < $scope.statePlans.length; index++) {
+	            if ($scope.statePlans[index].ptoTypeTitle === plan.ptoTypeTitle && plan.ptoPlanTypeTitle === $scope.statePlans[index].ptoPlanTypeTitle
+                    && plan.minHours <= $scope.statePlans[index].minHours && plan.maxHours <= $scope.statePlans[index].maxHours
+                    && plan.hourly === $scope.statePlans[index].hourly && plan.salary === $scope.statePlans[index].salary
+                    && plan.statusCategoryTypeId === $scope.statePlans[index].statusCategoryTypeId) {
+	                if (!confirm("Plans are assigned at higher level. Do you want to override the assigned plans?"))
+	                    return;
+	                break;
+	            }
+	        }
+	    }
+	};
+
 	$scope.addSelectedPlan = function() {
 		var valid = true;
 
@@ -859,8 +906,8 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 					}
 					else if ($scope.levelSelected === "state") {
 					    if ($scope.companyPlans.length > 0)
-					        if (!confirm("Plans are assigned at higher level. Do you want to override the assigned plans?"))
-					            return;
+					        $scope.validateHigherLevelPlan("state", $scope.plans[index]);
+					        
 						item["stateType"] = $scope.selectedState.id;
 						item["groupType"] = 2;
 						item["name"] = $scope.selectedState.name;
@@ -869,8 +916,8 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 					}
 					else if ($scope.levelSelected === "county") {
 					    if ($scope.statePlans.length > 0 || $scope.companyPlans.length > 0)
-					        if (!confirm("Plans are assigned at higher level. Do you want to override the assigned plans?"))
-					            return;
+					        $scope.validateHigherLevelPlan("county", $scope.plans[index]);
+
 	                    item["stateType"] = $scope.selectedState.id;
 	                    item["groupType"] = 3;
 	                    item["name"] = $scope.selectedCounty.name;
@@ -880,8 +927,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 	                }
 					else if ($scope.levelSelected === "city") {
 					    if ($scope.statePlans.length > 0 || $scope.companyPlans.length > 0) {
-					        if (!confirm("Plans are assigned at higher level. Do you want to override the assigned plans?"))
-					            return;
+					        $scope.validateHigherLevelPlan("city", $scope.plans[index]);
 					    }
 					    else {
 					        for (var index = 0; index < $scope.countys.length; index++) {
@@ -902,8 +948,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 	                }
 					else if ($scope.levelSelected === "houseCode") {
 					    if ($scope.statePlans.length > 0 || $scope.companyPlans.length > 0) {
-					        if (!confirm("Plans are assigned at higher level. Do you want to override the assigned plans?"))
-					            return;
+					        $scope.validateHigherLevelPlan("houseCode", $scope.plans[index]);
 					    }
 					    else {
 					        EmpActions.getPTOPlans($scope.selectedHouseCode, $scope.ptoYear, $scope.selectedState.id, 0, 0, function (result) {
