@@ -153,7 +153,20 @@
 .table {
     margin-top: 10px;
     width: 100%;
+    table-layout: fixed;
 }
+
+
+.table th, table td { 
+    overflow: hidden;
+    table-layout: fixed;
+}
+
+.table tbody td { 
+    overflow: hidden;
+    table-layout: fixed;
+}
+
 
 .table tbody {
     display: block;
@@ -217,6 +230,13 @@ li {
     top: 25%;
     height: auto;
     max-height: 500px;
+}
+
+#employeeModal {
+    left: 20%;
+    position: fixed;
+    top: 5%;
+    height: auto;
 }
 
 
