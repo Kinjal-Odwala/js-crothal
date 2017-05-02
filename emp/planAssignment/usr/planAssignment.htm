@@ -111,7 +111,7 @@
                 <tbody id="statePlanDetailsGrid" ng-show="showState" ng-style="{'max-height': '200px', 'min-height': statePlanGridMinHeight + 'px'}">
                     <tr ng-show="showStateName">
                         <td colspan="3">
-                            <a href="" ng-click="stateExpanded = !stateExpanded">
+                            <a href="" ng-click="stateExpanded = !stateExpanded" style="text-decoration: none; border-bottom: none;">
                                 <span class="glyphicon tableData" ng-class="{ 'glyphicon-chevron-right': !stateExpanded, 'glyphicon-chevron-down': stateExpanded }"></span>
                                 <label class="tableData">{{ stateName }}</label>
                             </a>
@@ -142,7 +142,7 @@
                         <td>
                             <div>
                                <div ng-show="showCounty" class="pull-left">
-                                    <a href="#" ng-click="sortType = 'County'; sortCountyReverse = !sortCountyReverse;" target="_self"><label class="sort">County</label>
+                                    <a href="#" ng-click="sortType = 'County'; sortCountyReverse = !sortCountyReverse;" style="text-decoration: none; border-bottom: none;" target="_self"><label class="sort">County</label>
                                         <span class="sort" ng-show="sortType == 'County' && !sortCountyReverse">&#9660;</span>
                                         <span class="sort" ng-show="sortType == 'County' && sortCountyReverse">&#9650;</span>
                                     </a>
@@ -173,7 +173,7 @@
                 <tbody id="countyPlanDetailsGrid" ng-show="showCounty" ng-style="{'max-height': '200px', 'min-height': countyPlanGridMinHeight + 'px'}">
                     <tr ng-repeat-start="county in countys | orderBy:sortCountyBy:sortCountyReverse" ng-click="countySelected(county)" ng-class="{'warning':selectedCounty == county};" expandcounty>
                         <td colspan="4">
-                            <a href="" ng-click="countyExpanded = !countyExpanded">
+                            <a href="" ng-click="countyExpanded = !countyExpanded" style="text-decoration: none; border-bottom: none;">
                                 <span class="glyphicon tableData" ng-class="{ 'glyphicon-chevron-right': !countyExpanded, 'glyphicon-chevron-down': countyExpanded }"></span>
                                 <label class="tableData">{{ county.name }}</label>
                             </a>
@@ -205,7 +205,7 @@
                         <td>
                             <div>
 								<div ng-show="showCity" class="pull-left">
-                                    <a href="#" ng-click="sortType = 'City'; sortCityReverse = !sortCityReverse;" target="_self"><label class="sort">City</label>
+                                    <a href="#" ng-click="sortType = 'City'; sortCityReverse = !sortCityReverse;" target="_self" style="text-decoration: none; border-bottom: none;"><label class="sort">City</label>
                                         <span class="sort" ng-show="sortType == 'City' && !sortCityReverse">&#9660;</span>
                                         <span class="sort" ng-show="sortType == 'City' && sortCityReverse">&#9650;</span>
                                     </a>
@@ -237,7 +237,7 @@
                 <tbody id="cityPlanDetailsGrid" ng-show="showCity" ng-style="{'max-height': '200px', 'min-height': cityPlanGridMinHeight + 'px'}">
                     <tr ng-repeat-start="city in cities track by $index | orderBy:sortCityBy:sortCityReverse" ng-click="citySelected(city)" ng-class="{'warning':selectedCity == city};" expandcity>
                         <td colspan="4">
-                            <a href="" ng-click="cityExpanded = !cityExpanded" data-placement="bottom" title="{{ city.tooltipText }}" tooltip>
+                            <a href="" ng-click="cityExpanded = !cityExpanded" data-placement="bottom" title="{{ city.tooltipText }}" style="text-decoration: none; border-bottom: none;" tooltip>
                                 <span class="glyphicon tableData" ng-class="{ 'glyphicon-chevron-right': !cityExpanded, 'glyphicon-chevron-down': cityExpanded }"></span>
                                 <label class="tableData">{{ city.name }}</label>
                             </a>
@@ -269,7 +269,7 @@
                         <td>
                             <div>
                                  <div ng-show="showHouseCode" class="pull-left">
-                                     <a href="#" ng-click="sortType = 'HouseCode'; sortHouseCodeReverse = !sortHouseCodeReverse;" target="_self"><label class="sort">House Code</label>
+                                     <a href="#" ng-click="sortType = 'HouseCode'; sortHouseCodeReverse = !sortHouseCodeReverse;" target="_self" style="text-decoration: none; border-bottom: none;"><label class="sort">House Code</label>
                                         <span class="sort" ng-show="sortType == 'HouseCode' && !sortHouseCodeReverse">&#9660;</span>
                                         <span class="sort" ng-show="sortType == 'HouseCode' && sortHouseCodeReverse">&#9650;</span>
                                     </a>
@@ -301,7 +301,7 @@
                 <tbody id="houseCodePlanDetailsGrid" ng-show="showHouseCode" ng-style="{'max-height': '200px', 'min-height': houseCodePlanGridMinHeight + 'px'}">
                     <tr ng-repeat-start="houseCode in houseCodes | orderBy:sortHouseCodeBy:sortHouseCodeReverse" ng-click="houseCodeSelected(houseCode)" ng-class="{'warning':selectedHouseCode == houseCode};" expandhousecode="">
                         <td colspan="4">
-                            <a href="" ng-click="houseCodeExpanded = !houseCodeExpanded" data-placement="right" title="{{ houseCode.tooltipText.join('\u000A') }}" tooltip>
+                            <a href="" ng-click="houseCodeExpanded = !houseCodeExpanded" data-placement="right" title="{{ houseCode.tooltipText.join('\u000A') }}" style="text-decoration: none; border-bottom: none;" tooltip>
                                 <span class="glyphicon tableData" ng-class="{ 'glyphicon-chevron-right': !houseCodeExpanded, 'glyphicon-chevron-down': houseCodeExpanded }"></span>
                                 <label class="tableData">{{ houseCode.name }}</label>
                             </a>
