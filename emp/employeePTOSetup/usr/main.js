@@ -585,6 +585,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.ptoPlanType.ptoPlanTypeMinHours = item.minHours;
         $scope.ptoPlanType.ptoPlanTypeMaxHours = item.maxHours;
         $scope.ptoPlanType.ptoPlanTypeActive = item.active;
+        $scope.ptoPlanType.id = item.id;
         $scope.validatePTOPlanType();
         setStatus("Normal");
         modified(false);
@@ -747,7 +748,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
             $scope.planTypes = [];
             $scope.planTypes = $scope.ptoPlanTypes;
             for (var index = 0; index < $scope.planTypes.length; index++) {
-                if ($scope.planTypes[index].maxHours == $scope.ptoPlanType.ptoPlanTypeMaxHours && $scope.planTypes[index].minHours == $scope.ptoPlanType.ptoPlanTypeMinHours)
+                if ($scope.planTypes[index].id !== $scope.ptoPlanType.id && $scope.planTypes[index].maxHours == $scope.ptoPlanType.ptoPlanTypeMaxHours && $scope.planTypes[index].minHours == $scope.ptoPlanType.ptoPlanTypeMinHours)
                     if (($scope.planTypes[index].statusCategory === "Full Time" && $scope.ptoPlanType.Status == 1) || ($scope.planTypes[index].statusCategory === "Part Time" && $scope.ptoPlanType.Status == 2))
                         if (($scope.planTypes[index].payStatusHourly === $scope.ptoPlanType.Hourly) && ($scope.planTypes[index].payStatusSalary === $scope.ptoPlanType.Salary)) {
                             duplicatePlan = true;
@@ -1395,27 +1396,70 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         EmpActions.getPlanAssignments($scope.assignment.ptoAssignYear, 1, $scope.assignment.hcmHouseCode, function (result) {
             $scope.planAssignments = result;
             angular.forEach($scope.planAssignments, function (item) {
-                if (item.houseCodeId == 0)
-                    $scope.ptoPlanAssignments.push(item);
-                else if (item.houseCodeId !== 0 && item.houseCodeId == $scope.assignment.hcmHouseCode)
-                    $scope.ptoPlanAssignments.push(item);
+                item.level = "Company";
+                $scope.ptoPlanAssignments.push(item);
+                EmpActions.getEmployees($scope.assignment.hcmHouseCode, item.ptoPlanId, function (employees) {
+                    angular.forEach(employees, function (employee) {
+                        $scope.assignedEmployees.push(employee);
+                    });
+                });
             });
-            angular.forEach($scope.ptoPlanAssignments, function (assignment) {
-                if (assignment.groupType === "1")
-                    assignment.level = "Company";
-                else if (assignment.groupType === "2")
-                    assignment.level = "State";
-                else if (assignment.groupType === "3")
-                    assignment.level = "County";
-                else if (assignment.groupType === "4")
-                    assignment.level = "City";
-                else if (assignment.groupType === "5")
-                    assignment.level = "HouseCode";
+        });
+
+        EmpActions.getPlanAssignments($scope.assignment.ptoAssignYear, 2, $scope.assignment.hcmHouseCode, function (result) {
+            $scope.planAssignments = result;
+            angular.forEach($scope.planAssignments, function (item) {
+                item.level = "State";
+                $scope.ptoPlanAssignments.push(item);
+                EmpActions.getEmployees($scope.assignment.hcmHouseCode, item.ptoPlanId, function (employees) {
+                    angular.forEach(employees, function (employee) {
+                        $scope.assignedEmployees.push(employee);
+                    });
+                });
             });
-            $scope.employees = [];
+        });
+
+        EmpActions.getPlanAssignments($scope.assignment.ptoAssignYear, 3, $scope.assignment.hcmHouseCode, function (result) {
+            $scope.planAssignments = result;
+            angular.forEach($scope.planAssignments, function (item) {
+                item.level = "County";
+                $scope.ptoPlanAssignments.push(item);
+                EmpActions.getEmployees($scope.assignment.hcmHouseCode, item.ptoPlanId, function (employees) {
+                    angular.forEach(employees, function (employee) {
+                        $scope.assignedEmployees.push(employee);
+                    });
+                });
+            });
+        });
+
+        EmpActions.getPlanAssignments($scope.assignment.ptoAssignYear, 4, $scope.assignment.hcmHouseCode, function (result) {
+            $scope.planAssignments = result;
+            angular.forEach($scope.planAssignments, function (item) {
+                item.level = "City";
+                $scope.ptoPlanAssignments.push(item);
+                EmpActions.getEmployees($scope.assignment.hcmHouseCode, item.ptoPlanId, function (employees) {
+                    angular.forEach(employees, function (employee) {
+                        $scope.assignedEmployees.push(employee);
+                    });
+                });
+            });
+        });
+
+        EmpActions.getPlanAssignments($scope.assignment.ptoAssignYear, 5, $scope.assignment.hcmHouseCode, function (result) {
+            $scope.planAssignments = result;
+            angular.forEach($scope.planAssignments, function (item) {
+                item.level = "HouseCode";
+                $scope.ptoPlanAssignments.push(item);
+                EmpActions.getEmployees($scope.assignment.hcmHouseCode, item.ptoPlanId, function (employees) {
+                    angular.forEach(employees, function (employee) {
+                        $scope.assignedEmployees.push(employee);
+                    });
+                });
+            });
             $scope.pageLoading = false;
             $scope.pageStatus = 'Normal';
-            setStatus("Normal");
+            setStatus('Normal');
+            modified(false);
         });
     };
 
