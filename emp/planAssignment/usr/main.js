@@ -485,7 +485,8 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                         var county = city.name.substring(city.name.indexOf("(") + 1, city.name.indexOf(")"));
                         city.tooltipText = "County: " + county;
                         city.name = city.name.slice(0, city.name.indexOf("("));
-                        $scope.cities.push(city);
+                        if (city.name !== "" && city.name !== null && city.name !== undefined) 
+                            $scope.cities.push(city);
                     }
                 }
                 else {
@@ -493,7 +494,8 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                     var county = city.name.substring(city.name.indexOf("(") + 1, city.name.indexOf(")"));
                     city.tooltipText = "County: " + county;
                     city.name = city.name.slice(0, city.name.indexOf("("));
-                    $scope.cities.push(city);
+                    if (city.name !== "" && city.name !== null && city.name !== undefined)
+                        $scope.cities.push(city);
                 }
             });
 
@@ -750,7 +752,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
             if ($scope.selectedHouseCode === undefined || $scope.selectedHouseCode === null)
                 return;
 
-            EmpActions.getPTOPlans($scope.selectedHouseCode, $scope.ptoYear, $scope.selectedState.id, 5, 0, function (result) {
+            EmpActions.getPTOPlans($scope.selectedHouseCode.houseCodeId, $scope.ptoYear, $scope.selectedState.id, 5, 0, '', function (result) {
                 $scope.ptoPlans = result;
                 angular.forEach($scope.ptoPlans, function (plan, index) {
                     var found = false;

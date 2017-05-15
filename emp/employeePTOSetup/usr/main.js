@@ -809,6 +809,21 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
                                 if (!found) {
                                     $scope.selectedPTOPlanType = planType;
                                     $scope.lastSelectedPlanType = $scope.selectedPTOPlanType;
+                                    $scope.ptoPlanType.ptoPlanTypeTitle = $scope.selectedPTOPlanType.title;
+
+                                    if ($scope.selectedPTOPlanType.statusCategory === "Full Time")
+                                        $scope.ptoPlanType.Status = 1;
+                                    else if ($scope.selectedPTOPlanType.statusCategory === "Part Time")
+                                        $scope.ptoPlanType.Status = 2;
+                                    else
+                                        $scope.ptoPlanType.Status = "";
+
+                                    $scope.ptoPlanType.Hourly = $scope.selectedPTOPlanType.payStatusHourly;
+                                    $scope.ptoPlanType.Salary = $scope.selectedPTOPlanType.payStatusSalary;
+                                    $scope.ptoPlanType.ptoPlanTypeMinHours = $scope.selectedPTOPlanType.minHours;
+                                    $scope.ptoPlanType.ptoPlanTypeMaxHours = $scope.selectedPTOPlanType.maxHours;
+                                    $scope.ptoPlanType.ptoPlanTypeActive = $scope.selectedPTOPlanType.active;
+                                    $scope.ptoPlanType.id = $scope.selectedPTOPlanType.id;
                                 }
                             }
                         });

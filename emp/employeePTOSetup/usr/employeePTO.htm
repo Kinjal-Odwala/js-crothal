@@ -310,7 +310,7 @@
                             <div class="row" ng-class="{'has-error':ptoForm.planForm.fromYear.$invalid}">
                                  <label class="col-md-2 control-label">Clone From:</label>
                                  <div class="col-md-2">
-                                     <select class="form-control input-sm" name="fromYear" ng-model="ptoPlan.cloneFromYear" ng-blur="fromYearChangedValue(ptoPlan.cloneFromYear)" 
+                                     <select class="form-control input-sm" name="fromYear" ng-model="ptoPlan.cloneFromYear" ng-change="fromYearChangedValue(ptoPlan.cloneFromYear)" 
                                      data-ng-options="item as item.name for item in cloneFromYears"></select>
                                 </div>
                             </div>
