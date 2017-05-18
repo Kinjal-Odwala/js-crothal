@@ -1369,6 +1369,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                     item["ptoPlanTitle"] = $scope.clonePlans[index].ptoPlanTitle;
                     item["ptoTypeTitle"] = $scope.clonePlans[index].ptoTypeTitle;
                     item["ptoPlanTypeTitle"] = $scope.clonePlans[index].ptoPlanTypeTitle;
+                    item["appZipCodeType"] = 0;
                     if ($scope.levelSelected === "company") {
                         item["stateType"] = 0;
                         item["groupType"] = 1;
@@ -1401,13 +1402,19 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                         item["ptoPlanTypeTitle"] = $scope.groups[index].clonePlans[iIndex].ptoPlanTypeTitle;
                         item["stateType"] = $scope.selectedState.id;
                         item["name"] = $scope.groups[index].name;
-                        if ($scope.levelSelected === "county")
+                        if ($scope.levelSelected === "county") {
                             item["groupType"] = 3;
-                        else if ($scope.levelSelected === "city")
+                            item["appZipCodeType"] = $scope.selectedCounty.appZipCodeType;
+                        }
+                        else if ($scope.levelSelected === "city") {
                             item["groupType"] = 4;
+                            item["appZipCodeType"] = $scope.selectedCity.appZipCodeType;
+                            item["name"] = $scope.selectedCity.name;
+                        }
                         else if ($scope.levelSelected === "houseCode") {
                             item["houseCodeId"] = $scope.groups[index].houseCodeId;
                             item["groupType"] = 5;
+                            item["appZipCodeType"] = $scope.selectedHouseCode.appZipCodeType;
                         }
                         $scope.clonedPlans.push(item);
                     }
@@ -1844,7 +1851,7 @@ pto.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
 				xml += ' houseCodeId="' + plans[index].houseCodeId + '"';
 				xml += ' ptoPlanId="' + plans[index].ptoPlanId + '"';
 				xml += ' groupType="' + plans[index].groupType + '"';
-				if (plans[index].groupType === 4)
+				if (plans[index].groupType === 4 && plans[index].name.indexOf("(") > 0)
 				    xml += ' name="' + plans[index].name.substring(0, plans[index].name.indexOf("(")) + '"';
 				else
 				    xml += ' name="' + plans[index].name + '"';

@@ -425,6 +425,24 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
 
         EmpActions.getPTOTypes(function (result) {
             $scope.ptoTypes = result;
+            EmpActions.getPayCodes(function (result) {
+                $scope.payCodes = result;
+                angular.forEach($scope.ptoTypes, function (ptoType) {
+                    EmpActions.getPTOTypePayCodes(ptoType.id, function (result) {
+                        $scope.ptoTypePayCodes = result;
+                        ptoType.payCodeId = $scope.ptoTypePayCodes[0].payCodeId;
+                        for (var index = 0; index < $scope.payCodes.length; index++) {
+                            if (ptoType.payCodeId == $scope.payCodes[index].id) {
+                                ptoType.payCode = $scope.payCodes[index].brief + ' - ' + $scope.payCodes[index].name;
+                                break;
+                            }
+                        }
+                    });
+                });
+                $scope.pageStatus = 'Normal';
+                setStatus('Normal');
+                modified(false);
+            });
         });
 
         EmpActions.getPayCodes(function (result) {
@@ -902,6 +920,8 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.ptoForm.planForm.accrualInterval.$setValidity("required", true);
         $scope.ptoForm.planForm.fromYear.$setValidity("required", true);
         $scope.lastSelectedPlan = null;
+        $scope.planYears = [];
+        $scope.assigned = false;
 
         $scope.loadingTitle = " Loading...";
         $scope.pageStatus = 'Loading, Please Wait...';
@@ -918,6 +938,11 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         EmpActions.getPTOTypes(function (result) {
             $scope.ptoTypes = result;
         });
+        for (var year = 0; year < $scope.ptoYears.length; year++) {
+            if (getCurrentYear() == $scope.ptoYears[year].name || (parseInt(getCurrentYear()) + 1) == $scope.ptoYears[year].name) {
+                $scope.planYears.push($scope.ptoYears[year]);
+            }
+        }
     };
 
     $scope.yearSearch = function () {
@@ -931,7 +956,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
             $scope.newPTOPlan();
             $scope.lastSelectedYear = null;
         });
-    }
+    };
 
     $scope.onPTOPlanSelected = function (item) {
         if (editStatus())
@@ -957,6 +982,25 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.ptoForm.planForm.endDate.$setValidity("required", true);
         $scope.ptoForm.planForm.planDays.$setValidity("required", true);
         $scope.ptoForm.planForm.accrualInterval.$setValidity("required", true);
+        $scope.ptoPlanAssignments = [];
+        $scope.assigned = false;
+        $scope.planYears = $scope.ptoYears;
+        EmpActions.getPlanAssignments($scope.ptoPlan.ptoYear, 0, 0, function (result) {
+            $scope.ptoPlanAssignments = result;
+            angular.forEach($scope.ptoPlanAssignments, function (planAssignment) {
+                if (planAssignment.ptoPlanId === $scope.selectedPTOPlan.id)
+                    $scope.assigned = true;
+            });
+        });
+
+        for (var year = 0; year < $scope.ptoYears.length; year++) {
+            if ($scope.ptoPlan.planPtoYear == $scope.ptoYears[year].id)
+                if (parseInt(getCurrentYear()) > parseInt($scope.ptoYears[year].name)) {
+                    $scope.assigned = true;
+                    break;
+                }
+        }
+
         $scope.pageStatus = "Normal";
         setStatus("Normal");
         modified(false);
@@ -987,6 +1031,15 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.ptoForm.planForm.endDate.$setValidity("required", true);
         $scope.ptoForm.planForm.planDays.$setValidity("required", true);
         $scope.ptoForm.planForm.accrualInterval.$setValidity("required", true);
+        $scope.planYears = [];
+        $scope.assigned = false;
+
+        for (var year = 0; year < $scope.ptoYears.length; year++) {
+            if (getCurrentYear() == $scope.ptoYears[year].name || (parseInt(getCurrentYear()) + 1) == $scope.ptoYears[year].name) {
+                $scope.planYears.push($scope.ptoYears[year]);
+            }
+        }
+
         $scope.pageStatus = 'Normal';
         setStatus('Normal');
         modified(false);
@@ -1230,6 +1283,8 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
             if ($scope.ptoPlan.endDate !== null && $scope.ptoPlan.endDate !== undefined)
                 $scope.ptoForm.planForm.endDate.$setValidity("required", true);
         }
+        $scope.minEndDate = $scope.getDate($scope.ptoPlan.startDate);
+        $scope.maxEndDate = (parseInt($scope.minEndDate.substring(0, 4)) + 1) + '-' + $scope.minEndDate.substring(5, 7) + '-' + $scope.minEndDate.substring(8);
         setStatus('Edit');
         modified(true);
     };
@@ -1867,11 +1922,12 @@ pto.directive('ptoDatepicker', ['$timeout', '$filter', function ($timeout, $filt
             minDate: '=',
             dtChange: '&dtChange',
             dtBlur: '&dtBlur',
+            disabled: '=ngDisabled',
             maxDate: '='
         },
         restrict: 'E',
         require: '?ngModel',
-        template: '<p class="input-group" style="margin-bottom:0px;"><input class="form-control input-sm" name="{{dtName}}" min-date="minDate" max-date="maxDate" ng-change="dtChange()" ng-blur="dtBlur()" ng-required="dtRequired" datepicker-popup="MM/dd/yyyy" pdf-datepicker-popup-config ng-model="dtModel" is-open="opened"  show-button-bar="{{showButtonBar}}" datepicker-append-to-body="false" datepicker-options="dateOptions" date-disabled="disabled(date, mode)"  close-text="Close" /><span class="input-group-btn"><button type="button" class="btn btn-default btn-sm" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button></span></p>',
+        template: '<p class="input-group" style="margin-bottom:0px;"><input class="form-control input-sm" name="{{dtName}}" min-date="minDate" max-date="maxDate" ng-change="dtChange()" ng-blur="dtBlur()" ng-required="dtRequired" datepicker-popup="MM/dd/yyyy" pdf-datepicker-popup-config ng-model="dtModel" is-open="opened"  show-button-bar="{{showButtonBar}}" datepicker-append-to-body="false" datepicker-options="dateOptions" ng-disabled="disabled"  close-text="Close" /><span class="input-group-btn"><button type="button" class="btn btn-default btn-sm" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button></span></p>',
         link: function (scope, elem, attrs, ngModel) {
             scope.opened = false;
             scope.dtPopup = "dd-MMMM-yyyy";
