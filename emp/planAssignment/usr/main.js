@@ -808,8 +808,8 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
             if ($scope.plans[index].isChecked) {
  				for (var iIndex = 0; iIndex < assignedPlans.length; iIndex++) {
  				    if ($scope.plans[index].ptoTypeTitle === assignedPlans[iIndex].ptoTypeTitle
-                        && $scope.plans[index].minHours >= assignedPlans[iIndex].minHours && $scope.plans[index].minHours <= assignedPlans[iIndex].maxHours
-                        && $scope.plans[index].maxHours >= assignedPlans[iIndex].minHours && $scope.plans[index].maxHours <= assignedPlans[iIndex].maxHours
+                        && (($scope.plans[index].minHours >= assignedPlans[iIndex].minHours || $scope.plans[index].minHours <= assignedPlans[iIndex].minHours) && $scope.plans[index].minHours <= assignedPlans[iIndex].maxHours)
+                        && ($scope.plans[index].maxHours >= assignedPlans[iIndex].minHours && ($scope.plans[index].maxHours <= assignedPlans[iIndex].maxHours || $scope.plans[index].maxHours >= assignedPlans[iIndex].maxHours))
                         && $scope.plans[index].hourly === assignedPlans[iIndex].hourly && $scope.plans[index].salary === assignedPlans[iIndex].salary
                         && $scope.plans[index].statusCategoryTypeId === assignedPlans[iIndex].statusCategoryTypeId) {
                         alert("Plan with PTO Type: [" + assignedPlans[iIndex].ptoTypeTitle + "], Plan Type: [" + assignedPlans[iIndex].ptoPlanTypeTitle + "], Pay Type, Pay Status and Hours Range is already exists.");
@@ -821,8 +821,8 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 				for (var iIndex = 0; iIndex < $scope.plans.length; iIndex++) {
 					if ($scope.plans[iIndex].isChecked && $scope.plans[index].id !== $scope.plans[iIndex].id 
 						&& $scope.plans[index].ptoTypeTitle === $scope.plans[iIndex].ptoTypeTitle
-                        && $scope.plans[index].minHours >= $scope.plans[iIndex].minHours && $scope.plans[index].minHours <= $scope.plans[iIndex].maxHours
-                        && $scope.plans[index].maxHours >= $scope.plans[iIndex].minHours && $scope.plans[index].maxHours <= $scope.plans[iIndex].maxHours
+                        && (($scope.plans[index].minHours >= $scope.plans[iIndex].minHours || $scope.plans[index].minHours <= $scope.plans[iIndex].minHours) && $scope.plans[index].minHours <= $scope.plans[iIndex].maxHours)
+                        && ($scope.plans[index].maxHours >= $scope.plans[iIndex].minHours && ($scope.plans[index].maxHours <= $scope.plans[iIndex].maxHours || $scope.plans[index].maxHours >= assignedPlans[iIndex].maxHours))
                         && $scope.plans[index].hourly === $scope.plans[iIndex].hourly && $scope.plans[index].salary === $scope.plans[iIndex].salary
                         && $scope.plans[index].statusCategoryTypeId === $scope.plans[iIndex].statusCategoryTypeId) {
 					    alert("You cannot select plan with same PTO Type: [" + $scope.plans[index].ptoTypeTitle + "], Plan Type: [" + $scope.plans[index].ptoPlanTypeTitle + "], Pay Type, Pay Status and Hours Range.");

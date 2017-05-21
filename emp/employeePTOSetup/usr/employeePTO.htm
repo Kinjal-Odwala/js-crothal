@@ -36,10 +36,19 @@
                 <div class="col-md-6" style="padding-top: 13px; padding-right:15px;">
                      <div class="col-md-12" style="border:1px solid rgba(0,0,0,.175);">
                         <div class="row margin-bottom10" style="padding-bottom: 15px;"></div>
-                        <div class="form-group" style="font-weight:100" ng-class="{'has-error':ptoForm.selectedPTOYear.$invalid}">
+                        <div class="row" ng-class="{'has-error':ptoForm.selectedPTOYear.$invalid}">
                              <label class="col-md-2 control-label">PTO Year:</label>
                             <div class="col-md-2">
                                 <input class="form-control input-sm" name="selectedPTOYear" ng-blur="onPTOYearChanged(empPTOYear.ptoYearSelected)" maxlength="4" minLength="4" ng-model="empPTOYear.ptoYearSelected" pto-integer/>
+                            </div>
+                        </div>
+                        <div class="row margin-bottom10" style="padding-bottom: 15px;"></div>
+                        <div class="row">
+                            <label class="col-md-2 control-label">Active:</label>
+                            <div class="col-md-4">
+                                <label>
+                                    <input name="ptoYearActive" type="checkbox" ng-model="empPTOYear.ptoYearActive" ng-value="empPTOYear.ptoYearActive"/>
+                                </label>
                             </div>
                         </div>
                         <div class="row" ng-style="{'min-height': ptoYearDetailHeight + 'px'}"></div>
@@ -327,10 +336,10 @@
                 </div>
                         <div class="row margin-bottom10" style="padding-bottom: 15px;"></div>
                         <div>
-                            <a class="btn btn-primary" ng-click="savePTOPlan()" ng-disabled="hasPlans && isClone">Save</a>
+                            <a class="btn btn-primary" ng-click="savePTOPlan()" ng-disabled="(hasPlans && isClone) || assigned">Save</a>
                             <a class="btn btn-primary" ng-click="newPTOPlan()">New</a>
-                            <a class="btn btn-primary" ng-click="undoPTOPlan()">Undo</a>
-                            <a class="btn btn-primary" ng-click="clonePTOPlan()">Clone</a>
+                            <a class="btn btn-primary" ng-click="undoPTOPlan()" ng-disabled="assigned">Undo</a>
+                            <a class="btn btn-primary" ng-click="clonePTOPlan()" ng-disabled="assigned">Clone</a>
                         </div>
                     </div>
                  </div>
