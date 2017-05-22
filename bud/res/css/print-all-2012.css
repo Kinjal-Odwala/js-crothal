@@ -31,7 +31,7 @@ table td {
 }
 .primary-nav .x-btn
 {
-	background-color:#9CCF9C;
+	background-color:#C5D7EC;
 	margin-left:1px;
 }
 .primary-nav .x-btn td.x-btn-mc .x-btn-text
@@ -91,7 +91,7 @@ table td {
 
 .primary-nav .x-btn-active td
 {
-	background-color:#659A66;
+	background-color:#6D94BA;
 }
 .primary-nav .x-btn-over .x-btn-text
 {
@@ -157,7 +157,7 @@ table td {
 }
 .ux-button-1 .x-btn-over .x-btn-text
 {
-	color:#659A66;
+	color:#6D94BA;
 }
 
 .ux-tab-1 .x-tab-panel-header,
