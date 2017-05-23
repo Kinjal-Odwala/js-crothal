@@ -839,8 +839,9 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 	$scope.validateHigherLevelPlan = function (level, plan) {
 	    if (level === "state" || level === "county" || level === "city" || level === "houseCode") {
 	        for (var index = 0; index < $scope.companyPlans.length; index++) {
-	            if ($scope.companyPlans[index].ptoTypeTitle === plan.ptoTypeTitle && plan.ptoPlanTypeTitle === $scope.companyPlans[index].ptoPlanTypeTitle
-                    && plan.minHours <= $scope.companyPlans[index].minHours && plan.maxHours <= $scope.companyPlans[index].maxHours
+	            if ($scope.companyPlans[index].ptoTypeTitle === plan.ptoTypeTitle
+                    && ((plan.minHours <= $scope.companyPlans[index].minHours || plan.minHours >= $scope.companyPlans[index].minHours) && plan.minHours <= $scope.companyPlans[index].maxHours)
+                    && ((plan.maxHours <= $scope.companyPlans[index].maxHours || plan.maxHours >= $scope.companyPlans[index].maxHours) && plan.maxHours >= $scope.companyPlans[index].minHours)
                     && plan.hourly === $scope.companyPlans[index].hourly && plan.salary === $scope.companyPlans[index].salary
                     && plan.statusCategoryTypeId === $scope.companyPlans[index].statusCategoryTypeId) {
 	                if (!confirm("Plans are assigned at higher level. Do you want to override the assigned plans?"))
@@ -851,8 +852,9 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 	    }
 	    if (level === "county" || level === "city" || level === "houseCode") {
 	        for (var index = 0; index < $scope.statePlans.length; index++) {
-	            if ($scope.statePlans[index].ptoTypeTitle === plan.ptoTypeTitle && plan.ptoPlanTypeTitle === $scope.statePlans[index].ptoPlanTypeTitle
-                    && plan.minHours <= $scope.statePlans[index].minHours && plan.maxHours <= $scope.statePlans[index].maxHours
+	            if ($scope.statePlans[index].ptoTypeTitle === plan.ptoTypeTitle
+                    && ((plan.minHours <= $scope.statePlans[index].minHours || plan.minHours >= $scope.statePlans[index].minHours) && plan.minHours <= $scope.statePlans[index].maxHours)
+                    && ((plan.maxHours <= $scope.statePlans[index].maxHours || plan.maxHours >= $scope.statePlans[index].maxHours) && plan.maxHours >= $scope.statePlans[index].minHours)
                     && plan.hourly === $scope.statePlans[index].hourly && plan.salary === $scope.statePlans[index].salary
                     && plan.statusCategoryTypeId === $scope.statePlans[index].statusCategoryTypeId) {
 	                if (!confirm("Plans are assigned at higher level. Do you want to override the assigned plans?"))

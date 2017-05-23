@@ -273,7 +273,7 @@
                             <div class="form-group">
                                  <label class="col-md-3 control-label">Start Date:</label>
                                 <div class="col-md-4">
-                                    <pto-datepicker id="datepicker" dt-option="dateOptions" dt-name="startDate" ng-disabled="assigned" dt-popup="MM/dd/yyyy" dt-model="ptoPlan.startDate" min-Date="minStartDate" max-Date="maxStartDate" dt-blur="onStartDateChange()"></pto-datepicker>
+                                    <pto-datepicker id="datepicker" dt-option="dateOptions" dt-name="startDate" ng-disabled="assigned" dt-popup="MM/dd/yyyy" dt-model="ptoPlan.startDate" dt-blur="onStartDateChange()"></pto-datepicker>
                                 </div>
                             </div>
                         </div>
@@ -281,7 +281,7 @@
                         <div class="row" ng-class="{'has-error':ptoForm.planForm.endDate.$invalid}">
                              <label class="col-md-3 control-label">End Date:</label>
                             <div class="col-md-4">
-                                <pto-datepicker dt-option="dateOptions" dt-name="endDate" dt-popup="MM/dd/yyyy" ng-disabled="assigned" dt-model="ptoPlan.endDate" min-Date="minEndDate" max-Date="maxEndDate" dt-blur="onEndDateChange()"></pto-datepicker>
+                                <pto-datepicker dt-option="dateOptions" dt-name="endDate" dt-popup="MM/dd/yyyy" ng-disabled="assigned" dt-model="ptoPlan.endDate" dt-blur="onEndDateChange()"></pto-datepicker>
                             </div>
                         </div>
                         <div class="row" style="padding-top:5px;"></div>
@@ -339,7 +339,7 @@
                             <a class="btn btn-primary" ng-click="savePTOPlan()" ng-disabled="(hasPlans && isClone) || assigned">Save</a>
                             <a class="btn btn-primary" ng-click="newPTOPlan()">New</a>
                             <a class="btn btn-primary" ng-click="undoPTOPlan()" ng-disabled="assigned">Undo</a>
-                            <a class="btn btn-primary" ng-click="clonePTOPlan()" ng-disabled="assigned">Clone</a>
+                            <a class="btn btn-primary" ng-click="clonePTOPlan()">Clone</a>
                         </div>
                     </div>
                  </div>
