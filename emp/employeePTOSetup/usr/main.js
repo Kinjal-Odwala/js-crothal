@@ -553,35 +553,35 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
 
         EmpActions.getStatusCategoryTypes(function (result) {
             $scope.statusCategoryTypes = result;
-        });
 
-        EmpActions.getPTOPlanTypes(function (result) {
-            $scope.ptoPlanTypes = result;
-            angular.forEach($scope.ptoPlanTypes, function (planType, index) {
-                if (planType.statusCategoryTypeId === "0") {
-                    planType.statusCategory = "";
-                }
-                else {
-                    for (var index = 0; index < $scope.statusCategoryTypes.length; index++) {
-                        if (planType.statusCategoryTypeId == $scope.statusCategoryTypes[index].id) {
-                            planType.statusCategory = $scope.statusCategoryTypes[index].name;
-                            break;
+            EmpActions.getPTOPlanTypes(function (result) {
+                $scope.ptoPlanTypes = result;
+                angular.forEach($scope.ptoPlanTypes, function (planType, index) {
+                    if (planType.statusCategoryTypeId === "0") {
+                        planType.statusCategory = "";
+                    }
+                    else {
+                        for (var index = 0; index < $scope.statusCategoryTypes.length; index++) {
+                            if (planType.statusCategoryTypeId == $scope.statusCategoryTypes[index].id) {
+                                planType.statusCategory = $scope.statusCategoryTypes[index].name;
+                                break;
+                            }
                         }
                     }
-                }
 
-                if (planType.payStatusSalary === true) {
-                    planType.payStatus = "Salary";
-                    if (planType.payStatusHourly === true)
-                        planType.payStatus = "Salary, Hourly";
-                }
-                else if (planType.payStatusHourly === true) {
-                    planType.payStatus = "Hourly";
-                }
+                    if (planType.payStatusSalary === true) {
+                        planType.payStatus = "Salary";
+                        if (planType.payStatusHourly === true)
+                            planType.payStatus = "Salary, Hourly";
+                    }
+                    else if (planType.payStatusHourly === true) {
+                        planType.payStatus = "Hourly";
+                    }
+                });
+                setStatus("Normal");
+                $scope.pageStatus = 'Normal';
+                $scope.pageLoading = false;
             });
-            setStatus("Normal");
-            $scope.pageStatus = 'Normal';
-            $scope.pageLoading = false;
         });
     };
 
@@ -1060,7 +1060,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.assigned = false;
 
         for (var year = 0; year < $scope.ptoYears.length; year++) {
-            if (getCurrentYear() == $scope.ptoYears[year].name || (parseInt(getCurrentYear()) + 1) == $scope.ptoYears[year].name) {
+            if ($scope.ptoYears[year].active) {
                 $scope.planYears.push($scope.ptoYears[year]);
             }
         }
@@ -1438,8 +1438,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
                     angular.forEach($scope.cityPlanAssignments, function (item) {
                         var found = false;
                         angular.forEach($scope.ptoPlanAssignments, function (plan) {
-                            if (((plan.minHours <= item.minHours || plan.minHours >= item.minHours) && item.minHours <= plan.maxHours) &&
-                                ((plan.maxHours <= item.maxHours || plan.maxHours >= item.maxHours) && item.maxHours >= plan.minHours) &&
+                            if (plan.minHours == item.minHours && item.maxHours == plan.maxHours &&
                                 plan.ptoType == item.ptoType && plan.hourly == item.hourly && plan.salary == item.salary && plan.statusCategoryTypeId == item.statusCategoryTypeId)
                                 found = true;
                         });
@@ -1458,8 +1457,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
                         angular.forEach($scope.countyPlanAssignments, function (item) {
                             var found = false;
                             angular.forEach($scope.ptoPlanAssignments, function (plan) {
-                                if (((plan.minHours <= item.minHours || plan.minHours >= item.minHours) && item.minHours <= plan.maxHours) &&
-                                    ((plan.maxHours <= item.maxHours || plan.maxHours >= item.maxHours) && item.maxHours >= plan.minHours) &&
+                                if (plan.minHours == item.minHours && item.maxHours == plan.maxHours &&
                                     plan.ptoType == item.ptoType && plan.hourly == item.hourly && plan.salary == item.salary && plan.statusCategoryTypeId == item.statusCategoryTypeId)
                                     found = true;
                             });
@@ -1479,8 +1477,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
                         angular.forEach($scope.statePlanAssignments, function (item) {
                             var found = false;
                             angular.forEach($scope.ptoPlanAssignments, function (plan) {
-                                if (((plan.minHours <= item.minHours || plan.minHours >= item.minHours) && item.minHours <= plan.maxHours) &&
-                                    ((plan.maxHours <= item.maxHours || plan.maxHours >= item.maxHours) && item.maxHours >= plan.minHours) &&
+                                if (plan.minHours == item.minHours && item.maxHours == plan.maxHours &&
                                     plan.ptoType == item.ptoType && plan.hourly == item.hourly && plan.salary == item.salary && plan.statusCategoryTypeId == item.statusCategoryTypeId)
                                     found = true;
                             });
@@ -1499,8 +1496,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
                             angular.forEach($scope.companyPlanAssignments, function (item) {
                                 var found = false;
                                 angular.forEach($scope.ptoPlanAssignments, function (plan) {
-                                    if (((plan.minHours <= item.minHours || plan.minHours >= item.minHours) && item.minHours <= plan.maxHours) &&
-                                        ((plan.maxHours <= item.maxHours || plan.maxHours >= item.maxHours) && item.maxHours >= plan.minHours) &&
+                                    if (plan.minHours == item.minHours && item.maxHours == plan.maxHours &&
                                         plan.ptoType == item.ptoType && plan.hourly == item.hourly && plan.salary == item.salary && plan.statusCategoryTypeId == item.statusCategoryTypeId)
                                         found = true;
                                 });
@@ -1529,6 +1525,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
     $scope.onPTOPlanAssignmentSelected = function (item) {
         $scope.selectedPTOPlanAssignment = item;
         $scope.employees = [];
+        $scope.assignEmployees = [];
         $scope.loadingTitle = " Loading...";
         $scope.pageStatus = 'Loading, Please Wait...';
         setStatus("Loading");
@@ -1564,8 +1561,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
                 angular.forEach($scope.cityPlanAssignments, function (item) {
                     var found = false;
                     angular.forEach($scope.ptoPlanAssignments, function (plan) {
-                        if (((plan.minHours <= item.minHours || plan.minHours >= item.minHours) && item.minHours <= plan.maxHours) &&
-                            ((plan.maxHours <= item.maxHours || plan.maxHours >= item.maxHours) && item.maxHours >= plan.minHours) &&
+                        if (plan.minHours == item.minHours && item.maxHours == plan.maxHours &&
                             plan.ptoType == item.ptoType && plan.hourly == item.hourly && plan.salary == item.salary && plan.statusCategoryTypeId == item.statusCategoryTypeId)
                             found = true;
                     });
@@ -1584,8 +1580,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
                     angular.forEach($scope.countyPlanAssignments, function (item) {
                         var found = false;
                         angular.forEach($scope.ptoPlanAssignments, function (plan) {
-                            if (((plan.minHours <= item.minHours || plan.minHours >= item.minHours) && item.minHours <= plan.maxHours) &&
-                                ((plan.maxHours <= item.maxHours || plan.maxHours >= item.maxHours) && item.maxHours >= plan.minHours) &&
+                            if (plan.minHours == item.minHours && item.maxHours == plan.maxHours &&
                                 plan.ptoType == item.ptoType && plan.hourly == item.hourly && plan.salary == item.salary && plan.statusCategoryTypeId == item.statusCategoryTypeId)
                                 found = true;
                         });
@@ -1605,8 +1600,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
                     angular.forEach($scope.statePlanAssignments, function (item) {
                         var found = false;
                         angular.forEach($scope.ptoPlanAssignments, function (plan) {
-                            if (((plan.minHours <= item.minHours || plan.minHours >= item.minHours) && item.minHours <= plan.maxHours) &&
-                                ((plan.maxHours <= item.maxHours || plan.maxHours >= item.maxHours) && item.maxHours >= plan.minHours) &&
+                            if (plan.minHours == item.minHours && item.maxHours == plan.maxHours &&
                                 plan.ptoType == item.ptoType && plan.hourly == item.hourly && plan.salary == item.salary && plan.statusCategoryTypeId == item.statusCategoryTypeId)
                                 found = true;
                         });
@@ -1625,8 +1619,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
                         angular.forEach($scope.companyPlanAssignments, function (item) {
                             var found = false;
                             angular.forEach($scope.ptoPlanAssignments, function (plan) {
-                                if (((plan.minHours <= item.minHours || plan.minHours >= item.minHours) && item.minHours <= plan.maxHours) &&
-                                    ((plan.maxHours <= item.maxHours || plan.maxHours >= item.maxHours) && item.maxHours >= plan.minHours) &&
+                                if (plan.minHours == item.minHours && item.maxHours == plan.maxHours &&
                                     plan.ptoType == item.ptoType && plan.hourly == item.hourly && plan.salary == item.salary && plan.statusCategoryTypeId == item.statusCategoryTypeId)
                                     found = true;
                             });
