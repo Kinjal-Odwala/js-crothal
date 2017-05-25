@@ -1,0 +1,21 @@
+﻿.labelTextArea {
+	float: left;
+	width: 120px;
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding-left: 10px;
+}
+
+.inputTextArea {
+	float: left;
+	width: 200px;
+}
+
+#RightContainer {
+	border: solid #AAAAAA thin;
+	border-width: 1px;
+	padding: 5px;
+	margin: 1px;
+}
