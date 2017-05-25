@@ -1339,18 +1339,13 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         if ($scope.ptoPlan.endDate === null || $scope.ptoPlan.endDate === undefined || $scope.ptoPlan.endDate === "") {
             $scope.ptoForm.planForm.endDate.$setValidity("required", false);
         }
-        else if ($scope.getDate($scope.ptoPlan.startDate) > $scope.getDate($scope.ptoPlan.endDate) && $scope.ptoPlan.startDate !== null && $scope.ptoPlan.startDate !== undefined) {
+        else if ($scope.ptoPlan.startDate !== null && $scope.ptoPlan.startDate !== undefined && (($scope.getDate($scope.ptoPlan.endDate) > $scope.maxEndDate) ||
+            ($scope.getDate($scope.ptoPlan.startDate) > $scope.getDate($scope.ptoPlan.endDate) ))) {
             $scope.ptoForm.planForm.endDate.$setValidity("required", false);
         }
         else {
             if ($scope.ptoPlan.endDate !== null && $scope.ptoPlan.endDate !== undefined)
                 $scope.ptoForm.planForm.endDate.$setValidity("required", true);
-            if ($scope.ptoPlan.startDate !== null && $scope.ptoPlan.startDate !== undefined)
-                $scope.ptoForm.planForm.startDate.$setValidity("required", true);
-        }
-
-        if ($scope.getDate($scope.ptoPlan.endDate) > ((parseInt($scope.getDate($scope.ptoPlan.startDate).substring(0, 4)) + 1) + '-' + $scope.getDate($scope.ptoPlan.startDate).substring(5, 7) + '-' + $scope.getDate($scope.ptoPlan.startDate).substring(8))) {
-            $scope.ptoForm.planForm.endDate.$setValidity("required", false);
         }
 
         setStatus('Edit');
