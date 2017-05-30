@@ -844,8 +844,10 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                     && ((plan.maxHours <= $scope.companyPlans[index].maxHours || plan.maxHours >= $scope.companyPlans[index].maxHours) && plan.maxHours >= $scope.companyPlans[index].minHours)
                     && plan.hourly === $scope.companyPlans[index].hourly && plan.salary === $scope.companyPlans[index].salary
                     && plan.statusCategoryTypeId === $scope.companyPlans[index].statusCategoryTypeId) {
-	                if (!confirm("Plans are assigned at higher level. Do you want to override the assigned plans?"))
-	                    return false;
+	                if (!confirm("Plans are assigned at higher level. Do you want to override the assigned plans?")) {
+	                    $scope.validPlan = false;
+	                    return;
+	                }
 	                break;
 	            }
 	        }
@@ -857,8 +859,10 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                     && ((plan.maxHours <= $scope.statePlans[index].maxHours || plan.maxHours >= $scope.statePlans[index].maxHours) && plan.maxHours >= $scope.statePlans[index].minHours)
                     && plan.hourly === $scope.statePlans[index].hourly && plan.salary === $scope.statePlans[index].salary
                     && plan.statusCategoryTypeId === $scope.statePlans[index].statusCategoryTypeId) {
-	                if (!confirm("Plans are assigned at higher level. Do you want to override the assigned plans?"))
-	                    return false;
+	                if (!confirm("Plans are assigned at higher level. Do you want to override the assigned plans?")) {
+	                    $scope.validPlan = false;
+	                    return;
+	                }
 	                break;
 	            }
 	        }
@@ -866,7 +870,8 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 	};
 
 	$scope.addSelectedPlan = function() {
-		var valid = true;
+	    var valid = true;
+	    $scope.validPlan = true;
 
 		if ($scope.levelSelected === "company")
             valid = $scope.validatePlan($scope.companyPlans);
@@ -912,31 +917,33 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 					}
 					else if ($scope.levelSelected === "state") {
 					    if ($scope.companyPlans.length > 0)
-    					    if (!$scope.validateHigherLevelPlan("state", $scope.plans[index]))
-					            return;
+					        $scope.validateHigherLevelPlan("state", $scope.plans[index]);
 
-					    item["stateType"] = $scope.selectedState.id;
-					    item["groupType"] = 2;
-					    item["name"] = $scope.selectedState.name;
-					    $scope.statePlans.push(item);
-					    $scope.disableStateCloneButton = true;
+					    if ($scope.validPlan) {
+					        item["stateType"] = $scope.selectedState.id;
+					        item["groupType"] = 2;
+					        item["name"] = $scope.selectedState.name;
+					        $scope.statePlans.push(item);
+					        $scope.disableStateCloneButton = true;
+					    }
 					}
 					else if ($scope.levelSelected === "county") {
 					    if ($scope.statePlans.length > 0 || $scope.companyPlans.length > 0)
-					        if (!$scope.validateHigherLevelPlan("county", $scope.plans[index]))
-					            return;
+					        $scope.validateHigherLevelPlan("county", $scope.plans[index]);
 
-	                    item["stateType"] = $scope.selectedState.id;
-	                    item["groupType"] = 3;
-	                    item["name"] = $scope.selectedCounty.name;
-	                    item["appZipCodeType"] = $scope.selectedCounty.appZipCodeType;
-	                    $scope.selectedCounty.countyPlans.push(item);
-	                    $scope.disableCountyCloneButton = true;
+					    if ($scope.validPlan) {
+					        item["stateType"] = $scope.selectedState.id;
+					        item["groupType"] = 3;
+					        item["name"] = $scope.selectedCounty.name;
+					        item["appZipCodeType"] = $scope.selectedCounty.appZipCodeType;
+					        $scope.selectedCounty.countyPlans.push(item);
+					        $scope.disableCountyCloneButton = true;
+					    }
 	                }
 					else if ($scope.levelSelected === "city") {
 					    if ($scope.statePlans.length > 0 || $scope.companyPlans.length > 0) {
-					        if (!$scope.validateHigherLevelPlan("city", $scope.plans[index]))
-					            return;
+					        if ($scope.statePlans.length > 0 || $scope.companyPlans.length > 0)
+					            $scope.validateHigherLevelPlan("city", $scope.plans[index]);
 					    }
 					    else {
 					        for (var index = 0; index < $scope.countys.length; index++) {
@@ -957,17 +964,19 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 					        }
 					    }
 
-                        item["stateType"] = $scope.selectedState.id;
-                        item["groupType"] = 4;
-                        item["name"] = $scope.selectedCity.name;
-                        item["appZipCodeType"] = $scope.selectedCity.appZipCodeType;
-                        $scope.selectedCity.cityPlans.push(item);
-                        $scope.disableCityCloneButton = true;
+					    if ($scope.validPlan) {
+					        item["stateType"] = $scope.selectedState.id;
+					        item["groupType"] = 4;
+					        item["name"] = $scope.selectedCity.name;
+					        item["appZipCodeType"] = $scope.selectedCity.appZipCodeType;
+					        $scope.selectedCity.cityPlans.push(item);
+					        $scope.disableCityCloneButton = true;
+					    }
 	                }
 					else if ($scope.levelSelected === "houseCode") {
 					    if ($scope.statePlans.length > 0 || $scope.companyPlans.length > 0) {
-					        if (!$scope.validateHigherLevelPlan("houseCode", $scope.plans[index]))
-					            return;
+					        if ($scope.statePlans.length > 0 || $scope.companyPlans.length > 0)
+					            $scope.validateHigherLevelPlan("county", $scope.plans[index]);
 					    }
 					    else {
 					        EmpActions.getPTOPlans($scope.selectedHouseCode, $scope.ptoYear, $scope.selectedState.id, 0, 0, function (result) {
@@ -985,12 +994,15 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 					                }
 					        });
 					    }
-                        item["stateType"] = $scope.selectedState.id;
-						item["houseCodeId"] = $scope.selectedHouseCode.houseCodeId;
-                        item["groupType"] = 5;
-                        item["name"] = $scope.selectedHouseCode.name;
-                        $scope.selectedHouseCode.houseCodePlans.push(item);
-                        $scope.disableHouseCodeCloneButton = true;
+
+					    if ($scope.validPlan) {
+					        item["stateType"] = $scope.selectedState.id;
+					        item["houseCodeId"] = $scope.selectedHouseCode.houseCodeId;
+					        item["groupType"] = 5;
+					        item["name"] = $scope.selectedHouseCode.name;
+					        $scope.selectedHouseCode.houseCodePlans.push(item);
+					        $scope.disableHouseCodeCloneButton = true;
+					    }
 	                }
                 }
             }
