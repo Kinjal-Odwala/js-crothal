@@ -640,6 +640,10 @@ ii.Class({
 				me.houseCodeDetails[0].budgetTemplateId = (financialUIControls.budgetTemplate.indexSelected < 0 ? 0 : financialUIControls.budgetTemplates[financialUIControls.budgetTemplate.indexSelected].id);
 				me.houseCodeDetails[0].budgetLaborCalcMethod = (financialUIControls.budgetLaborCalcMethod.indexSelected < 0 ? 0 : financialUIControls.budgetLaborCalcMethods[financialUIControls.budgetLaborCalcMethod.indexSelected].id);
 				me.houseCodeDetails[0].budgetComputerRelatedCharge = (financialUIControls.budgetComputerRelatedCharge.check.checked ? 1 : 0);
+				me.houseCodeDetails[0].cpiPercentage = financialUIControls.cpiPercentage.getValue();
+				me.houseCodeDetails[0].cpiAmount = financialUIControls.cpiAmount.getValue();
+				me.houseCodeDetails[0].cpiDate = financialUIControls.cpiDate.lastBlurValue;
+				me.houseCodeDetails[0].cpiECIWaived = (financialUIControls.cpiECIWaived.check.checked ? 1 : 0);
 			}
 
 			//Payroll			
@@ -720,6 +724,21 @@ ii.Class({
 			
 			if (me.houseCodeDetails[0].contractTypeId <= 0) {
 				alert("[Contract Type] is a required field. Please select it on Financial Tab.");
+				return false;
+			}
+
+			if (financialUIControls != undefined && !financialUIControls.cpiPercentage.validate(true)) {
+				alert("[CPI Percentage] is invalid. Please enter numeric value on Financial Tab.");
+				return false;
+			}
+
+			if (financialUIControls != undefined && !financialUIControls.cpiAmount.validate(true)) {
+				alert("[CPI Amount] is invalid. Please enter numeric value on Financial Tab.");
+				return false;
+			}
+
+			if (financialUIControls != undefined && !financialUIControls.cpiDate.validate(true)) {
+				alert("[CPI Date] is invalid. Please enter valid date on Financial Tab.");
 				return false;
 			}
 
@@ -880,6 +899,10 @@ ii.Class({
 				, me.houseCodeDetails[0].budgetTemplateId
 				, me.houseCodeDetails[0].budgetLaborCalcMethod
 				, me.houseCodeDetails[0].budgetComputerRelatedCharge
+				, me.houseCodeDetails[0].cpiPercentage
+				, me.houseCodeDetails[0].cpiAmount
+				, me.houseCodeDetails[0].cpiDate
+				, me.houseCodeDetails[0].cpiECIWaived
 				, me.houseCodeDetails[0].stateTaxPercent
 				, me.houseCodeDetails[0].localTaxPercent
 				, me.houseCodeDetails[0].financialEntityId				
@@ -1025,6 +1048,10 @@ ii.Class({
 			xml += ' budgetTemplateId="' + item.budgetTemplateId + '"';
 			xml += ' budgetLaborCalcMethod="' + item.budgetLaborCalcMethod + '"';
 			xml += ' budgetComputerRelatedCharge="' + item.budgetComputerRelatedCharge + '"';
+			xml += ' cpiPercentage="' + item.cpiPercentage + '"';
+			xml += ' cpiAmount="' + item.cpiAmount + '"';
+			xml += ' cpiDate="' + item.cpiDate + '"';
+			xml += ' cpiECIWaived="' + item.cpiECIWaived + '"';
 			xml += ' stateTaxPercent="' + item.stateTaxPercent + '"';
 			xml += ' localTaxPercent="' + item.localTaxPercent + '"';
 			xml += ' financialEntityId="' + item.financialEntityId + '"';
