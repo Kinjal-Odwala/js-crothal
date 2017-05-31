@@ -274,6 +274,7 @@ ii.Class({
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
+			var me = this;
 
 			parent.fin.appUI.modified = args.modified;
 			if (args.modified)
