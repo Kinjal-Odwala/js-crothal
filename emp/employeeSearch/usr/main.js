@@ -2005,7 +2005,7 @@ ii.Class({
 			
 			me.federalAdjustmentAmount = new ui.ctl.Input.Text({
 		        id: "EmployeeFedAdjustmentAmount",
-		        maxLength: 4,
+		        maxLength: 6,
 				required: false
 		    });
 			
@@ -2022,8 +2022,10 @@ ii.Class({
 							if (/^\d{1,4}$/.test(enteredText) == false)
 								this.setInvalid("Please enter valid amount. Example 9999");
 						}
-						else if ((/^\d{1,2}(\.\d\d)?$/.test(enteredText) == false) && (/^\d{1,2}(\.\d)?$/.test(enteredText) == false))
-							this.setInvalid("Please enter valid amount. Example 99.9");
+						else if (!(ui.cmn.text.validate.generic(enteredText, "^\\d+(\\.\\d{1,2})?$")))
+							this.setInvalid("Please enter valid amount. Example 99.99");
+						else if (parseFloat(enteredText) > 150.0)
+							this.setInvalid("Adjustment Value should not be greater than 150.00");
 					}
 					else if (!(ui.cmn.text.validate.generic(enteredText, "^\\d+(\\.\\d{1,2})?$")))
 						this.setInvalid("Please enter valid amount.");
