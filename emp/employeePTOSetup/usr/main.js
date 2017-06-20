@@ -917,6 +917,12 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
     $scope.onPTOPlanTabClick = function () {
         if (editStatus()) 
             return;
+
+        $scope.wageTypeSettings = {
+            scrollableHeight: '200px',
+            scrollable: true,
+            enableSearch: true
+        };
         $scope.ptoPlan.ptoYear = $scope.ptoYears[0].id;
         $scope.selectedPTOPlan = null;
         $scope.ptoPlan.ptoPlanName = null;
@@ -1499,12 +1505,21 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         setStatus("Loading");
         EmpActions.getHcmHouseCodes(function (result) {
             $scope.hcmHouseCodes = result;
-            $scope.assignment.hcmHouseCode = result[0].id;
+            $scope.assignment.hcmHouseCode = typeof getCurrentHcmHouseCode() == "undefined" ? null : getCurrentHcmHouseCode();
+
+            if ($scope.assignment.hcmHouseCode == null) {
+                setCurrentHcmHouseCode(function (response) {
+                    if (!angular.isDefined(response)) {
+                        return;
+                    }
+                    $scope.assignment.hcmHouseCode = response.id;
+                });
+            }
 
             EmpActions.getPlanAssignments($scope.assignment.ptoAssignYear, 5, $scope.assignment.hcmHouseCode, function (result) {
                 $scope.planAssignments = result;
                 angular.forEach($scope.planAssignments, function (item) {
-                    item.level = "HouseCode";
+                    item.level = "House Code";
                     $scope.ptoPlanAssignments.push(item);
                     EmpActions.getEmployees($scope.assignment.hcmHouseCode, item.ptoPlanId, function (employees) {
                         angular.forEach(employees, function (employee) {
@@ -1627,7 +1642,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         EmpActions.getPlanAssignments($scope.assignment.ptoAssignYear, 5, $scope.assignment.hcmHouseCode, function (result) {
             $scope.planAssignments = result;
             angular.forEach($scope.planAssignments, function (item) {
-                item.level = "HouseCode";
+                item.level = "House Code";
                 $scope.ptoPlanAssignments.push(item);
                 EmpActions.getEmployees($scope.assignment.hcmHouseCode, item.ptoPlanId, function (employees) {
                     angular.forEach(employees, function (employee) {
@@ -1769,7 +1784,17 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         setStatus("Loading");
         EmpActions.getHcmHouseCodes(function (result) {
             $scope.hcmHouseCodes = result;
-            $scope.ptoDay.hcmHouseCode = result[0].id;
+           
+            $scope.ptoDay.hcmHouseCode = typeof getCurrentHcmHouseCode() == "undefined" ? null : getCurrentHcmHouseCode();
+
+            if ($scope.ptoDay.hcmHouseCode == null) {
+                setCurrentHcmHouseCode(function (response) {
+                    if (!angular.isDefined(response)) {
+                        return;
+                    }
+                    $scope.ptoDay.hcmHouseCode = response.id;
+                });
+            }
            
             EmpActions.getEmployees($scope.ptoDay.hcmHouseCode, -1, function (employees) {
                 $scope.dayEmployees = employees;
@@ -1897,6 +1922,8 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
                         }
                         if (found === false)
                             pto.totalDays = "Unassigned";
+                        else
+                            pto.totalDays = "Assigned";
                     });
                     $scope.pageLoading = false;
                     $scope.pageStatus = 'Normal';
@@ -2157,96 +2184,338 @@ pto.directive('ptoDatepicker', ['$timeout', '$filter', function ($timeout, $filt
         }
     }
 }])
-.directive('multiselectDropdown', function () {
+.directive('ngDropdownMultiselect', ['$filter', '$document', '$compile', '$parse',
+
+function ($filter, $document, $compile, $parse) {
+
     return {
-        restrict: 'E',
+        restrict: 'AE',
         scope: {
-            model: '=',
+            selectedModel: '=',
             options: '=',
+            extraSettings: '=',
+            events: '=',
+            searchFilter: '=?',
+            translationTexts: '=',
+            groupBy: '@'
         },
-        template:
-            "<div class='btn-group' data-ng-class='{open: open}' style='width: 200px;'>" +
-            "<button class='btn btn-small' style='width: 160px;'>---Select---</button>" +
-            "<button class='btn btn-small dropdown-toggle' data-ng-click='openDropdown()' style='width: 40px;' ><span class='caret'></span></button>" +
-            "<ul class='dropdown-menu' aria-labelledby='dropdownMenu' style='position: relative;'>" +
-            "<li style='cursor:pointer;' data-ng-repeat='option in options'><a data-ng-click='toggleSelectItem(option)'><span data-ng-class='getClassName(option)' aria-hidden='true'></span> {{option.name}}</a></li>" +
-            "</ul>" +
-            "</div>",
+        template: function (element, attrs) {
+            var checkboxes = attrs.checkboxes ? true : false;
+            var groups = attrs.groupBy ? true : false;
 
-        controller: function ($scope) {
+            var template = '<div class="multiselect-parent btn-group dropdown-multiselect">';
+            template += '<button type="button" id="multiselectBtn" class="dropdown-toggle" ng-class="settings.buttonClasses" ng-click="toggleDropdown()">{{getButtonText()}}&nbsp;<span class="caret"></span></button>';
+            template += '<ul class="dropdown-menu dropdown-menu-form" ng-style="{display: open ? \'block\' : \'none\', height : settings.scrollable ? settings.scrollableHeight : \'auto\' }" style="overflow: scroll" >';
+            template += '<li ng-hide="(!settings.showCheckAll || settings.selectionLimit > 0) && !settings.showUncheckAll" class="divider"></li>';
+            template += '<li ng-show="settings.enableSearch"><div class="dropdown-header"><input type="text" class="form-control" style="width: 100%;" ng-model="searchFilter" placeholder="{{texts.searchPlaceholder}}" /></li>';
+            template += '<li ng-show="settings.enableSearch" class="divider"></li>';
 
-            $scope.openDropdown = function () {
+            if (groups) {
+                template += '<li ng-repeat-start="option in orderedItems | filter: searchFilter" ng-show="getPropertyForObject(option, settings.groupBy) !== getPropertyForObject(orderedItems[$index - 1], settings.groupBy)" role="presentation" class="dropdown-header">{{ getGroupTitle(getPropertyForObject(option, settings.groupBy)) }}</li>';
+                template += '<li ng-repeat-end role="presentation">';
+            } else {
+                template += '<li role="presentation" ng-repeat="option in options | filter: searchFilter">';
+            }
 
+            template += '<a role="menuitem" tabindex="-1" ng-click="setSelectedItem(getPropertyForObject(option,settings.idProp))">';
+
+            if (checkboxes) {
+                template += '<div class="checkbox"><label><input class="checkboxInput" type="checkbox" ng-click="checkboxClick($event, getPropertyForObject(option,settings.idProp))" ng-checked="isChecked(getPropertyForObject(option,settings.idProp))" /> {{getPropertyForObject(option, settings.displayProp)}}</label></div></a>';
+            } else {
+                template += '<span data-ng-class="{\'glyphicon glyphicon-ok\': isChecked(getPropertyForObject(option,settings.idProp))}"></span> {{getPropertyForObject(option, settings.displayProp)}}</a>';
+            }
+
+            template += '</li>';
+
+            template += '<li class="divider" ng-show="settings.selectionLimit > 1"></li>';
+            template += '<li role="presentation" ng-show="settings.selectionLimit > 1"><a role="menuitem">{{selectedModel.length}} {{texts.selectionOf}} {{settings.selectionLimit}} {{texts.selectionCount}}</a></li>';
+
+            template += '</ul>';
+            template += '</div>';
+
+            element.html(template);
+        },
+        link: function ($scope, $element, $attrs) {
+            var $dropdownTrigger = $element.children()[0];
+
+            $scope.toggleDropdown = function () {
                 $scope.open = !$scope.open;
+            };
 
+            $scope.checkboxClick = function ($event, id) {
+                $scope.setSelectedItem(id);
+                $event.stopImmediatePropagation();
+            };
+
+            $scope.externalEvents = {
+                onItemSelect: angular.noop,
+                onItemDeselect: angular.noop,
+                onSelectAll: angular.noop,
+                onDeselectAll: angular.noop,
+                onInitDone: angular.noop,
+                onMaxSelectionReached: angular.noop
+            };
+
+            $scope.settings = {
+                dynamicTitle: true,
+                scrollable: false,
+                scrollableHeight: '300px',
+                closeOnBlur: true,
+                displayProp: 'label',
+                idProp: 'id',
+                externalIdProp: 'id',
+                enableSearch: false,
+                selectionLimit: 0,
+                showCheckAll: true,
+                showUncheckAll: true,
+                closeOnSelect: false,
+                buttonClasses: 'btn btn-default',
+                closeOnDeselect: false,
+                groupBy: $attrs.groupBy || undefined,
+                groupByTextProvider: null,
+                smartButtonMaxItems: 0,
+                smartButtonTextConverter: angular.noop
+            };
+
+            $scope.texts = {
+                checkAll: 'Check All',
+                uncheckAll: 'Uncheck All',
+                selectionCount: 'checked',
+                selectionOf: '/',
+                searchPlaceholder: 'Search...',
+                buttonDefaultText: 'Select',
+                dynamicButtonTextSuffix: 'Selected'
+            };
+
+            $scope.searchFilter = $scope.searchFilter || '';
+
+            if (angular.isDefined($scope.settings.groupBy)) {
+                $scope.$watch('options', function (newValue) {
+                    if (angular.isDefined(newValue)) {
+                        $scope.orderedItems = $filter('orderBy')(newValue, $scope.settings.groupBy);
+                    }
+                });
+            }
+
+            angular.extend($scope.settings, $scope.extraSettings || []);
+            angular.extend($scope.externalEvents, $scope.events || []);
+            angular.extend($scope.texts, $scope.translationTexts);
+
+            $scope.singleSelection = $scope.settings.selectionLimit === 1;
+
+            function getFindObj(id) {
+                var findObj = {};
+
+                if ($scope.settings.externalIdProp === '') {
+                    findObj[$scope.settings.idProp] = id;
+                } else {
+                    findObj[$scope.settings.externalIdProp] = id;
+                }
+
+                return findObj;
+            }
+
+            function clearObject(object) {
+                for (var prop in object) {
+                    delete object[prop];
+                }
+            }
+
+            if ($scope.singleSelection) {
+                if (angular.isArray($scope.selectedModel) && $scope.selectedModel.length === 0) {
+                    clearObject($scope.selectedModel);
+                }
+            }
+
+            if ($scope.settings.closeOnBlur) {
+                $document.on('click', function (e) {
+                    var target = e.target.parentElement;
+                    var parentFound = false;
+
+                    while (angular.isDefined(target) && target !== null && !parentFound) {
+                        if (_.contains(target.className.split(' '), 'multiselect-parent') && !parentFound) {
+                            if (target === $dropdownTrigger) {
+                                parentFound = true;
+                            }
+                        }
+                        target = target.parentElement;
+                    }
+
+                    if (!parentFound) {
+                        $scope.$apply(function () {
+                            $scope.open = false;
+                        });
+                    }
+                });
+            }
+
+            $scope.getGroupTitle = function (groupValue) {
+                if ($scope.settings.groupByTextProvider !== null) {
+                    return $scope.settings.groupByTextProvider(groupValue);
+                }
+
+                return groupValue;
+            };
+
+            $scope.getButtonText = function () {
+               
+                if ($scope.settings.dynamicTitle && angular.isDefined($scope.selectedModel) && ($scope.selectedModel.length > 0 || (angular.isObject($scope.selectedModel) && _.keys($scope.selectedModel).length > 0))) {
+
+                    if ($scope.selectedModel.length == 1) {
+                        var itemsText = [];
+                        var displayText = '';
+                        angular.forEach($scope.options, function (optionItem) {
+                            if ($scope.isChecked($scope.getPropertyForObject(optionItem, $scope.settings.idProp))) {
+                                displayText = $scope.getPropertyForObject(optionItem, $scope.settings.displayProp);
+                                var converterResponse = $scope.settings.smartButtonTextConverter(displayText, optionItem);
+
+                                itemsText.push(converterResponse ? converterResponse : displayText);
+                            }
+                        });
+                        return displayText;
+                    }
+
+                    if ($scope.settings.smartButtonMaxItems > 0) {
+                        var itemsText = [];
+
+                        angular.forEach($scope.options, function (optionItem) {
+                            if ($scope.isChecked($scope.getPropertyForObject(optionItem, $scope.settings.idProp))) {
+                                var displayText = $scope.getPropertyForObject(optionItem, $scope.settings.displayProp);
+                                var converterResponse = $scope.settings.smartButtonTextConverter(displayText, optionItem);
+
+                                itemsText.push(converterResponse ? converterResponse : displayText);
+                            }
+                        });
+
+                        if ($scope.selectedModel.length > $scope.settings.smartButtonMaxItems) {
+                            itemsText = itemsText.slice(0, $scope.settings.smartButtonMaxItems);
+                            itemsText.push('...');
+                        }
+
+                        return itemsText.join(', ');
+                    } else {
+                        var totalSelected;
+
+                        if ($scope.singleSelection) {
+                            totalSelected = ($scope.selectedModel !== null && angular.isDefined($scope.selectedModel[$scope.settings.idProp])) ? 1 : 0;
+                        } else {
+                            totalSelected = angular.isDefined($scope.selectedModel) ? $scope.selectedModel.length : 0;
+                        }
+
+                        if (totalSelected === 0) {
+                            return $scope.texts.buttonDefaultText;
+                        } else {
+                            return totalSelected + ' ' + $scope.texts.dynamicButtonTextSuffix;
+                        }
+                    }
+                } else {
+                    return $scope.texts.buttonDefaultText;
+                }
+            };
+
+            $scope.getPropertyForObject = function (object, property) {
+                if (angular.isDefined(object) && object.hasOwnProperty(property)) {
+                    return object[property];
+                }
+
+                return '';
             };
 
             $scope.selectAll = function () {
+                $scope.deselectAll(false);
+                $scope.externalEvents.onSelectAll();
 
-                $scope.model = [];
-
-                angular.forEach($scope.options, function (item, index) {
-
-                    $scope.model.push(item);
-
+                angular.forEach($scope.options, function (value) {
+                    $scope.setSelectedItem(value[$scope.settings.idProp], true);
                 });
-
             };
 
-            $scope.deselectAll = function () {
+            $scope.deselectAll = function (sendEvent) {
+                sendEvent = sendEvent || true;
 
-                $scope.model = [];
-
-            };
-
-            $scope.toggleSelectItem = function (option) {
-
-                var intIndex = -1;
-
-                angular.forEach($scope.model, function (item, index) {
-
-                    if (item.id == option.id) {
-
-                        intIndex = index;
-
-                    }
-
-                });
-
-                if (intIndex >= 0) {
-
-                    $scope.model.splice(intIndex, 1);
-
-                } else {
-
-                    $scope.model.push(option);
-
+                if (sendEvent) {
+                    $scope.externalEvents.onDeselectAll();
                 }
 
+                if ($scope.singleSelection) {
+                    clearObject($scope.selectedModel);
+                } else {
+                    $scope.selectedModel.splice(0, $scope.selectedModel.length);
+                }
             };
 
-            $scope.getClassName = function (option) {
+            $scope.setSelectedItem = function (id, dontRemove) {
+                var findObj = getFindObj(id);
+                var finalObj = null;
 
-                var varClassName = 'glyphicon glyphicon-remove-circle';
+                if ($scope.settings.externalIdProp === '') {
+                    finalObj = _.find($scope.options, findObj);
+                } else {
+                    finalObj = findObj;
+                }
 
-                angular.forEach($scope.model, function (item, index) {
+                if ($scope.singleSelection) {
+                    clearObject($scope.selectedModel);
+                    angular.extend($scope.selectedModel, finalObj);
+                    $scope.externalEvents.onItemSelect(finalObj);
+                    if ($scope.settings.closeOnSelect) $scope.open = false;
 
-                    if (item.id == option.id) {
+                    return;
+                }
 
-                        varClassName = 'glyphicon glyphicon-ok-circle';
+                dontRemove = dontRemove || false;
 
+                var exists = false;
+
+                for (var i = 0; i < $scope.selectedModel.length; ++i) {
+                    if ($scope.selectedModel[i].id == findObj) {
+                        exists = true;
+                        break;
                     }
+                }
 
-                });
+                var index = -1;
 
-                return (varClassName);
+                for (var j = 0; j < $scope.selectedModel.length; ++j) {
+                    if ($scope.selectedModel[j].id == findObj) {
+                        index = j;
+                        break;
+                    }
+                }
 
+                if (!dontRemove && exists) {
+                    $scope.selectedModel.splice(index, 1);
+                    $scope.externalEvents.onItemDeselect(findObj);
+                } else if (!exists && ($scope.settings.selectionLimit === 0 || $scope.selectedModel.length < $scope.settings.selectionLimit)) {
+                    $scope.selectedModel.push(finalObj);
+                    $scope.externalEvents.onItemSelect(finalObj);
+                }
+
+                if ($scope.settings.closeOnSelect) $scope.open = false;
             };
 
-        }
-    }
+            $scope.isChecked = function (id) {
+                if ($scope.singleSelection) {
+                    return $scope.selectedModel !== null && angular.isDefined($scope.selectedModel[$scope.settings.idProp]) && $scope.selectedModel[$scope.settings.idProp] === getFindObj(id)[$scope.settings.idProp];
+                }
 
-});
+                var find = false;
+                for (var k = 0; k < $scope.selectedModel.length; k++) {
+                    if ($scope.selectedModel[k].id == getFindObj(id).id) {
+                        find = true;
+                        break;
+                    }
+                }
+
+                return find;
+
+                //return _.findIndex($scope.selectedModel, getFindObj(id)) !== -1;
+            };
+
+            $scope.externalEvents.onInitDone();
+        }
+    };
+}]);
 pto.controller('modalInstanceCtrl', function ($scope, $modalInstance) {
     $scope.ok = function () {
         if ($scope.closeDialog) {

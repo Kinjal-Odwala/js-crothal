@@ -21,15 +21,17 @@
                         <thead>
                             <tr class="heading" role="row">
                                 <th width="50px" style="text-align:center">#</th>
-                                <th width="650px" style="text-align:center">PTO Year</th>
+                                <th width="450px" style="text-align:center">PTO Year</th>
+                                <th width="200px" style="text-align:center">Active</th>
                                 <th width="10px"></th>
                             </tr>
                         </thead>
                         <tbody style="width:100%;" ng-style="{'min-height': gridHeight + 'px'}">
                             <tr ng-repeat="item in ptoYears" ng-click="onYearSelected(item)" ng-class="{'warning':selectedYear == item};" ng-style="{'min-height': '5px'}">
                                 <td width="50px" align ="center">{{$index + 1}}</td>
-                                <td width="650px" style="text-align:left">{{item.brief}}</td>
-                             </tr>
+                                <td width="450px" style="text-align:left">{{item.brief}}</td>
+                                <td width="200px" style="text-align:left">{{item.active}}</td> 
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -264,8 +266,8 @@
                         <div class="row" style="padding-top:5px;"></div>
                         <div class="row" ng-class="{'has-error':ptoForm.planForm.planWageType.$invalid}">
                              <label class="col-md-3 control-label">Wage Type:</label>
-                             <div class="col-md-4">
-                                <multiselect-dropdown model="selectedWageTypes" options="wageTypes" ng-blur="onPTOPlanChange('wageType')"></multiselect-dropdown>
+                            <div class="col-md-6">
+                                <div ng-dropdown-multiselect="" options="wageTypes" selected-model="selectedWageTypes" checkboxes="true" extra-settings="wageTypeSettings"></div>
                             </div>
                         </div>
                         <div class="row" style="padding-top:5px;"></div>
@@ -400,18 +402,18 @@
                             <thead>
                                 <tr class="heading" role="row">
                                     <th width="30px" style="text-align:center">#</th>
-                                    <th width="235px" style="text-align:center">First Name</th>
-                                    <th width="235px" style="text-align:center">Last Name</th>
-                                    <th width="250px" style="text-align:center">Job Title</th>
+                                    <th width="200px" style="text-align:center">First Name</th>
+                                    <th width="150px" style="text-align:center">Last Name</th>
+                                    <th width="360px" style="text-align:center">Job Title</th>
                                     <th width="10px"></th>
                                </tr>
                             </thead>
                             <tbody style="width: 100%;" ng-style="{'min-height': assignmentGridHeight + 'px'}">
                                 <tr ng-repeat="item in employees">
                                     <td width="30px" align ="center">{{$index + 1}}</td>
-                                    <td width="235px" align ="left">{{item.firstName}}</td>
-                                    <td width="235px" align ="left">{{item.lastName}}</td>
-                                    <td width="250px" align ="left">{{item.jobTitle}}</td>
+                                    <td width="200px" align ="left">{{item.firstName}}</td>
+                                    <td width="150px" align ="left">{{item.lastName}}</td>
+                                    <td width="360px" align ="left">{{item.jobTitle}}</td>
                                  </tr>
                             </tbody>
                         </table>
@@ -440,19 +442,19 @@
                     <table class="table-scroll table table-striped table-bordered table-hover" style="width: 750px;">
                         <thead>
                             <tr class="heading" role="row">
-                                <th width="50px" style="text-align:center">#</th>
-                                <th width="300px" style="text-align:center">First Name</th>
-                                <th width="200px" style="text-align:center">Last Name</th>
-                                <th width="200px" style="text-align:center">Job Title</th>
-                                <th width="10px"></th>
+                                <th width="5%" style="text-align:center">#</th>
+                                <th width="30%" style="text-align:center">First Name</th>
+                                <th width="20%" style="text-align:center">Last Name</th>
+                                <th width="50%" style="text-align:center">Job Title</th>
+                                <th width="1%"></th>
                             </tr>
                         </thead>
                         <tbody style="width: 100%;" ng-style="{'min-height': assignmentGridHeight + 'px'}">
                             <tr ng-repeat="item in dayEmployees" ng-click="onEmployeeSelected(item)" ng-class="{'warning':selectedEmployee == item};">
-                                <td width="50px" align ="center">{{$index + 1}}</td>
-                                <td width="300px" align ="left">{{item.firstName}}</td>
-                                <td width="200px" align ="left">{{item.lastName}}</td>
-                                <td width="200px" align ="left">{{item.jobTitle}}</td>
+                                <td width="5%" align ="center">{{$index + 1}}</td>
+                                <td width="30%" align ="left">{{item.firstName}}</td>
+                                <td width="20%" align ="left">{{item.lastName}}</td>
+                                <td width="50%" align ="left">{{item.jobTitle}}</td>
                                 </tr>
                         </tbody>
                     </table>
@@ -464,8 +466,8 @@
                                 <th width="30px" style="text-align:center">#</th>
                                 <th width="170px" style="text-align:center">PTO Type</th>
                                 <th width="150px" style="text-align:center">PTO Taken</th>
-                                <th width="150px" style="text-align:center">Balance Days</th>
-                                <th width="200px" style="text-align:center">Total Days/Status</th>
+                                <th width="150px" style="text-align:center">Balance Hours</th>
+                                <th width="200px" style="text-align:center">Status</th>
                                 <th width="10px"></th>
                             </tr>
                         </thead>
@@ -527,25 +529,25 @@
 </script>
 <script type="text/ng-template" id="unAssignedEmployee.html">
     <form name="employeesInfoForm">
-	    <div id="employeeModal" class="modal-content" style="width:800px;" ng-style="{'max-height': employeeModalHeight + 'px'}">
+	    <div id="employeeModal" class="modal-content" style="width:1200px;" ng-style="{'max-height': employeeModalHeight + 'px'}">
 	        <div style="font-weight:bold;font-size: 18px;text-align: center;font-family: Verdana;">Unassigned Employees</div>
 	        <div class="modal-body" id="employeesTable">
-	        	 <table class="table-scroll table table-striped table-bordered table-hover" style="width: 750px;">
+	        	 <table class="table-scroll table table-striped table-bordered table-hover" style="width: 1150px;">
                             <thead>
                                 <tr class="heading" role="row">
-                                    <th width="30px" style="text-align:center">#</th>
-                                    <th width="235px" style="text-align:center">First Name</th>
-                                    <th width="235px" style="text-align:center">Last Name</th>
-                                    <th width="250px" style="text-align:center">Job Title</th>
-                                    <th width="10px"></th>
+                                    <th width="5%" style="text-align:center">#</th>
+                                    <th width="30%" style="text-align:center">First Name</th>
+                                    <th width="20%" style="text-align:center">Last Name</th>
+                                    <th width="50%" style="text-align:center">Job Title</th>
+                                    <th width="1%"></th>
                                </tr>
                             </thead>
                             <tbody style="width:100%;" ng-style="{'max-height': employeeTableHeight + 'px'}">
                                 <tr ng-repeat="item in unAssignedEmployees">
-                                    <td width="30px" align ="center">{{$index + 1}}</td>
-                                    <td width="235px" align ="left">{{item.firstName}}</td>
-                                    <td width="235px" align ="left">{{item.lastName}}</td>
-                                    <td width="250px" align ="left">{{item.jobTitle}}</td>
+                                    <td width="5%" align ="center">{{$index + 1}}</td>
+                                    <td width="30%" align ="left">{{item.firstName}}</td>
+                                    <td width="20%" align ="left">{{item.lastName}}</td>
+                                    <td width="50%" align ="left">{{item.jobTitle}}</td>
                                  </tr>
                             </tbody>
                     </table>
