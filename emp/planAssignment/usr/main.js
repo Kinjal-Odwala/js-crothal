@@ -402,7 +402,6 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 		$scope.getCityPlanAssignments();
 		$scope.getHouseCodePlanAssignments();
 		$scope.resetSelection();
-		$scope.pageLoading = false;
     };
 
 	$scope.getCompanyPlanAssignments = function() {
@@ -446,13 +445,10 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                     $scope.countys.push(county);
             });
 
-            angular.forEach($scope.countys, function(county, index) {
-                county.countyPlans = [];
-            });
-
             angular.forEach(data, function(county, index) {
                 if (county.ptoPlanId > 0) {
-                    angular.forEach($scope.countys, function(countyPlan, index) {
+                    angular.forEach($scope.countys, function (countyPlan, index) {
+                        countyPlan.countyPlans = [];
                         if (countyPlan.name === county.name) {
                             countyPlan.countyPlans.push(county);
                             $scope.disableCountyCloneButton = true;
@@ -499,13 +495,10 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                 }
             });
 
-            angular.forEach($scope.cities, function(city, index) {
-                city.cityPlans = [];
-            });
-
             angular.forEach(data, function(city, index) {
                 if (city.ptoPlanId > 0) {
-                    angular.forEach($scope.cities, function(cityPlan, index) {
+                    angular.forEach($scope.cities, function (cityPlan, index) {
+                        cityPlan.cityPlans = [];
                         if (cityPlan.name === city.name) {
                             cityPlan.cityPlans.push(city);
                             $scope.disableCityCloneButton = true;
@@ -549,13 +542,10 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                 }
             });
 
-            angular.forEach($scope.houseCodes, function(houseCode, index) {
-                houseCode.houseCodePlans = [];
-            });
-
             angular.forEach(data, function(houseCode, index) {
                 if (houseCode.ptoPlanId > 0) {
-                    angular.forEach($scope.houseCodes, function(houseCodePlan, index) {
+                    angular.forEach($scope.houseCodes, function (houseCodePlan, index) {
+                        houseCodePlan.houseCodePlans = [];
                         if (houseCodePlan.name === houseCode.name) {
                             houseCodePlan.houseCodePlans.push(houseCode);
                             $scope.disableHouseCodeCloneButton = true;
@@ -563,9 +553,10 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                     });
                 }
             });
-            setStatus("Normal");
             $scope.assignedHouseCodes = $scope.houseCodes;
             $scope.setStateGridHeight();
+            $scope.pageLoading = false;
+            setStatus("Normal");
         });
 	};
 
