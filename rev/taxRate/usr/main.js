@@ -36,6 +36,9 @@ ii.Class({
 			me.pageCount = 0;
 			me.pageCurrent = 1;
 
+			//Set the xmlTimeout period to 30 minutes to finish the Import process without timeout error.
+			$.ajaxSetup({timeout: 1800000});
+
 			me.gateway = ii.ajax.addGateway("rev", ii.config.xmlProvider);
 			me.cache = new ii.ajax.Cache(me.gateway);
 			me.transactionMonitor = new ii.ajax.TransactionMonitor(
