@@ -103,9 +103,13 @@ if (!window.top.fin) {
     window.top.fin = { appUI: { houseCodeId: 415, glbFscYear: 4, glbFscPeriod: 45, glbWeek: 2 } };
 }
 
+if (!window.jQuery.ui) {
+    document.write('<script src="js/libs/lodash.min.js"><\/script>');
+}
+
 var getCurrentHcmHouseCode = function () {
     return window.top.fin.appUI.houseCodeId;
-}
+};
 
 var encode = function (value) {
     var returnValue = value.replace(/&/g, "&amp;");
@@ -965,7 +969,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
             $scope.ptoTypes = result;
         });
         EmpActions.getWageTypes(function (result) {
-            $scope.wageTypes = result;
+            $scope.planWageTypes = result;
             $scope.pageStatus = 'Normal';
             setStatus('Normal');
             modified(false);
@@ -1044,7 +1048,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
                 $scope.selectedWageTypes = [];
                 angular.forEach(planWageTypes, function (planWageType) {
                     angular.forEach($scope.wageTypes, function (wageType) {
-                        if (wageType.id === planWageType.wageTypeId)
+                        if (wageType.id === planWageType.ptoWageTypeId)
                             $scope.selectedWageTypes.push(wageType);
                     });
                 });
@@ -1084,6 +1088,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.planYears = [];
         $scope.assigned = false;
         $scope.selectedWageTypes = [];
+        $scope.wageTypes = [];
 
         for (var year = 0; year < $scope.ptoYears.length; year++) {
             if ($scope.ptoYears[year].active) {
@@ -1270,23 +1275,40 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
                 $scope.ptoForm.planForm.planType.$setValidity("required", true);
                 setStatus('Edit');
                 modified(true);
-            }
+                for (var type = 0; type < $scope.ptoPlanTypes.length; type++) {
+                    if ($scope.ptoPlan.ptoPlanType == $scope.ptoPlanTypes[type].id) {
+                        $scope.selectedPlanPlanType = $scope.ptoPlanTypes[type];
+                    }
+                }
 
-            for (var type = 0; type < $scope.ptoPlanTypes.length; type++) {
-                if ($scope.ptoPlan.ptoPlanType == $scope.ptoPlanTypes[type].id) {
-                    $scope.selectedPlanPlanType = $scope.ptoPlanTypes[type];
+                $scope.ptoWageTypes = [];
+
+                if ($scope.ptoPlan.ptoType !== null && $scope.ptoPlan.ptoType !== "") {
+                    for (var index = 0; index < $scope.planWageTypes.length; index++) {
+
+                        if ($scope.planWageTypes[index].name.indexOf($scope.ptoTypeName) >= 0) {
+                            $scope.ptoWageTypes.push($scope.planWageTypes[index]);
+                        }
+                    }
+                    $scope.wageTypes = [];
+                    for (var index = 0; index < $scope.ptoWageTypes.length; index++) {
+
+                        if ($scope.ptoWageTypes[index].hourly == $scope.selectedPlanPlanType.payStatusHourly || $scope.ptoWageTypes[index].salary == $scope.selectedPlanPlanType.payStatusSalary) {
+                            $scope.wageTypes.push($scope.ptoWageTypes[index]);
+                        }
+                    }
+                }
+                else {
+                    for (var index = 0; index < $scope.planWageTypes.length; index++) {
+
+                        if ($scope.planWageTypes[index].hourly == $scope.selectedPlanPlanType.payStatusHourly || $scope.planWageTypes[index].salary == $scope.selectedPlanPlanType.payStatusSalary) {
+                            $scope.ptoWageTypes.push($scope.planWageTypes[index]);
+                        }
+                    }
+
+                    $scope.wageTypes = $scope.ptoWageTypes;
                 }
             }
-
-            $scope.ptoWageTypes = [];
-            for (var index = 0; index < $scope.wageTypes.length; index++) {
-
-                if ($scope.wageTypes[index].hourly == $scope.selectedPlanPlanType.payStatusHourly || $scope.wageTypes[index].salary == $scope.selectedPlanPlanType.payStatusSalary) {
-                    $scope.ptoWageTypes.push($scope.wageTypes[index]);
-                }
-            }
-
-            $scope.wageTypes = $scope.ptoWageTypes;
         }
         else if (detail === 'wageType') {
             if ($scope.selectedWageTypes.length == 0)
@@ -1304,24 +1326,37 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
                 $scope.ptoForm.planForm.planPTOType.$setValidity("required", true);
                 setStatus('Edit');
                 modified(true);
-            }
+                $scope.ptoTypeName = '';
+                for (var type = 0; type < $scope.ptoTypes.length; type++) {
+                    if ($scope.ptoPlan.ptoType == $scope.ptoTypes[type].id) {
+                        $scope.ptoTypeName = $scope.ptoTypes[type].brief;
+                    }
+                }
 
-            var ptoTypeName = '';
-            for (var type = 0; type < $scope.ptoTypes.length; type++) {
-                if ($scope.ptoPlan.ptoType == $scope.ptoTypes[type].id) {
-                    ptoTypeName = $scope.ptoTypes[type].brief;
+                $scope.ptoWageTypes = [];
+                if ($scope.ptoPlan.ptoPlanType !== null && $scope.ptoPlan.ptoPlanType !== "") {
+                    for (var index = 0; index < $scope.planWageTypes.length; index++) {
+                        if ($scope.planWageTypes[index].hourly == $scope.selectedPlanPlanType.payStatusHourly || $scope.planWageTypes[index].salary == $scope.selectedPlanPlanType.payStatusSalary) {
+                            $scope.ptoWageTypes.push($scope.planWageTypes[index]);
+                        }
+                    }
+                    $scope.wageTypes = [];
+                    for (var index = 0; index < $scope.ptoWageTypes.length; index++) {
+                        if ($scope.ptoWageTypes[index].name.indexOf($scope.ptoTypeName) >= 0) {
+                            $scope.wageTypes.push($scope.ptoWageTypes[index]);
+                        }
+                    }
+                }
+                else {
+                    for (var index = 0; index < $scope.planWageTypes.length; index++) {
+                        if ($scope.planWageTypes[index].name.indexOf($scope.ptoTypeName) >= 0) {
+                            $scope.ptoWageTypes.push($scope.planWageTypes[index]);
+                        }
+                    }
+
+                    $scope.wageTypes = $scope.ptoWageTypes;
                 }
             }
-
-            $scope.ptoWageTypes = [];
-            for (var index = 0; index < $scope.wageTypes.length; index++) {
-                
-                if ($scope.wageTypes[index].name.indexOf(ptoTypeName) >= 0) {
-                    $scope.ptoWageTypes.push($scope.wageTypes[index]);
-                }
-            }
-
-            $scope.wageTypes = $scope.ptoWageTypes;
         }
         else if (detail === 'year') {
             if ($scope.ptoPlan.planPtoYear === null || $scope.ptoPlan.planPtoYear === "")
@@ -2204,9 +2239,8 @@ function ($filter, $document, $compile, $parse) {
             var groups = attrs.groupBy ? true : false;
 
             var template = '<div class="multiselect-parent btn-group dropdown-multiselect">';
-            template += '<button type="button" id="multiselectBtn" class="dropdown-toggle" ng-class="settings.buttonClasses" ng-click="toggleDropdown()">{{getButtonText()}}&nbsp;<span class="caret"></span></button>';
+            template += '<button type="button" id="multiselectBtn" class="dropdown-toggle" ng-class="settings.buttonClasses" ng-click="toggleDropdown()">{{getButtonText()}}<span id="buttonCaret" class="caret" ng-show="selectedModel.length == 0"></span></button>';
             template += '<ul class="dropdown-menu dropdown-menu-form" ng-style="{display: open ? \'block\' : \'none\', height : settings.scrollable ? settings.scrollableHeight : \'auto\' }" style="overflow: scroll" >';
-            template += '<li ng-hide="(!settings.showCheckAll || settings.selectionLimit > 0) && !settings.showUncheckAll" class="divider"></li>';
             template += '<li ng-show="settings.enableSearch"><div class="dropdown-header"><input type="text" class="form-control" style="width: 100%;" ng-model="searchFilter" placeholder="{{texts.searchPlaceholder}}" /></li>';
             template += '<li ng-show="settings.enableSearch" class="divider"></li>';
 
@@ -2283,7 +2317,7 @@ function ($filter, $document, $compile, $parse) {
                 selectionCount: 'checked',
                 selectionOf: '/',
                 searchPlaceholder: 'Search...',
-                buttonDefaultText: 'Select',
+                buttonDefaultText: '',
                 dynamicButtonTextSuffix: 'Selected'
             };
 
@@ -2458,40 +2492,21 @@ function ($filter, $document, $compile, $parse) {
                     clearObject($scope.selectedModel);
                     angular.extend($scope.selectedModel, finalObj);
                     $scope.externalEvents.onItemSelect(finalObj);
-                    if ($scope.settings.closeOnSelect) $scope.open = false;
 
                     return;
                 }
 
                 dontRemove = dontRemove || false;
 
-                var exists = false;
-
-                for (var i = 0; i < $scope.selectedModel.length; ++i) {
-                    if ($scope.selectedModel[i].id == findObj) {
-                        exists = true;
-                        break;
-                    }
-                }
-
-                var index = -1;
-
-                for (var j = 0; j < $scope.selectedModel.length; ++j) {
-                    if ($scope.selectedModel[j].id == findObj) {
-                        index = j;
-                        break;
-                    }
-                }
+                var exists = _.findIndex($scope.selectedModel, findObj) !== -1;
 
                 if (!dontRemove && exists) {
-                    $scope.selectedModel.splice(index, 1);
+                    $scope.selectedModel.splice(_.findIndex($scope.selectedModel, findObj), 1);
                     $scope.externalEvents.onItemDeselect(findObj);
                 } else if (!exists && ($scope.settings.selectionLimit === 0 || $scope.selectedModel.length < $scope.settings.selectionLimit)) {
                     $scope.selectedModel.push(finalObj);
                     $scope.externalEvents.onItemSelect(finalObj);
                 }
-
-                if ($scope.settings.closeOnSelect) $scope.open = false;
             };
 
             $scope.isChecked = function (id) {
@@ -2499,17 +2514,7 @@ function ($filter, $document, $compile, $parse) {
                     return $scope.selectedModel !== null && angular.isDefined($scope.selectedModel[$scope.settings.idProp]) && $scope.selectedModel[$scope.settings.idProp] === getFindObj(id)[$scope.settings.idProp];
                 }
 
-                var find = false;
-                for (var k = 0; k < $scope.selectedModel.length; k++) {
-                    if ($scope.selectedModel[k].id == getFindObj(id).id) {
-                        find = true;
-                        break;
-                    }
-                }
-
-                return find;
-
-                //return _.findIndex($scope.selectedModel, getFindObj(id)) !== -1;
+                return _.findIndex($scope.selectedModel, getFindObj(id)) !== -1;
             };
 
             $scope.externalEvents.onInitDone();
@@ -2610,7 +2615,7 @@ pto.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
             callback(cache.wageTypes);
             return;
         }
-        apiRequest('emp', 'iiCache', '<criteria>storeId:wageTypes,userId:[user]'
+        apiRequest('emp', 'iiCache', '<criteria>storeId:ptoWageTypes,userId:[user]'
 			+ ',</criteria>', function (xml) {
 			    if (callback) {
 			        cache.wageTypes = deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id'], boolItems: ['active', 'hourly', 'salary'] });
@@ -2620,11 +2625,11 @@ pto.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
     };
 
     var getPlanWageTypes = function (ptoPlanId, callback) {
-        apiRequest('emp', 'iiCache', '<criteria>storeId:planWageTypes,userId:[user]'
+        apiRequest('emp', 'iiCache', '<criteria>storeId:ptoPlanWageTypes,userId:[user]'
             + ',ptoPlanId:' + ptoPlanId
 			+ ',</criteria>', function (xml) {
 			    if (callback) {
-			        callback(deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id', 'wageTypeId', 'planId'], boolItems: ['active'] }));
+			        callback(deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id', 'ptoWageTypeId', 'ptoPlanId'], boolItems: ['active'] }));
 			    }
 			});
     };
