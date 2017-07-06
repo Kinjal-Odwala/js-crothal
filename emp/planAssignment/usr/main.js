@@ -445,6 +445,10 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                     $scope.countys.push(county);
             });
 
+            angular.forEach($scope.countys, function (county, index) {
+                county.countyPlans = [];
+            });
+
             angular.forEach(data, function(county, index) {
                 if (county.ptoPlanId > 0) {
                     angular.forEach($scope.countys, function (countyPlan, index) {
@@ -495,6 +499,10 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                 }
             });
 
+            angular.forEach($scope.cities, function (city, index) {
+                city.cityPlans = [];
+            });
+
             angular.forEach(data, function(city, index) {
                 if (city.ptoPlanId > 0) {
                     angular.forEach($scope.cities, function (cityPlan, index) {
@@ -540,6 +548,10 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                     houseCode.name = houseCode.name.slice(0, houseCode.name.indexOf("("));
                     $scope.houseCodes.push(houseCode);
                 }
+            });
+
+            angular.forEach($scope.houseCodes, function (houseCode, index) {
+                houseCode.houseCodePlans = [];
             });
 
             angular.forEach(data, function(houseCode, index) {
