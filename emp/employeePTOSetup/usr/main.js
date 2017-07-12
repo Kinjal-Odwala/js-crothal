@@ -1212,6 +1212,9 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
                                     break;
                                 }
                             }
+                            EmpActions.getPlanWageTypes($scope.selectedPTOPlan.id, function (planWageTypes) {
+                                $scope.ptoPlanWageTypes = planWageTypes;
+                            });
                         });
                     }
                     else {
@@ -1233,6 +1236,10 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
                                     break;
                                 }
                             }
+
+                            EmpActions.getPlanWageTypes($scope.selectedPTOPlan.id, function (planWageTypes) {
+                                $scope.ptoPlanWageTypes = planWageTypes;
+                            });
                         });
                     }
                     $scope.$apply(function () {
@@ -1260,11 +1267,6 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         else
             $scope.ptoForm.planForm.planType.$setValidity("required", true);
 
-        if ($scope.selectedWageTypes.length == 0)
-            $scope.ptoForm.planForm.planWageType.$setValidity("required", false);
-        else 
-            $scope.ptoForm.planForm.planWageType.$setValidity("required", true);
-      
         if ($scope.ptoPlan.ptoType === null || $scope.ptoPlan.ptoType === "")
             $scope.ptoForm.planForm.planPTOType.$setValidity("required", false);
         else
@@ -2582,6 +2584,21 @@ pto.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
                     xml += '<ptoPlanWageType';
                     xml += ' id="' + "0" + '"';
                     xml += ' wageTypeId="' + $scope.selectedWageTypes[index].id + '"';
+                    xml += '/>';
+                }
+            }
+
+            for (var total = 0; total < $scope.ptoPlanWageTypes.length; total++) {
+                var exists = false;
+                for (var index = 0; index < $scope.selectedWageTypes.length; index++) {
+                    if ($scope.ptoPlanWageTypes[total].ptoWageTypeId == $scope.selectedWageTypes[index].id) {
+                        exists = true;
+                        break;
+                    }
+                }
+                if (!exists) {
+                    xml += '<ptoPlanWageTypeDelete';
+                    xml += ' id="' + $scope.ptoPlanWageTypes[total].id + '"';
                     xml += '/>';
                 }
             }
