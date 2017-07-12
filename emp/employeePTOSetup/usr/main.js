@@ -992,7 +992,11 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
 
     $scope.onPTOPlanSelected = function (item) {
         if (editStatus())
-            return; 
+            return;
+
+        $scope.loadingTitle = " Loading...";
+        $scope.pageStatus = 'Loading, Please Wait...';
+        setStatus("Loading");
         $scope.selectedPTOPlan = item;
         $scope.lastSelectedPlan = item;
         $scope.ptoPlan.ptoPlanName = item.title;
@@ -1073,6 +1077,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
             }
            
             EmpActions.getPlanWageTypes($scope.selectedPTOPlan.id, function (planWageTypes) {
+                $scope.ptoPlanWageTypes = planWageTypes;
                 $scope.selectedWageTypes = [];
                 angular.forEach(planWageTypes, function (planWageType) {
                     angular.forEach($scope.wageTypesList, function (wageType) {
@@ -1081,6 +1086,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
                     });
                 });
             });
+            $scope.pageLoading = false;
             $scope.pageStatus = 'Normal';
             setStatus('Normal');
             modified(false);
@@ -2563,10 +2569,21 @@ pto.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
             xml += '/>';
 
             for (var index = 0; index < $scope.selectedWageTypes.length; index++) {
+                var found = false;
+                if ($scope.selectedPTOPlan !== undefined && $scope.selectedPTOPlan !== null) {
+                    for (var count = 0; count < $scope.ptoPlanWageTypes.length; count++) {
+                        if ($scope.ptoPlanWageTypes[count].ptoWageTypeId == $scope.selectedWageTypes[index].id) {
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+                if (!found) {
                     xml += '<ptoPlanWageType';
                     xml += ' id="' + "0" + '"';
                     xml += ' wageTypeId="' + $scope.selectedWageTypes[index].id + '"';
                     xml += '/>';
+                }
             }
         }
         else if (action === "PTO Plan" && $scope.isClone === true) {
