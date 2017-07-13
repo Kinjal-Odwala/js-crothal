@@ -266,7 +266,7 @@
                         <div class="row" ng-class="{'has-error':ptoForm.planForm.planWageType.$invalid}">
                              <label class="col-md-3 control-label">Wage Type:</label>
                             <div class="col-md-4">
-                                <div ng-dropdown-multiselect="" options="wageTypes" selected-model="selectedWageTypes" checkboxes="true" extra-settings="wageTypeSettings" ng-disabled="assigned"></div>
+                                <div ng-disabled="assigned" ng-class="{'disabled': assigned}" ng-dropdown-multiselect="" options="wageTypes" selected-model="selectedWageTypes" checkboxes="true" extra-settings="wageTypeSettings" ng-disabled="assigned"></div>
                             </div>
                         </div>
                         <div class="row" style="padding-top:5px;"></div>

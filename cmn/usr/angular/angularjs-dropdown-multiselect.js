@@ -10,6 +10,7 @@ function ($filter, $document, $compile, $parse) {
             extraSettings: '=',
             events: '=',
             searchFilter: '=?',
+            disabled: '=ngDisabled',
             translationTexts: '=',
             groupBy: '@'
         },
@@ -17,11 +18,9 @@ function ($filter, $document, $compile, $parse) {
             var checkboxes = attrs.checkboxes ? true : false;
             var groups = attrs.groupBy ? true : false;
 
-            var template = '<div class="multiselect-parent btn-group dropdown-multiselect">';
-            template += '<button type="button" id="multiselectBtn" class="dropdown-toggle" ng-disabled="assigned" ng-class="settings.buttonClasses" ng-click="toggleDropdown()">{{getButtonText()}}&nbsp;<span id="buttonCaret" class="caret" ng-style="{ \'margin-left\' : (selectedModel.length == 0) ? \'200px\' : \'0\' }"></span></button>';
+            var template = '<div class="multiselect-parent btn-group dropdown-multiselect" ng-disabled="assigned" ng-class="{\'disabled\': assigned}">';
+            template += '<button type="button" id="multiselectBtn" class="dropdown-toggle" ng-class="settings.buttonClasses" ng-click="toggleDropdown()">{{getButtonText()}}&nbsp;<span id="buttonCaret" class="caret" ng-style="{ \'margin-left\' : (selectedModel.length == 0) ? \'200px\' : \'0\' }"></span></button>';
             template += '<ul class="dropdown-menu dropdown-menu-form" ng-style="{display: open ? \'block\' : \'none\', height : settings.scrollable ? settings.scrollableHeight : \'auto\' }" style="overflow: scroll" >';
-            template += '<li ng-show="settings.enableSearch"><div class="dropdown-header"><input type="text" class="form-control" style="width: 100%;" ng-model="searchFilter" placeholder="{{texts.searchPlaceholder}}" /></li>';
-            template += '<li ng-show="settings.enableSearch" class="divider"></li>';
 
             if (groups) {
                 template += '<li ng-repeat-start="option in orderedItems | filter: searchFilter" ng-show="getPropertyForObject(option, settings.groupBy) !== getPropertyForObject(orderedItems[$index - 1], settings.groupBy)" role="presentation" class="dropdown-header">{{ getGroupTitle(getPropertyForObject(option, settings.groupBy)) }}</li>';

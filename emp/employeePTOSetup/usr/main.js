@@ -1197,7 +1197,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         }
         else if ($scope.ptoForm.planForm.$valid && $scope.ptoPlan.ptoPlanName !== null && $scope.ptoPlan.ptoPlanType !== null && $scope.ptoPlan.ptoType !== null
                  && $scope.ptoPlan.planPtoYear !== null && $scope.ptoPlan.ptoPlanDays !== null && $scope.ptoPlan.ptoPlanAccrualInterval !== null
-                 && $scope.ptoPlan.startDate !== null && $scope.ptoPlan.endDate !== null && $scope.selectedWageTypes.length !== 0) {
+                 && $scope.ptoPlan.startDate !== null && $scope.ptoPlan.endDate !== null) {
             EmpActions.getPTOPlans($scope.ptoPlan.planPtoYear, function (result) {
                 $scope.plans = [];
                 $scope.plans = result;
@@ -1344,6 +1344,8 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
 
                     $scope.wageTypes = $scope.ptoWageTypes;
                 }
+
+                $scope.selectedWageTypes = [];
             }
         }
         else if (detail === 'wageType') {
@@ -1393,6 +1395,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
                     $scope.wageTypes = $scope.ptoWageTypes;
                 }
             }
+            $scope.selectedWageTypes = [];
         }
         else if (detail === 'year') {
             if ($scope.ptoPlan.planPtoYear === null || $scope.ptoPlan.planPtoYear === "")

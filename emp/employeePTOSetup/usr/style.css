@@ -243,6 +243,10 @@ li {
     width: 238px;
 }
 
+.disabled{
+  background-color: rgba(0,0,0,.175);
+  pointer-events: none;
+}
 
 
 
