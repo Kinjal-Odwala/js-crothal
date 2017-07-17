@@ -266,7 +266,7 @@
                         <div class="row" ng-class="{'has-error':ptoForm.planForm.planWageType.$invalid}">
                              <label class="col-md-3 control-label">Wage Type:</label>
                             <div class="col-md-4">
-                                <div ng-disabled="assigned" ng-class="{'disabled': assigned}" ng-dropdown-multiselect="" options="wageTypes" selected-model="selectedWageTypes" checkboxes="true" extra-settings="wageTypeSettings" ng-disabled="assigned"></div>
+                                <div ng-disabled="assigned" ng-class="{'disabled': assigned}" ng-dropdown-multiselect="" options="wageTypes" selected-model="selectedWageTypes" checkboxes="true" extra-settings="wageTypeSettings" assigned="assigned" ng-disabled="assigned"></div>
                             </div>
                         </div>
                         <div class="row" style="padding-top:5px;"></div>
@@ -281,7 +281,7 @@
                             <div class="form-group">
                                  <label class="col-md-3 control-label">Start Date:</label>
                                 <div class="col-md-4">
-                                    <pto-datepicker id="datepicker" dt-option="dateOptions" dt-name="startDate" ng-disabled="assigned" dt-popup="MM/dd/yyyy" dt-model="ptoPlan.startDate" dt-blur="onStartDateChange()"></pto-datepicker>
+                                    <pto-datepicker id="datepicker" ng-class="{'disabled': assigned}" dt-option="dateOptions" dt-name="startDate" ng-disabled="assigned" dt-popup="MM/dd/yyyy" dt-model="ptoPlan.startDate" dt-blur="onStartDateChange()"></pto-datepicker>
                                 </div>
                             </div>
                         </div>
@@ -289,7 +289,7 @@
                         <div class="row" ng-class="{'has-error':ptoForm.planForm.endDate.$invalid}">
                              <label class="col-md-3 control-label">End Date:</label>
                             <div class="col-md-4">
-                                <pto-datepicker dt-option="dateOptions" dt-name="endDate" dt-popup="MM/dd/yyyy" ng-disabled="assigned" dt-model="ptoPlan.endDate" dt-blur="onEndDateChange()"></pto-datepicker>
+                                <pto-datepicker ng-class="{'disabled': assigned}" dt-option="dateOptions" dt-name="endDate" dt-popup="MM/dd/yyyy" ng-disabled="assigned" dt-model="ptoPlan.endDate" dt-blur="onEndDateChange()"></pto-datepicker>
                             </div>
                         </div>
                         <div class="row" style="padding-top:5px;"></div>

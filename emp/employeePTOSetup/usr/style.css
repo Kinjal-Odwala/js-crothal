@@ -240,12 +240,13 @@ li {
 }
 
 #multiselectBtn {
-    width: 238px;
+    width: 240px;
 }
 
 .disabled{
   background-color: rgba(0,0,0,.175);
   pointer-events: none;
+  cursor: not-allowed;
 }
 
 

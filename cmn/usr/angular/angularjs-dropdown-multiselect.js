@@ -9,6 +9,7 @@ function ($filter, $document, $compile, $parse) {
             options: '=',
             extraSettings: '=',
             events: '=',
+            assigned: '=',
             searchFilter: '=?',
             disabled: '=ngDisabled',
             translationTexts: '=',
@@ -18,8 +19,8 @@ function ($filter, $document, $compile, $parse) {
             var checkboxes = attrs.checkboxes ? true : false;
             var groups = attrs.groupBy ? true : false;
 
-            var template = '<div class="multiselect-parent btn-group dropdown-multiselect" ng-disabled="assigned" ng-class="{\'disabled\': assigned}">';
-            template += '<button type="button" id="multiselectBtn" class="dropdown-toggle" ng-class="settings.buttonClasses" ng-click="toggleDropdown()">{{getButtonText()}}&nbsp;<span id="buttonCaret" class="caret" ng-style="{ \'margin-left\' : (selectedModel.length == 0) ? \'200px\' : \'0\' }"></span></button>';
+            var template = '<div class="multiselect-parent btn-group dropdown-multiselect">';
+            template += '<button type="button" id="multiselectBtn" class="dropdown-toggle" ng-disabled="assigned" ng-class="settings.buttonClasses" ng-click="toggleDropdown()">{{getButtonText()}}&nbsp;<span id="buttonCaret" class="caret" ng-style="{ \'margin-left\' : (selectedModel.length == 0) ? \'200px\' : \'0\' }"></span></button>';
             template += '<ul class="dropdown-menu dropdown-menu-form" ng-style="{display: open ? \'block\' : \'none\', height : settings.scrollable ? settings.scrollableHeight : \'auto\' }" style="overflow: scroll" >';
 
             if (groups) {
