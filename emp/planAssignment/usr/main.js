@@ -537,7 +537,8 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                         var county = houseCode.name.substring(houseCode.name.indexOf("(") + 1, houseCode.name.indexOf(")"));
                         var city = houseCode.name.substring(houseCode.name.indexOf("{") + 1, houseCode.name.indexOf("}"));
                         houseCode.tooltipText = ["County: " + county, "City: " + city];
-                        houseCode.name = houseCode.name.slice(0, houseCode.name.indexOf("("));
+                        if (houseCode.name.indexOf("(") > 0)
+                            houseCode.name = houseCode.name.substring(0, houseCode.name.indexOf("("));
                         $scope.houseCodes.push(houseCode);
                     }
                 }
@@ -545,7 +546,8 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                     var county = houseCode.name.substring(houseCode.name.indexOf("(") + 1, houseCode.name.indexOf(")"));
                     var city = houseCode.name.substring(houseCode.name.indexOf("{") + 1, houseCode.name.indexOf("}"));
                     houseCode.tooltipText = ["County: " + county, "City: " + city];
-                    houseCode.name = houseCode.name.slice(0, houseCode.name.indexOf("("));
+                    if (houseCode.name.indexOf("(") > 0) 
+                        houseCode.name = houseCode.name.substring(0, houseCode.name.indexOf("("));
                     $scope.houseCodes.push(houseCode);
                 }
             });

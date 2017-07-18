@@ -970,9 +970,13 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
             setStatus('Normal');
             modified(false);
         });
+       
         for (var year = 0; year < $scope.ptoYears.length; year++) {
             if ($scope.ptoYears[year].active) {
                 $scope.planYears.push($scope.ptoYears[year]);
+            }
+            if ($scope.ptoPlan.ptoYear == $scope.ptoYears[year].id) {
+                $scope.ptoPlanYear = $scope.ptoYears[year].name;
             }
         }
     };
@@ -1023,6 +1027,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.activeYears = [];
         $scope.planYears = $scope.ptoYears;
         $scope.wageTypes = [];
+        
         EmpActions.getPlanAssignments($scope.ptoPlan.ptoYear, 0, 0, function (result) {
             $scope.ptoPlanAssignments = result;
             angular.forEach($scope.ptoPlanAssignments, function (planAssignment) {
@@ -1462,6 +1467,14 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         return $filter('date')(date, 'yyyy-MM-dd');
     };
 
+    $scope.getYear = function (date) {
+        if (!angular.isDefined(date))
+            return;
+
+        date = new Date(date);
+        return $filter('date')(date, 'yyyy');
+    };
+
     $scope.onStartDateChange = function () {
         if ($scope.ptoPlan.startDate === null || $scope.ptoPlan.startDate === undefined || $scope.ptoPlan.startDate === "") {
             $scope.ptoForm.planForm.startDate.$setValidity("required", false);
@@ -1492,7 +1505,8 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.minEndDate = $scope.getDate($scope.ptoPlan.startDate);
         $scope.maxEndDate = (parseInt($scope.minEndDate.substring(0, 4)) + 1) + '-' + $scope.minEndDate.substring(5, 7) + '-' + $scope.minEndDate.substring(8);
 
-        if ($scope.ptoPlan.endDate !== null && $scope.ptoPlan.endDate !== undefined && $scope.getDate($scope.ptoPlan.endDate) > $scope.maxEndDate) {
+        if ($scope.ptoPlan.endDate !== null && $scope.ptoPlan.endDate !== undefined &&
+            ($scope.getDate($scope.ptoPlan.endDate) > $scope.maxEndDate) || ($scope.getYear($scope.ptoPlan.endDate) > parseInt($scope.ptoPlanYear))) {
             $scope.ptoForm.planForm.endDate.$setValidity("required", false);
         }
         setStatus('Edit');
@@ -1504,7 +1518,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
             $scope.ptoForm.planForm.endDate.$setValidity("required", false);
         }
         else if ($scope.ptoPlan.startDate !== null && $scope.ptoPlan.startDate !== undefined && (($scope.getDate($scope.ptoPlan.endDate) > $scope.maxEndDate) ||
-            ($scope.getDate($scope.ptoPlan.startDate) > $scope.getDate($scope.ptoPlan.endDate) ))) {
+            ($scope.getDate($scope.ptoPlan.startDate) > $scope.getDate($scope.ptoPlan.endDate)) || ($scope.getYear($scope.ptoPlan.endDate) > parseInt($scope.ptoPlanYear)))) {
             $scope.ptoForm.planForm.endDate.$setValidity("required", false);
         }
         else {
