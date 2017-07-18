@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-		<title>Purchasing - Vendor</title>
+		<title>Purchasing - Vendors</title>
 		<script type="text/javascript">
 			var globalContext = "/net/crothall/chimes/fin/pur/act";
 			var js = document.createElement("script");
@@ -21,7 +21,6 @@
 		        <div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
 		    </div>
 		</div>
-		
 	  	<div class="pageHeader">
 	        <div id="actionMenu" title="Menu of actions that you can perform.">Actions<span>&nbsp;</span></div>
         </div>
@@ -33,178 +32,370 @@
 		</div>
 		<div style="clear:both;"></div>
 		<div class="pageBody">
-		    <div id="contentAreasContainerLeft">
-				<div  class="contentArea">
-					<div id="searchAreaVendor">
-			            <div id="inputVendorSearchTest" class="labelText">Vendor Number&nbsp;or&nbsp;Title:</div>
-			            <div id="inputVendorSearch">
-	                        <div id="SearchInput"></div>
-	                    </div>
-			        </div>
-					<div style="clear:both;"></div>
-				    <div class="header">Vendor</div>
-				    <div class="body">
-						<div id="VendorsGrid"></div>
-						<div style="clear:both;"></div>
-					</div>
-				</div>
-				<div style="clear:both;"></div>
-		    </div>
-			
-			<div id="contentAreasContainerRight">
-			    <div class="contentArea">
-			    	<div class="body">
-				        <div class="searchAreaStatus">
-				            <div id="inputVendorSearchTest" class="labelText">Status:</div>
-				            <div id="inputStatusTypes">
+		    <div class="leftContainer">
+				<div class="contentArea">
+					<div id="SearchContainer">
+						<div id="SearchArea">
+							<div class="labelTextAreaVendor">Vendor Number or Title:</div>
+							<div class="inputTextAreaSmall">
+								<div id="SearchInput"></div>
+							</div>
+				            <div class="labelTextAreaStatus">Status:</div>
+				            <div class="inputTextAreaSmall">
 					            <div id="VendorStatus"></div>
 				            </div>
-							<div id="searchAreaButtons">
-					            <div id="SearchButton"></div>				            
-					        </div>
-				        </div>
+							<div id="AnchorSearch"></div>
+						</div>
 					</div>
 					<div style="clear:both;"></div>
-			        <div id="vendorDetailHeader" class="header">Vendor Details</div>
+				    <div class="header">Vendors</div>
+				    <div class="body">
+						<div id="VendorsGrid"></div>
+					</div>
+				</div>
+		    </div>
+			<div class="rightContainer">
+			    <div class="contentArea">
+			    	<div id="NotificationContainer">
+						<div id="Notification">
+							<div id="NotificationIndicator"><img width="40px" height="30px" src="/fin/cmn/usr/media/Common/new.gif" alt="New Vendors" title="New Vendors"/></div>
+							<div id="NotificationLabel">New Vendors are available which needs to be setup/configured.</div>
+							<div id="ViewNewVendorsLink">View New Vendors</div>
+							<div id="ViewCurrentVendorsLink">View Current Vendors</div>
+						</div>
+					</div>
+					<div style="clear:both;"></div>
+			        <div class="header">Vendor Details</div>
 			        <div id="vendorDetailContentArea" class="body">
-						<div id="TableEditArea">
-							<div id="LabelTextAreaVendorDetails">
-								<span class="requiredFieldIndicator">&#149;&nbsp;</span>Vendor Number:
+			        	<div class="innerLeftContainer">
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;&nbsp;</span>Vendor Number:
+								</div>
+								<div class="inputTextArea">
+									<div id="VendorNumber"></div>
+								</div>
+								<div style="clear:both;"></div>
 							</div>
-							<div id="InputTextAreaRight">
-								<div id="VendorNumber"></div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;&nbsp;</span>Title:
+								</div>
+								<div class="inputTextArea">
+									<div id="Title"></div>
+								</div>
+								<div style="clear:both;"></div>
 							</div>
-							<div style="clear:both;"></div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;&nbsp;</span>Address 1:
+								</div>
+								<div class="inputTextArea">
+									<div id="AddressLine1"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;&nbsp;</span>City:
+								</div>
+								<div class="inputTextArea">
+									<div id="City"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;&nbsp;</span>Postal Code:
+								</div>
+								<div class="inputTextArea">
+									<div id="Zip"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span class="nonRequiredFieldIndicator">&#149;&nbsp;</span>Contact Name:
+								</div>
+								<div class="inputTextArea">
+									<div id="ContactName"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span class="nonRequiredFieldIndicator">&#149;&nbsp;</span>Phone:
+								</div>
+								<div class="inputTextArea">
+									<div id="PhoneNumber"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span id="nonRequiredFieldIndicator">&nbsp;Train Station:</span>
+								</div>
+								<div class="inputTextArea">
+									<div id="TrainStation"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span id="nonRequiredFieldIndicator">&nbsp;Payment Term:</span>
+								</div>
+								<div class="inputTextArea">
+									<div id="PaymentTerm"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span id="nonRequiredFieldIndicator">&nbsp;Memo:</span>
+								</div>
+								<div class="inputTextArea">
+									<div id="Memo"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span id="nonRequiredFieldIndicator">&nbsp;Consolidated Code:</span>
+								</div>
+								<div class="inputTextArea">
+									<div id="ConsolidatedCode"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span id="nonRequiredFieldIndicator">&nbsp;Category Code:</span>
+								</div>
+								<div class="inputTextArea">
+									<div id="CategoryCode"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span id="nonRequiredFieldIndicator">&nbsp;Nominated Code:</span>
+								</div>
+								<div class="inputTextArea">
+									<div id="NominatedCode"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span id="nonRequiredFieldIndicator">&nbsp;Payment Key Terms:</span>
+								</div>
+								<div class="inputTextArea">
+									<div id="PaymentKeyTerms"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span id="nonRequiredFieldIndicator">&nbsp;Country:</span>
+								</div>
+								<div class="inputTextArea">
+									<div id="Country"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span id="nonRequiredFieldIndicator">&nbsp;Block Central Posting:</span>
+								</div>
+								<div class="inputTextArea">
+									<div id="BlockCentralPosting"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span id="nonRequiredFieldIndicator">&nbsp;Block Posting Code:</span>
+								</div>
+								<div class="inputTextArea">
+									<div id="BlockPostingCompanyCode"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;&nbsp;</span>Send Method Type:
+								</div>
+								<div class="inputTextArea">
+									<div id="SendMethodType"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span id="nonRequiredFieldIndicator">&nbsp;Active:</span>
+								</div>
+								<div class="inputTextArea">
+									<div id="Active"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
 						</div>
-						<div id="TableEditArea">
-							<div id="LabelTextAreaVendorDetails">
-								<span class="requiredFieldIndicator">&#149;&nbsp;</span>Title:
+						<div class="innerRightContainer">
+							<div class="tableEditArea">
+								<div class="labelTextArea"></div>
+								<div class="inputTextArea"></div>
+								<div style="clear:both;"></div>
 							</div>
-							<div id="InputTextAreaRight">
-								<div id="Title"></div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span id="nonRequiredFieldIndicator">&nbsp;Name:</span>
+								</div>
+								<div class="inputTextArea">
+									<div id="Name"></div>
+								</div>
+								<div style="clear:both;"></div>
 							</div>
-							<div style="clear:both;"></div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span class="nonRequiredFieldIndicator">&#149;&nbsp;</span>Address 2:
+								</div>
+								<div class="inputTextArea">
+									<div id="AddressLine2"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;&nbsp;</span>State:
+								</div>
+								<div class="inputTextArea">
+									<div id="State"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea"></div>
+								<div class="inputTextArea"></div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span class="nonRequiredFieldIndicator">&#149;&nbsp;</span>Email:
+								</div>
+								<div class="inputTextArea">
+									<div id="Email"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span class="nonRequiredFieldIndicator">&#149;&nbsp;</span>Fax:
+								</div>
+								<div class="inputTextArea">
+									<div id="FaxNumber"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span id="nonRequiredFieldIndicator">&nbsp;Group Key:</span>
+								</div>
+								<div class="inputTextArea">
+									<div id="GroupKey"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span id="nonRequiredFieldIndicator">&nbsp;Account Number:</span>
+								</div>
+								<div class="inputTextArea">
+									<div id="AccountNumber"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span id="nonRequiredFieldIndicator">&nbsp;Minority Indicator:</span>
+								</div>
+								<div class="inputTextArea">
+									<div id="MinorityIndicator"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span id="nonRequiredFieldIndicator">&nbsp;Consolidated Text:</span>
+								</div>
+								<div class="inputTextArea">
+									<div id="ConsolidatedText"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span id="nonRequiredFieldIndicator">&nbsp;Category Text:</span>
+								</div>
+								<div class="inputTextArea">
+									<div id="CategoryText"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span id="nonRequiredFieldIndicator">&nbsp;Nominated Text:</span>
+								</div>
+								<div class="inputTextArea">
+									<div id="NominatedText"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span id="nonRequiredFieldIndicator">&nbsp;Business Type:</span>
+								</div>
+								<div class="inputTextArea">
+									<div id="BusinessType"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea"></div>
+								<div class="inputTextArea"></div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span id="nonRequiredFieldIndicator">&nbsp;Block Payment:</span>
+								</div>
+								<div class="inputTextArea">
+									<div id="BlockPayment"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea"></div>
+								<div class="inputTextArea"></div>
+								<div style="clear:both;"></div>
+							</div>
+							<div class="tableEditArea">
+								<div class="labelTextArea">
+									<span id="nonRequiredFieldIndicator">&nbsp;Auto Email:</span>
+								</div>
+								<div class="inputTextArea">
+									<div id="AutoEmail"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
 						</div>
-						<div id="TableEditArea">
-							<div id="LabelTextAreaVendorDetails">
-								<span class="requiredFieldIndicator">&#149;&nbsp;</span>Address 1:
-							</div>
-							<div id="InputTextAreaRight">
-								<div id="AddressLine1"></div>
-							</div>
-							<div style="clear:both;"></div>
-						</div>
-						<div id="TableEditArea">
-							<div id="LabelTextAreaVendorDetails">
-								<span class="nonRequiredFieldIndicator">&#149;&nbsp;</span>Address 2:
-							</div>
-							<div id="InputTextAreaRight">
-								<div id="AddressLine2"></div>
-							</div>
-							<div style="clear:both;"></div>
-						</div>
-						<div id="TableEditArea">
-							<div id="LabelTextAreaVendorDetails">
-								<span class="requiredFieldIndicator">&#149;&nbsp;</span>City:
-							</div>
-							<div id="InputTextAreaRight">
-								<div id="City"></div>
-							</div>
-							<div style="clear:both;"></div>
-						</div>
-						<div id="TableEditArea">
-							<div id="LabelTextAreaVendorDetails">
-								<span class="requiredFieldIndicator">&#149;&nbsp;</span>State:
-							</div>
-							<div id="InputTextAreaRight">
-								<div id="State"></div>
-							</div>
-							<div style="clear:both;"></div>
-						</div>
-						<div id="TableEditArea">
-							<div id="LabelTextAreaVendorDetails">
-								<span class="requiredFieldIndicator">&#149;&nbsp;</span>Postal Code:
-							</div>
-							<div id="InputTextAreaRight">
-								<div id="Zip"></div>
-							</div>
-							<div style="clear:both;"></div>
-						</div>
-						<div id="TableEditArea">
-							<div id="LabelTextAreaVendorDetails">
-								<span class="requiredFieldIndicator">&#149;&nbsp;</span>Send Method:
-							</div>
-							<div id="InputTextAreaRight">
-								<div id="SendMethod"></div>
-							</div>
-							<div style="clear:both;"></div>
-						</div>
-						<div id="TableEditArea">
-							<div id="LabelTextAreaVendorDetails">
-								<span class="nonRequiredFieldIndicator">&#149;&nbsp;</span>Contact Name:
-							</div>
-							<div id="InputTextAreaRight">
-								<div id="ContactName"></div>
-							</div>
-							<div style="clear:both;"></div>
-						</div>
-						<div id="TableEditArea">
-							<div id="LabelTextAreaVendorDetails">
-								<span class="nonRequiredFieldIndicator">&#149;&nbsp;</span>Email:
-							</div>
-							<div id="InputTextAreaRight">
-								<div id="Email"></div>
-							</div>
-							<div style="clear:both;"></div>
-						</div>
-						<div id="TableEditArea">
-							<div id="LabelTextAreaVendorDetails">
-								<span class="nonRequiredFieldIndicator">&#149;&nbsp;</span>Phone:
-							</div>
-							<div id="InputTextAreaRight">
-								<div id="PhoneNumber"></div>
-							</div>
-							<div style="clear:both;"></div>
-						</div>
-						<div id="TableEditArea">
-							<div id="LabelTextAreaVendorDetails">
-								<span class="nonRequiredFieldIndicator">&#149;&nbsp;</span>Fax:
-							</div>
-							<div id="InputTextAreaRight">
-								<div id="FaxNumber"></div>
-							</div>
-							<div style="clear:both;"></div>
-						</div>
-						<div id="TableEditArea">
-							<div id="LabelTextAreaVendorDetails">
-								<span id="nonRequiredFieldIndicator">&nbsp;Auto Email:</span>
-							</div>
-							<div id="InputTextAreaRight">
-								<div id="AutoEmail"></div>
-							</div>
-							<div style="clear:both;"></div>
-						</div>
-						<div id="TableEditArea">
-							<div id="LabelTextAreaVendorDetails">
-								<span id="nonRequiredFieldIndicator">&nbsp;Active:</span>
-							</div>
-							<div id="InputTextAreaRight">
-								<div id="VendorActive"></div>
-							</div>
-							<div style="clear:both;"></div>
-						</div>
-						
-						<div style="clear:both;"></div>
 					</div>
 			        <div class="footer">
                         <div id="AnchorSave"></div>
-                        <div id="AnchorNew"></div>
                         <div id="AnchorUndo"></div>
                         <div style="clear:both;"></div>
                     </div>
 			    </div>
 			</div>
-			
 		</div>
 	    <div id="iiInputValidationMaster"></div>
 	</body>
