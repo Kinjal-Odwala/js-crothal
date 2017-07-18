@@ -40,8 +40,7 @@
 
 .inputTextArea {
     float: left;
-	width: 190px;
-    height: 20px;
+	width: 220px;
 }
  
 .inputCheckArea {
@@ -55,4 +54,34 @@
 	border-width: 1px;
 	padding: 5px;
 	margin: 1px;
-} 
+}
+
+#NotificationContainer {
+	height: 49px;
+}
+
+#Notification {
+	display: none;
+}
+
+#NotificationIndicator {
+	float: left;
+}
+
+#NotificationLabel {
+	float: left;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding: 15px 0px 0px 10px;
+}
+
+#ViewNewGLAccountsLink, #ViewCurrentGLAccountsLink {
+	float: left;
+	color: blue;
+	font-family: Verdana;
+	font-size: 12px;
+	text-decoration: underline;
+	cursor: pointer;
+	padding: 15px 0px 0px 20px;
+}

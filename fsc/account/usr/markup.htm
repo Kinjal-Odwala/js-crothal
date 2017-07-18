@@ -2,7 +2,10 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-		<title>Chart of Account</title>
+		<title>GL Accounts</title>
+		<script src="/fin/cmn/usr/angular/angular.js"></script>
+    	<script src="/fin/cmn/usr/angular/ui-bootstrap-tpls-0.12.0.js"></script>
+  		<script src="controllers.js"></script>
 		<script type="text/javascript">
 			var globalContext = "/net/crothall/chimes/fin/app/act";
 			var js = document.createElement("script");
@@ -34,23 +37,39 @@
 		<div class="pageBody">
 			<div class="contentAreasContainerLeft">
 				<div class="contentArea">
-					<div class="header">Chart of Accounts</div>
+					<div style="height:5px;"></div>
+					<div ng-app="glAccountApp">
+						<div id="SearchContainer" class="container-fluid" ng-controller="SearchCtrl">
+						    <input type="text" ng-model="selected" typeahead="account as account.code for account in accounts | filter:{code: $viewValue} | limitTo:10" class="form-control" placeholder="Search GL Account Code" typeahead-editable="false" typeahead-on-select="onSelect($item, $model, $label)" />
+						 </div>
+					</div>
+					<div style="height:10px;"></div>
+					<div class="header">GL Accounts</div>
 					<div class="body">
-						<div id="FiscalAccount"></div>
+						<div id="AccountGrid"></div>
 						<div style="clear:both;"></div>
 					</div>
 				</div>
 			</div>
 			<div class="contentAreasContainerRight">
 				<div class="contentArea">
-					<div id="accountDetailHeader" class="header">Account</div>
+					<div id="NotificationContainer">
+						<div id="Notification">
+							<div id="NotificationIndicator"><img src="/fin/cmn/usr/media/Common/new.gif" alt="New Accounts" title="New Accounts"/></div>
+							<div id="NotificationLabel">New GL Accounts are available which needs to be setup/configured.</div>
+							<div id="ViewNewGLAccountsLink">View New GL Accounts</div>
+							<div id="ViewCurrentGLAccountsLink">View Current GL Accounts</div>
+						</div>
+					</div>
+					<div style="clear:both;"></div>
+					<div class="header">Account Details</div>
 					<div id="accountDetailContentArea" class="body">
 						<div class="tableEditArea">
 							<div class="labelTextArea">
 								<span class="requiredFieldIndicator">&#149;</span>Account Code:
 							</div>
 							<div class="inputTextArea">
-								<div id="code"></div>
+								<div id="AccountCode"></div>
 							</div>
 							<div style="clear:both;"></div>
 						</div>
@@ -59,7 +78,7 @@
 								<span class="requiredFieldIndicator">&#149;</span>Account Category:
 							</div>
 							<div class="inputTextArea">
-								<div id="category"></div>
+								<div id="AccountCategory"></div>
 							</div>
 							<div style="clear:both;"></div>
 						</div>
@@ -68,7 +87,7 @@
 								<span class="requiredFieldIndicator">&#149;</span>Description:
 							</div>
 							<div class="inputTextArea">
-								<div id="desciption"></div>
+								<div id="Desciption"></div>
 							</div>
 							<div style="clear:both;"></div>
 						</div>
@@ -77,7 +96,7 @@
 								<span id="nonRequiredFieldIndicator">Posting Edit Code:</span>
 							</div>
 							<div class="inputTextArea">
-								<div id="editCode"></div>
+								<div id="PostingEditCode"></div>
 							</div>
 							<div style="clear:both;"></div>
 						</div>
@@ -86,20 +105,55 @@
 								<span id="nonRequiredFieldIndicator">GL Header:</span>
 							</div>
 							<div class="inputTextArea">
-								<div id="header"></div>
+								<div id="GLHeader"></div>
 							</div>
 							<div style="clear:both;"></div>
 						</div>
 						<div class="tableEditArea">
 							<div class="labelTextArea">
-								<span id="nonRequiredFieldIndicator">MOP / PL Option:</span>
+								<span class="requiredFieldIndicator">&#149;</span>MOP / PL Option:
 							</div>
 							<div class="inputTextArea">
 								<div id="MOPTotalType"></div>
 							</div>
 							<div style="clear:both;"></div>
 						</div>
-						<div style="clear:both;"></div>
+						<div class="tableEditArea">
+							<div class="labelTextArea">
+								<span id="nonRequiredFieldIndicator">Account List:</span>
+							</div>
+							<div class="inputTextArea">
+								<div id="AccountList"></div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+						<div class="tableEditArea">
+							<div class="labelTextArea">
+								<span id="nonRequiredFieldIndicator">Group:</span>
+							</div>
+							<div class="inputTextArea">
+								<div id="Group"></div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+						<div class="tableEditArea">
+							<div class="labelTextArea">
+								<span id="nonRequiredFieldIndicator">Match Code:</span>
+							</div>
+							<div class="inputTextArea">
+								<div id="MatchCode"></div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+						<div class="tableEditArea">
+							<div class="labelTextArea">
+								<span id="nonRequiredFieldIndicator">Short Description:</span>
+							</div>
+							<div class="inputTextArea">
+								<div id="ShortDescription"></div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
 						<div class="tableEditArea">
 							<div class="inputCheckArea">
 								<div id="Negative"></div>
@@ -220,13 +274,55 @@
 							</div>
 							<div style="clear:both;"></div>
 						</div>
-						<div style="clear:both;"></div>
+						<div class="tableEditArea">
+							<div class="inputCheckArea">
+								<div id="BalanceSheet"></div>
+							</div>
+							<div class="labelTextAreaLeft">
+								<span id="nonRequiredFieldIndicator">Balance Sheet</span>
+							</div>
+                            <div class="inputCheckArea">
+								<div id="ProfitAndLoss"></div>
+							</div>
+							<div class="labelTextAreaRight">
+								<span id="nonRequiredFieldIndicator">Profit And Loss</span>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+						<div class="tableEditArea">
+							<div class="inputCheckArea">
+								<div id="BlockDeletion"></div>
+							</div>
+							<div class="labelTextAreaLeft">
+								<span id="nonRequiredFieldIndicator">Block Deletion</span>
+							</div>
+                            <div class="inputCheckArea">
+								<div id="BlockCreation"></div>
+							</div>
+							<div class="labelTextAreaRight">
+								<span id="nonRequiredFieldIndicator">BlockCreation</span>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+						<div class="tableEditArea">
+							<div class="inputCheckArea">
+								<div id="BlockPosting"></div>
+							</div>
+							<div class="labelTextAreaLeft">
+								<span id="nonRequiredFieldIndicator">Block Posting</span>
+							</div>
+                            <div class="inputCheckArea">
+								<div id="Active"></div>
+							</div>
+							<div class="labelTextAreaRight">
+								<span id="nonRequiredFieldIndicator">Active</span>
+							</div>
+							<div style="clear:both;;"></div>
+						</div>
 					</div>
 					<div class="footer">
                         <div id="AnchorSave"></div>
-                        <div id="AnchorNew"></div>
                         <div id="AnchorUndo"></div>
-                        <div style="clear:both;"></div>
                     </div>
 				</div>
 			</div>

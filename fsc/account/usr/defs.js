@@ -9,7 +9,6 @@ ii.init.register( function() {
 
 	fin.fsc.account.accountCategoryArgs = {
 		id: {type: Number, defaultValue: 0}
-		, number: {type: Number}
 		, name: {type: String}
         , active: {type: Boolean}
 	};
@@ -22,12 +21,16 @@ ii.init.register( function() {
 	fin.fsc.account.accountArgs = {
 		id: {type: Number, defaultValue: 0}
 		, accountCategoryId: {type: Number, defaultValue: 0}
-		, accountCategory: {type: String}
+		, statusType: {type: Number, defaultValue: 0}
 		, code: {type: String}
 		, description: {type: String}
-		, postingEditCode: {type: String, required: false, defaultValue: " "}
-		, glHeader: {type: String, required: false, defaultValue: " "}
+		, postingEditCode: {type: String, required: false, defaultValue: ""}
+		, glHeader: {type: String, required: false, defaultValue: ""}
 		, mopTotalType: {type: Number, defaultValue: 0}
+		, accountList: {type: String, required: false, defaultValue: ""}
+		, group: {type: String, required: false, defaultValue: ""}
+		, matchCode: {type: String, required: false, defaultValue: ""}
+		, shortDescription: {type: String, required: false, defaultValue: ""}
         , negativeValue: {type: Boolean}
         , blockImportExport: {type: Boolean}
         , budget: {type: Boolean}
@@ -41,10 +44,15 @@ ii.init.register( function() {
         , directCost: {type: Boolean}
         , supplies: {type: Boolean}
         , accountReceivables: {type: Boolean}
-        , wor: { type: Boolean }
-        , otherRevenue: { type: Boolean }
-        , poCapitalRequisition: { type: Boolean }
-        , active: {type: Boolean}
+        , wor: {type: Boolean}
+        , otherRevenue: {type: Boolean}
+        , poCapitalRequisition: {type: Boolean}
+		, balanceSheet: {type: Boolean}
+		, profitAndLoss: {type: Boolean}
+		, blockDeletion: {type: Boolean}
+		, blockCreation: {type: Boolean}
+		, blockPosting: {type: Boolean}
+		, active: {type: Boolean}
 	};
     
 }, 2);

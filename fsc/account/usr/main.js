@@ -14,31 +14,29 @@ ii.Style( "fin.cmn.usr.input", 5 );
 ii.Style( "fin.cmn.usr.grid", 6 );
 ii.Style( "fin.cmn.usr.dropDown", 7 );
 ii.Style( "fin.cmn.usr.button", 8 );
+ii.Style( "fin.cmn.usr.angular.css.typeahead", 9 );
 
 ii.Class({
     Name: "fin.fsc.account.UserInterface",
     Definition: {
 
 		init: function() {
-			var args = ii.args(arguments, {});
 			var me = this;
-			
+
 			me.accountId = 0;
-			me.status = "";
-			me.lastSelectedIndex = -1;	
-			me.accountReadOnly = false;
+			me.lastSelectedRowIndex = -1;
 			me.loadCount = 0;
-			
+
 			me.gateway = ii.ajax.addGateway("fsc", ii.config.xmlProvider);
 			me.cache = new ii.ajax.Cache(me.gateway);
 			me.transactionMonitor = new ii.ajax.TransactionMonitor(
 				me.gateway
 				, function(status, errorMessage) { me.nonPendingError(status, errorMessage); }
 			);
-						
+
 			me.validator = new ui.ctl.Input.Validation.Master();
 			me.session = new ii.Session(me.cache);
-			
+
 			me.authorizer = new ii.ajax.Authorizer( me.gateway );
 			me.authorizePath = "\\crothall\\chimes\\fin\\Fiscal\\ChartOfAccounts";
 			me.authorizer.authorize([me.authorizePath],
@@ -51,22 +49,22 @@ ii.Class({
 			me.configureCommunications();
 			me.setStatus("Loading");
 			me.modified(false);
-			
+
 			$(window).bind("resize", me, me.resize);
 			$(document).bind("keydown", me, me.controlKeyProcessor);
-			
+
 			if (top.ui.ctl.menu) {
 				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
 			}
 		},
-		
-		authorizationProcess: function fin_fsc_account_UserInterface_authorizationProcess() {
-			var args = ii.args(arguments,{});
+
+		authorizationProcess: function() {
 			var me = this;
-			
+
 			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
 			me.accountReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
-			
+			me.setupGLAccounts = me.authorizer.isAuthorized(me.authorizePath + "\\SetupGLAccounts");
+
 			if (me.isAuthorized) {
 				$("#pageLoading").hide();
 				$("#pageLoading").css({
@@ -81,56 +79,65 @@ ii.Class({
 				me.loadCount = 1;
 				me.session.registerFetchNotify(me.sessionLoaded,me);
 				me.accountCategory.fetchingData();
-				me.accountCategoryStore.fetch("userId:[user]", me.accountCategorysLoaded, me);				
+				me.mopTotalType.fetchingData();
+				if (me.setupGLAccounts)
+					me.accountCategoryStore.fetch("userId:[user],statusType:2", me.accountCategorysLoaded, me);
+				else
+					me.accountCategoryStore.fetch("userId:[user]", me.accountCategorysLoaded, me);
 				me.controlVisible();
-			}				
+			}
 			else
 				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
 		},	
-		
-		sessionLoaded: function fin_fsc_account_UserInterface_sessionLoaded(){
-			var args = ii.args(arguments, {
-				me: {type: Object}
-			});
+
+		sessionLoaded: function() {
 
 			ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
 		},
-			
-		resize: function() {
-			var args = ii.args(arguments, {});
 
-			fin.fsc.fscAccountUi.fiscalAccountGrid.setHeight($(window).height() - 110);
-			$("#accountDetailContentArea").height($(window).height() - 152);					
+		resize: function() {
+
+			fin.fsc.fscAccountUi.accountGrid.setHeight($(window).height() - 155);
+			$("#accountDetailContentArea").height($(window).height() - 197);		
 		},
-		
+
 		defineFormControls: function() {
-			var args = ii.args(arguments, {});
 			var me = this;
 
 			me.actionMenu = new ui.ctl.Toolbar.ActionMenu({
 				id: "actionMenu"
 			});
-			
+
 			me.actionMenu
 				.addAction({
 					id: "saveAction",
-					brief: "Save (Ctrl+S)", 
-					title: "Save the current Account.",
+					brief: "Save (Ctrl+S)",
+					title: "Save the current Account details.",
 					actionFunction: function() { me.actionSaveItem(); }
 				})
 				.addAction({
-					id: "newAction", 
-					brief: "New Account(Ctrl+N)", 
-					title: "Save the current Account, and create a new blank Account.",
-					actionFunction: function() { me.actionNewItem(); }
-				})
-				.addAction({
-					id: "cancelAction", 
-					brief: "Undo current changes to Account (Ctrl+U)", 
+					id: "cancelAction",
+					brief: "Undo (Ctrl+U)",
 					title: "Undo the changes to Account being edited.",
 					actionFunction: function() { me.actionUndoItem(); }
 				});
-			
+
+			me.viewNewGLAccountsLink = new ui.ctl.buttons.Simple({
+				id: "ViewNewGLAccountsLink",
+				className: "linkButton",
+				clickFunction: function() { me.actionSearchItem(2); },
+				hasHotState: true,
+				title: "Click here to view the new GL Accounts",
+			});
+
+			me.viewCurrentGLAccountsLink = new ui.ctl.buttons.Simple({
+				id: "ViewCurrentGLAccountsLink",
+				className: "linkButton",
+				clickFunction: function() { me.actionSearchItem(0); },
+				hasHotState: true,
+				title: "Click here to view the existing GL Accounts",
+			});
+
 			me.anchorSave = new ui.ctl.buttons.Sizeable({
 				id: "AnchorSave",
 				className: "iiButton",
@@ -138,15 +145,7 @@ ii.Class({
 				clickFunction: function() {	me.actionSaveItem(); },
 				hasHotState: true
 			});
-			
-			me.anchorNew = new ui.ctl.buttons.Sizeable({
-				id: "AnchorNew",
-				className: "iiButton",
-				text: "<span>&nbsp;&nbsp;New&nbsp;&nbsp;</span>",
-				clickFunction: function() { me.actionNewItem(); },
-				hasHotState: true
-			});
-			
+
 			me.anchorUndo = new ui.ctl.buttons.Sizeable({
 				id: "AnchorUndo",
 				className: "iiButton",
@@ -154,183 +153,197 @@ ii.Class({
 				clickFunction: function() { me.actionUndoItem(); },
 				hasHotState: true
 			});
-			
+
+			me.accountGrid = new ui.ctl.Grid({
+				id: "AccountGrid",
+				appendToId: "divForm",
+				allowAdds: false,
+				rowNumberDisplayWidth: 40,
+				selectFunction: function(index) { me.itemSelect(index); },
+				validationFunction: function() { return parent.fin.cmn.status.itemValid(); }
+			});
+
+			me.accountGrid.addColumn("code", "code", "Code", "Code", 120);
+			me.accountGrid.addColumn("description", "description", "Description", "Description", null);
+			me.accountGrid.capColumns();
+
 			me.accountCategory = new ui.ctl.Input.DropDown.Filtered({
-		        id: "category",
-		        formatFunction: function( type ) { return type.name; },
+		        id: "AccountCategory",
+		        formatFunction: function(type) { return type.name; },
 		        required : false,
 				changeFunction: function() { me.modified(); }
-		    });			
+		    });
 
 			me.accountCategory.makeEnterTab()
 				.setValidationMaster( me.validator )
 				.addValidation( ui.ctl.Input.Validation.required )
-								
+
 			me.accountCode = new ui.ctl.Input.Text({
-		        id: "code",
-		        maxLength: 4,
+		        id: "AccountCode",
+		        maxLength: 10,
 				changeFunction: function() { me.modified(); }
 		    });
-			
-			me.accountCode.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
-				.addValidation( function( isFinal, dataMap ) {
 
-					var enteredText = me.accountCode.getValue();
-					
-					if (enteredText == "") return;
-					
-					if (/^\d+$/.test(enteredText) == false)
-						this.setInvalid("Please enter valid Account Code.");
-				});
-
-			me.accountDescription = new ui.ctl.Input.Text({
-		        id: "desciption",
+			me.description = new ui.ctl.Input.Text({
+		        id: "Desciption",
 		        maxLength: 64,
 				changeFunction: function() { me.modified(); }
 		    });
-			
-			me.accountDescription.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
-				
-			me.accountEditCode = new ui.ctl.Input.Text({
-		        id: "editCode",
+
+			me.postingEditCode = new ui.ctl.Input.Text({
+		        id: "PostingEditCode",
 		        maxLength: 16,
 				changeFunction: function() { me.modified(); }
 		    });
-			
-			me.accountHeader = new ui.ctl.Input.Text({
-		        id: "header",
+
+			me.glHeader = new ui.ctl.Input.Text({
+		        id: "GLHeader",
 		        maxLength: 16,
 				changeFunction: function() { me.modified(); }
 		    });
-			
+
 			me.mopTotalType = new ui.ctl.Input.DropDown.Filtered({
 		        id: "MOPTotalType",
 		        formatFunction: function( type ) { return type.title; },
 		        required : false,
 				changeFunction: function() { me.modified(); }
-		    });			
+		    });
 
 			me.mopTotalType.makeEnterTab()
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)	
 				.addValidation( function( isFinal, dataMap ) {
-					
-					if ((this.focused || this.touched) && me.mopTotalType.indexSelected == -1)
+
+					if ((this.focused || this.touched) && me.mopTotalType.indexSelected === -1)
 						this.setInvalid("Please select the MOP / PL Option.");
 				});
-			
+
 			me.negativeValue = new ui.ctl.Input.Check({
 		        id: "Negative",
-				changeFunction: function() { me.modified(); } 
+				changeFunction: function() { me.modified(); }
 		    });
-			
+
 			me.bockImportExport = new ui.ctl.Input.Check({
 		        id: "BockImport",
 				changeFunction: function() { me.modified(); }
 		    });
-			
+
 			me.budget = new ui.ctl.Input.Check({
 		        id: "Budget",
-				changeFunction: function() { me.modified(); } 
+				changeFunction: function() { me.modified(); }
 		    });
-			
+
 			me.accountPayables = new ui.ctl.Input.Check({
 		        id: "AccountPayables",
-				changeFunction: function() { me.modified(); } 
+				changeFunction: function() { me.modified(); }
 		    });
-			
+
 			me.salariesWages = new ui.ctl.Input.Check({
 		        id: "SalariesWages",
-				changeFunction: function() { me.modified(); } 
+				changeFunction: function() { me.modified(); }
 		    });
-			
+
 			me.recurringExpenses = new ui.ctl.Input.Check({
 		        id: "RecurringExpenses",
-				changeFunction: function() { me.modified(); } 
+				changeFunction: function() { me.modified(); }
 		    });
-			
+
 			me.fieldTransfers = new ui.ctl.Input.Check({
 		        id: "FieldTransfers",
-				changeFunction: function() { me.modified(); } 
+				changeFunction: function() { me.modified(); }
 		    });
-			
+
 			me.inventory = new ui.ctl.Input.Check({
 		        id: "Inventory",
-				changeFunction: function() { me.modified(); } 
+				changeFunction: function() { me.modified(); }
 		    });
-			
+
 			me.payrollWorksheet = new ui.ctl.Input.Check({
 		        id: "PayrollWorksheet",
-				changeFunction: function() { me.modified(); } 
+				changeFunction: function() { me.modified(); }
 		    });
-			
+
 			me.managementFee = new ui.ctl.Input.Check({
 		        id: "ManagementFee",
-				changeFunction: function() { me.modified(); } 
+				changeFunction: function() { me.modified(); }
 		    });
-			
+
 			me.directCost = new ui.ctl.Input.Check({
 		        id: "DirectCost",
-				changeFunction: function() { me.modified(); } 
+				changeFunction: function() { me.modified(); }
 		    });
-			
+
 			me.supplies = new ui.ctl.Input.Check({
 		        id: "Supplies",
-				changeFunction: function() { me.modified(); } 
+				changeFunction: function() { me.modified(); }
 		    });
-			
+
 			me.accountReceivable = new ui.ctl.Input.Check({
 		        id: "AccountReceivable",
-				changeFunction: function() { me.modified(); } 
+				changeFunction: function() { me.modified(); }
 		    });
-			
+
 			me.wor = new ui.ctl.Input.Check({
 		        id: "WOR",
-				changeFunction: function() { me.modified(); } 
+				changeFunction: function() { me.modified(); }
 		    });
-			
+
 			me.otherRevenue = new ui.ctl.Input.Check({
 		        id: "OtherRevenue",
-				changeFunction: function() { me.modified(); }  
+				changeFunction: function() { me.modified(); }
 			});
 
 			me.poCapitalRequisition = new ui.ctl.Input.Check({
 			    id: "POCapitalRequisition",
-			    changeFunction: function () { me.modified(); }
+			    changeFunction: function() { me.modified(); }
 			});
-			
-			me.fiscalAccountGrid = new ui.ctl.Grid({
-				id: "FiscalAccount",
-				appendToId: "divForm",
-				allowAdds: false,
-				selectFunction: function(index) { me.itemSelect(index); },
-				validationFunction: function() {
-					if (me.status != "new")
-						return parent.fin.cmn.status.itemValid();
-				}
+
+			me.balanceSheet = new ui.ctl.Input.Check({
+			    id: "BalanceSheet"
 			});
-			
-			me.fiscalAccountGrid.addColumn("code", "code", "Code", "Code", 80);
-			me.fiscalAccountGrid.addColumn("description", "description", "Description", "Description", null);
-			me.fiscalAccountGrid.capColumns();
+
+			me.profitAndLoss = new ui.ctl.Input.Check({
+			    id: "ProfitAndLoss"
+			});
+
+			me.blockDeletion = new ui.ctl.Input.Check({
+			    id: "BlockDeletion"
+			});
+
+			me.blockCreation = new ui.ctl.Input.Check({
+			    id: "BlockCreation"
+			});
+
+			me.blockPosting = new ui.ctl.Input.Check({
+			    id: "BlockPosting"
+			});
+
+			me.active = new ui.ctl.Input.Check({
+			    id: "Active"
+			});
+
+			me.accountList = new ui.ctl.Input.Text({
+		        id: "AccountList",
+		        maxLength: 4
+		    });
+
+			me.group = new ui.ctl.Input.Text({
+		        id: "Group",
+		        maxLength: 4
+		    });
+
+			me.matchCode = new ui.ctl.Input.Text({
+		        id: "MatchCode",
+		        maxLength: 25
+		    });
+
+			me.shortDescription = new ui.ctl.Input.Text({
+		        id: "ShortDescription",
+		        maxLength: 20
+		    });
 		},
-		
-		resizeControls: function() {
-			var me = this;
-			
-			me.accountCategory.resizeText();
-			me.accountDescription.resizeText();
-			me.accountEditCode.resizeText();
-			me.accountHeader.resizeText();
-			me.resize();
-		},
-			
+
 		configureCommunications: function() {
-			var args = ii.args(arguments, {});
 			var me = this;
 
 			me.accountCategories = [];
@@ -357,141 +370,8 @@ ii.Class({
 				injectionArray: me.accounts
 			});			
 		},
-		
-		setStatus: function(status) {
-			var me = this;
 
-			fin.cmn.status.setStatus(status);
-		},
-		
-		dirtyCheck: function(me) {
-				
-			return !fin.cmn.status.itemValid();
-		},
-	
-		modified: function() {
-			var args = ii.args(arguments, {
-				modified: {type: Boolean, required: false, defaultValue: true}
-			});
-			var me = this;
-			
-			parent.fin.appUI.modified = args.modified;
-			if (args.modified)
-				me.setStatus("Edit");
-		},
-		
-		setLoadCount: function(me, activeId) {
-			var me = this;
-
-			me.loadCount++;
-			me.setStatus("Loading");
-			$("#messageToUser").text("Loading");
-			$("#pageLoading").fadeIn("slow");
-		},
-		
-		checkLoadCount: function() {
-			var me = this;
-
-			me.loadCount--;
-			if (me.loadCount <= 0) {
-				me.setStatus("Loaded");
-				$("#pageLoading").fadeOut("slow");
-			}
-		},
-		
-		controlVisible: function(){
-			var me = this;
-
-			if (me.accountReadOnly) {
-				$("#codeText").attr('disabled', true);
-				$("#categoryText").attr('disabled', true);
-				$("#categoryAction").removeClass("iiInputAction");
-				$("#desciptionText").attr('disabled', true);
-				$("#editCodeText").attr('disabled', true);
-				$("#headerText").attr('disabled', true);
-				$("#MOPTotalTypeText").attr('disabled', true);
-				$("#MOPTotalTypeAction").removeClass("iiInputAction");
-				$("#NegativeCheck").attr('disabled', true);
-				$("#BudgetCheck").attr('disabled', true);
-				$("#SalariesWagesCheck").attr('disabled', true);
-				$("#FieldTransfersCheck").attr('disabled', true);
-				$("#PayrollWorksheetCheck").attr('disabled', true);
-				$("#DirectCostCheck").attr('disabled', true);
-				$("#AccountReceivableCheck").attr('disabled', true);
-				$("#OtherRevenueCheck").attr('disabled', true);
-				$("#BockImportCheck").attr('disabled', true);
-				$("#AccountPayablesCheck").attr('disabled', true);
-				$("#RecurringExpensesCheck").attr('disabled', true);
-				$("#InventoryCheck").attr('disabled', true);
-				$("#ManagementFeeCheck").attr('disabled', true);
-				$("#SuppliesCheck").attr('disabled', true);
-				$("#WORCheck").attr('disabled', true);
-				$("#POCapitalRequisitionCheck").attr('disabled', true);
-				$("#actionMenu").hide();
-				$(".footer").hide();
-			}
-		},
-		
-		accountCategorysLoaded: function(me, activeId) {
-			
-			me.controlVisible();
-			me.accountCategory.reset();
-			me.accountCategory.setData(me.accountCategories);
-			me.mopTotalType.setData(me.mopTotalTypes);
-			me.fiscalAccountGrid.setData([]);
-			me.fiscalAccountGrid.setData(me.accounts);
-			me.resizeControls();
-			me.checkLoadCount();			
-		},
-
-		itemSelect: function() {
-			var args = ii.args(arguments, {index: { type: Number }});
-			var me = this;
-			var item = me.accounts[args.index];
-			var index = 0;
-
-			if (!parent.fin.cmn.status.itemValid()) {
-				me.fiscalAccountGrid.body.deselect(args.index, true);
-				return;
-			}
-			
-			me.status = "";
-			me.accountId = item.id;
-			me.lastSelectedIndex = args.index;			
-			me.accountCode.setValue(item.code);
-
-			index = ii.ajax.util.findIndexById(item.accountCategoryId.toString(), me.accountCategories)
-			if (index != undefined)
-				me.accountCategory.select(index, me.accountCategory.focused);
-
-			me.accountDescription.setValue(item.description);
-			me.accountEditCode.setValue(item.postingEditCode);
-			me.accountHeader.setValue(item.glHeader + "");
-
-			index = ii.ajax.util.findIndexById(item.mopTotalType.toString(), me.mopTotalTypes)
-			if (index != undefined)
-				me.mopTotalType.select(index, me.mopTotalType.focused);
-
-	        me.negativeValue.setValue(item.negativeValue.toString());
-	        me.bockImportExport.setValue(item.blockImportExport.toString());
-	        me.budget.setValue(item.budget.toString());
-	        me.accountPayables.setValue(item.accountsPayable.toString());
-	        me.salariesWages.setValue(item.salariesWages.toString());
-	        me.recurringExpenses.setValue(item.recurringExpenses.toString());
-	        me.fieldTransfers.setValue(item.fieldTransfers.toString());
-	        me.inventory.setValue(item.inventory.toString());
-	        me.payrollWorksheet.setValue(item.payrollWorkSheet.toString());
-	        me.managementFee.setValue(item.managementFee.toString());
-	        me.directCost.setValue(item.directCost.toString());
-	        me.supplies.setValue(item.supplies.toString());
-	        me.accountReceivable.setValue(item.accountReceivables.toString());
-	        me.wor.setValue(item.wor.toString());
-	        me.otherRevenue.setValue(item.otherRevenue.toString());
-	        me.poCapitalRequisition.setValue(item.poCapitalRequisition.toString());
-			me.setStatus("Loaded");
-		},
-
-		controlKeyProcessor: function ii_ui_Layouts_ListItem_controlKeyProcessor() {
+		controlKeyProcessor: function() {
 			var args = ii.args(arguments, {
 				event: {type: Object} // The (key) event object
 			});			
@@ -500,69 +380,53 @@ ii.Class({
 			var processed = false;
 
 			if (event.ctrlKey) {
-			
 				switch (event.keyCode) {
 					case 83: // Ctrl+S
 						me.actionSaveItem();
 						processed = true;
 						break;
-						
-					case 78: // Ctrl+N
-						me.actionNewItem();
-						processed = true;
-						break;
-						
+
 					case 85: // Ctrl+U
 						me.actionUndoItem();
 						processed = true;
 						break;
 				}
 			}
-			
+
 			if (processed) {
 				return false;
 			}
 		},
 
-		actionNewItem: function() {
-			var args = ii.args(arguments, {});
+		resizeControls: function() {
 			var me = this;
-			
-			if (!parent.fin.cmn.status.itemValid())
-				return;
-				
-			if (me.accountReadOnly) return;
-			
-			me.actionResetItem();
-			me.status = "new";
-			me.setStatus("Loaded");
+
+			me.accountCategory.resizeText();
+			me.description.resizeText();
+			me.postingEditCode.resizeText();
+			me.glHeader.resizeText();
+			me.accountList.resizeText();
+			me.group.resizeText();
+			me.matchCode.resizeText();
+			me.shortDescription.resizeText();
+			me.resize();
 		},
 
-		actionUndoItem: function() {
-			var args = ii.args(arguments, {});
+		resetControls: function() {
 			var me = this;
-			
-			if (!parent.fin.cmn.status.itemValid())
-				return;
 
-			me.status = "";	
-
-			if (me.lastSelectedIndex >= 0) {
-				me.fiscalAccountGrid.body.select(me.lastSelectedIndex);
-			}
-		},
-
-		actionResetItem: function() {
-			var args = ii.args(arguments, {});
-			var me = this;
-			
 			me.accountId = 0;
+			me.validator.reset();
 			me.accountCode.setValue("");
 			me.accountCategory.reset();
-			me.accountDescription.setValue("");
-			me.accountEditCode.setValue("");
-			me.accountHeader.setValue("");
-			me.mopTotalType.select(0, me.mopTotalType.focused);
+			me.description.setValue("");
+			me.postingEditCode.setValue("");
+			me.glHeader.setValue("");
+			me.mopTotalType.reset();
+			me.accountList.setValue("");
+			me.group.setValue("");
+			me.matchCode.setValue("");
+			me.shortDescription.setValue("");
 	        me.negativeValue.setValue("false");
 	        me.bockImportExport.setValue("false");
 	        me.budget.setValue("false");
@@ -579,30 +443,245 @@ ii.Class({
 	        me.wor.setValue("false");
 	        me.otherRevenue.setValue("false");
 	        me.poCapitalRequisition.setValue("false");
-			me.fiscalAccountGrid.body.deselectAll();
+			me.balanceSheet.setValue("false");
+			me.profitAndLoss.setValue("false");
+			me.blockDeletion.setValue("false");
+			me.blockCreation.setValue("false");
+			me.blockPosting.setValue("false");
+			me.active.setValue("false");
 			me.accountCode.text.focus();
-			me.validator.reset();
+		},
+
+		setStatus: function(status) {
+			var me = this;
+
+			fin.cmn.status.setStatus(status);
+		},
+
+		dirtyCheck: function(me) {
+
+			return !fin.cmn.status.itemValid();
+		},
+
+		modified: function() {
+			var args = ii.args(arguments, {
+				modified: {type: Boolean, required: false, defaultValue: true}
+			});
+			var me = this;
+
+			parent.fin.appUI.modified = args.modified;
+			if (args.modified)
+				me.setStatus("Edit");
+		},
+
+		setLoadCount: function(me, activeId) {
+			var me = this;
+
+			me.loadCount++;
+			me.setStatus("Loading");
+			$("#messageToUser").text("Loading");
+			$("#pageLoading").fadeIn("slow");
+		},
+
+		checkLoadCount: function() {
+			var me = this;
+
+			me.loadCount--;
+			if (me.loadCount <= 0) {
+				me.setStatus("Loaded");
+				$("#pageLoading").fadeOut("slow");
+			}
+		},
+
+		controlVisible: function() {
+			var me = this;
+
+			$("#AccountCodeText").attr("disabled", true);
+			$("#DesciptionText").attr("disabled", true);
+			$("#BudgetCheck").attr("disabled", true);
+			$("#AccountListText").attr("disabled", true);
+			$("#GroupText").attr("disabled", true);
+			$("#MatchCodeText").attr("disabled", true);
+			$("#ShortDescriptionText").attr("disabled", true);
+			$("#BalanceSheetCheck").attr("disabled", true);
+			$("#ProfitAndLossCheck").attr("disabled", true);
+			$("#BlockDeletionCheck").attr("disabled", true);
+			$("#BlockCreationCheck").attr("disabled", true);
+			$("#BlockPostingCheck").attr("disabled", true);
+			$("#ActiveCheck").attr("disabled", true);
+
+			if (me.accountReadOnly) {
+				$("#AccountCategoryText").attr("disabled", true);
+				$("#AccountCategoryAction").removeClass("iiInputAction");
+				$("#PostingEditCodeText").attr("disabled", true);
+				$("#GLHeaderText").attr("disabled", true);
+				$("#MOPTotalTypeText").attr("disabled", true);
+				$("#MOPTotalTypeAction").removeClass("iiInputAction");
+				$("#NegativeCheck").attr("disabled", true);
+				$("#SalariesWagesCheck").attr("disabled", true);
+				$("#FieldTransfersCheck").attr("disabled", true);
+				$("#PayrollWorksheetCheck").attr("disabled", true);
+				$("#DirectCostCheck").attr("disabled", true);
+				$("#AccountReceivableCheck").attr("disabled", true);
+				$("#OtherRevenueCheck").attr("disabled", true);
+				$("#BockImportCheck").attr("disabled", true);
+				$("#AccountPayablesCheck").attr("disabled", true);
+				$("#RecurringExpensesCheck").attr("disabled", true);
+				$("#InventoryCheck").attr("disabled", true);
+				$("#ManagementFeeCheck").attr("disabled", true);
+				$("#SuppliesCheck").attr("disabled", true);
+				$("#WORCheck").attr("disabled", true);
+				$("#POCapitalRequisitionCheck").attr("disabled", true);
+				$("#actionMenu").hide();
+				$(".footer").hide();
+			}
+		},
+
+		accountCategorysLoaded: function(me, activeId) {
+
+			me.accountCategory.setData(me.accountCategories);
+			me.mopTotalType.setData(me.mopTotalTypes);
+			me.resizeControls();
+
+			if (me.setupGLAccounts) {
+				if (me.accounts.length === 0) {
+					me.accountStore.fetch("userId:[user]", me.accountsLoaded, me);
+				}
+				else {
+					$("#Notification").show();
+					me.checkLoadCount();
+				}
+			}
+			else {
+				me.accountGrid.setData(me.accounts);
+				me.checkLoadCount();
+				var $scope = angular.element($("#SearchContainer")).scope();
+				$scope.$apply(function() {
+					$scope.accounts = me.accounts.slice();
+				});
+			}
+		},
+
+		accountsLoaded: function(me, activeId) {
+
+			me.accountGrid.setData(me.accounts);
+			var $scope = angular.element($("#SearchContainer")).scope();
+			$scope.$apply(function() {
+				$scope.accounts = me.accounts.slice();
+			});
+			me.checkLoadCount();
+		},
+
+		selectAccount: function(id) {
+			var me = this;
+			var index = ii.ajax.util.findIndexById(id, me.accounts);
+
+			if (index !== null) {
+				if (!parent.fin.cmn.status.itemValid()) {
+//					var $scope = angular.element($("#SearchContainer")).scope();
+//		            $scope.$apply(function() {
+//		            	$scope.selected = "";
+//		            });
+					return;
+				}
+
+				if (me.accountGrid.activeRowIndex !== -1)
+					me.accountGrid.body.deselect(me.accountGrid.activeRowIndex, true);
+				me.accountGrid.body.select(index, true);
+			}
+		},
+
+		itemSelect: function() {
+			var args = ii.args(arguments, {
+				index: { type: Number }
+			});
+			var me = this;
+			var item = me.accounts[args.index];
+			var itemIndex = 0;
+
+			if (!parent.fin.cmn.status.itemValid()) {
+				me.accountGrid.body.deselect(args.index, true);
+				return;
+			}
+
+			me.lastSelectedRowIndex = args.index;
+			me.mopTotalType.reset();
+			me.accountId = item.id;
+			me.accountCode.setValue(item.code);
+
+			itemIndex = ii.ajax.util.findIndexById(item.accountCategoryId.toString(), me.accountCategories);
+			if (itemIndex != undefined)
+				me.accountCategory.select(itemIndex, me.accountCategory.focused);
+
+			me.description.setValue(item.description);
+			me.postingEditCode.setValue(item.postingEditCode);
+			me.glHeader.setValue(item.glHeader + "");
+
+			itemIndex = ii.ajax.util.findIndexById(item.mopTotalType.toString(), me.mopTotalTypes);
+			if (itemIndex != undefined)
+				me.mopTotalType.select(itemIndex, me.mopTotalType.focused);
+
+			me.accountList.setValue(item.accountList);
+			me.group.setValue(item.group);
+			me.matchCode.setValue(item.matchCode);
+			me.shortDescription.setValue(item.shortDescription);
+	        me.negativeValue.setValue(item.negativeValue.toString());
+	        me.bockImportExport.setValue(item.blockImportExport.toString());
+	        me.budget.setValue(item.budget.toString());
+	        me.accountPayables.setValue(item.accountsPayable.toString());
+	        me.salariesWages.setValue(item.salariesWages.toString());
+	        me.recurringExpenses.setValue(item.recurringExpenses.toString());
+	        me.fieldTransfers.setValue(item.fieldTransfers.toString());
+	        me.inventory.setValue(item.inventory.toString());
+	        me.payrollWorksheet.setValue(item.payrollWorkSheet.toString());
+	        me.managementFee.setValue(item.managementFee.toString());
+	        me.directCost.setValue(item.directCost.toString());
+	        me.supplies.setValue(item.supplies.toString());
+	        me.accountReceivable.setValue(item.accountReceivables.toString());
+	        me.wor.setValue(item.wor.toString());
+	        me.otherRevenue.setValue(item.otherRevenue.toString());
+	        me.poCapitalRequisition.setValue(item.poCapitalRequisition.toString());
+			me.balanceSheet.setValue(item.balanceSheet.toString());
+			me.profitAndLoss.setValue(item.profitAndLoss.toString());
+			me.blockDeletion.setValue(item.blockDeletion.toString());
+			me.blockCreation.setValue(item.blockCreation.toString());
+			me.blockPosting.setValue(item.blockPosting.toString());
+			me.active.setValue(item.active.toString());
+
+			me.setStatus("Loaded");
+		},
+
+		actionSearchItem: function(statusType) {
+			var me = this;
+
+			me.setLoadCount();
+			me.accountStore.fetch("userId:[user],statusType:" + statusType, me.accountsLoaded, me);
+		},
+
+		actionUndoItem: function() {
+			var me = this;
+
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+
+			if (me.lastSelectedRowIndex >= 0) {
+				me.accountGrid.body.select(me.lastSelectedRowIndex);
+			}
 		},
 
 		actionSaveItem: function() {
-			var args = ii.args(arguments, {});
 			var me = this;
-			
-			if (me.accountReadOnly) return;
-				
-			if ((me.accountId <= 0 && me.status != "new") || (me.fiscalAccountGrid.indexSelected == -1 && me.status != "new")) {
-				alert("Please select Account to save.");
+
+			if (me.accountReadOnly || me.accountGrid.activeRowIndex === -1)
 				return false;
-			}
 
 			me.validator.forceBlur();
-
 			// Check to see if the data entered is valid
 			if (!me.validator.queryValidity(true)) {
-				alert( "In order to save, the errors on the page must be corrected.");
+				alert("In order to save, the errors on the page must be corrected.");
 				return false;
 			}
-			
+
 			me.setStatus("Saving");
 
 			$("#messageToUser").text("Saving");
@@ -611,12 +690,16 @@ ii.Class({
 			var item = new fin.fsc.account.Account(
 				me.accountId
 				, me.accountCategory.data[me.accountCategory.indexSelected].id
-				, me.accountCategory.data[me.accountCategory.indexSelected].name
+				, me.accounts[me.accountGrid.activeRowIndex].statusType
 				, me.accountCode.getValue()
-				, me.accountDescription.getValue()
-				, me.accountEditCode.getValue()
-				, me.accountHeader.getValue()
+				, me.description.getValue()
+				, me.postingEditCode.getValue()
+				, me.glHeader.getValue()
 				, me.mopTotalType.data[me.mopTotalType.indexSelected].id
+				, me.accountList.getValue()
+				, me.group.getValue()
+				, me.matchCode.getValue()
+				, me.shortDescription.getValue()
 		        , me.negativeValue.check.checked
 		        , me.bockImportExport.check.checked
 		        , me.budget.check.checked
@@ -633,11 +716,16 @@ ii.Class({
 		        , me.wor.check.checked
 		        , me.otherRevenue.check.checked
                 , me.poCapitalRequisition.check.checked
-				, true
+				, me.balanceSheet.check.checked
+				, me.profitAndLoss.check.checked
+				, me.blockDeletion.check.checked
+				, me.blockCreation.check.checked
+				, me.blockPosting.check.checked
+				, me.active.check.checked
 			);
-				
+
 			var xml = me.saveXmlBuild(item);
-			
+
 			// Send the object back to the server as a transaction
 			me.transactionMonitor.commit({
 				transactionType: "itemUpdate",
@@ -645,122 +733,86 @@ ii.Class({
 				responseFunction: me.saveResponse,
 				referenceData: {me: me, item: item}
 			});
-			
+
 			return true;			
 		},
-		
+
 		saveXmlBuild: function() {
 			var args = ii.args(arguments, {
 				item: { type: fin.fsc.account.Account }
 			});
+			var item = args.item;
 			var xml = "";
-			var clientId = 0;
 
 			xml += '<account'
-			xml += ' id="' + args.item.id + '"';
-			xml += ' accountCategoryId="' + args.item.accountCategoryId + '"';
-			xml += ' code="' + args.item.code + '"';
-			xml += ' description="' + ui.cmn.text.xml.encode(args.item.description) + '"';
-			xml += ' postingEditCode="' + ui.cmn.text.xml.encode(args.item.postingEditCode) + '"';
-			xml += ' glHeader="' + ui.cmn.text.xml.encode(args.item.glHeader) + '"';
-			xml += ' mopTotalType="' + args.item.mopTotalType + '"';
-	        xml += ' negativeValue="' + args.item.negativeValue + '"';
-	        xml += ' blockImportExport="' + args.item.blockImportExport + '"';
-	        xml += ' budget="' + args.item.budget + '"';
-	        xml += ' accountsPayable="' + args.item.accountsPayable + '"';
-	        xml += ' salariesWages="' + args.item.salariesWages + '"';
-	        xml += ' recurringExpense="' + args.item.recurringExpenses + '"';
-	        xml += ' fieldTransfers="' + args.item.fieldTransfers + '"';
-	        xml += ' inventory="' + args.item.inventory + '"';
-	        xml += ' payrollWorkSheet="' + args.item.payrollWorkSheet + '"';
-	        xml += ' managementFee="' + args.item.managementFee + '"';
-	        xml += ' directCost="' + args.item.directCost + '"';
-	        xml += ' supplies="' + args.item.supplies + '"';
-	        xml += ' accountReceivable="' + args.item.accountReceivables + '"';
-	        xml += ' wor="' + args.item.wor + '"';
-	        xml += ' otherRevenue="' + args.item.otherRevenue + '"';
-	        xml += ' poCapitalRequisition="' + args.item.poCapitalRequisition + '"';
-	        xml += ' active="' + args.item.active + '"';
-	        xml += ' clientId="' + ++clientId + '"';
+			xml += ' id="' + item.id + '"';
+			xml += ' accountCategoryId="' + item.accountCategoryId + '"';
+			xml += ' mopTotalType="' + item.mopTotalType + '"';
+			xml += ' code="' + item.code + '"';
+			xml += ' postingEditCode="' + ui.cmn.text.xml.encode(item.postingEditCode) + '"';
+			xml += ' glHeader="' + ui.cmn.text.xml.encode(item.glHeader) + '"';
+	        xml += ' negativeValue="' + item.negativeValue + '"';
+	        xml += ' blockImportExport="' + item.blockImportExport + '"';
+	        xml += ' accountsPayable="' + item.accountsPayable + '"';
+	        xml += ' salariesWages="' + item.salariesWages + '"';
+	        xml += ' recurringExpense="' + item.recurringExpenses + '"';
+	        xml += ' fieldTransfers="' + item.fieldTransfers + '"';
+	        xml += ' inventory="' + item.inventory + '"';
+	        xml += ' payrollWorkSheet="' + item.payrollWorkSheet + '"';
+	        xml += ' managementFee="' + item.managementFee + '"';
+	        xml += ' directCost="' + item.directCost + '"';
+	        xml += ' supplies="' + item.supplies + '"';
+	        xml += ' accountReceivable="' + item.accountReceivables + '"';
+	        xml += ' wor="' + item.wor + '"';
+	        xml += ' otherRevenue="' + item.otherRevenue + '"';
+	        xml += ' poCapitalRequisition="' + item.poCapitalRequisition + '"';
 			xml += '/>';
-			
+
 			return xml;
-		},	
+		},
 
 		saveResponse: function() {
 			var args = ii.args(arguments, {
 				transaction: {type: ii.ajax.TransactionMonitor.Transaction}, // The transaction that was responded to.
 				xmlNode: {type: "XmlNode:transaction"} // The XML transaction node associated with the response.
-			});			
+			});
 			var transaction = args.transaction;
 			var me = transaction.referenceData.me;
 			var item = transaction.referenceData.item;
 			var status = $(args.xmlNode).attr("status");
-			var id = parseInt($(this).attr("id"), 10);
-			var index = 0;	
 
 			if (status == "success") {
 				me.modified(false);
-				$(args.xmlNode).find("*").each(function () {
 
+				$(args.xmlNode).find("*").each(function () {
 					switch (this.tagName) {
 						case "account":
-							
-							id = parseInt($(this).attr("id"), 10);
-							
-							item = new fin.fsc.account.Account(
-								me.accountId
-								, me.accountCategory.data[me.accountCategory.indexSelected].id
-								, me.accountCategory.data[me.accountCategory.indexSelected].name
-								, me.accountCode.getValue()
-								, me.accountDescription.getValue()
-								, me.accountEditCode.getValue()
-								, me.accountHeader.getValue()
-								, me.mopTotalType.data[me.mopTotalType.indexSelected].id
-						        , me.negativeValue.check.checked
-						        , me.bockImportExport.check.checked
-						        , me.budget.check.checked
-						        , me.accountPayables.check.checked
-						        , me.salariesWages.check.checked
-						        , me.recurringExpenses.check.checked
-						        , me.fieldTransfers.check.checked
-						        , me.inventory.check.checked
-						        , me.payrollWorksheet.check.checked
-						        , me.managementFee.check.checked
-						        , me.directCost.check.checked
-						        , me.supplies.check.checked
-						        , me.accountReceivable.check.checked
-						        , me.wor.check.checked
-						        , me.otherRevenue.check.checked
-                                , me.poCapitalRequisition.check.checked
-								, true
-							);
-									
-							if (me.fiscalAccountGrid.activeRowIndex < 0 && me.status == "new") {
-								index = me.fiscalAccountGrid.data.length;
-								item.id = id;
-								me.accounts.push(item);
+							if (item.statusType === 2) {
+								me.resetControls();
+								me.accounts.splice(me.lastSelectedRowIndex, 1);
+								me.accountGrid.setData(me.accounts);
+								me.lastSelectedRowIndex = -1;
+								if (me.accounts.length === 0) {
+									$("#Notification").hide();
+									me.actionSearchItem(0);
+								}
 							}
-							else if (me.fiscalAccountGrid.activeRowIndex >= 0) {
-								index = me.fiscalAccountGrid.activeRowIndex;
-								me.accounts[me.fiscalAccountGrid.activeRowIndex] = item;
+							else {
+								me.accounts[me.lastSelectedRowIndex] = item;
+								me.accountGrid.body.renderRow(me.lastSelectedRowIndex, me.lastSelectedRowIndex);
 							}
-															
-							me.fiscalAccountGrid.setData(me.accounts);
-							me.fiscalAccountGrid.body.select(index);
-							me.status = "";
-									
+
 							break;
 					}
 				});
-				$("#messageToUser").text("Saving");
+
 				me.setStatus("Saved");
 			}
 			else {
 				me.setStatus("Error");
 				alert("[SAVE FAILURE] Error while updating Chart of Account details: " + $(args.xmlNode).attr("message"));
 			}
-			
+
 			$("#pageLoading").fadeOut("slow");
 		}
 	}
