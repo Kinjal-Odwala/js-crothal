@@ -950,23 +950,21 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 					        if ($scope.statePlans.length > 0 || $scope.companyPlans.length > 0)
 					            $scope.validateHigherLevelPlan("city", $scope.plans[index]);
 					    }
-					    else {
-					        for (var index = 0; index < $scope.countys.length; index++) {
-					            if ($scope.countys[index].name === $scope.selectedCity.name.substring($scope.selectedCity.name.indexOf("(") + 1, $scope.selectedCity.name.indexOf(")")))
-					                if ($scope.countys[index].countyPlans.length > 0) {
-					                    for (var index = 0; index < $scope.countys[index].countyPlans.length; index++) {
-					                        if ($scope.countys[index].countyPlans[index].ptoTypeTitle === $scope.plans[index].ptoTypeTitle
-                                                && (($scope.plans[index].minHours <= $scope.countys[index].countyPlans[index].minHours || $scope.plans[index].minHours >= $scope.countys[index].countyPlans[index].minHours) && $scope.plans[index].minHours <= $scope.countys[index].countyPlans[index].maxHours)
-                                                && (($scope.plans[index].maxHours <= $scope.countys[index].countyPlans[index].maxHours || $scope.plans[index].maxHours >= $scope.countys[index].countyPlans[index].maxHours) && $scope.plans[index].maxHours >= $scope.countys[index].countyPlans[index].minHours)
-                                                && $scope.plans[index].hourly === $scope.countys[index].countyPlans[index].hourly && $scope.plans[index].salary === $scope.countys[index].countyPlans[index].salary
-                                                && $scope.plans[index].statusCategoryTypeId === $scope.countys[index].countyPlans[index].statusCategoryTypeId) {
-					                            if (!confirm("Plans are assigned at higher level. Do you want to override the assigned plans?"))
-					                                return;
-					                            break;
-					                        }
+					    for (var index = 0; index < $scope.countys.length; index++) {
+					        if ($scope.countys[index].name === $scope.selectedCity.name.substring($scope.selectedCity.name.indexOf("(") + 1, $scope.selectedCity.name.indexOf(")")))
+					            if ($scope.countys[index].countyPlans.length > 0) {
+					                for (var index = 0; index < $scope.countys[index].countyPlans.length; index++) {
+					                    if ($scope.countys[index].countyPlans[index].ptoTypeTitle === $scope.plans[index].ptoTypeTitle
+                                            && (($scope.plans[index].minHours <= $scope.countys[index].countyPlans[index].minHours || $scope.plans[index].minHours >= $scope.countys[index].countyPlans[index].minHours) && $scope.plans[index].minHours <= $scope.countys[index].countyPlans[index].maxHours)
+                                            && (($scope.plans[index].maxHours <= $scope.countys[index].countyPlans[index].maxHours || $scope.plans[index].maxHours >= $scope.countys[index].countyPlans[index].maxHours) && $scope.plans[index].maxHours >= $scope.countys[index].countyPlans[index].minHours)
+                                            && $scope.plans[index].hourly === $scope.countys[index].countyPlans[index].hourly && $scope.plans[index].salary === $scope.countys[index].countyPlans[index].salary
+                                            && $scope.plans[index].statusCategoryTypeId === $scope.countys[index].countyPlans[index].statusCategoryTypeId) {
+					                        if (!confirm("Plans are assigned at higher level. Do you want to override the assigned plans?"))
+					                            return;
+					                        break;
 					                    }
 					                }
-					        }
+					            }
 					    }
 
 					    if ($scope.validPlan) {
@@ -983,22 +981,54 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 					        if ($scope.statePlans.length > 0 || $scope.companyPlans.length > 0)
 					            $scope.validateHigherLevelPlan("county", $scope.plans[index]);
 					    }
-					    else {
-					        EmpActions.getPTOPlans($scope.selectedHouseCode, $scope.ptoYear, $scope.selectedState.id, 0, 0, function (result) {
-					            if (result.length > 0)
-					                for (var index = 0; index < result.length; index++) {
-					                    if (result[index].ptoTypeTitle === $scope.plans[index].ptoTypeTitle
-                                            && (($scope.plans[index].minHours <= result[index].minHours || $scope.plans[index].minHours >= result[index].minHours) && $scope.plans[index].minHours <= result[index].maxHours)
-                                            && (($scope.plans[index].maxHours <= result[index].maxHours || $scope.plans[index].maxHours >= result[index].maxHours) && $scope.plans[index].maxHours >= result[index].minHours)
-                                            && $scope.plans[index].hourly === result[index].hourly && $scope.plans[index].salary === result[index].salary
-                                            && $scope.plans[index].statusCategoryTypeId === result[index].statusCategoryTypeId) {
+
+					    for (var index = 0; index < $scope.countys.length; index++) {
+					        if ($scope.countys[index].name === $scope.selectedHouseCode.title.substring($scope.selectedHouseCode.title.indexOf("(") + 1, $scope.selectedHouseCode.title.indexOf(")")))
+					            if ($scope.countys[index].countyPlans.length > 0) {
+					                for (var index = 0; index < $scope.countys[index].countyPlans.length; index++) {
+					                    if ($scope.countys[index].countyPlans[index].ptoTypeTitle === $scope.plans[index].ptoTypeTitle
+                                            && (($scope.plans[index].minHours <= $scope.countys[index].countyPlans[index].minHours || $scope.plans[index].minHours >= $scope.countys[index].countyPlans[index].minHours) && $scope.plans[index].minHours <= $scope.countys[index].countyPlans[index].maxHours)
+                                            && (($scope.plans[index].maxHours <= $scope.countys[index].countyPlans[index].maxHours || $scope.plans[index].maxHours >= $scope.countys[index].countyPlans[index].maxHours) && $scope.plans[index].maxHours >= $scope.countys[index].countyPlans[index].minHours)
+                                            && $scope.plans[index].hourly === $scope.countys[index].countyPlans[index].hourly && $scope.plans[index].salary === $scope.countys[index].countyPlans[index].salary
+                                            && $scope.plans[index].statusCategoryTypeId === $scope.countys[index].countyPlans[index].statusCategoryTypeId) {
 					                        if (!confirm("Plans are assigned at higher level. Do you want to override the assigned plans?"))
 					                            return;
 					                        break;
 					                    }
 					                }
-					        });
+					            }
 					    }
+					    for (var index = 0; index < $scope.cities.length; index++) {
+					        if ($scope.cities[index].name === $scope.selectedHouseCode.title.substring($scope.selectedHouseCode.title.indexOf("{") + 1, $scope.selectedHouseCode.title.indexOf("}")))
+					            if ($scope.cities[index].cityplans.length > 0) {
+					                for (var index = 0; index < $scope.cities[index].cityplans.length; index++) {
+					                    if ($scope.cities[index].cityplans[index].ptoTypeTitle === $scope.plans[index].ptoTypeTitle
+                                            && (($scope.plans[index].minHours <= $scope.cities[index].cityplans[index].minHours || $scope.plans[index].minHours >= $scope.cities[index].cityplans[index].minHours) && $scope.plans[index].minHours <= $scope.cities[index].cityplans[index].maxHours)
+                                            && (($scope.plans[index].maxHours <= $scope.cities[index].cityplans[index].maxHours || $scope.plans[index].maxHours >= $scope.cities[index].cityplans[index].maxHours) && $scope.plans[index].maxHours >= $scope.cities[index].cityplans[index].minHours)
+                                            && $scope.plans[index].hourly === $scope.cities[index].cityplans[index].hourly && $scope.plans[index].salary === $scope.cities[index].cityplans[index].salary
+                                            && $scope.plans[index].statusCategoryTypeId === $scope.cities[index].cityplans[index].statusCategoryTypeId) {
+					                        if (!confirm("Plans are assigned at higher level. Do you want to override the assigned plans?"))
+					                            return;
+					                        break;
+					                    }
+					                }
+					            }
+					    }
+					    EmpActions.getPTOPlans($scope.selectedHouseCode, $scope.ptoYear, $scope.selectedState.id, 0, 0, function (result) {
+					        if (result.length > 0) {
+					            for (var index = 0; index < result.length; index++) {
+					                if (result[index].ptoTypeTitle === $scope.plans[index].ptoTypeTitle
+                                        && (($scope.plans[index].minHours <= result[index].minHours || $scope.plans[index].minHours >= result[index].minHours) && $scope.plans[index].minHours <= result[index].maxHours)
+                                        && (($scope.plans[index].maxHours <= result[index].maxHours || $scope.plans[index].maxHours >= result[index].maxHours) && $scope.plans[index].maxHours >= result[index].minHours)
+                                        && $scope.plans[index].hourly === result[index].hourly && $scope.plans[index].salary === result[index].salary
+                                        && $scope.plans[index].statusCategoryTypeId === result[index].statusCategoryTypeId) {
+					                    if (!confirm("Plans are assigned at higher level. Do you want to override the assigned plans?"))
+					                        return;
+					                    break;
+					                }
+					            }
+					        }
+					    });
 
 					    if ($scope.validPlan) {
 					        item["stateType"] = $scope.selectedState.id;
