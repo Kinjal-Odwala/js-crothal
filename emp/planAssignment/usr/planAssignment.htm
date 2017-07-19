@@ -57,8 +57,8 @@
                     <tr class="footer">
                         <td>
 	                        <a class="btn btn-primary btn-xs" ng-click="addPlan('company')">Add</a>
-	                        <a class="btn btn-primary btn-xs" ng-click="removeCompanyPlan()">Remove</a>
-	                        <a class="btn btn-primary btn-xs" ng-click="saveCompanyPlans()">Save</a>
+	                        <a class="btn btn-primary btn-xs" ng-show="showRemoveBtn" ng-click="removeCompanyPlan()">Remove</a>
+	                        <a class="btn btn-primary btn-xs" ng-show="showSaveBtn" ng-click="saveCompanyPlans()">Save</a>
                             <a class="btn btn-primary btn-xs" ng-disabled="disableCompanyCloneButton" ng-click="clonePlan('company', 1)">Clone</a>
                         </td>
                     </tr>
@@ -128,8 +128,8 @@
                     <tr class="footer">
                         <td>
 	                        <a class="btn btn-primary btn-xs" ng-click="addPlan('state')">Add</a>
-	                        <a class="btn btn-primary btn-xs" ng-click="removeStatePlan()">Remove</a>
-	                        <a class="btn btn-primary btn-xs" ng-click="saveStatePlans()">Save</a>
+	                        <a class="btn btn-primary btn-xs" ng-show="showRemoveBtn" ng-click="removeStatePlan()">Remove</a>
+	                        <a class="btn btn-primary btn-xs" ng-show="showSaveBtn" ng-click="saveStatePlans()">Save</a>
                             <a class="btn btn-primary btn-xs" ng-disabled="disableStateCloneButton" ng-click="clonePlan('state', 2)">Clone</a>
                         </td>
                     </tr>
@@ -191,8 +191,8 @@
                     <tr class="footer">
                         <td>
 	                        <a class="btn btn-primary btn-xs" ng-click="addPlan('county')">Add</a>
-	                        <a class="btn btn-primary btn-xs" ng-click="removeCountyPlan()">Remove</a>
-	                        <a class="btn btn-primary btn-xs" ng-click="saveCountyPlans()">Save</a>
+	                        <a class="btn btn-primary btn-xs" ng-show="showRemoveBtn" ng-click="removeCountyPlan()">Remove</a>
+	                        <a class="btn btn-primary btn-xs" ng-show="showSaveBtn" ng-click="saveCountyPlans()">Save</a>
                             <a class="btn btn-primary btn-xs" ng-disabled="disableCountyCloneButton" ng-click="clonePlan('county', 3)">Clone</a>
                         </td>
                     </tr>
@@ -255,8 +255,8 @@
                     <tr class="footer">
                         <td>
 	                        <a class="btn btn-primary btn-xs" ng-click="addPlan('city')">Add</a>
-	                        <a class="btn btn-primary btn-xs" ng-click="removeCityPlan()">Remove</a>
-	                        <a class="btn btn-primary btn-xs" ng-click="saveCityPlans()">Save</a>
+	                        <a class="btn btn-primary btn-xs" ng-show="showRemoveBtn" ng-click="removeCityPlan()">Remove</a>
+	                        <a class="btn btn-primary btn-xs" ng-show="showSaveBtn" ng-click="saveCityPlans()">Save</a>
                             <a class="btn btn-primary btn-xs" ng-disabled="disableCityCloneButton" ng-click="clonePlan('city', 4)">Clone</a>
                         </td>
                     </tr>
@@ -319,8 +319,8 @@
                     <tr class="footer">
                         <td>
 	                        <a class="btn btn-primary btn-xs" ng-click="addPlan('houseCode')">Add</a>
-	                        <a class="btn btn-primary btn-xs" ng-click="removeHouseCodePlan()">Remove</a>
-	                        <a class="btn btn-primary btn-xs" ng-click="saveHouseCodePlans()">Save</a>
+	                        <a class="btn btn-primary btn-xs" ng-show="showRemoveBtn" ng-click="removeHouseCodePlan()">Remove</a>
+	                        <a class="btn btn-primary btn-xs" ng-show="showSaveBtn" ng-click="saveHouseCodePlans()">Save</a>
                             <a class="btn btn-primary btn-xs" ng-disabled="disableHouseCodeCloneButton" ng-click="clonePlan('houseCode', 5)">Clone</a>
                         </td>
                     </tr>
