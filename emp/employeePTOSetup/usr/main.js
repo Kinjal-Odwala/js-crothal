@@ -1077,7 +1077,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
                     }
                 }
             }
-           
+
             EmpActions.getPlanWageTypes($scope.selectedPTOPlan.id, function (planWageTypes) {
                 $scope.ptoPlanWageTypes = planWageTypes;
                 $scope.selectedWageTypes = [];
@@ -1520,6 +1520,10 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
                 break;
             }
         }
+
+        $scope.minEndDate = $scope.getDate($scope.ptoPlan.startDate);
+        $scope.maxEndDate = (parseInt($scope.minEndDate.substring(0, 4)) + 1) + '-' + $scope.minEndDate.substring(5, 7) + '-' + $scope.minEndDate.substring(8);
+
         if ($scope.ptoPlan.endDate === null || $scope.ptoPlan.endDate === undefined || $scope.ptoPlan.endDate === "") {
             $scope.ptoForm.planForm.endDate.$setValidity("required", false);
         }
@@ -2612,20 +2616,20 @@ pto.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
                 }
             }
 
-            for (var total = 0; total < $scope.ptoPlanWageTypes.length; total++) {
+            angular.forEach($scope.ptoPlanWageTypes, function (ptoPlanWageType) {
                 var exists = false;
                 for (var index = 0; index < $scope.selectedWageTypes.length; index++) {
-                    if ($scope.ptoPlanWageTypes[total].ptoWageTypeId == $scope.selectedWageTypes[index].id) {
+                    if (ptoPlanWageType.ptoWageTypeId == $scope.selectedWageTypes[index].id) {
                         exists = true;
                         break;
                     }
                 }
                 if (!exists) {
                     xml += '<ptoPlanWageTypeDelete';
-                    xml += ' id="' + $scope.ptoPlanWageTypes[total].id + '"';
+                    xml += ' id="' + ptoPlanWageType.id + '"';
                     xml += '/>';
                 }
-            }
+            });
         }
         else if (action === "PTO Plan" && $scope.isClone === true) {
             xml += '<ptoPlanClone';

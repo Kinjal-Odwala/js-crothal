@@ -427,29 +427,34 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 	
 	$scope.getCountyPlanAssignments = function() {
 		EmpActions.getPlanAssignments($scope.ptoYear, $scope.selectedState.id, 3, 0, function(data) {
-            $scope.countys = [];
+		    $scope.countys = [];
+		    $scope.countysWithPlans = [];
 
             angular.forEach(data, function(county, index) {
                 var found = false;
                 if ($scope.countys.length > 0) {
-					for (var index = 0; index < $scope.countys.length; index++) {
-						if ($scope.countys[index].name === county.name) {
-							found = true;
-							break;
-						}  
-					}
-                    if (!found)
+                    for (var index = 0; index < $scope.countys.length; index++) {
+                        if ($scope.countys[index].name === county.name) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        county.countyPlans = [];
                         $scope.countys.push(county);
+                        if (county.ptoPlanId > 0)
+                            $scope.countysWithPlans.push(county);
+                    }
                 }
-                else
+                else {
+                    county.countyPlans = [];
                     $scope.countys.push(county);
+                    if (county.ptoPlanId > 0)
+                        $scope.countysWithPlans.push(county);
+                }
             });
 
-            angular.forEach($scope.countys, function (county, index) {
-                county.countyPlans = [];
-            });
-
-            angular.forEach(data, function(county, index) {
+            angular.forEach($scope.countysWithPlans, function (county, index) {
                 if (county.ptoPlanId > 0) {
                     angular.forEach($scope.countys, function (countyPlan, index) {
                         countyPlan.countyPlans = [];
@@ -470,9 +475,11 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 		EmpActions.getPlanAssignments($scope.ptoYear, $scope.selectedState.id, 4, 0, function(data) {
 		    $scope.cities = [];
 		    $scope.citiesNames = [];
+		    $scope.citiesWithPlans = [];
 
             angular.forEach(data, function(city, index) {
                 var found = false;
+               
                 if ($scope.citiesNames.length > 0) {
                     for (var index = 0; index < $scope.citiesNames.length; index++) {
                         if ($scope.citiesNames[index] === city.name) {
@@ -485,8 +492,12 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                         var county = city.name.substring(city.name.indexOf("(") + 1, city.name.indexOf(")"));
                         city.tooltipText = "County: " + county;
                         city.name = city.name.slice(0, city.name.indexOf("("));
-                        if (city.name !== "" && city.name !== null && city.name !== undefined) 
+                        if (city.name !== "" && city.name !== null && city.name !== undefined) {
+                            city.cityPlans = [];
                             $scope.cities.push(city);
+                            if (city.ptoPlanId > 0)
+                                $scope.citiesWithPlans.push(city);
+                        }
                     }
                 }
                 else {
@@ -494,16 +505,16 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                     var county = city.name.substring(city.name.indexOf("(") + 1, city.name.indexOf(")"));
                     city.tooltipText = "County: " + county;
                     city.name = city.name.slice(0, city.name.indexOf("("));
-                    if (city.name !== "" && city.name !== null && city.name !== undefined)
+                    if (city.name !== "" && city.name !== null && city.name !== undefined) {
+                        city.cityPlans = [];
                         $scope.cities.push(city);
+                        if (city.ptoPlanId > 0)
+                            $scope.citiesWithPlans.push(city);
+                    }
                 }
             });
 
-            angular.forEach($scope.cities, function (city, index) {
-                city.cityPlans = [];
-            });
-
-            angular.forEach(data, function(city, index) {
+            angular.forEach($scope.citiesWithPlans, function (city, index) {
                 if (city.ptoPlanId > 0) {
                     angular.forEach($scope.cities, function (cityPlan, index) {
                         cityPlan.cityPlans = [];
@@ -522,7 +533,8 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 	
 	$scope.getHouseCodePlanAssignments = function() {
 		 EmpActions.getPlanAssignments($scope.ptoYear, $scope.selectedState.id, 5, 0, function(data) {
-            $scope.houseCodes = [];
+		     $scope.houseCodes = [];
+		     $scope.houseCodesWithPlans = [];
 
             angular.forEach(data, function(houseCode, index) {
                 var found = false;
@@ -539,7 +551,10 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                         houseCode.tooltipText = ["County: " + county, "City: " + city];
                         if (houseCode.name.indexOf("(") > 0)
                             houseCode.name = houseCode.name.substring(0, houseCode.name.indexOf("("));
+                        houseCode.houseCodePlans = [];
                         $scope.houseCodes.push(houseCode);
+                        if (houseCode.ptoPlanId > 0)
+                            $scope.houseCodesWithPlans.push(houseCode);
                     }
                 }
                 else {
@@ -548,15 +563,14 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                     houseCode.tooltipText = ["County: " + county, "City: " + city];
                     if (houseCode.name.indexOf("(") > 0) 
                         houseCode.name = houseCode.name.substring(0, houseCode.name.indexOf("("));
+                    houseCode.houseCodePlans = [];
                     $scope.houseCodes.push(houseCode);
+                    if (houseCode.ptoPlanId > 0)
+                        $scope.houseCodesWithPlans.push(houseCode);
                 }
             });
 
-            angular.forEach($scope.houseCodes, function (houseCode, index) {
-                houseCode.houseCodePlans = [];
-            });
-
-            angular.forEach(data, function(houseCode, index) {
+            angular.forEach($scope.houseCodesWithPlans, function (houseCode, index) {
                 if (houseCode.ptoPlanId > 0) {
                     angular.forEach($scope.houseCodes, function (houseCodePlan, index) {
                         houseCodePlan.houseCodePlans = [];
@@ -950,15 +964,15 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 					        if ($scope.statePlans.length > 0 || $scope.companyPlans.length > 0)
 					            $scope.validateHigherLevelPlan("city", $scope.plans[index]);
 					    }
-					    for (var index = 0; index < $scope.countys.length; index++) {
-					        if ($scope.countys[index].name === $scope.selectedCity.name.substring($scope.selectedCity.name.indexOf("(") + 1, $scope.selectedCity.name.indexOf(")")))
-					            if ($scope.countys[index].countyPlans.length > 0) {
-					                for (var index = 0; index < $scope.countys[index].countyPlans.length; index++) {
-					                    if ($scope.countys[index].countyPlans[index].ptoTypeTitle === $scope.plans[index].ptoTypeTitle
-                                            && (($scope.plans[index].minHours <= $scope.countys[index].countyPlans[index].minHours || $scope.plans[index].minHours >= $scope.countys[index].countyPlans[index].minHours) && $scope.plans[index].minHours <= $scope.countys[index].countyPlans[index].maxHours)
-                                            && (($scope.plans[index].maxHours <= $scope.countys[index].countyPlans[index].maxHours || $scope.plans[index].maxHours >= $scope.countys[index].countyPlans[index].maxHours) && $scope.plans[index].maxHours >= $scope.countys[index].countyPlans[index].minHours)
-                                            && $scope.plans[index].hourly === $scope.countys[index].countyPlans[index].hourly && $scope.plans[index].salary === $scope.countys[index].countyPlans[index].salary
-                                            && $scope.plans[index].statusCategoryTypeId === $scope.countys[index].countyPlans[index].statusCategoryTypeId) {
+					    for (var index1 = 0; index1 < $scope.countys.length; index1++) {
+					        if ($scope.countys[index1].name == $scope.selectedCity.title.substring($scope.selectedCity.title.indexOf("(") + 1, $scope.selectedCity.title.indexOf(")")))
+					            if ($scope.countys[index1].countyPlans.length > 0) {
+					                for (var index2 = 0; index2 < $scope.countys[index1].countyPlans.length; index2++) {
+					                    if ($scope.countys[index1].countyPlans[index2].ptoTypeTitle === $scope.plans[index].ptoTypeTitle
+                                            && (($scope.plans[index].minHours <= $scope.countys[index1].countyPlans[index2].minHours || $scope.plans[index].minHours >= $scope.countys[index1].countyPlans[index2].minHours) && $scope.plans[index].minHours <= $scope.countys[index1].countyPlans[index2].maxHours)
+                                            && (($scope.plans[index].maxHours <= $scope.countys[index1].countyPlans[index2].maxHours || $scope.plans[index].maxHours >= $scope.countys[index1].countyPlans[index2].maxHours) && $scope.plans[index].maxHours >= $scope.countys[index1].countyPlans[index2].minHours)
+                                            && $scope.plans[index].hourly === $scope.countys[index1].countyPlans[index2].hourly && $scope.plans[index].salary === $scope.countys[index1].countyPlans[index2].salary
+                                            && $scope.plans[index].statusCategoryTypeId === $scope.countys[index1].countyPlans[index2].statusCategoryTypeId) {
 					                        if (!confirm("Plans are assigned at higher level. Do you want to override the assigned plans?"))
 					                            return;
 					                        break;
@@ -982,46 +996,50 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 					            $scope.validateHigherLevelPlan("county", $scope.plans[index]);
 					    }
 
-					    for (var index = 0; index < $scope.countys.length; index++) {
-					        if ($scope.countys[index].name === $scope.selectedHouseCode.title.substring($scope.selectedHouseCode.title.indexOf("(") + 1, $scope.selectedHouseCode.title.indexOf(")")))
-					            if ($scope.countys[index].countyPlans.length > 0) {
-					                for (var index = 0; index < $scope.countys[index].countyPlans.length; index++) {
-					                    if ($scope.countys[index].countyPlans[index].ptoTypeTitle === $scope.plans[index].ptoTypeTitle
-                                            && (($scope.plans[index].minHours <= $scope.countys[index].countyPlans[index].minHours || $scope.plans[index].minHours >= $scope.countys[index].countyPlans[index].minHours) && $scope.plans[index].minHours <= $scope.countys[index].countyPlans[index].maxHours)
-                                            && (($scope.plans[index].maxHours <= $scope.countys[index].countyPlans[index].maxHours || $scope.plans[index].maxHours >= $scope.countys[index].countyPlans[index].maxHours) && $scope.plans[index].maxHours >= $scope.countys[index].countyPlans[index].minHours)
-                                            && $scope.plans[index].hourly === $scope.countys[index].countyPlans[index].hourly && $scope.plans[index].salary === $scope.countys[index].countyPlans[index].salary
-                                            && $scope.plans[index].statusCategoryTypeId === $scope.countys[index].countyPlans[index].statusCategoryTypeId) {
+					    for (var index3 = 0; index3 < $scope.countys.length; index3++) {
+					        if ($scope.countys[index3].name == $scope.selectedHouseCode.title.substring($scope.selectedHouseCode.title.indexOf("(") + 1, $scope.selectedHouseCode.title.indexOf(")"))) {
+					            if ($scope.countys[index3].countyPlans.length > 0) {
+					                for (var index4 = 0; index4 < $scope.countys[index3].countyPlans.length; index4++) {
+					                    if ($scope.countys[index3].countyPlans[index4].ptoTypeTitle === $scope.plans[index].ptoTypeTitle
+                                            && (($scope.plans[index].minHours <= $scope.countys[index3].countyPlans[index4].minHours || $scope.plans[index].minHours >= $scope.countys[index3].countyPlans[index4].minHours) && $scope.plans[index].minHours <= $scope.countys[index3].countyPlans[index4].maxHours)
+                                            && (($scope.plans[index].maxHours <= $scope.countys[index3].countyPlans[index4].maxHours || $scope.plans[index].maxHours >= $scope.countys[index3].countyPlans[index4].maxHours) && $scope.plans[index].maxHours >= $scope.countys[index3].countyPlans[index4].minHours)
+                                            && $scope.plans[index].hourly === $scope.countys[index3].countyPlans[index4].hourly && $scope.plans[index].salary === $scope.countys[index3].countyPlans[index4].salary
+                                            && $scope.plans[index].statusCategoryTypeId === $scope.countys[index3].countyPlans[index4].statusCategoryTypeId) {
 					                        if (!confirm("Plans are assigned at higher level. Do you want to override the assigned plans?"))
 					                            return;
 					                        break;
 					                    }
 					                }
 					            }
+					            break;
+					        }
 					    }
-					    for (var index = 0; index < $scope.cities.length; index++) {
-					        if ($scope.cities[index].name === $scope.selectedHouseCode.title.substring($scope.selectedHouseCode.title.indexOf("{") + 1, $scope.selectedHouseCode.title.indexOf("}")))
-					            if ($scope.cities[index].cityplans.length > 0) {
-					                for (var index = 0; index < $scope.cities[index].cityplans.length; index++) {
-					                    if ($scope.cities[index].cityplans[index].ptoTypeTitle === $scope.plans[index].ptoTypeTitle
-                                            && (($scope.plans[index].minHours <= $scope.cities[index].cityplans[index].minHours || $scope.plans[index].minHours >= $scope.cities[index].cityplans[index].minHours) && $scope.plans[index].minHours <= $scope.cities[index].cityplans[index].maxHours)
-                                            && (($scope.plans[index].maxHours <= $scope.cities[index].cityplans[index].maxHours || $scope.plans[index].maxHours >= $scope.cities[index].cityplans[index].maxHours) && $scope.plans[index].maxHours >= $scope.cities[index].cityplans[index].minHours)
-                                            && $scope.plans[index].hourly === $scope.cities[index].cityplans[index].hourly && $scope.plans[index].salary === $scope.cities[index].cityplans[index].salary
-                                            && $scope.plans[index].statusCategoryTypeId === $scope.cities[index].cityplans[index].statusCategoryTypeId) {
+					    for (var index5 = 0; index5 < $scope.cities.length; index5++) {
+					        if ($scope.cities[index5].name.replace(/\s*$/,"") == $scope.selectedHouseCode.title.substring($scope.selectedHouseCode.title.indexOf("{") + 1, $scope.selectedHouseCode.title.indexOf("}"))) {
+					            if ($scope.cities[index5].cityPlans.length > 0) {
+					                for (var index6 = 0; index6 < $scope.cities[index5].cityPlans.length; index6++) {
+					                    if ($scope.cities[index5].cityPlans[index6].ptoTypeTitle === $scope.plans[index].ptoTypeTitle
+                                            && (($scope.plans[index].minHours <= $scope.cities[index5].cityPlans[index6].minHours || $scope.plans[index].minHours >= $scope.cities[index5].cityPlans[index6].minHours) && $scope.plans[index].minHours <= $scope.cities[index5].cityPlans[index6].maxHours)
+                                            && (($scope.plans[index].maxHours <= $scope.cities[index5].cityPlans[index6].maxHours || $scope.plans[index].maxHours >= $scope.cities[index5].cityPlans[index6].maxHours) && $scope.plans[index].maxHours >= $scope.cities[index5].cityPlans[index6].minHours)
+                                            && $scope.plans[index].hourly === $scope.cities[index5].cityPlans[index6].hourly && $scope.plans[index].salary === $scope.cities[index5].cityPlans[index6].salary
+                                            && $scope.plans[index].statusCategoryTypeId === $scope.cities[index5].cityPlans[index6].statusCategoryTypeId) {
 					                        if (!confirm("Plans are assigned at higher level. Do you want to override the assigned plans?"))
 					                            return;
 					                        break;
 					                    }
 					                }
 					            }
+					            break;
+					        }
 					    }
 					    EmpActions.getPTOPlans($scope.selectedHouseCode, $scope.ptoYear, $scope.selectedState.id, 0, 0, function (result) {
 					        if (result.length > 0) {
-					            for (var index = 0; index < result.length; index++) {
-					                if (result[index].ptoTypeTitle === $scope.plans[index].ptoTypeTitle
-                                        && (($scope.plans[index].minHours <= result[index].minHours || $scope.plans[index].minHours >= result[index].minHours) && $scope.plans[index].minHours <= result[index].maxHours)
-                                        && (($scope.plans[index].maxHours <= result[index].maxHours || $scope.plans[index].maxHours >= result[index].maxHours) && $scope.plans[index].maxHours >= result[index].minHours)
-                                        && $scope.plans[index].hourly === result[index].hourly && $scope.plans[index].salary === result[index].salary
-                                        && $scope.plans[index].statusCategoryTypeId === result[index].statusCategoryTypeId) {
+					            for (var index7 = 0; index7 < result.length; index7++) {
+					                if (result[index7].ptoTypeTitle === $scope.plans[index].ptoTypeTitle
+                                        && (($scope.plans[index].minHours <= result[index7].minHours || $scope.plans[index].minHours >= result[index7].minHours) && $scope.plans[index].minHours <= result[index7].maxHours)
+                                        && (($scope.plans[index].maxHours <= result[index7].maxHours || $scope.plans[index].maxHours >= result[index7].maxHours) && $scope.plans[index].maxHours >= result[index7].minHours)
+                                        && $scope.plans[index].hourly === result[index7].hourly && $scope.plans[index].salary === result[index7].salary
+                                        && $scope.plans[index].statusCategoryTypeId === result[index7].statusCategoryTypeId) {
 					                    if (!confirm("Plans are assigned at higher level. Do you want to override the assigned plans?"))
 					                        return;
 					                    break;
