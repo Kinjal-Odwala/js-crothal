@@ -435,6 +435,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                 if ($scope.countys.length > 0) {
                     for (var index = 0; index < $scope.countys.length; index++) {
                         if ($scope.countys[index].name === county.name) {
+                            $scope.countysWithPlans.push(county);
                             found = true;
                             break;
                         }
@@ -442,22 +443,18 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                     if (!found) {
                         county.countyPlans = [];
                         $scope.countys.push(county);
-                        if (county.ptoPlanId > 0)
-                            $scope.countysWithPlans.push(county);
+                        $scope.countysWithPlans.push(county);
                     }
                 }
                 else {
                     county.countyPlans = [];
                     $scope.countys.push(county);
-                    if (county.ptoPlanId > 0)
-                        $scope.countysWithPlans.push(county);
                 }
             });
 
             angular.forEach($scope.countysWithPlans, function (county, index) {
                 if (county.ptoPlanId > 0) {
                     angular.forEach($scope.countys, function (countyPlan, index) {
-                        countyPlan.countyPlans = [];
                         if (countyPlan.name === county.name) {
                             countyPlan.countyPlans.push(county);
                             $scope.disableCountyCloneButton = true;
@@ -483,6 +480,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                 if ($scope.citiesNames.length > 0) {
                     for (var index = 0; index < $scope.citiesNames.length; index++) {
                         if ($scope.citiesNames[index] === city.name) {
+                            $scope.citiesWithPlans.push(city);
                             found = true;
                             break;
                         }
@@ -495,8 +493,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                         if (city.name !== "" && city.name !== null && city.name !== undefined) {
                             city.cityPlans = [];
                             $scope.cities.push(city);
-                            if (city.ptoPlanId > 0)
-                                $scope.citiesWithPlans.push(city);
+                            $scope.citiesWithPlans.push(city);
                         }
                     }
                 }
@@ -508,8 +505,6 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                     if (city.name !== "" && city.name !== null && city.name !== undefined) {
                         city.cityPlans = [];
                         $scope.cities.push(city);
-                        if (city.ptoPlanId > 0)
-                            $scope.citiesWithPlans.push(city);
                     }
                 }
             });
@@ -517,7 +512,6 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
             angular.forEach($scope.citiesWithPlans, function (city, index) {
                 if (city.ptoPlanId > 0) {
                     angular.forEach($scope.cities, function (cityPlan, index) {
-                        cityPlan.cityPlans = [];
                         if (cityPlan.name === city.name) {
                             cityPlan.cityPlans.push(city);
                             $scope.disableCityCloneButton = true;
@@ -541,6 +535,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                 if (houseCode.ptoPlanId > 0 && $scope.houseCodes.length > 0) {
                     for (var index = 0; index < $scope.houseCodes.length; index++) {
                         if ($scope.houseCodes[index].name === houseCode.name) {
+                            $scope.houseCodesWithPlans.push(houseCode);
                             found = true;
                             break;
                         }
@@ -553,8 +548,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                             houseCode.name = houseCode.name.substring(0, houseCode.name.indexOf("("));
                         houseCode.houseCodePlans = [];
                         $scope.houseCodes.push(houseCode);
-                        if (houseCode.ptoPlanId > 0)
-                            $scope.houseCodesWithPlans.push(houseCode);
+                        $scope.houseCodesWithPlans.push(houseCode);
                     }
                 }
                 else {
@@ -565,21 +559,16 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                         houseCode.name = houseCode.name.substring(0, houseCode.name.indexOf("("));
                     houseCode.houseCodePlans = [];
                     $scope.houseCodes.push(houseCode);
-                    if (houseCode.ptoPlanId > 0)
-                        $scope.houseCodesWithPlans.push(houseCode);
                 }
             });
 
             angular.forEach($scope.houseCodesWithPlans, function (houseCode, index) {
-                if (houseCode.ptoPlanId > 0) {
-                    angular.forEach($scope.houseCodes, function (houseCodePlan, index) {
-                        houseCodePlan.houseCodePlans = [];
-                        if (houseCodePlan.name === houseCode.name) {
-                            houseCodePlan.houseCodePlans.push(houseCode);
-                            $scope.disableHouseCodeCloneButton = true;
-                        }
-                    });
-                }
+                angular.forEach($scope.houseCodes, function (houseCodePlan, index) {
+                    if (houseCodePlan.name === houseCode.name) {
+                        houseCodePlan.houseCodePlans.push(houseCode);
+                        $scope.disableHouseCodeCloneButton = true;
+                    }
+                });
             });
             $scope.assignedHouseCodes = $scope.houseCodes;
             $scope.setStateGridHeight();
