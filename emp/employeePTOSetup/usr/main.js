@@ -1734,6 +1734,8 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
 
     $scope.assignmentSearch = function () {
         $scope.ptoPlanAssignments = [];
+        $scope.employees = [];
+        $scope.assignedEmployees = [];
         $scope.loadingTitle = " Loading...";
         $scope.pageStatus = 'Loading, Please Wait...';
         setStatus("Loading");
