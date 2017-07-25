@@ -141,7 +141,7 @@
                         <div class="row">
                              <label class="col-md-3 control-label">Title:</label>
                             <div class="col-md-4" ng-class="{'has-error':ptoForm.planTypeTitle.$invalid}">
-                                <input name="planTypeTitle" class="form-control input-sm" ng-model="ptoPlanType.ptoPlanTypeTitle" ng-blur="onPlanTypeTitleChange(ptoPlanType.ptoPlanTypeTitle)"/>
+                                <input name="planTypeTitle" class="form-control input-sm" ng-disabled="assignedPlanType" ng-model="ptoPlanType.ptoPlanTypeTitle" ng-blur="onPlanTypeTitleChange(ptoPlanType.ptoPlanTypeTitle)"/>
                             </div>
                         </div>
                         <div class="row" style="padding-top:10px;"></div>
@@ -150,10 +150,10 @@
                             <div class="col-md-5">
                                 <div class="form-group" ng-class="{'has-error':ptoForm.payType.$invalid}">
                                     <label class="checkbox-inline">
-                                        <input name="payType" ng-model="ptoPlanType.Salary" ng-click="payTypeSalaryChanged(ptoPlanType.Salary)" type="checkbox" />&nbsp;Salary&nbsp;&nbsp;
+                                        <input name="payType" ng-model="ptoPlanType.Salary" ng-disabled="assignedPlanType" ng-click="payTypeSalaryChanged(ptoPlanType.Salary)" type="checkbox" />&nbsp;Salary&nbsp;&nbsp;
                                     </label>
                                     <label class="checkbox-inline">
-                                        <input name="payType" ng-model="ptoPlanType.Hourly" ng-click="payTypeHourlyChanged(ptoPlanType.Hourly)" type="checkbox" />&nbsp;Hourly
+                                        <input name="payType" ng-model="ptoPlanType.Hourly" ng-disabled="assignedPlanType" ng-click="payTypeHourlyChanged(ptoPlanType.Hourly)" type="checkbox" />&nbsp;Hourly
                                     </label>
                                 </div>
                             </div>
@@ -163,11 +163,11 @@
                             <div class="col-md-6">
                                 <div class="form-group" ng-class="{'has-error':ptoForm.status.$invalid}">
                                     <label class="radio-inline">
-                                        <input type="radio" name="status" ng-model="ptoPlanType.Status" ng-change="onStatusChange(ptoPlanType.Status)" value="1"/>&nbsp;Full Time
+                                        <input type="radio" name="status" ng-model="ptoPlanType.Status" ng-disabled="assignedPlanType" ng-change="onStatusChange(ptoPlanType.Status)" value="1"/>&nbsp;Full Time
                                     </label>
                                
                                     <label class="radio-inline">
-                                        <input type="radio" name="status" ng-model="ptoPlanType.Status" ng-change="onStatusChange(ptoPlanType.Status)" value="2"/>&nbsp;Part Time 
+                                        <input type="radio" name="status" ng-model="ptoPlanType.Status" ng-disabled="assignedPlanType" ng-change="onStatusChange(ptoPlanType.Status)" value="2"/>&nbsp;Part Time 
                                     </label>
                                 </div>
                             </div>
@@ -175,14 +175,14 @@
                         <div class="row" ng-show="ptoPlanType.Hourly" ng-class="{'has-error':ptoForm.planTypeMinHours.$invalid}">
                              <label class="col-md-3 control-label">Minimum Hours:</label>
                             <div class="col-md-6">
-                                <input name="planTypeMinHours" class="form-control input-sm" ng-model="ptoPlanType.ptoPlanTypeMinHours" maxlength="2" ng-blur="onMinHoursChange(ptoPlanType.ptoPlanTypeMinHours)" pto-integer/>
+                                <input name="planTypeMinHours" class="form-control input-sm" ng-disabled="assignedPlanType" ng-model="ptoPlanType.ptoPlanTypeMinHours" maxlength="2" ng-blur="onMinHoursChange(ptoPlanType.ptoPlanTypeMinHours)" pto-integer/>
                             </div>
                             <div class="row" style="padding-bottom:10px;"></div>
                         </div>
                         <div class="row" ng-show="ptoPlanType.Hourly" ng-class="{'has-error':ptoForm.planTypeMaxHours.$invalid}">
                              <label class="col-md-3 control-label">Maximum Hours:</label>
                             <div class="col-md-6">
-                                <input name="planTypeMaxHours" class="form-control input-sm" ng-model="ptoPlanType.ptoPlanTypeMaxHours" maxlength="2" ng-blur="onMaxHoursChange(ptoPlanType.ptoPlanTypeMaxHours)" pto-integer/>
+                                <input name="planTypeMaxHours" class="form-control input-sm" ng-disabled="assignedPlanType" ng-model="ptoPlanType.ptoPlanTypeMaxHours" maxlength="2" ng-blur="onMaxHoursChange(ptoPlanType.ptoPlanTypeMaxHours)" pto-integer/>
                             </div>
                             <div class="row" style="padding-bottom:10px;"></div>
                         </div>
@@ -190,7 +190,7 @@
                             <label class="col-md-3 control-label">Active:</label>
                             <div class="col-md-4">
                                 <label>
-                                    <input name="planTypeActive" type="checkbox" ng-model="ptoPlanType.ptoPlanTypeActive" ng-value="ptoPlanType.ptoPlanTypeActive" ng-click="onPlanTypeActiveChange(ptoPlanType.ptoPlanTypeActive)"/>
+                                    <input name="planTypeActive" type="checkbox" ng-disabled="assignedPlanType" ng-model="ptoPlanType.ptoPlanTypeActive" ng-value="ptoPlanType.ptoPlanTypeActive" ng-click="onPlanTypeActiveChange(ptoPlanType.ptoPlanTypeActive)"/>
                                 </label>
                             </div>
                         </div>
@@ -198,9 +198,9 @@
                 </div>
                     <div class="row" style="padding-bottom: 15px;"></div>
                         <div>
-                            <a class="btn btn-primary" ng-click="savePTOPlanType()">Save</a>
+                            <a class="btn btn-primary" ng-click="savePTOPlanType()" ng-disabled="assignedPlanType">Save</a>
                             <a class="btn btn-primary" ng-click="newPTOPlanType()">New</a>
-                            <a class="btn btn-primary" ng-click="undoPTOPlanType()">Undo</a>
+                            <a class="btn btn-primary" ng-click="undoPTOPlanType()" ng-disabled="assignedPlanType">Undo</a>
                         </div>
                     </div>
                 </div>

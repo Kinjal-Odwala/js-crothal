@@ -605,6 +605,15 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.ptoPlanType.ptoPlanTypeMaxHours = item.maxHours;
         $scope.ptoPlanType.ptoPlanTypeActive = item.active;
         $scope.ptoPlanType.id = item.id;
+
+        EmpActions.getPlanAssignments(0, 0, 0, function (result) {
+            $scope.allPlanAssignments = result;
+            angular.forEach($scope.allPlanAssignments, function (planAssignment) {
+                if (planAssignment.ptoPlanType === $scope.ptoPlanType.id)
+                    $scope.assignedPlanType = true;
+            });
+        });
+
         $scope.validatePTOPlanType();
         setStatus("Normal");
         modified(false);
@@ -923,7 +932,9 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
             scrollable: true,
             enableSearch: true
         };
-        $scope.ptoPlan.ptoYear = $scope.ptoYears[0].id;
+
+        if ($scope.ptoPlan.ptoYear === null || $scope.ptoPlan.ptoYear === undefined || $scope.ptoPlan.ptoYear === "")
+            $scope.ptoPlan.ptoYear = $scope.ptoYears[0].id;
         $scope.selectedPTOPlan = null;
         $scope.ptoPlan.ptoPlanName = null;
         $scope.ptoPlan.ptoPlanType = null;
@@ -955,7 +966,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.loadingTitle = " Loading...";
         $scope.pageStatus = 'Loading, Please Wait...';
         setStatus("Loading");
-        EmpActions.getPTOPlans($scope.ptoYears[0].id, function (result) {
+        EmpActions.getPTOPlans($scope.ptoPlan.ptoYear, function (result) {
             $scope.ptoPlans = result;
         });
         EmpActions.getPTOPlanTypes(function (result) {
@@ -982,6 +993,8 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.loadingTitle = " Loading...";
         $scope.pageStatus = 'Loading, Please Wait...';
         setStatus("Loading");
+        $scope.assignment.ptoAssignYear = $scope.ptoPlan.ptoYear;
+        $scope.ptoDay.ptoYear = $scope.ptoPlan.ptoYear;
         EmpActions.getPTOPlans($scope.ptoPlan.ptoYear, function (result) {
             $scope.ptoPlans = result;
             $scope.pageStatus = "Normal";
@@ -989,6 +1002,16 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
             $scope.newPTOPlan();
             $scope.lastSelectedYear = null;
         });
+    };
+
+    $scope.onDayYearChange = function () {
+        $scope.assignment.ptoAssignYear = $scope.ptoDay.ptoYear;
+        $scope.ptoPlan.ptoYear = $scope.ptoDay.ptoYear;
+    };
+
+    $scope.onYearChange = function () {
+        $scope.ptoDay.ptoYear = $scope.assignment.ptoAssignYear;
+        $scope.ptoPlan.ptoYear = $scope.assignment.ptoAssignYear;
     };
 
     $scope.onPTOPlanSelected = function (item) {
@@ -1595,7 +1618,9 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
     $scope.assignmentsTabClick = function () {
         if (editStatus())
             return;
-        $scope.assignment.ptoAssignYear = $scope.ptoYears[0].id;
+
+        if ($scope.assignment.ptoAssignYear === null || $scope.assignment.ptoAssignYear === undefined || $scope.assignment.ptoAssignYear === "")
+            $scope.assignment.ptoAssignYear = $scope.ptoYears[0].id;
         $scope.ptoPlanAssignments = [];
         $scope.employees = [];
         $scope.assignedEmployees = [];
@@ -1877,7 +1902,9 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
     $scope.daysTabClick = function () {
         if (editStatus())
             return;
-        $scope.ptoDay.ptoYear = $scope.ptoYears[0].id;
+
+        if ($scope.ptoDay.ptoYear === null || $scope.ptoDay.ptoYear === undefined || $scope.ptoDay.ptoYear === "")
+            $scope.ptoDay.ptoYear = $scope.ptoYears[0].id;
         $scope.dayEmployees = [];
         $scope.employeePTOs = [];
         $scope.loadingTitle = " Loading...";
@@ -2470,7 +2497,7 @@ pto.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
 		   + ',houseCode:' + hcmHouseCode
            + ',</criteria>', function (xml) {
                if (callback) {
-                   callback(deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id', 'ptoYearId', 'houseCodeId', 'ptoPlanId'], boolItems: ['active'] }));
+                   callback(deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id', 'ptoYearId', 'houseCodeId', 'ptoPlanId', 'ptoPlanType'], boolItems: ['active'] }));
                }
            });
     };
