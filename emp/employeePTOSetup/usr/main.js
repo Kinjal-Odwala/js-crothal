@@ -550,6 +550,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.ptoForm.status.$setValidity("required", true);
         $scope.statusCategoryTypes = [];
         $scope.lastSelectedPlanType = null;
+        $scope.assignedPlanType = false;
 
         EmpActions.getStatusCategoryTypes(function (result) {
             $scope.statusCategoryTypes = result;
@@ -605,6 +606,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.ptoPlanType.ptoPlanTypeMaxHours = item.maxHours;
         $scope.ptoPlanType.ptoPlanTypeActive = item.active;
         $scope.ptoPlanType.id = item.id;
+        $scope.assignedPlanType = false;
 
         EmpActions.getPlanAssignments(0, 0, 0, function (result) {
             $scope.allPlanAssignments = result;
@@ -703,6 +705,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.ptoForm.planTypeTitle.$setValidity("required", true);
         $scope.ptoForm.payType.$setValidity("required", true);
         $scope.ptoForm.status.$setValidity("required", true);
+        $scope.assignedPlanType = false;
         $scope.pageStatus = 'Normal';
         setStatus('Normal');
         modified(false);
