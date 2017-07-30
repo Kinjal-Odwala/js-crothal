@@ -531,6 +531,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
     $scope.onPlanTypeTabClick = function (planType) {
         if (editStatus())
             return;
+     
         $scope.loadingTitle = " Loading...";
         $scope.pageStatus = 'Loading, Please Wait...';
         setStatus("Loading");
@@ -539,50 +540,43 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.ptoPlanType.ptoPlanTypeTitle = null;
         $scope.ptoPlanType.ptoPlanTypeMinHours = null;
         $scope.ptoPlanType.ptoPlanTypeMaxHours = null;
-        $scope.ptoPlanType.Status = "";
         $scope.ptoPlanType.Salary = false;
         $scope.ptoPlanType.Hourly = false;
+        $scope.ptoPlanType.FullTime = false;
+        $scope.ptoPlanType.PartTime = false;
         $scope.ptoPlanType.ptoPlanTypeActive = true;
         $scope.ptoForm.planTypeMaxHours.$setValidity("required", true);
         $scope.ptoForm.planTypeMinHours.$setValidity("required", true);
         $scope.ptoForm.planTypeTitle.$setValidity("required", true);
         $scope.ptoForm.payType.$setValidity("required", true);
         $scope.ptoForm.status.$setValidity("required", true);
-        $scope.statusCategoryTypes = [];
         $scope.lastSelectedPlanType = null;
         $scope.assignedPlanType = false;
 
-        EmpActions.getStatusCategoryTypes(function (result) {
-            $scope.statusCategoryTypes = result;
+        EmpActions.getPTOPlanTypes(function (result) {
+            $scope.ptoPlanTypes = result;
+            angular.forEach($scope.ptoPlanTypes, function (planType, index) {
+                if (planType.fullTime === true) {
+                    planType.statusCategory = "Full Time";
+                    if (planType.partTime === true)
+                        planType.statusCategory = "Full Time, Part Time";
+                }
+                else if (planType.partTime === true) {
+                    planType.statusCategory = "Part Time";
+                }       
 
-            EmpActions.getPTOPlanTypes(function (result) {
-                $scope.ptoPlanTypes = result;
-                angular.forEach($scope.ptoPlanTypes, function (planType, index) {
-                    if (planType.statusCategoryTypeId === "0") {
-                        planType.statusCategory = "";
-                    }
-                    else {
-                        for (var index = 0; index < $scope.statusCategoryTypes.length; index++) {
-                            if (planType.statusCategoryTypeId == $scope.statusCategoryTypes[index].id) {
-                                planType.statusCategory = $scope.statusCategoryTypes[index].name;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (planType.payStatusSalary === true) {
-                        planType.payStatus = "Salary";
-                        if (planType.payStatusHourly === true)
-                            planType.payStatus = "Salary, Hourly";
-                    }
-                    else if (planType.payStatusHourly === true) {
-                        planType.payStatus = "Hourly";
-                    }
-                });
-                setStatus("Normal");
-                $scope.pageStatus = 'Normal';
-                $scope.pageLoading = false;
-            });
+                if (planType.payStatusSalary === true) {
+                    planType.payStatus = "Salary";
+                    if (planType.payStatusHourly === true)
+                        planType.payStatus = "Salary, Hourly";
+                }
+                else if (planType.payStatusHourly === true) {
+                    planType.payStatus = "Hourly";
+                }
+            })
+            setStatus("Normal");
+            $scope.pageStatus = 'Normal';
+            $scope.pageLoading = false;
         });
     };
 
@@ -592,16 +586,10 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.selectedPTOPlanType = item;
         $scope.lastSelectedPlanType = item;
         $scope.ptoPlanType.ptoPlanTypeTitle = item.title;
-        
-        if (item.statusCategory === "Full Time")
-            $scope.ptoPlanType.Status = 1;
-        else if (item.statusCategory === "Part Time")
-            $scope.ptoPlanType.Status = 2;
-        else
-            $scope.ptoPlanType.Status = "";
-
         $scope.ptoPlanType.Hourly = item.payStatusHourly;
         $scope.ptoPlanType.Salary = item.payStatusSalary;
+        $scope.ptoPlanType.FullTime = item.fullTime;
+        $scope.ptoPlanType.PartTime = item.partTime;
         $scope.ptoPlanType.ptoPlanTypeMinHours = item.minHours;
         $scope.ptoPlanType.ptoPlanTypeMaxHours = item.maxHours;
         $scope.ptoPlanType.ptoPlanTypeActive = item.active;
@@ -626,7 +614,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         if (hours === null || hours === "" || hours === "0")
             $scope.ptoForm.planTypeMinHours.$setValidity("required", false);
         else if ((hours > $scope.ptoPlanType.ptoPlanTypeMaxHours && $scope.ptoPlanType.ptoPlanTypeMaxHours !== null && $scope.ptoPlanType.ptoPlanTypeMaxHours !== undefined)
-            || ($scope.ptoPlanType.Status === "1" && (parseInt(hours) > 40 || parseInt(hours) < 30)) || ($scope.ptoPlanType.Status === "2" && (parseInt(hours) > 29 || parseInt(hours) < 1)))
+            || ($scope.ptoPlanType.FullTime && (parseInt(hours) > 40 || parseInt(hours) < 30)) || ($scope.ptoPlanType.PartTime && (parseInt(hours) > 29 || parseInt(hours) < 1)))
             $scope.ptoForm.planTypeMinHours.$setValidity("required", false);
         else {
             if ($scope.ptoPlanType.ptoPlanTypeMinHours !== null && $scope.ptoPlanType.ptoPlanTypeMinHours !== undefined && $scope.ptoPlanType.ptoPlanTypeMinHours !== "0")
@@ -641,7 +629,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         if (hours === null || hours === "" || hours === "0")
             $scope.ptoForm.planTypeMaxHours.$setValidity("required", false);
         else if ((hours < $scope.ptoPlanType.ptoPlanTypeMinHours && $scope.ptoPlanType.ptoPlanTypeMaxHours !== null && $scope.ptoPlanType.ptoPlanTypeMaxHours !== undefined)
-            || ($scope.ptoPlanType.Status === "1" && (parseInt(hours) > 40 || parseInt(hours) < 30)) || ($scope.ptoPlanType.Status === "2" && (parseInt(hours) > 29 || parseInt(hours) < 1)))
+            || ($scope.ptoPlanType.FullTime && (parseInt(hours) > 40 || parseInt(hours) < 30)) || ($scope.ptoPlanType.PartTime && (parseInt(hours) > 29 || parseInt(hours) < 1)))
             $scope.ptoForm.planTypeMaxHours.$setValidity("required", false);
         else {
             if ($scope.ptoPlanType.ptoPlanTypeMaxHours !== null && $scope.ptoPlanType.ptoPlanTypeMaxHours !== undefined && $scope.ptoPlanType.ptoPlanTypeMaxHours !== "0")
@@ -660,6 +648,13 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
             $scope.ptoPlanType.ptoPlanTypeMaxnHours == null;
             $scope.ptoForm.planTypeMaxHours.$setValidity("required", false);
             $scope.ptoForm.planTypeMinHours.$setValidity("required", false);
+            if ($scope.ptoPlanType.FullTime && $scope.ptoPlanType.PartTime) {
+                $scope.ptoPlanType.ptoPlanTypeMinHours == 0;
+                $scope.ptoPlanType.ptoPlanTypeMaxnHours == 0;
+                $scope.ptoForm.planTypeMaxHours.$setValidity("required", true);
+                $scope.ptoForm.planTypeMinHours.$setValidity("required", true);
+            }
+
         }
         else if (!$scope.ptoPlanType.Salary)
             $scope.ptoForm.payType.$setValidity("required", false);
@@ -696,7 +691,8 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.ptoPlanType.ptoPlanTypeTitle = null;
         $scope.ptoPlanType.ptoPlanTypeMinHours = null;
         $scope.ptoPlanType.ptoPlanTypeMaxHours = null;
-        $scope.ptoPlanType.Status = "";
+        $scope.ptoPlanType.FullTime = false;
+        $scope.ptoPlanType.PartTime = false;
         $scope.ptoPlanType.Salary = false;
         $scope.ptoPlanType.Hourly = false;
         $scope.ptoPlanType.ptoPlanTypeActive = true;
@@ -723,12 +719,8 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
             $scope.ptoPlanType.ptoPlanTypeTitle = $scope.selectedPTOPlanType.title;
             $scope.ptoPlanType.Salary = $scope.selectedPTOPlanType.payStatusSalary;
             $scope.ptoPlanType.Hourly = $scope.selectedPTOPlanType.payStatusHourly;
-            if ($scope.selectedPTOPlanType.statusCategory === "Full Time")
-                $scope.ptoPlanType.Status = 1;
-            else if ($scope.selectedPTOPlanType.statusCategory === "Part Time")
-                $scope.ptoPlanType.Status = 2;
-            else
-                $scope.ptoPlanType.Status = "";
+            $scope.ptoPlanType.FullTime = $scope.selectedPTOPlanType.fullTime;
+            $scope.ptoPlanType.PartTime = $scope.selectedPTOPlanType.partTime;
             $scope.ptoPlanType.ptoPlanTypeMinHours = $scope.selectedPTOPlanType.minHours;
             $scope.ptoPlanType.ptoPlanTypeMaxHours = $scope.selectedPTOPlanType.maxHours;
             $scope.ptoPlanType.ptoPlanTypeActive = $scope.selectedPTOPlanType.active;
@@ -743,7 +735,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
 
     $scope.validatePTOPlanType = function () {
 
-        if ($scope.ptoPlanType.Status === null || $scope.ptoPlanType.Status === undefined || $scope.ptoPlanType.Status === "")
+        if (!$scope.ptoPlanType.FullTime && !$scope.ptoPlanType.PartTime)
             $scope.ptoForm.status.$setValidity("required", false);
         else
             $scope.ptoForm.status.$setValidity("required", true);
@@ -754,24 +746,24 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         if ($scope.ptoPlanType.ptoPlanTypeMaxHours === null || $scope.ptoPlanType.ptoPlanTypeMaxHours === undefined || $scope.ptoPlanType.ptoPlanTypeMaxHours === "")
             $scope.ptoForm.planTypeMaxHours.$setValidity("required", false);
 
-        if (status == "1" && ($scope.ptoPlanType.ptoPlanTypeMaxHours > 40 || $scope.ptoPlanType.ptoPlanTypeMaxHours == 0))
+        if ($scope.ptoPlanType.FullTime && ($scope.ptoPlanType.ptoPlanTypeMaxHours > 40 || $scope.ptoPlanType.ptoPlanTypeMaxHours == 0))
             $scope.ptoForm.planTypeMaxHours.$setValidity("required", false);
-        else if (status == "1" && $scope.ptoPlanType.ptoPlanTypeMaxHours <= 40 && $scope.ptoPlanType.ptoPlanTypeMaxHours >= 30)
+        else if ($scope.ptoPlanType.FullTime && $scope.ptoPlanType.ptoPlanTypeMaxHours <= 40 && $scope.ptoPlanType.ptoPlanTypeMaxHours >= 30)
             $scope.ptoForm.planTypeMaxHours.$setValidity("required", true);
 
-        if (status == "1" && ($scope.ptoPlanType.ptoPlanTypeMinHours < 30 || $scope.ptoPlanType.ptoPlanTypeMinHours == 0))
+        if ($scope.ptoPlanType.FullTime && ($scope.ptoPlanType.ptoPlanTypeMinHours < 30 || $scope.ptoPlanType.ptoPlanTypeMinHours == 0))
             $scope.ptoForm.planTypeMinHours.$setValidity("required", false);
-        else if (status == "1" && $scope.ptoPlanType.ptoPlanTypeMinHours >= 30 && $scope.ptoPlanType.ptoPlanTypeMinHours <= 40)
+        else if ($scope.ptoPlanType.FullTime && $scope.ptoPlanType.ptoPlanTypeMinHours >= 30 && $scope.ptoPlanType.ptoPlanTypeMinHours <= 40)
             $scope.ptoForm.planTypeMinHours.$setValidity("required", true);
 
-        if (status == "2" && ($scope.ptoPlanType.ptoPlanTypeMaxHours > 29 || $scope.ptoPlanType.ptoPlanTypeMaxHours == 0))
+        if ($scope.ptoPlanType.PartTime && ($scope.ptoPlanType.ptoPlanTypeMaxHours > 29 || $scope.ptoPlanType.ptoPlanTypeMaxHours == 0))
             $scope.ptoForm.planTypeMaxHours.$setValidity("required", false);
-        else if (status == "2" && $scope.ptoPlanType.ptoPlanTypeMaxHours <= 29 && $scope.ptoPlanType.ptoPlanTypeMaxHours >= 1)
+        else if ($scope.ptoPlanType.PartTime && $scope.ptoPlanType.ptoPlanTypeMaxHours <= 29 && $scope.ptoPlanType.ptoPlanTypeMaxHours >= 1)
             $scope.ptoForm.planTypeMaxHours.$setValidity("required", true);
 
-        if (status == "2" && ($scope.ptoPlanType.ptoPlanTypeMinHours < 1 || $scope.ptoPlanType.ptoPlanTypeMinHours > 29))
+        if ($scope.ptoPlanType.PartTime && ($scope.ptoPlanType.ptoPlanTypeMinHours < 1 || $scope.ptoPlanType.ptoPlanTypeMinHours > 29))
             $scope.ptoForm.planTypeMinHours.$setValidity("required", false);
-        else if (status == "2" && $scope.ptoPlanType.ptoPlanTypeMinHours >= 1 && $scope.ptoPlanType.ptoPlanTypeMinHours <= 29)
+        else if ($scope.ptoPlanType.PartTime && $scope.ptoPlanType.ptoPlanTypeMinHours >= 1 && $scope.ptoPlanType.ptoPlanTypeMinHours <= 29)
             $scope.ptoForm.planTypeMinHours.$setValidity("required", true);
   
         if ($scope.ptoPlanType.ptoPlanTypeTitle === null || $scope.ptoPlanType.ptoPlanTypeTitle === undefined || $scope.ptoPlanType.ptoPlanTypeTitle === "")
@@ -787,6 +779,12 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         }
         else
             $scope.ptoForm.payType.$setValidity("required", true);
+
+        if ($scope.ptoPlanType.PartTime && $scope.ptoPlanType.FullTime) {
+            $scope.ptoForm.planTypeMinHours.$setValidity("required", true);
+            $scope.ptoForm.planTypeMaxHours.$setValidity("required", true);
+        }
+
     };
 
     $scope.savePTOPlanType = function () {
@@ -799,7 +797,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
             $scope.planTypes = $scope.ptoPlanTypes;
             for (var index = 0; index < $scope.planTypes.length; index++) {
                 if ($scope.planTypes[index].id !== $scope.ptoPlanType.id && $scope.planTypes[index].maxHours == $scope.ptoPlanType.ptoPlanTypeMaxHours && $scope.planTypes[index].minHours == $scope.ptoPlanType.ptoPlanTypeMinHours)
-                    if (($scope.planTypes[index].statusCategory === "Full Time" && $scope.ptoPlanType.Status == 1) || ($scope.planTypes[index].statusCategory === "Part Time" && $scope.ptoPlanType.Status == 2))
+                    if (($scope.planTypes[index].statusCategory === "Full Time" && $scope.ptoPlanType.FullTime) && ($scope.planTypes[index].statusCategory === "Part Time" && $scope.ptoPlanType.PartTime))
                         if (($scope.planTypes[index].payStatusHourly === $scope.ptoPlanType.Hourly) && ($scope.planTypes[index].payStatusSalary === $scope.ptoPlanType.Salary)) {
                             duplicatePlan = true;
                             alert("Plan Type [" + $scope.planTypes[index].title + "] has same Pay Type, Status Category, Minimum and Maximum Hours. Please add unique details plan.");
@@ -807,30 +805,17 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
                         }
             }
             if (!duplicatePlan) {
-                for (var index = 0; index < $scope.statusCategoryTypes.length; index++) {
-                    if ($scope.ptoPlanType.Status == 1) {
-                        if ($scope.statusCategoryTypes[index].name == "Full Time" && $scope.statusCategoryTypes[index].empStatusTypeId == 1)
-                            $scope.statusCategoryTypeId = $scope.statusCategoryTypes[index].id;
-                    }
-                    else if ($scope.ptoPlanType.Status == 2) {
-                        if ($scope.statusCategoryTypes[index].name == "Part Time" && $scope.statusCategoryTypes[index].empStatusTypeId == 1)
-                            $scope.statusCategoryTypeId = $scope.statusCategoryTypes[index].id;
-                    }
-                }
                 EmpActions.actionSaveItem($scope, "PTO Plan Types", function (data, status) {
                     EmpActions.getPTOPlanTypes(function (result) {
                         $scope.ptoPlanTypes = result;
                         angular.forEach($scope.ptoPlanTypes, function (planType, index) {
-                            if (planType.statusCategory === "0") {
-                                planType.statusCategory = "";
+                            if (planType.fullTime === true) {
+                                planType.statusCategory = "Full Time";
+                                if (planType.partTime === true)
+                                    planType.statusCategory = "Full Time, Part Time";
                             }
-                            else {
-                                for (var index = 0; index < $scope.statusCategoryTypes.length; index++) {
-                                    if (planType.statusCategoryTypeId == $scope.statusCategoryTypes[index].id) {
-                                        planType.statusCategory = $scope.statusCategoryTypes[index].name;
-                                        break;
-                                    }
-                                }
+                            else if (planType.partTime === true) {
+                                planType.statusCategory = "Part Time";
                             }
 
                             if (planType.payStatusSalary === true) {
@@ -860,14 +845,6 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
                                     $scope.selectedPTOPlanType = planType;
                                     $scope.lastSelectedPlanType = $scope.selectedPTOPlanType;
                                     $scope.ptoPlanType.ptoPlanTypeTitle = $scope.selectedPTOPlanType.title;
-
-                                    if ($scope.selectedPTOPlanType.statusCategory === "Full Time")
-                                        $scope.ptoPlanType.Status = 1;
-                                    else if ($scope.selectedPTOPlanType.statusCategory === "Part Time")
-                                        $scope.ptoPlanType.Status = 2;
-                                    else
-                                        $scope.ptoPlanType.Status = "";
-
                                     $scope.ptoPlanType.Hourly = $scope.selectedPTOPlanType.payStatusHourly;
                                     $scope.ptoPlanType.Salary = $scope.selectedPTOPlanType.payStatusSalary;
                                     $scope.ptoPlanType.ptoPlanTypeMinHours = $scope.selectedPTOPlanType.minHours;
@@ -898,31 +875,63 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         }
     };
 
-    $scope.onStatusChange = function (status) {
-        if (status == "1" || status == "2") {
+    $scope.onFullTimeStatusChange = function (status) {
+        if (status) 
             $scope.ptoForm.status.$setValidity("required", true);
-            setStatus('Edit');
-            modified(true);
-        }
-      
-        if (status == "1" && ($scope.ptoPlanType.ptoPlanTypeMaxHours > 40 || $scope.ptoPlanType.ptoPlanTypeMaxHours == 0))
+        else
+            if (!$scope.ptoPlanType.PartTime)
+                $scope.ptoForm.status.$setValidity("required", false);
+           
+        setStatus('Edit');
+        modified(true);
+        if (status && $scope.ptoPlanType.ptoPlanTypeMaxHours > 40 || $scope.ptoPlanType.ptoPlanTypeMaxHours == 0)
             $scope.ptoForm.planTypeMaxHours.$setValidity("required", false);
-        else if (status == "1" && $scope.ptoPlanType.ptoPlanTypeMaxHours <= 40 && $scope.ptoPlanType.ptoPlanTypeMaxHours >= 30)
+        else if ($scope.ptoPlanType.ptoPlanTypeMaxHours <= 40 && $scope.ptoPlanType.ptoPlanTypeMaxHours >= 30)
             $scope.ptoForm.planTypeMaxHours.$setValidity("required", true);
         
-        if (status == "1" && ($scope.ptoPlanType.ptoPlanTypeMinHours < 30 || $scope.ptoPlanType.ptoPlanTypeMinHours == 0))
+        if (status && $scope.ptoPlanType.ptoPlanTypeMinHours < 30 || $scope.ptoPlanType.ptoPlanTypeMinHours == 0)
             $scope.ptoForm.planTypeMinHours.$setValidity("required", false);
-        else if (status == "1" && $scope.ptoPlanType.ptoPlanTypeMinHours >= 30 && $scope.ptoPlanType.ptoPlanTypeMinHours <= 40)
+        else if ($scope.ptoPlanType.ptoPlanTypeMinHours >= 30 && $scope.ptoPlanType.ptoPlanTypeMinHours <= 40)
             $scope.ptoForm.planTypeMinHours.$setValidity("required", true);
-        
-        if (status == "2" && ($scope.ptoPlanType.ptoPlanTypeMaxHours > 29 || $scope.ptoPlanType.ptoPlanTypeMaxHours == 0))
+
+        if ($scope.ptoPlanType.PartTime && $scope.ptoPlanType.ptoPlanTypeMaxHours > 29 || $scope.ptoPlanType.ptoPlanTypeMaxHours == 0)
             $scope.ptoForm.planTypeMaxHours.$setValidity("required", false);
-        else if (status == "2" && $scope.ptoPlanType.ptoPlanTypeMaxHours <= 29 && $scope.ptoPlanType.ptoPlanTypeMaxHours >= 1)
+        else if ($scope.ptoPlanType.ptoPlanTypeMaxHours <= 29 && $scope.ptoPlanType.ptoPlanTypeMaxHours >= 1)
             $scope.ptoForm.planTypeMaxHours.$setValidity("required", true);
-        
-        if (status == "2" && ($scope.ptoPlanType.ptoPlanTypeMinHours < 1 || $scope.ptoPlanType.ptoPlanTypeMinHours > 29))
+
+        if ($scope.ptoPlanType.PartTime && $scope.ptoPlanType.ptoPlanTypeMinHours < 1 || $scope.ptoPlanType.ptoPlanTypeMinHours > 29)
             $scope.ptoForm.planTypeMinHours.$setValidity("required", false);
-        else if (status == "2" && $scope.ptoPlanType.ptoPlanTypeMinHours >= 1 && $scope.ptoPlanType.ptoPlanTypeMinHours <= 29)
+        else if ($scope.ptoPlanType.ptoPlanTypeMinHours >= 1 && $scope.ptoPlanType.ptoPlanTypeMinHours <= 29)
+            $scope.ptoForm.planTypeMinHours.$setValidity("required", true);
+    };
+
+    $scope.onPartTimeStatusChange = function (status) {
+        if (status) 
+            $scope.ptoForm.status.$setValidity("required", true);
+        else
+            if (!$scope.ptoPlanType.FullTime)
+                $scope.ptoForm.status.$setValidity("required", false);
+
+        setStatus('Edit');
+        modified(true);
+        if (status && $scope.ptoPlanType.ptoPlanTypeMaxHours > 29 || $scope.ptoPlanType.ptoPlanTypeMaxHours == 0)
+            $scope.ptoForm.planTypeMaxHours.$setValidity("required", false);
+        else if ($scope.ptoPlanType.ptoPlanTypeMaxHours <= 29 && $scope.ptoPlanType.ptoPlanTypeMaxHours >= 1)
+            $scope.ptoForm.planTypeMaxHours.$setValidity("required", true);
+
+        if (status && $scope.ptoPlanType.ptoPlanTypeMinHours < 1 || $scope.ptoPlanType.ptoPlanTypeMinHours > 29)
+            $scope.ptoForm.planTypeMinHours.$setValidity("required", false);
+        else if ($scope.ptoPlanType.ptoPlanTypeMinHours >= 1 && $scope.ptoPlanType.ptoPlanTypeMinHours <= 29)
+            $scope.ptoForm.planTypeMinHours.$setValidity("required", true);
+
+        if ($scope.ptoPlanType.FullTime && $scope.ptoPlanType.ptoPlanTypeMaxHours > 40 || $scope.ptoPlanType.ptoPlanTypeMaxHours == 0)
+            $scope.ptoForm.planTypeMaxHours.$setValidity("required", false);
+        else if ($scope.ptoPlanType.ptoPlanTypeMaxHours <= 40 && $scope.ptoPlanType.ptoPlanTypeMaxHours >= 30)
+            $scope.ptoForm.planTypeMaxHours.$setValidity("required", true);
+
+        if ($scope.ptoPlanType.FullTime && $scope.ptoPlanType.ptoPlanTypeMinHours < 30 || $scope.ptoPlanType.ptoPlanTypeMinHours == 0)
+            $scope.ptoForm.planTypeMinHours.$setValidity("required", false);
+        else if ($scope.ptoPlanType.ptoPlanTypeMinHours >= 30 && $scope.ptoPlanType.ptoPlanTypeMinHours <= 40)
             $scope.ptoForm.planTypeMinHours.$setValidity("required", true);
     };
 
@@ -1660,7 +1669,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
                         var found = false;
                         angular.forEach($scope.ptoPlanAssignments, function (plan) {
                             if (plan.minHours == item.minHours && item.maxHours == plan.maxHours &&
-                                plan.ptoType == item.ptoType && plan.hourly == item.hourly && plan.salary == item.salary && plan.statusCategoryTypeId == item.statusCategoryTypeId)
+                                plan.ptoType == item.ptoType && plan.hourly == item.hourly && plan.salary == item.salary && plan.FullTime == item.FullTime && plan.PartTime == item.PartTime)
                                 found = true;
                         });
                         if (!found) {
@@ -1679,7 +1688,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
                             var found = false;
                             angular.forEach($scope.ptoPlanAssignments, function (plan) {
                                 if (plan.minHours == item.minHours && item.maxHours == plan.maxHours &&
-                                    plan.ptoType == item.ptoType && plan.hourly == item.hourly && plan.salary == item.salary && plan.statusCategoryTypeId == item.statusCategoryTypeId)
+                                    plan.ptoType == item.ptoType && plan.hourly == item.hourly && plan.salary == item.salary && plan.FullTime == item.FullTime && plan.PartTime == item.PartTime)
                                     found = true;
                             });
                             if (!found) {
@@ -1699,7 +1708,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
                             var found = false;
                             angular.forEach($scope.ptoPlanAssignments, function (plan) {
                                 if (plan.minHours == item.minHours && item.maxHours == plan.maxHours &&
-                                    plan.ptoType == item.ptoType && plan.hourly == item.hourly && plan.salary == item.salary && plan.statusCategoryTypeId == item.statusCategoryTypeId)
+                                    plan.ptoType == item.ptoType && plan.hourly == item.hourly && plan.salary == item.salary && plan.FullTime == item.FullTime && plan.PartTime == item.PartTime)
                                     found = true;
                             });
                             if (!found) {
@@ -1718,7 +1727,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
                                 var found = false;
                                 angular.forEach($scope.ptoPlanAssignments, function (plan) {
                                     if (plan.minHours == item.minHours && item.maxHours == plan.maxHours &&
-                                        plan.ptoType == item.ptoType && plan.hourly == item.hourly && plan.salary == item.salary && plan.statusCategoryTypeId == item.statusCategoryTypeId)
+                                        plan.ptoType == item.ptoType && plan.hourly == item.hourly && plan.salary == item.salary && plan.FullTime == item.FullTime && plan.PartTime == item.PartTime)
                                         found = true;
                                 });
                                 if (!found) {
@@ -1785,7 +1794,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
                     var found = false;
                     angular.forEach($scope.ptoPlanAssignments, function (plan) {
                         if (plan.minHours == item.minHours && item.maxHours == plan.maxHours &&
-                            plan.ptoType == item.ptoType && plan.hourly == item.hourly && plan.salary == item.salary && plan.statusCategoryTypeId == item.statusCategoryTypeId)
+                            plan.ptoType == item.ptoType && plan.hourly == item.hourly && plan.salary == item.salary && plan.FullTime == item.FullTime && plan.PartTime == item.PartTime)
                             found = true;
                     });
                     if (!found) {
@@ -1804,7 +1813,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
                         var found = false;
                         angular.forEach($scope.ptoPlanAssignments, function (plan) {
                             if (plan.minHours == item.minHours && item.maxHours == plan.maxHours &&
-                                plan.ptoType == item.ptoType && plan.hourly == item.hourly && plan.salary == item.salary && plan.statusCategoryTypeId == item.statusCategoryTypeId)
+                                plan.ptoType == item.ptoType && plan.hourly == item.hourly && plan.salary == item.salary && plan.FullTime == item.FullTime && plan.PartTime == item.PartTime)
                                 found = true;
                         });
                         if (!found) {
@@ -1824,7 +1833,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
                         var found = false;
                         angular.forEach($scope.ptoPlanAssignments, function (plan) {
                             if (plan.minHours == item.minHours && item.maxHours == plan.maxHours &&
-                                plan.ptoType == item.ptoType && plan.hourly == item.hourly && plan.salary == item.salary && plan.statusCategoryTypeId == item.statusCategoryTypeId)
+                                plan.ptoType == item.ptoType && plan.hourly == item.hourly && plan.salary == item.salary && plan.FullTime == item.FullTime && plan.PartTime == item.PartTime)
                                 found = true;
                         });
                         if (!found) {
@@ -1843,7 +1852,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
                             var found = false;
                             angular.forEach($scope.ptoPlanAssignments, function (plan) {
                                 if (plan.minHours == item.minHours && item.maxHours == plan.maxHours &&
-                                    plan.ptoType == item.ptoType && plan.hourly == item.hourly && plan.salary == item.salary && plan.statusCategoryTypeId == item.statusCategoryTypeId)
+                                    plan.ptoType == item.ptoType && plan.hourly == item.hourly && plan.salary == item.salary && plan.FullTime == item.FullTime && plan.PartTime == item.PartTime)
                                     found = true;
                             });
                             if (!found) {
@@ -2457,7 +2466,7 @@ pto.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
         apiRequest('emp', 'iiCache', '<criteria>storeId:ptoPlanTypes,userId:[user]'
 			+ ',</criteria>', function (xml) {
 			    if (callback) {
-			        callback(deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id', 'maxHours', 'minHours'], boolItems: ['active', 'payStatusHourly', 'payStatusSalary'] }));
+			        callback(deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id', 'maxHours', 'minHours'], boolItems: ['active', 'payStatusHourly', 'payStatusSalary', 'fullTime', 'partTime'] }));
 			    }
 			});
     };
@@ -2608,7 +2617,8 @@ pto.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
             xml += ' title="' + encode($scope.ptoPlanType.ptoPlanTypeTitle) + '"'; 
             xml += ' payStatusHourly="' + $scope.ptoPlanType.Hourly + '"';
             xml += ' payStatusSalary="' + $scope.ptoPlanType.Salary + '"';
-            xml += ' statusCategoryTypeId="' + $scope.statusCategoryTypeId + '"';
+            xml += ' fullTime="' + $scope.ptoPlanType.FullTime + '"';
+            xml += ' partTime="' + $scope.ptoPlanType.PartTime + '"';
             xml += ' minHours="' + (($scope.ptoPlanType.ptoPlanTypeMinHours === undefined || $scope.ptoPlanType.ptoPlanTypeMinHours === null) ? "0" : $scope.ptoPlanType.ptoPlanTypeMinHours) + '"';
             xml += ' maxHours="' + (($scope.ptoPlanType.ptoPlanTypeMaxHours === undefined || $scope.ptoPlanType.ptoPlanTypeMaxHours === null) ? "0" : $scope.ptoPlanType.ptoPlanTypeMaxHours) + '"';
             xml += ' active="' + $scope.ptoPlanType.ptoPlanTypeActive + '"';

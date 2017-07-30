@@ -864,8 +864,8 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 		                found = true;
 		                break outerLoop;
 		            }
-		            if ($scope.plans[index].ptoTypeTitle === assignedPlans[iIndex].ptoTypeTitle && ($scope.getDate($scope.plans[index].startDate) >= $scope.getDate(assignedPlans[iIndex].ptoPlanStartDate) || $scope.getDate($scope.plans[index].startDate) <= $scope.getDate(assignedPlans[iIndex].ptoPlanEndDate)
-                        || $scope.getDate($scope.plans[index].endDate) >= $scope.getDate(assignedPlans[iIndex].ptoPlanStartDate) || $scope.getDate($scope.plans[index].endDate) <= $scope.getDate(assignedPlans[iIndex].ptoPlanEndDate))) {
+		            if ($scope.plans[index].ptoTypeTitle === assignedPlans[iIndex].ptoTypeTitle && (($scope.getDate($scope.plans[index].startDate) >= $scope.getDate(assignedPlans[iIndex].ptoPlanStartDate) && $scope.getDate($scope.plans[index].startDate) <= $scope.getDate(assignedPlans[iIndex].ptoPlanEndDate))
+                        || ($scope.getDate($scope.plans[index].endDate) >= $scope.getDate(assignedPlans[iIndex].ptoPlanStartDate) && $scope.getDate($scope.plans[index].endDate) <= $scope.getDate(assignedPlans[iIndex].ptoPlanEndDate)))) {
 		                alert("Plan with overlap date already exists.");
 		                found = true;
 		                break outerLoop;
@@ -1578,19 +1578,15 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                         item["ptoPlanTypeTitle"] = $scope.groups[index].clonePlans[iIndex].ptoPlanTypeTitle;
                         item["stateType"] = $scope.selectedState.id;
                         item["name"] = $scope.groups[index].name;
-                        if ($scope.levelSelected === "county") {
+                        item["appZipCodeType"] = $scope.groups[index].appZipCodeType;
+
+                        if ($scope.levelSelected === "county") 
                             item["groupType"] = 3;
-                            item["appZipCodeType"] = $scope.selectedCounty.appZipCodeType;
-                        }
-                        else if ($scope.levelSelected === "city") {
+                        else if ($scope.levelSelected === "city")
                             item["groupType"] = 4;
-                            item["appZipCodeType"] = $scope.selectedCity.appZipCodeType;
-                            item["name"] = $scope.selectedCity.name;
-                        }
                         else if ($scope.levelSelected === "houseCode") {
                             item["houseCodeId"] = $scope.groups[index].houseCodeId;
                             item["groupType"] = 5;
-                            item["appZipCodeType"] = $scope.selectedHouseCode.appZipCodeType;
                         }
                         $scope.clonedPlans.push(item);
                     }
