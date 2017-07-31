@@ -324,6 +324,15 @@
                                 </label>
                             </div>
                         </div>
+                        <div class="row" style="padding-top:5px;"></div>
+                        <div class="row">
+                            <label class="col-md-3 control-label">Exclude Union:</label>
+                            <div class="col-md-4">
+                                <label>
+                                    <input type="checkbox" name="excludeUnion" ng-model="ptoPlan.excludeUnion" ng-disabled="assigned" ng-value="excludeUnion" ng-click="onPTOPlanChange('excludeUnion')"/>
+                                </label>
+                            </div>
+                        </div>
                     </div>
                     <div ng-show="isClone" style="padding-top:15px;">
                             <div class="row" ng-class="{'has-error':ptoForm.planForm.fromYear.$invalid}">

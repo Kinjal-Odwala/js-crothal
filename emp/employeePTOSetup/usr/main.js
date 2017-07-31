@@ -957,6 +957,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.ptoPlan.ptoPlanAccrual = true;
         $scope.ptoPlan.ptoPlanAccrualInterval = null;
         $scope.ptoPlan.ptoPlanActive = true;
+        $scope.ptoPlan.excludeUnion = false;
         $scope.ptoPlan.startDate = null;
         $scope.ptoPlan.endDate = null;
         $scope.isClone = false;
@@ -1045,6 +1046,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.ptoPlan.ptoPlanActive = item.active;
         $scope.ptoPlan.startDate = item.startDate;
         $scope.ptoPlan.endDate = item.endDate;
+        $scope.ptoPlan.excludeUnion = item.excludeUnion;
         $scope.isClone = false;
         $scope.ptoForm.planForm.planName.$setValidity("required", true);
         $scope.ptoForm.planForm.planType.$setValidity("required", true);
@@ -1147,6 +1149,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.ptoPlan.endDate = null;
         $scope.cloneToYear = "";
         $scope.ptoPlan.cloneFromYear = null;
+        $scope.ptoPlan.excludeUnion = false;
         $scope.isClone = false;
         $scope.ptoForm.planForm.planName.$setValidity("required", true);
         $scope.ptoForm.planForm.planType.$setValidity("required", true);
@@ -1192,6 +1195,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
             $scope.ptoPlan.ptoPlanActive = $scope.selectedPTOPlan.active;
             $scope.ptoPlan.startDate = $scope.selectedPTOPlan.startDate;
             $scope.ptoPlan.endDate = $scope.selectedPTOPlan.endDate;
+            $scope.ptoPlan.excludeUnion = $scope.selectedPTOPlan.excludeUnion;
             $scope.isClone = false;
         }
         else if ($scope.lastSelectedPlan !== null && $scope.isClone == false) {
@@ -2478,7 +2482,7 @@ pto.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
 			+ ',active:' + -1
 			+ ',</criteria>', function (xml) {
 			    if (callback) {
-			        cache.ptoPlans = deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id', 'houseCodeId', 'ptoYear', 'ptoType', 'ptoPlanType', 'wageType'], boolItems: ['accrual', 'active'] });
+			        cache.ptoPlans = deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id', 'houseCodeId', 'ptoYear', 'ptoType', 'ptoPlanType', 'wageType'], boolItems: ['accrual', 'active', 'excludeUnion'] });
 			        callback(cache.ptoPlans);
 			    }
 			});
@@ -2638,6 +2642,7 @@ pto.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
             xml += ' accrual="' + $scope.ptoPlan.ptoPlanAccrual + '"';
             xml += ' accrualInterval="' + $scope.ptoPlan.ptoPlanAccrualInterval + '"';
             xml += ' active="' + $scope.ptoPlan.ptoPlanActive + '"';
+            xml += ' excludeUnion="' + $scope.ptoPlan.excludeUnion + '"';
             xml += '/>';
 
             for (var index = 0; index < $scope.selectedWageTypes.length; index++) {
