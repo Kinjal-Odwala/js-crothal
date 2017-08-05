@@ -63,11 +63,11 @@
 				</div>
 				<div class="body" id="Container">
 					<div style="clear:both;"></div>
-					<div class="labelHeaderSmall">Received by 4:00 pm EST, will be processed same business day (There may be exceptions based on priority and volume).</div>
+					<div class="labelHeaderSmall">Request Received and approved by 12:00 PM EST will be processed same business day. Termination request received and approved by 5:00 PM EST will be processed same day.</div>
 					<div style="clear:both; height:10px;"></div>
 					<div class="contentAreaLeft">						
 						<div id="TableEditArea">
-							<div class="labelText">
+							<div class="labelTextArea">
 								<span class="requiredFieldIndicator">&#149;</span>House Code:
 							</div>
 							<div class="inputTextArea">
@@ -76,7 +76,7 @@
 							<div style="clear:both;"></div>
 						</div>
 						<div id="TableEditArea">
-							<div class="labelText">
+							<div class="labelTextArea">
 								<span class="requiredFieldIndicator">&#149;</span>Requested Date:
 							</div>
 							<div class="inputTextArea">
@@ -85,7 +85,7 @@
 							<div style="clear:both;"></div>
 						</div>
 						<div id="TableEditArea">
-							<div class="labelText">
+							<div class="labelTextArea">
 								<span class="requiredFieldIndicator">&#149;</span>Employee #:
 							</div>
 							<div class="inputTextArea">
@@ -96,21 +96,21 @@
 					</div>
 					<div class="contentAreaLeft">
 						<div id="CheckRequestNumberInfo">
-							<div class="labelText">
+							<div class="labelTextArea">
 								<span id="nonRequiredFieldIndicator">Check Request Number:</span>
 							</div>
-							<div class="labelText">
+							<div class="labelTextArea">
 								<div id="CheckRequestNumber"></div>
 							</div>
 							<div style="clear:both;"></div>
 						</div>
 						<div id="EmptyArea">
-							<div class="labelText"></div>
+							<div class="labelTextArea"></div>
 							<div class="inputTextArea"></div>
 							<div style="clear:both;"></div>
 						</div>
 						<div id="TableEditArea">
-							<div class="labelText">
+							<div class="labelTextArea">
 								<span class="requiredFieldIndicator">&#149;</span>Delivery Date:
 							</div>
 							<div class="inputTextArea">
@@ -119,7 +119,7 @@
 							<div style="clear:both;"></div>
 						</div>
 						<div id="TableEditArea">
-							<div class="labelText">
+							<div class="labelTextArea">
 								<span class="requiredFieldIndicator">&#149;</span>Employee Name:
 							</div>
 							<div class="inputTextArea">
@@ -130,7 +130,7 @@
 					</div>
 					<div style="clear:both;"></div>
 					<div id="TableEditArea">
-						<div class="labelText">
+						<div class="labelTextArea">
 							<span class="requiredFieldIndicator">&#149;</span>Reason for Request:
 						</div>
 						<div class="inputTextAreaLarge">
@@ -140,7 +140,7 @@
 					</div>					
 					<div class="contentAreaLeft">
 						<div id="TableEditArea">
-							<div class="labelText">
+							<div class="labelTextArea">
 								<span id="nonRequiredFieldIndicator">Term Request:</span>
 							</div>
 							<div class="inputTextArea">
@@ -156,7 +156,7 @@
 							<div style="clear:both;"></div>
 						</div>
 						<div id="TableEditArea">
-							<div class="labelText" id="LabelTerminationDate">
+							<div class="labelTextArea" id="LabelTerminationDate">
 								<span id="nonRequiredFieldIndicator">Termination Date:</span>
 							</div>
 							<div class="inputTextArea">
@@ -164,10 +164,26 @@
 							</div>
 							<div style="clear:both;"></div>
 						</div>
+						<div id="TableEditArea">
+							<div class="labelTextArea">
+								<span id="nonRequiredFieldIndicator">Payment Method:</span>
+							</div>
+							<div class="inputTextAreaMedium">
+								<div id="PaymentMethodRadio">
+									<div class="radioButtonMedium">
+										<input type="radio" id="PaymentMethodElectronic" name="PaymentMethod" checked="true" value="Electronic" /><span class="labelRadio">Electronic Pay</span>
+									</div>
+									<div class="radioButtonMedium">
+										<input type="radio" id="PaymentMethodPaper" name="PaymentMethod" value="Paper" /><span class="labelRadio">Paper Check</span>
+									</div>
+								</div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
 					</div>
 					<div class="contentAreaLeft">
 						<div id="TableEditArea">
-							<div class="labelText" id="LabelState">
+							<div class="labelTextArea" id="LabelState">
 								<span id="nonRequiredFieldIndicator">State:</span>
 							</div>
 							<div class="inputTextArea">
@@ -176,7 +192,7 @@
 							<div style="clear:both;"></div>
 						</div>
 						<div id="TableEditArea">
-							<div class="labelText">
+							<div class="labelTextArea">
 								<span class="requiredFieldIndicator">&#149;</span>Meal Break Compliance:
 							</div>
 							<div class="inputTextArea">
@@ -193,52 +209,11 @@
 						</div>
 					</div>
 					<div style="clear:both;"></div>
-					<div class="subHeader">Comdata Pay Card Information</div>
-					<div style="clear:both;"></div>
-					<div class="contentAreaLeft">
-						<div id="TableEditArea">
-							<div class="labelText">
-								<span id="nonRequiredFieldIndicator">Current Pay Card User:</span>
-							</div>
-							<div class="inputTextArea">
-								<div id="CurrentPayCardUserRadio">
-									<div class="radioButton">
-										<input type="radio" id="CurrentPayCardUserYes" name="CurrentPayCardUser" value="true" /><span class="labelRadio">Yes</span>
-									</div>
-									<div class="radioButton">
-										<input type="radio" id="CurrentPayCardUserNo" name="CurrentPayCardUser" checked="true" value="false" /><span class="labelRadio">No</span>
-									</div>
-								</div>
-							</div>
-							<div style="clear:both;"></div>
-						</div>
-					</div>
-					<div class="contentAreaLeft">
-						<div id="TableEditArea">
-							<div class="labelText">
-								<span id="nonRequiredFieldIndicator">Instant Issue Request:</span>
-							</div>
-							<div class="inputTextArea">
-								<div id="InstantIssueRequestRadio">
-									<div class="radioButton">
-										<input type="radio" id="InstantIssueRequestYes" name="InstantIssueRequest" value="true" /><span class="labelRadio">Yes</span>
-									</div>
-									<div class="radioButton">
-										<input type="radio" id="InstantIssueRequestNo" name="InstantIssueRequest" checked="true" value="false" /><span class="labelRadio">No</span>
-									</div>
-								</div>
-							</div>
-							<div style="clear:both;"></div>
-						</div>
-					</div>
-					<div style="clear:both;"></div>
-					<div class="labelHeaderSmall">Note: If not checked, current Pay Card user or Instant Issue requested, the employee will receive a "LIVE" manual check.</div>
-					<div style="clear:both;"></div>
 					<div class="subHeader">Unit (Location/Account) Delivery Information</div>
 					<div style="clear:both;"></div>
 					<div class="contentAreaLeft">
 						<div id="TableEditArea">
-							<div class="labelText">
+							<div class="labelTextArea">
 								<span id="nonRequiredFieldIndicator">UPS Delivery to Unit:</span>
 							</div>
 							<div class="inputTextArea">
@@ -254,7 +229,7 @@
 							<div style="clear:both;"></div>
 						</div>
 						<div id="TableEditArea">
-							<div class="labelText" id="LabelUnit">
+							<div class="labelTextArea" id="LabelUnit">
 								<span id="nonRequiredFieldIndicator">Unit (House Code):</span>
 							</div>
 							<div class="inputTextAreaHouseCode">
@@ -265,7 +240,7 @@
 					</div>
 					<div class="contentAreaLeft">
 						<div id="TableEditArea">
-							<div class="labelText">
+							<div class="labelTextArea">
 								<span id="nonRequiredFieldIndicator">Saturday Delivery:</span>
 							</div>
 							<div class="inputTextArea">
@@ -281,14 +256,14 @@
 							<div style="clear:both;"></div>
 						</div>
 						<div id="TableEditArea">
-							<div class="labelText"></div>
+							<div class="labelTextArea"></div>
 							<div class="inputTextArea"></div>
 							<div style="clear:both;"></div>
 						</div>
 					</div>
 					<div style="clear:both;"></div>
 					<div id="TableEditArea">
-						<div class="labelText" id="LabelUnitAddress">
+						<div class="labelTextArea" id="LabelUnitAddress">
 							<span id="nonRequiredFieldIndicator">Unit (House Code) Address:</span>
 						</div>
 						<div class="inputTextAreaLarge">
@@ -297,7 +272,7 @@
 						<div style="clear:both;"></div>
 					</div>
 					<div id="TableEditArea">
-						<div class="labelText">
+						<div class="labelTextArea">
 							<span id="nonRequiredFieldIndicator">UPS Package Attention to:</span>
 						</div>
 						<div class="inputTextAreaLarge">
@@ -309,7 +284,7 @@
 					<div style="clear:both;"></div>
 					<div class="contentAreaLeft">
 						<div id="TableEditArea">
-							<div class="labelText">
+							<div class="labelTextArea">
 								<span id="nonRequiredFieldIndicator">UPS Delivery to Home:</span>
 							</div>
 							<div class="inputTextArea">
@@ -327,7 +302,7 @@
 					</div>
 					<div class="contentAreaLeft">
 						<div id="TableEditArea">
-							<div class="labelText">
+							<div class="labelTextArea">
 								<span id="nonRequiredFieldIndicator">Saturday Delivery:</span>
 							</div>
 							<div class="inputTextArea">
@@ -344,7 +319,7 @@
 					</div>
 					<div style="clear:both;"></div>
 					<div id="TableEditArea">
-						<div class="labelText" id="LabelHome">
+						<div class="labelTextArea" id="LabelHome">
 							<span id="nonRequiredFieldIndicator">Home Address:</span>
 						</div>
 						<div class="inputTextAreaLarge">
@@ -355,11 +330,11 @@
 					<div style="clear:both;"></div>
 					<div class="labelHeaderSmall">* All checks sent to the employee's home; you must include their complete address (street, city, state and zip).</div>
 					<div style="clear:both;"></div>
-					<div class="subHeader">Pay Code Information</div>
+					<div class="subHeader">Wage Type Information</div>
 					<div style="clear:both;"></div>
-					<div id="PayCodeGrid">
-						<div id="PayCodeDetailGrid"></div>
-						<div id="PayCodeDetailReadOnlyGrid" style="display:none;"></div>
+					<div id="WageTypeGrid">
+						<div id="WageTypeDetailGrid"></div>
+						<div id="WageTypeDetailReadOnlyGrid" style="display:none;"></div>
 						<div id="TotalRow">							
 				            <table cellpadding="0" cellspacing="0" style="width: 100%">
 		                        <tr>
@@ -386,64 +361,12 @@
 		                        <tr><td class="borderHorizontal" colspan="3"></td></tr>
 		                    </table>							        
 						</div>
-						<div style="float: left;"><a id="ViewPayCodeTotal" class="view" title="Click here to view the pay code total for hours and earnings">View Total by Pay Code</a></div>
+						<div style="float: left;"><a id="ViewWageTypeTotal" class="view" title="Click here to view the wage type total for hours and earnings">View Total by Wage Type</a></div>
 					</div>
-					<div style="clear:both;"></div>
-					<div id="TableEditArea">
-						<div class="labelProcessingFee">
-							<span id="nonRequiredFieldIndicator">Stop Payment Processing Fee <span class="labelTextSmall">(withheld from employee)</span> Deduction Code PRFEE:</span>
-						</div>
-						<div class="inputTextArea">
-							<div id="CommissionableRadio">
-								<div class="radioButton">
-									<input type="radio" id="ProcessingFeeYes" name="ProcessingFee" checked="true" value="true" /><span class="labelRadio">Yes</span>
-								</div>
-								<div class="radioButton">
-									<input type="radio" id="ProcessingFeeNo" name="ProcessingFee" value="false" /><span class="labelRadio">No</span>
-								</div>
-							</div>
-						</div>
-						<div><span class="labelTextSmall">(If Applicable) $15.00</span></div>
-					</div>
-					<div style="clear:both;"></div>
-                    <div class="subHeader">Deduction Code Information</div>
-					<div style="clear:both;"></div>
-					<div class="labelHeaderSmall">Deduction Requirements: List any special deductions that must be withheld from manual check.</div>
-					<div style="clear:both;"></div>
-					<div class="contentAreaLeft">						
-						<div id="DeductionDiv"  style="display:none;">
-							<div class="labelText">
-								<span id="nonRequiredFieldIndicator">Deduction Code(s):</span>
-							</div>
-							<div class="inputTextArea">
-								<div id="DeductionCode"></div>
-							</div>
-							<div style="clear:both;"></div>
-						</div>
-					</div>
-					<div class="contentAreaLeft">						
-						<div id="AmountDiv"  style="display:none;">
-							<div class="labelText">
-								<span id="nonRequiredFieldIndicator">Amount $:</span>
-							</div>
-							<div class="inputTextArea">
-								<div id="Amount"></div>
-							</div>
-							<div style="clear:both;"></div>
-						</div>						
-					</div>
-                    <div style="clear:both;"></div>
-					<div style="clear:both;"></div>
-                    <div id="DeductionsGrid">
-						<div id="DeductionsDetailGrid"></div>
-						<div id="DeductionsDetailReadOnlyGrid" style="display:none;"></div>
-					</div>
-                    <div style="clear:both;"></div>
-					<div class="labelHeaderSmall"><i>Note: Deductions will not automatically be withheld from the manual check unless noted.</i></div>
 					<div style="clear:both;"></div>
 					<div class="contentAreaLeft">						
 						<div id="TableEditArea">
-							<div class="labelText">
+							<div class="labelTextArea">
 								<span class="requiredFieldIndicator">&#149;</span>Requested By:
 							</div>
 							<div class="inputTextArea">
@@ -452,7 +375,7 @@
 							<div style="clear:both;"></div>
 						</div>
 						<div id="TableEditArea">
-							<div class="labelText">
+							<div class="labelTextArea">
 								<span class="requiredFieldIndicator">&#149;</span>Requestor Phone:
 							</div>
 							<div class="inputTextArea">
@@ -461,7 +384,7 @@
 							<div style="clear:both;"></div>
 						</div>
 						<div id="TableEditArea">
-							<div class="labelText">
+							<div class="labelTextArea">
 								<span class="requiredFieldIndicator">&#149;</span>Manager Name:
 							</div>
 							<div class="inputTextArea">
@@ -472,7 +395,7 @@
 					</div>
 					<div class="contentAreaLeft">						
 						<div id="TableEditArea">
-							<div class="labelText">
+							<div class="labelTextArea">
 								<span class="requiredFieldIndicator">&#149;</span>Requestor Email:
 							</div>
 							<div class="inputTextArea">
@@ -481,45 +404,18 @@
 							<div style="clear:both;"></div>
 						</div>
 						<div id="TableEditArea">
-							<div class="labelText"></div>
+							<div class="labelTextArea"></div>
 							<div class="inputTextArea"></div>
 							<div style="clear:both;"></div>
 						</div>
 						<div id="TableEditArea">
-							<div class="labelText">
+							<div class="labelTextArea">
 								<span class="requiredFieldIndicator">&#149;</span>Manager Email:
 							</div>
 							<div class="inputTextArea">
 								<div id="ManagerEmail"></div>
 							</div>
 							<div style="clear:both;"></div>
-						</div>
-					</div>
-					<div style="clear:both;"></div>
-					<div id="AdditionalDocuments">
-						<div class="subHeader">Additional Documents</div>
-						<div style="clear:both;height:10px;"></div>
-						<div id="DocumentGrid"></div>
-						<div id="Paging">							
-				            <table cellpadding="0" cellspacing="0" style="width: 100%">
-		                        <tr>
-		                            <td class="borderVertical"></td>					                            
-		                            <td>
-		                                <table cellpadding="0" cellspacing="0" style="width: 100%">
-		                                    <tr class="gridFooter">
-		                                    	<td>
-		                                            &nbsp;<img id="imgAdd" src="/fin/cmn/usr/media/Common/add.png" style="cursor: pointer" alt="Add Document" title="Click here to attach the supporting document" />
-													<img id="imgEdit" src="/fin/cmn/usr/media/Common/modify.png" style="cursor: pointer" alt="Edit Document" title="Click here to modify the supporting document" />
-													<img id="imgRemove" src="/fin/cmn/usr/media/Common/delete.png" style="cursor: pointer" alt="Remove Document" title="Click here to remove the supporting document" />
-													<img id="imgView" src="/fin/cmn/usr/media/Common/download.png" style="cursor: pointer" alt="View Document" title="Click here to view the supporting document" />
-												</td>
-		                                    </tr>
-		                                </table>
-		                            </td>
-		                            <td class="borderVertical"></td>
-		                        </tr>
-		                        <tr><td class="borderHorizontal" colspan="3"></td></tr>
-		                    </table>							        
 						</div>
 					</div>
 				</div>
@@ -535,34 +431,6 @@
 			</div>
 			<div style="clear:both;"></div>
 		</div>
-
- 		<div id="UploadPopup">
-			<div class="contentArea">
-				<div id="popupHeader" class="header">Upload Document</div>
-			    <div class="body">
-					<div id="divFrame" class="body" style="padding-left: 10px;">
-						<div style="clear:both;height: 10px;"></div>
-						<div id="TableEditArea">
-							<div class="labelTextUpload">
-								<span class="requiredFieldIndicator">&#149;</span>Document Title:
-							</div>
-							<div class="inputTextArea">
-								<div id="DocumentTitle"></div>
-							</div>
-							<div style="clear:both;"></div>
-						</div>
-						<iframe id="iFrameUpload" src="/net/crothall/chimes/fin/app/act/FileUpload.aspx" frameborder="0" width="100%" height="30"></iframe>
-						<div style="clear:both;"></div>
-					</div>
-					<div id="divUpload" class="body">
-						<div id="AnchorUpload"></div>
-						<div id="AnchorUploadCancel"></div>
-						<div style="clear:both;"></div>
-					</div>
-				</div>
-			</div>
-		</div>
-
 		<div id="EmployeePopup">
 			<div class="contentArea">
 				<div class="body">
@@ -578,13 +446,12 @@
 				</div>
 			</div>
 		</div>
-
-		<div id="PayCodeTotalPopup">
+		<div id="WageTypeTotalPopup">
 			<div class="contentArea">
 				<div class="body">
-					<div class="header">Pay Code Total</div>
+					<div class="header">Wage Type Total</div>
 					<div style="clear:both;"></div>
-					<div id="TotalPayCodeGrid"></div>
+					<div id="TotalWageTypeGrid"></div>
 					<div style="width: 978px; margin-left: 11px;">							
 			            <table cellpadding="0" cellspacing="0" style="width: 100%">
 	                        <tr>
@@ -594,9 +461,9 @@
 	                                    <tr class="gridFooter">
 	                                    	<td style="width:568px; text-align:right;">TOTAL:&nbsp;</td>
 											<td class="borderVertical"></td>
-											<td id="PayCodeTotalHours" style="width:199px; text-align:right; padding-right: 4px;">&nbsp;</td>
+											<td id="WageTypeTotalHours" style="width:199px; text-align:right; padding-right: 4px;">&nbsp;</td>
 											<td class="borderVertical"></td>
-											<td id="PayCodeTotalEarnings" style="width:199px; text-align:right; padding-right: 4px;">&nbsp;</td>
+											<td id="WageTypeTotalEarnings" style="width:199px; text-align:right; padding-right: 4px;">&nbsp;</td>
 											<td class="borderVertical"></td>
 											<td style="width:18px;">&nbsp;</td>
 	                                    </tr>
@@ -615,7 +482,6 @@
 				</div>
 			</div>
 		</div>
-
 		<div id="backgroundPopup"></div>
 	    <div id="iiInputValidationMaster"></div>
 	</body>

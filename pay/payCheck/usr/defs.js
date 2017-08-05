@@ -1,16 +1,16 @@
 ii.Import("fin.cmn.usr.defs");
 
-ii.init.register(function () {
+ii.init.register(function() {
 
     fin.pay = { payCheck: {} };
 
 }, 1);
 
-ii.init.register(function () {
+ii.init.register(function() {
 
     fin.pay.payCheck.hirNodeArgs = {
         id: { type: Number }
-		, nodeParentId: { type: Number }
+        , nodeParentId: { type: Number }
 		, hirLevel: { type: Number, required: false, defaultValue: 0 }
 		, hierarchyId: { type: Number, required: false, defaultValue: 0 }
 		, brief: { type: String, required: false, defaultValue: "" }
@@ -28,6 +28,44 @@ ii.init.register(function () {
 		, brief: { type: String, required: false, defaultValue: "" }
     };
 
+	fin.pay.payCheck.stateTypeArgs = {
+        id: { type: Number }
+		, name: { type: String }
+    };
+
+	fin.pay.payCheck.siteArgs = {
+        id: { type: Number }
+		, addressLine1: { type: String, required: false, defaultValue: "" }
+		, addressLine2: { type: String, required: false, defaultValue: "" }
+		, city: { type: String, required: false, defaultValue: "" }
+		, county: { type: String, required: false, defaultValue: "" }
+		, postalCode: { type: String, required: false, defaultValue: "" }
+		, state: { type: Number, required: false }
+    };
+
+	fin.pay.payCheck.personArgs = {
+        id: { type: Number }
+		, firstName: { type: String, required: false, defaultValue: "" }
+		, lastName: { type: String, required: false, defaultValue: "" }
+		, addressLine1: { type: String, required: false, defaultValue: "" }
+		, addressLine2: { type: String, required: false, defaultValue: "" }
+		, city: { type: String, required: false, defaultValue: "" }
+		, state: { type: Number, required: false }
+		, postalCode: { type: String, required: false, defaultValue: "" }
+		, email: { type: String, required: false, defaultValue: "" }
+		, homePhone: { type: String, required: false, defaultValue: "" }
+    };
+
+    fin.pay.payCheck.employeeSearchArgs = {
+        id: { type: Number }
+		, employeeNumber: { type: String, required: false, defaultValue: "" }
+		, firstName: { type: String }
+		, lastName: { type: String, required: false, defaultValue: "" }
+		, brief: { type: String, required: false, defaultValue: "" }
+		, houseCode: { type: String, required: false, defaultValue: "" }
+		, ssn: { type: String, required: false, defaultValue: "" }
+    };
+
     fin.pay.payCheck.filterTypeArgs = {
         id: { type: Number }
 		, title: { type: String }
@@ -38,15 +76,10 @@ ii.init.register(function () {
 		, title: { type: String }
     };
 
-    fin.pay.payCheck.stateTypeArgs = {
-        id: { type: Number }
-		, name: { type: String }
-    };
-
-    fin.pay.payCheck.payCodeTypeArgs = {
+    fin.pay.payCheck.wageTypeArgs = {
         id: { type: Number }
 		, brief: { type: String }
-		, name: { type: String }
+		, title: { type: String }
     };
 
     fin.pay.payCheck.payCheckRequestArgs = {
@@ -64,8 +97,7 @@ ii.init.register(function () {
 		, stateType: { type: String, required: false, defaultValue: "" }
 		, terminationDate: { type: String, required: false, defaultValue: "" }
 		, mealBreakCompliance: { type: Boolean, required: false, defaultValue: false }
-		, currentPayCardUser: { type: Boolean, required: false, defaultValue: true }
-		, instantIssueRequest: { type: Boolean, required: false, defaultValue: true }
+		, paymentMethod: { type: String, required: false, defaultValue: "" }
 		, upsDeliveryToUnit: { type: Boolean, required: false, defaultValue: true }
 		, saturdayDeliveryUnit: { type: Boolean, required: false, defaultValue: true }
 		, deliveryHouseCodeId: { type: Number, required: false, defaultValue: 0 }
@@ -75,9 +107,6 @@ ii.init.register(function () {
 		, upsDeliveryToHome: { type: Boolean, required: false, defaultValue: true }
 		, saturdayDeliveryHome: { type: Boolean, required: false, defaultValue: true }
 		, homeAddress: { type: String, required: false, defaultValue: "" }
-		, stopPaymentProcessingFee: { type: Boolean, required: false, defaultValue: true }
-		, deductionCodes: { type: String, required: false, defaultValue: "" }
-		, amount: { type: String, required: false, defaultValue: "" }
 		, requestorName: { type: String, required: false, defaultValue: "" }
 		, requestorEmail: { type: String, required: false, defaultValue: "" }
 		, requestorPhone: { type: String, required: false, defaultValue: "" }
@@ -87,9 +116,9 @@ ii.init.register(function () {
 		, completedDate: { type: String, required: false, defaultValue: "" }
     };
 
-    fin.pay.payCheck.payCodeDetailArgs = {
+    fin.pay.payCheck.wageTypeDetailArgs = {
         id: { type: Number, required: false, defaultValue: 0 }
-		, payCode: { type: fin.pay.payCheck.PayCodeType, required: false }
+		, wageType: { type: fin.pay.payCheck.WageType, required: false }
 		, hours: { type: Number, required: false, defaultValue: 0 }
 		, date: { type: String, required: false, defaultValue: "" }
 		, earnings: { type: Number, required: false, defaultValue: 0 }
@@ -98,71 +127,23 @@ ii.init.register(function () {
 		, houseCodeTitle: { type: String, required: false, defaultValue: "" }
     };
 
-    fin.pay.payCheck.payCodeTotalArgs = {
+    fin.pay.payCheck.wageTypeTotalArgs = {
         id: { type: Number, required: false, defaultValue: 0 }
 		, title: { type: String, required: false, defaultValue: "" }
 		, hours: { type: Number, required: false, defaultValue: 0 }
 		, earnings: { type: Number, required: false, defaultValue: 0 }
     };
 
-    fin.pay.payCheck.deductionCodeDetailArgs = {
-        id: { type: Number, required: false, defaultValue: 0 }
-		, deductionCode: { type: String, required: false, defaultValue: "" }
-		, amount: { type: Number, required: false, defaultValue: 0 }
-    };
-
-    fin.pay.payCheck.payCheckRequestDocumentArgs = {
-        id: { type: Number, required: false, defaultValue: 0 }
-		, title: { type: String, required: false, defaultValue: "" }
-		, fileName: { type: String, required: false, defaultValue: "" }
-		, tempFileName: { type: String, required: false, defaultValue: "" }
-    };
-
     fin.pay.payCheck.fileNameArgs = {
         id: { type: Number }
 		, fileName: { type: String, required: false, defaultValue: "" }
     };
-
-    fin.pay.payCheck.employeeSearchArgs = {
-        id: { type: Number }
-		, employeeNumber: { type: String, required: false, defaultValue: "" }
-		, firstName: { type: String }
-		, lastName: { type: String, required: false, defaultValue: "" }
-		, brief: { type: String, required: false, defaultValue: "" }
-		, houseCode: { type: String, required: false, defaultValue: "" }
-		, employeeNumber: { type: String, required: false, defaultValue: "" }
-		, ssn: { type: String, required: false, defaultValue: "" }
-    };
-
-    fin.pay.payCheck.personArgs = {
-        id: { type: Number }
-		, firstName: { type: String, required: false, defaultValue: "" }
-		, lastName: { type: String, required: false, defaultValue: "" }
-		, addressLine1: { type: String, required: false, defaultValue: "" }
-		, addressLine2: { type: String, required: false, defaultValue: "" }
-		, city: { type: String, required: false, defaultValue: "" }
-		, state: { type: Number, required: false }
-		, postalCode: { type: String, required: false, defaultValue: "" }
-		, email: { type: String, required: false, defaultValue: "" }
-		, homePhone: { type: String, required: false, defaultValue: "" }
-    };
-
-    fin.pay.payCheck.siteArgs = {
-        id: { type: Number }
-		, addressLine1: { type: String, required: false, defaultValue: "" }
-		, addressLine2: { type: String, required: false, defaultValue: "" }
-		, city: { type: String, required: false, defaultValue: "" }
-		, county: { type: String, required: false, defaultValue: "" }
-		, postalCode: { type: String, required: false, defaultValue: "" }
-		, state: { type: Number, required: false }
-    };
-
 }, 2);
 
 ii.Class({
     Name: "fin.pay.payCheck.HirNode",
     Definition: {
-        init: function () {
+        init: function() {
             var args = ii.args(arguments, fin.pay.payCheck.hirNodeArgs);
             $.extend(this, args);
         }
@@ -172,8 +153,48 @@ ii.Class({
 ii.Class({
     Name: "fin.pay.payCheck.HouseCode",
     Definition: {
-        init: function () {
+        init: function() {
             var args = ii.args(arguments, fin.pay.payCheck.houseCodeArgs);
+            $.extend(this, args);
+        }
+    }
+});
+
+ii.Class({
+    Name: "fin.pay.payCheck.StateType",
+    Definition: {
+        init: function() {
+            var args = ii.args(arguments, fin.pay.payCheck.stateTypeArgs);
+            $.extend(this, args);
+        }
+    }
+});
+
+ii.Class({
+    Name: "fin.pay.payCheck.Site",
+    Definition: {
+        init: function() {
+            var args = ii.args(arguments, fin.pay.payCheck.siteArgs);
+            $.extend(this, args);
+        }
+    }
+});
+
+ii.Class({
+    Name: "fin.pay.payCheck.Person",
+    Definition: {
+        init: function() {
+            var args = ii.args(arguments, fin.pay.payCheck.personArgs);
+            $.extend(this, args);
+        }
+    }
+});
+
+ii.Class({
+    Name: "fin.pay.payCheck.EmployeeSearch",
+    Definition: {
+        init: function() {
+            var args = ii.args(arguments, fin.pay.payCheck.employeeSearchArgs);
             $.extend(this, args);
         }
     }
@@ -182,7 +203,7 @@ ii.Class({
 ii.Class({
     Name: "fin.pay.payCheck.FilterType",
     Definition: {
-        init: function () {
+        init: function() {
             var args = ii.args(arguments, fin.pay.payCheck.filterTypeArgs);
             $.extend(this, args);
         }
@@ -192,7 +213,7 @@ ii.Class({
 ii.Class({
     Name: "fin.pay.payCheck.Status",
     Definition: {
-        init: function () {
+        init: function() {
             var args = ii.args(arguments, fin.pay.payCheck.statusArgs);
             $.extend(this, args);
         }
@@ -200,20 +221,10 @@ ii.Class({
 });
 
 ii.Class({
-    Name: "fin.pay.payCheck.StateType",
+    Name: "fin.pay.payCheck.WageType",
     Definition: {
-        init: function () {
-            var args = ii.args(arguments, fin.pay.payCheck.stateTypeArgs);
-            $.extend(this, args);
-        }
-    }
-});
-
-ii.Class({
-    Name: "fin.pay.payCheck.PayCodeType",
-    Definition: {
-        init: function () {
-            var args = ii.args(arguments, fin.pay.payCheck.payCodeTypeArgs);
+        init: function() {
+            var args = ii.args(arguments, fin.pay.payCheck.wageTypeArgs);
             $.extend(this, args);
         }
     }
@@ -222,7 +233,7 @@ ii.Class({
 ii.Class({
     Name: "fin.pay.payCheck.PayCheckRequest",
     Definition: {
-        init: function () {
+        init: function() {
             var args = ii.args(arguments, fin.pay.payCheck.payCheckRequestArgs);
             $.extend(this, args);
         }
@@ -230,44 +241,24 @@ ii.Class({
 });
 
 ii.Class({
-    Name: "fin.pay.payCheck.PayCodeDetail",
+    Name: "fin.pay.payCheck.WageTypeDetail",
     Definition: {
-        init: function () {
-            var args = ii.args(arguments, fin.pay.payCheck.payCodeDetailArgs);
+        init: function() {
+            var args = ii.args(arguments, fin.pay.payCheck.wageTypeDetailArgs);
             $.extend(this, args);
 
-            if (!this.payCode) {
-                this.payCode = [];
+            if (!this.wageType) {
+                this.wageType = [];
             }
         }
     }
 });
 
 ii.Class({
-    Name: "fin.pay.payCheck.PayCodeTotal",
+    Name: "fin.pay.payCheck.WageTypeTotal",
     Definition: {
-        init: function () {
-            var args = ii.args(arguments, fin.pay.payCheck.payCodeTotalArgs);
-            $.extend(this, args);
-        }
-    }
-});
-
-ii.Class({
-    Name: "fin.pay.payCheck.DeductionCodeDetail",
-    Definition: {
-        init: function () {
-            var args = ii.args(arguments, fin.pay.payCheck.deductionCodeDetailArgs);
-            $.extend(this, args);
-        }
-    }
-});
-
-ii.Class({
-    Name: "fin.pay.payCheck.PayCheckRequestDocument",
-    Definition: {
-        init: function () {
-            var args = ii.args(arguments, fin.pay.payCheck.payCheckRequestDocumentArgs);
+        init: function() {
+            var args = ii.args(arguments, fin.pay.payCheck.wageTypeTotalArgs);
             $.extend(this, args);
         }
     }
@@ -276,38 +267,8 @@ ii.Class({
 ii.Class({
     Name: "fin.pay.payCheck.FileName",
     Definition: {
-        init: function () {
+        init: function() {
             var args = ii.args(arguments, fin.pay.payCheck.fileNameArgs);
-            $.extend(this, args);
-        }
-    }
-});
-
-ii.Class({
-    Name: "fin.pay.payCheck.EmployeeSearch",
-    Definition: {
-        init: function () {
-            var args = ii.args(arguments, fin.pay.payCheck.employeeSearchArgs);
-            $.extend(this, args);
-        }
-    }
-});
-
-ii.Class({
-    Name: "fin.pay.payCheck.Person",
-    Definition: {
-        init: function () {
-            var args = ii.args(arguments, fin.pay.payCheck.personArgs);
-            $.extend(this, args);
-        }
-    }
-});
-
-ii.Class({
-    Name: "fin.pay.payCheck.Site",
-    Definition: {
-        init: function () {
-            var args = ii.args(arguments, fin.pay.payCheck.siteArgs);
             $.extend(this, args);
         }
     }
