@@ -32,7 +32,7 @@ ii.Class({
 			me.cache = new ii.ajax.Cache(me.gateway);
 			me.transactionMonitor = new ii.ajax.TransactionMonitor(
 				me.gateway,
-				function(status, errorMessage){ me.nonPendingError(status, errorMessage); }
+				function(status, errorMessage) { me.nonPendingError(status, errorMessage); }
 			);
 
 			me.validator = new ui.ctl.Input.Validation.Master();
@@ -88,9 +88,11 @@ ii.Class({
 					me.loadCount = 3;
 					me.vendorStore.fetch("userId:[user],statusType:2", me.newVendorsLoaded, me);
 				}
+				else
+					$("#SearchArea").show();
 				me.itemStatusesLoaded();
 				me.controlVisible();
-			}	
+			}
 			else
 				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
 		},
@@ -101,7 +103,6 @@ ii.Class({
 		},
 
 		resize: function() {
-			var me = this;
 
 			fin.purVendorUi.vendorGrid.setHeight($(window).height() - 145);
 			$("#vendorDetailContentArea").height($(window).height() - 185);
@@ -116,14 +117,14 @@ ii.Class({
 
 			me.actionMenu
 				.addAction({
-					id: "saveAction", 
-					brief: "Save Vendor (Ctrl+S)", 
+					id: "saveAction",
+					brief: "Save Vendor (Ctrl+S)",
 					title: "Save the current Vendor details.",
 					actionFunction: function() { me.actionSaveItem(); }
 				})
 				.addAction({
-					id: "undoAction", 
-					brief: "Undo (Ctrl+U)", 
+					id: "undoAction",
+					brief: "Undo (Ctrl+U)",
 					title: "Undo the changes to Vendor being edited.",
 					actionFunction: function() { me.actionUndoItem(); }
 				});
@@ -168,7 +169,7 @@ ii.Class({
 				className: "linkButton",
 				clickFunction: function() { me.actionVendorSearch(2); },
 				hasHotState: true,
-				title: "Click here to view the new Vendors",
+				title: "Click here to view the new Vendors"
 			});
 
 			me.viewCurrentVendorsLink = new ui.ctl.buttons.Simple({
@@ -176,7 +177,7 @@ ii.Class({
 				className: "linkButton",
 				clickFunction: function() { me.actionVendorSearch(0); },
 				hasHotState: true,
-				title: "Click here to view the existing Vendors",
+				title: "Click here to view the existing Vendors"
 			});
 
 			me.vendorGrid = new ui.ctl.Grid({
@@ -216,7 +217,7 @@ ii.Class({
 
 			me.vendorNumber.makeEnterTab()
 				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation(ui.ctl.Input.Validation.required);
 
 			me.title = new ui.ctl.Input.Text({
 		        id: "Title",
@@ -226,7 +227,7 @@ ii.Class({
 
 			me.title.makeEnterTab()
 				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation(ui.ctl.Input.Validation.required);
 
 			me.name = new ui.ctl.Input.Text({
 		        id: "Name",
@@ -242,7 +243,7 @@ ii.Class({
 
 			me.addressLine1.makeEnterTab()
 				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation(ui.ctl.Input.Validation.required);
 
 			me.addressLine2 = new ui.ctl.Input.Text({
 		        id: "AddressLine2",
@@ -258,7 +259,7 @@ ii.Class({
 
 			me.city.makeEnterTab()
 				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation(ui.ctl.Input.Validation.required);
 
 			me.stateType = new ui.ctl.Input.DropDown.Filtered({
 		        id: "State",
@@ -345,7 +346,7 @@ ii.Class({
 					me.phoneNumber.text.value = fin.cmn.text.mask.phone(enteredText);
 					enteredText = me.phoneNumber.text.value;
 
-					if (enteredText.length < 14)
+					if (!(ui.cmn.text.validate.phone(enteredText)))
 						this.setInvalid("Please enter valid phone number. Example: (999) 999-9999");
 				});
 
@@ -353,7 +354,7 @@ ii.Class({
 		        id: "FaxNumber",
 				maxLength: 14,
 				changeFunction: function() { me.modified(); }
-		    });	
+		    });
 
 			me.faxNumber.makeEnterTab()
 				.setValidationMaster( me.validator )
@@ -366,8 +367,8 @@ ii.Class({
 
 					me.faxNumber.text.value = fin.cmn.text.mask.phone(enteredText);
 					enteredText = me.faxNumber.text.value;
-									
-					if (enteredText.length < 14)
+
+					if (!(ui.cmn.text.validate.phone(enteredText)))
 						this.setInvalid("Please enter valid fax number. Example: (999) 999-9999");
 				});
 
@@ -480,13 +481,13 @@ ii.Class({
 
 			me.active = new ui.ctl.Input.Check({
 		        id: "Active",
-				changeFunction: function() { me.modified(); } 
+				changeFunction: function() { me.modified(); }
 		    });
 
 			$("#SearchInputText").bind("keydown", me, me.actionSearchItem);
-			$("#VendorStatusText").bind("keydown", me, me.actionSearchItem);		  	        
+			$("#VendorStatusText").bind("keydown", me, me.actionSearchItem);
 		},
-				
+
 		configureCommunications: function() {
 			var me = this;
 
@@ -517,8 +518,8 @@ ii.Class({
 
 		controlKeyProcessor: function() {
 			var args = ii.args(arguments, {
-				event: {type: Object} // The (key) event object
-			});			
+				event: {type: Object}
+			});
 			var event = args.event;
 			var me = event.data;
 			var processed = false;
@@ -545,7 +546,7 @@ ii.Class({
 
 		setTabIndexes: function() {
 			var me = this;
-			
+
 			me.vendorNumber.text.tabIndex = 1;
 			me.title.text.tabIndex = 2;
 			me.name.text.tabIndex = 3;
@@ -657,7 +658,6 @@ ii.Class({
 		},
 
 		setStatus: function(status) {
-			var me = this;
 
 			fin.cmn.status.setStatus(status);
 		},
@@ -678,7 +678,7 @@ ii.Class({
 				me.setStatus("Edit");
 		},
 
-		setLoadCount: function(me, activeId) {
+		setLoadCount: function() {
 			var me = this;
 
 			me.loadCount++;
@@ -732,7 +732,7 @@ ii.Class({
 			$("#BlockPaymentCheck").attr("disabled", true);
 			$("#BlockPostingCompanyCodeCheck").attr("disabled", true);
 			$("#ActiveCheck").attr("disabled", true);
-				
+
 			if (me.vendorsReadOnly) {
 				$("#SendMethodTypeText").attr("disabled", true);
 				$("#SendMethodTypeAction").removeClass("iiInputAction");
@@ -743,7 +743,7 @@ ii.Class({
 		},
 
 		itemStatusesLoaded: function() {
-			me = this;
+			var me = this;
 
 			me.vendorStatuses = [];
 			me.vendorStatuses.push(new fin.pur.vendor.VendorStatus(1, -1, "All"));
@@ -779,16 +779,16 @@ ii.Class({
 
 		actionSearchItem: function() {
 			var args = ii.args(arguments, {
-				event: {type: Object} // The (key) event object
+				event: {type: Object}
 			});
 			var event = args.event;
 			var me = event.data;
 
-			if (event.keyCode == 13) {
+			if (event.keyCode === 13) {
 				me.loadSearchResults();
 			}
 		},
-		
+
 		actionVendorSearch: function(statusType) {
 
 			if (!parent.fin.cmn.status.itemValid())
@@ -824,10 +824,10 @@ ii.Class({
 			}
 
 			me.setLoadCount();
- 			me.vendorStore.fetch("searchValue:" + me.searchInput.getValue() 
-				+ ",vendorStatus:" + (me.vendorStatus.indexSelected == -1 ? -1 : me.vendorStatuses[me.vendorStatus.indexSelected].number)
+ 			me.vendorStore.fetch("searchValue:" + me.searchInput.getValue()
+				+ ",vendorStatus:" + (me.vendorStatus.indexSelected === -1 ? -1 : me.vendorStatuses[me.vendorStatus.indexSelected].number)
 				+ ",userId:[user]", me.vendorsLoaded, me);
-		},		
+		},
 
 		vendorsLoaded: function(me, activeId) {
 
@@ -837,13 +837,13 @@ ii.Class({
 			me.checkLoadCount();
 		},
 
-		itemSelect: function() {	
+		itemSelect: function() {
 			var args = ii.args(arguments, {
-				index: {type: Number}  // The index of the data item to select
-			});			
+				index: {type: Number}
+			});
 			var me = this;
 			var index = args.index;
-			var itemIndex = 0;	
+			var itemIndex = 0;
 			var item = me.vendorGrid.data[index];
 
 			if (!parent.fin.cmn.status.itemValid()) {
@@ -861,8 +861,8 @@ ii.Class({
 			me.addressLine2.setValue(item.addressLine2);
 			me.city.setValue(item.city);
 
-			itemIndex = ii.ajax.util.findIndexById(item.stateType.toString(), me.stateTypes);				
-			if (itemIndex != undefined)
+			itemIndex = ii.ajax.util.findIndexById(item.stateType.toString(), me.stateTypes);
+			if (itemIndex !== null)
 				me.stateType.select(itemIndex, me.stateType.focused);
 
 			me.zip.setValue(item.zip);
@@ -890,7 +890,7 @@ ii.Class({
 			me.blockPostingCompanyCode.setValue(item.blockPostingCompanyCode.toString());
 
 			itemIndex = ii.ajax.util.findIndexById(item.sendMethodType.toString(), me.poSendMethodTypes);
-			if (itemIndex != undefined)
+			if (itemIndex !== null)
 				me.sendMethodType.select(itemIndex, me.sendMethodType.focused);
 			else
 				me.sendMethodType.select(-1, me.sendMethodType.focused);
@@ -902,7 +902,6 @@ ii.Class({
 		},
 
 		actionCatlogItem: function() {
-			var me = this;
 
 			top.ui.ctl.menu.Dom.me.items["pur"].items["cat"].select();
 		},
