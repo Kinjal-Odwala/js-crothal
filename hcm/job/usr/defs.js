@@ -43,10 +43,17 @@ ii.init.register( function() {
 		, stateType: {type: Number, required: false, defaultValue: 0}
 		, zipCode: {type: String, required: false, defaultValue: ""}
 		, geoCode: {type: String, required: false, defaultValue: ""}
-		, city: {type: String, required: false, defaultValue: ""}	
+		, city: {type: String, required: false, defaultValue: ""}
+		, county: {type: String, required: false, defaultValue: ""}
 	};
 
 	fin.hcm.job.industryTypeArgs = {
+		id: {type: Number}
+		, brief: {type: String}
+		, name: {type: String}
+	};
+
+	fin.hcm.job.paymentTermArgs = {
 		id: {type: Number}
 		, brief: {type: String}
 		, name: {type: String}
@@ -67,22 +74,27 @@ ii.init.register( function() {
 		, name: {type: String, required: false, defaultValue: ""}
 		, brief: {type: String, required: false, defaultValue: ""}
 		, title: {type: String, required: false, defaultValue: ""}
-		, contact: {type: String, required: false, defaultValue: ""}
+		, contactName: {type: String, required: false, defaultValue: ""}
+		, contactPhone: {type: String, required: false, defaultValue: ""}
 		, address1: {type: String, required: false, defaultValue: ""}
 		, address2: {type: String, required: false, defaultValue: ""}
 		, city: {type: String, required: false, defaultValue: ""}
+		, county: {type: String, required: false, defaultValue: ""}
 		, appStateTypeId: {type: Number, required: false, defaultValue: 0}
 		, postalCode: {type: String, required: false, defaultValue: ""}
 		, geoCode: {type: String, required: false, defaultValue: ""}
 		, countryType: {type: Number, required: false, defaultValue: 0}
 		, industryType: {type: Number, required: false, defaultValue: 0}
+		, paymentTerm: {type: Number, required: false, defaultValue: 0}
 		, jobType: {type: fin.hcm.job.JobType, required: false}
 		, invoiceTemplate: {type: Number, required: false, defaultValue: 0}
+		, customerName: {type: String, required: false, defaultValue: ""}
+		, customerPhone: {type: String, required: false, defaultValue: ""}
 		, taxId: {type: String, required: false, defaultValue: "0"}
 		, overrideSiteTax: {type: Boolean, required: false, defaultValue: false}
 		, serviceContract: {type: String, required: false, defaultValue: ""}
 		, generalLocationCode: {type: String, required: false, defaultValue: ""}
-        , active: {type: Boolean, required: false, defaultValue: false}		
+        , active: {type: Boolean, required: false, defaultValue: false}
 	};
 
 	fin.hcm.job.houseCodeJobArgs = {
@@ -172,6 +184,16 @@ ii.Class({
 });
 
 ii.Class({
+	Name: "fin.hcm.job.PaymentTerm",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.hcm.job.paymentTermArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
 	Name: "fin.hcm.job.JobType",
 	Definition: {
 		init: function() {
@@ -197,10 +219,10 @@ ii.Class({
 		init: function() {
 			var args = ii.args(arguments, fin.hcm.job.jobArgs);
 			$.extend(this, args);
-			
+
 			if (!this.jobType) {
 				this.jobType = [];
-			}		
+			}
 		}
 	}
 });
