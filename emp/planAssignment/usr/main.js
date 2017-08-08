@@ -858,7 +858,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 		            if ($scope.plans[index].ptoTypeTitle === assignedPlans[iIndex].ptoTypeTitle
                         && (($scope.plans[index].minHours >= assignedPlans[iIndex].minHours || $scope.plans[index].minHours <= assignedPlans[iIndex].minHours) && $scope.plans[index].minHours <= assignedPlans[iIndex].maxHours)
                         && ($scope.plans[index].maxHours >= assignedPlans[iIndex].minHours && ($scope.plans[index].maxHours <= assignedPlans[iIndex].maxHours || $scope.plans[index].maxHours >= assignedPlans[iIndex].maxHours))
-                        && $scope.plans[index].hourly === assignedPlans[iIndex].hourly && $scope.plans[index].salary === assignedPlans[iIndex].salary
+                        && ($scope.plans[index].hourly === assignedPlans[iIndex].hourly || $scope.plans[index].salary === assignedPlans[iIndex].salary)
                         && $scope.plans[index].ptoPlanTypeFullTime === assignedPlans[iIndex].ptoPlanTypeFullTime && $scope.plans[index].ptoPlanTypePartTime === assignedPlans[iIndex].ptoPlanTypePartTime) {
 		                alert("Plan with PTO Type: [" + assignedPlans[iIndex].ptoTypeTitle + "], Plan Type: [" + assignedPlans[iIndex].ptoPlanTypeTitle + "], Pay Type, Pay Status and Hours Range is already exists.");
 		                found = true;
