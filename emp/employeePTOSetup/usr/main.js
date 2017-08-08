@@ -1771,7 +1771,17 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         setStatus("Loading");
         EmpActions.getEmployees($scope.assignment.hcmHouseCode, $scope.selectedPTOPlanAssignment.ptoPlanId, function (employees) {
             angular.forEach(employees, function (employee) {
-                $scope.employees.push(employee);
+                var found = false;
+                if ($scope.employees.length > 0) {
+                    for (var index = 0; index < $scope.employees.length; index++) {
+                        if (employee.employeeNumber == $scope.employees[index].employeeNumber) {
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+                if (!found)
+                    $scope.employees.push(employee);
             });
             $scope.pageLoading = false;
             $scope.pageStatus = 'Normal';
