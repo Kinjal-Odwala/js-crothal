@@ -1328,7 +1328,7 @@ ii.Class({
             me.searchBy = "employeeNumber";
 
             if (me.employeeNumber.validate(true) && me.employeeNumber.getValue().length > 3) {
-                if (me.status === "CheckRequest") {
+                if (me.status === "CheckRequest" || me.status === "CheckRequestStatus") {
                     $("#EmployeeNumberText").addClass("Loading");
                     me.employeeStore.fetch("userId:[user],searchValue:" + me.employeeNumber.getValue()
 						+ ",hcmHouseCodeId:" + ($("#houseCodeText").val() !== "" ? parent.fin.appUI.houseCodeId : 0)
@@ -1350,7 +1350,7 @@ ii.Class({
             me.searchBy = "employeeName";
 
             if (me.employeeName.getValue().length > 3) {
-                if (me.status === "CheckRequest") {
+                if (me.status === "CheckRequest" || me.status === "CheckRequestStatus") {
                     $("#EmployeeNameText").addClass("Loading");
                     me.employeeStore.fetch("userId:[user],searchValue:" + me.employeeName.getValue()
 						+ ",hcmHouseCodeId:" + ($("#houseCodeText").val() != "" ? parent.fin.appUI.houseCodeId : 0)
@@ -1599,12 +1599,12 @@ ii.Class({
             else
                 me.state.reset();
 
-            $("input[name='TermRequest'][value='" + item.termRequest + "']").attr("checked", "checked");
+            $("input[name='TermRequest'][value='" + item.termRequest + "']").attr("checked", "checked").trigger("click");
             $("input[name='MealBreakCompliance'][value='" + item.mealBreakCompliance + "']").attr("checked", "checked");
-			$("input[name='PaymentMethod'][value='" + item.paymentMethod + "']").attr("checked", "checked");
-            $("input[name='UPSDeliveryToUnit'][value='" + item.upsDeliveryToUnit + "']").attr("checked", "checked");
+			$("input[name='PaymentMethod'][value='" + item.paymentMethod + "']").attr("checked", "checked").trigger("click");
+            $("input[name='UPSDeliveryToUnit'][value='" + item.upsDeliveryToUnit + "']").attr("checked", "checked").trigger("click");
             $("input[name='SaturdayDeliveryUnit'][value='" + item.saturdayDeliveryUnit + "']").attr("checked", "checked");
-            $("input[name='UPSDeliveryToHome'][value='" + item.upsDeliveryToHome + "']").attr("checked", "checked");
+            $("input[name='UPSDeliveryToHome'][value='" + item.upsDeliveryToHome + "']").attr("checked", "checked").trigger("click");
             $("input[name='SaturdayDeliveryHome'][value='" + item.saturdayDeliveryHome + "']").attr("checked", "checked");
 
             me.terminationDate.setValue(item.terminationDate);
