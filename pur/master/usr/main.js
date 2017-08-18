@@ -373,7 +373,7 @@ ii.Class({
 			
 			me.vendor = new ui.ctl.Input.DropDown.Filtered({
 				id: "Vendor",
-				formatFunction: function(type) { return type.name; },
+				formatFunction: function(type) { return type.title; },
 				changeFunction: function() { me.vendorChanged(); },
 				required: false
 			});

@@ -35,8 +35,7 @@ ii.init.register( function() {
 	
 	fin.pur.catalog.vendorArgs = {
 		id: {type: Number}
-		, number: {type: Number}
-		, name: {type: String}
+		, title: {type: String}
 	};
 	
 	fin.pur.catalog.catalogArgs = {

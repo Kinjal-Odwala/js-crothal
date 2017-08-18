@@ -172,8 +172,6 @@ ii.init.register( function() {
 	
 	fin.pur.poCapitalRequisition.vendorArgs = {
 		id: {type: Number, defaultValue: 0}
-		, number: {type: Number}
-		, name: {type: String}
 		, vendorNumber: {type: String}
 		, title: {type: String, required: false, defaultValue: ""}
 		, addressLine1: {type: String, required: false, defaultValue: ""}

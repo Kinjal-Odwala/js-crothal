@@ -76,8 +76,7 @@ ii.init.register( function() {
 	
 	fin.pur.master.vendorArgs = {
 		id: {type: Number}
-		, number: {type: Number}
-		, name: {type: String}
+		, title: {type: String}
 	};
 	
 	fin.pur.master.accountArgs = {

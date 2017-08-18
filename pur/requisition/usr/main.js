@@ -494,7 +494,7 @@ ii.Class({
 			me.vendorName = new ui.ctl.Input.DropDown.Filtered({
 		        id: "VendorName",
 				title: "To search a specific Vendor, type-in Vendor Number or Title and press Enter key.",
-				formatFunction: function( type ) { return type.name; },
+				formatFunction: function( type ) { return type.title; },
 				changeFunction: function() { me.vendorChanged(); me.modified();}
 		    });
 			
@@ -2044,9 +2044,9 @@ ii.Class({
 			}
 
 			if (index >= 0) {
-				me.vendorId = me.vendors[index].number;
+				me.vendorId = me.vendors[index].id;
 				me.vendorNumber = me.vendors[index].vendorNumber;
-				me.vendor.setValue(me.vendors[index].name);
+				me.vendor.setValue(me.vendors[index].title);
 				me.vendorAddress1.setValue(me.vendors[index].addressLine1);
 				me.vendorAddress2.setValue(me.vendors[index].addressLine2);
 				me.vendorCity.setValue(me.vendors[index].city);
@@ -2086,7 +2086,7 @@ ii.Class({
 		vendorsLoad: function(me, activeId) {			
 			
 			if (me.vendors.length > 0) {
-				me.vendorId = me.vendors[0].number;
+				me.vendorId = me.vendors[0].id;
 				me.category.fetchingData();
 				me.catalog.fetchingData();
 				me.accountStore.reset();
