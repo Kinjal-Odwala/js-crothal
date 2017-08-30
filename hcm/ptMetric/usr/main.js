@@ -458,6 +458,18 @@ ii.Class({
 					if (!(/^\d{1,9}$/.test(enteredText)))
 						this.setInvalid("Please enter valid number.");
 				});
+
+			  me.contractTripEscalator
+				.setValidationMaster(me.validator)
+				.addValidation(function (isFinal, dataMap) {
+				    var enteredText = me.contractTripEscalator.getValue();
+
+				    if (enteredText == "")
+				        return;
+
+				    if (!(/^\d{1,9}$/.test(enteredText)))
+				        this.setInvalid("Please enter valid number.");
+				});
 				
 			me.taskManagementSystem = new ui.ctl.Input.DropDown.Filtered({
 		        id: "TaskManagementSystem",
@@ -2272,16 +2284,17 @@ ii.Class({
 			me.cpiCap.text.tabIndex = 8;
 			me.costedTripCycleTime.text.tabIndex = 9;
 			me.contractedAnnualTrips.text.tabIndex = 10;
-			me.taskManagementSystem.text.tabIndex = 11;
-			me.taskManagementSystemOther.text.tabIndex = 12;
-			me.hourlyFTEVacancies.text.tabIndex = 13;
-			me.fullTimePartTimeRatio.text.tabIndex = 14;
-			me.operatingCapacity.text.tabIndex = 15;
-			me.serviceLineEVS.text.tabIndex = 16;
-			me.serviceLineLaundry.text.tabIndex = 17;
-			me.serviceLinePOM.text.tabIndex = 18;
-			me.serviceLineCES.text.tabIndex = 19;
-			me.notes.tabIndex = 20;
+			me.contractTripEscalator.text.tabIndex = 11;
+			me.taskManagementSystem.text.tabIndex = 12;
+			me.taskManagementSystemOther.text.tabIndex = 13;
+			me.hourlyFTEVacancies.text.tabIndex = 14;
+			me.fullTimePartTimeRatio.text.tabIndex = 15;
+			me.operatingCapacity.text.tabIndex = 16;
+			me.serviceLineEVS.text.tabIndex = 17;
+			me.serviceLineLaundry.text.tabIndex = 18;
+			me.serviceLinePOM.text.tabIndex = 19;
+			me.serviceLineCES.text.tabIndex = 20;
+			me.notes.tabIndex = 21;
 		},
 
 		qualityAssuranceGridScroll: function() {
@@ -2314,6 +2327,7 @@ ii.Class({
 				me.serviceLineCES.resizeText();
 				me.costedTripCycleTime.resizeText();
 				me.contractedAnnualTrips.resizeText();
+				me.contractTripEscalator.resizeText();
 				me.taskManagementSystem.resizeText();
 				me.taskManagementSystemOther.resizeText();
 			}
@@ -2386,6 +2400,7 @@ ii.Class({
 			me.serviceLineCES.setValue("");
 			me.costedTripCycleTime.setValue("");
 			me.contractedAnnualTrips.setValue("");
+			me.contractTripEscalator.setValue("");
 			me.taskManagementSystem.reset();
 			me.taskManagementSystemOther.setValue("");
 			me.notes.value = "";
@@ -2507,6 +2522,7 @@ ii.Class({
 				me.serviceLineCES.setValue(me.metrics[0].serviceLineCES);
 				me.costedTripCycleTime.setValue(me.metrics[0].costedTripCycleTime);
 				me.contractedAnnualTrips.setValue(me.metrics[0].contractedAnnualTrips);
+				me.contractTripEscalator.setValue(me.metrics[0].contractTripEscalator);
 				var itemIndex = ii.ajax.util.findIndexById(me.metrics[0].taskManagementSystem.toString(), me.taskManagementSystems);
 				if (itemIndex != undefined && itemIndex >= 0)
 					me.taskManagementSystem.select(itemIndex, me.taskManagementSystem.focused);
@@ -3196,7 +3212,7 @@ ii.Class({
 					|| !me.cpiDueDate.valid || !me.cpiCap.valid || !me.hourlyFTEVacancies.valid || !me.fullTimePartTimeRatio.valid
 					|| !me.operatingCapacity.valid || !me.serviceLineEVS.valid || !me.serviceLineLaundry.valid
 					|| !me.serviceLinePOM.valid || !me.serviceLineCES.valid 
-					|| !me.costedTripCycleTime.valid || !me.contractedAnnualTrips.valid || !me.taskManagementSystem.valid || !me.taskManagementSystemOther.valid) {
+					|| !me.costedTripCycleTime.valid || !me.contractedAnnualTrips.valid || !me.contractTripEscalator.valid || !me.taskManagementSystem.valid || !me.taskManagementSystemOther.valid) {
 					alert("In order to save, the errors on the page must be corrected. Please verify the data on Hospital & Contract tab.");
 					return false;
 				}
@@ -3254,6 +3270,7 @@ ii.Class({
 				, me.serviceLineCES.getValue()
 				, me.costedTripCycleTime.getValue()
 				, me.contractedAnnualTrips.getValue()
+                , me.contractTripEscalator.getValue()
 				, (me.taskManagementSystem.indexSelected >= 0 ? me.taskManagementSystems[me.taskManagementSystem.indexSelected].id : 0)
 				, me.taskManagementSystemOther.getValue()
 				, me.notes.value
@@ -3307,6 +3324,7 @@ ii.Class({
 				xml += ' serviceLineCES="' + ui.cmn.text.xml.encode(item.serviceLineCES) + '"';
 				xml += ' costedTripCycleTime="' + item.costedTripCycleTime + '"';
 				xml += ' contractedAnnualTrips="' + item.contractedAnnualTrips + '"';
+				xml += ' contractTripEscalator="' + item.contractTripEscalator + '"';
 				xml += ' taskManagementSystem="' + item.taskManagementSystem + '"';
 				xml += ' taskManagementSystemOther="' + ui.cmn.text.xml.encode(item.taskManagementSystemOther) + '"';
 				xml += ' notes="' + ui.cmn.text.xml.encode(item.notes) + '"';
