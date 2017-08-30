@@ -480,17 +480,15 @@
                             </tr>
                         </thead>
                         <tbody style="width: 100%;" ng-style="{'min-height': assignmentGridHeight + 'px'}">
-                            <tr ng-repeat="item in employeePTOs">
-                                <td width="30px" align ="center">{{$index + 1}}</td>
-                                <td width="170px" align ="left">{{item.ptoTypeTitle}}</td>
-                                <td width="150px" align ="center">
-                                    <a ng-show="assigned" href="" ng-click="showPTODates(item.ptoType)">
-                                        <label>{{item.totalPTOTaken}}</label>
-                                    </a>
-                                    <label ng-show="!assigned">{{item.totalPTOTaken}}</label>
+                            <tr ng-repeat="item in empPTOBalanceHours">
+                                <td width="30px" align="center">{{$index + 1}}</td>
+                                <td width="170px" align="left">{{item.ptoTypeTitle}}</td>
+                                <td width="150px" align="center">
+                                    <a ng-show="item.ptoTaken != '0'" class="ptoDays" href="" ng-click="showPTODates(item.ptoType)">{{item.ptoTaken}}</a>
+                                    <span ng-show="item.ptoTaken == '0'">{{item.ptoTaken}}</span>
                                 </td>
-                                <td width="150px" align ="center">{{item.balanceDays}}</td>
-                                <td width="200px" align ="center">{{item.totalDays}}</td>
+                                <td width="150px" align ="center">{{item.balanceHours}}</td>
+                                <td width="200px" align ="center">{{item.ptoStatus}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -501,10 +499,10 @@
     </tabset>
    </div>
         <div ng-show="isPageLoading()">
-                <div class="overlay"></div>
-                <div class="spinner">
-                    <span class="glyphicon glyphicon-refresh glyphicon-spin"></span>{{loadingTitle}}
-                </div>
+            <div class="overlay"></div>
+            <div class="spinner">
+                <span class="glyphicon glyphicon-refresh glyphicon-spin"></span>{{loadingTitle}}
+            </div>
         </div>
     </form>
 </div>
@@ -566,4 +564,3 @@
 	    </div>
 	</form>
 </script>
-    

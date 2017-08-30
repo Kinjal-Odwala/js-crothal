@@ -167,7 +167,6 @@
     table-layout: fixed;
 }
 
-
 .table tbody {
     display: block;
     overflow-y: scroll;
@@ -175,6 +174,23 @@
 
 .table tbody tr {
     width: 100%;
+}
+
+.disabled {
+  background-color: rgba(0,0,0,.175);
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+.ptoDays {
+	color: blue;
+	cursor: pointer;
+	text-decoration: underline;
+}
+
+.ptoDays:hover {	
+	color: red;
+	text-decoration: underline;
 }
 
 #planModal {
@@ -242,16 +258,3 @@ li {
 #multiselectBtn {
     width: 240px;
 }
-
-.disabled{
-  background-color: rgba(0,0,0,.175);
-  pointer-events: none;
-  cursor: not-allowed;
-}
-
-
-
-
-
-
-
