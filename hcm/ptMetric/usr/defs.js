@@ -70,7 +70,8 @@ ii.init.register( function() {
 		, serviceLinePOM: {type: String, required: false, defaultValue: ""}
 		, serviceLineCES: {type: String, required: false, defaultValue: ""}
 		, costedTripCycleTime: {type: String, required: false, defaultValue: ""}
-		, contractedAnnualTrips: {type: String, required: false, defaultValue: ""}
+		, contractedAnnualTrips: { type: String, required: false, defaultValue: "" }
+        , contractTripEscalator: { type: String, required: false, defaultValue: "" }
 		, taskManagementSystem: {type: Number, required: false, defaultValue: 0}
 		, taskManagementSystemOther: {type: String, required: false, defaultValue: ""}
 		, notes: {type: String, required: false, defaultValue: ""}
