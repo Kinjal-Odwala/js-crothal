@@ -1,187 +1,41 @@
-﻿#houseCodeRadioTextLeft{float:left;width:135px; padding-top:7px;}
-#houseCodeRadioButtonLeft{float:left;width:25px;padding-left:3px;padding-top:7px;}
-#houseCodeRadioTextRight{float:left;width:130px;padding-top:7px;}
-#houseCodeRadioButtonRight{float:left;width:25px;margin-left:25px;padding-top:7px;}
+﻿.leftContainer {
+	float: left;
+	margin-right: 20px;
+}
 
-#houseCodeYesRadioTextLeft
-	{
-		float:left;
-		width:20px;
-		height:27px;
-		font-family:Verdana;
-		font-size:12px;
-		color:#032D23;
-		padding-top:3px;
-	}
-#houseCodeYesRadioButtonLeft
-	{
-		float:left;
-		width:25px;
-		padding-bottom:2px;
-	}
-#houseCodeNoRadioTextRight
-	{
-		float:left;
-		width:20px;
-		height:27px;
-		font-family:Verdana;
-		font-size:12px;
-		color:#032D23;
-		padding-top:3px;
-	}
-#houseCodeNoRadioButtonRight{float:left;width:25px;margin-left:25px; padding-bottom:2px;}
+.rightContainer {
+	float: left;
+}
 
-.houseCodeAreasContainerLeft
-	{
-		float:left;
-		margin-right:20px;
-	}
-.houseCodeAreasContainerRight
-	{
-		float:left;
-	}
-.LabelhouseCodeAreaLeft
-	{
-		width:170px;
-		float:left;
-		height:27px;
-		font-family:Verdana;
-		font-size:12px;
-		color:#032D23;
-	}
-#ContainerLeft
-	{
-		float:left;
-		padding:5px 5px 5px 5px;
-		width:170px;
-	}
-#ContainerCenterLeft
-	{
-		float:left;
-		padding:5px 5px 5px 5px;
-		width:190px;
-	}
-#ContainerCenterRight
-	{
-		float:left;
-		padding:5px 5px 5px 5px;
-		width:170px;
-	}
-#ContainerRight
-	{
-		float:left;
-		padding:5px 5px 5px 5px;
-		width:190px;
-	}
-/*****************Additional Services*****************/
-#DropDownRightCheckBox
-	{
-		padding: 3px 0px 3px 0px;
-		width: 190px; 
-		float: left; 
-	}
-#AddServicevContainer
-	{
-		padding: 3px 0px 3px 0px;
-		width: 212px; 
-		float: left; 
-	}
+.tableEditArea {
+	width: 100%;
+}
 
-.CheckBoxContainer
-	{
-		width:186px;
-		float:left;
-		height:67px;
-		overflow-x:auto;
-		border:solid #AAAAAA thin;
-		background-color:white;
-		border-width:1px;
-		padding: 1px 1px 1px 1px;
-		color:#032D23;
-		font-family:Verdana;
-		font-size:12px;
-	}
-/*
-.CheckBoxText
-	{
-		width:160px;
-		float:left;
-		height:13px;
-		font-family:Verdana;
-		font-size:12px;
-		color:#032D23;
-		border:0;
-	}
-	
-*/
-.CheckBoxDropDown
-	{
-		background-image:url(/fin/cmn/usr/media/Common/edit.png);
-		background-repeat:no-repeat;
-		float: right;
-		width:20px;
-		height:20px;
-		cursor:pointer;
-	}
+.labelTextArea {
+	float: left;
+	width: 170px;
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+}
 
-/*****************Additional Services Popup*****************/	
+.inputTextArea {
+	float: left;
+	width: 200px;
+}
 
-#ServiceGroup
-	{
-		position: absolute;
-		left: 623px;
-		margin-top:25px;
-/*
-		top:125px;
-*/
-		width:225px;
-		height: 250px;
-		border-top:solid #AAAAAA thin;
-		border-bottom:solid #AAAAAA thin;
-		border-width:1px;
-		z-index: 6800;
-		display: none;
-		overflow-y:auto;
-		overflow-x:hidden;
-	}
-	
-.TableEditArea
-	{
-		width:100%;
-	}
-.InputTextAreaRight
-	{
-		width:190px;
-		height:20px;
-		float:left;
-	}
-.InputTextAreaSite
-	{
-		width:300px;
-		height:20px;
-		float:left;
-	}
-#Sites .iiInputTable
-	{
-		width:290px;
-	}
-.nonRequiredFieldIndicator
-	{
-		color:#032d23;
-		padding-left:7px;
-		font-family:Verdana;
-		font-size:12px;
-	}
-.iiInputText
-	{
-		width:182px;
-		white-space:nowrap;
-	}
-.iiInputTable
-	{
-		width:188px;
-		white-space:nowrap;
-	}
+.inputTextAreaLarge {
+	float: left;
+	width: 300px;
+}
+
+.nonRequiredFieldIndicator {
+	color: #032d23;
+	font-family: Verdana;
+	font-size: 12px;
+	padding-left: 7px;
+}
 
 .iiInputText.Loading {
 	background-image: url(/fin/cmn/usr/media/common/indicator.gif);
@@ -195,22 +49,47 @@
 	margin-bottom: 1px;	
 }
 
-#backgroundPopup {
-	position: fixed;
-	top: 0;
-	left: 0;
-	z-index: 5000;
-	width: 100%;
-	height: 100%;
-	border: 1px solid #cecece;
-	background-color: black;
-	display: none;
+.checkBoxContainer {
+	float: left;
+	width: 186px;
+	height: 67px;
+	color: #032D23;
+	font-family: Verdana;
+	font-size: 12px;
+	border: solid #AAAAAA thin;
+	border-width: 1px;
+	background-color: white;
+	padding: 1px 1px 1px 1px;
+	overflow-x: auto;
 }
 
-#ManagerPopup {
-	background-color: white;
+.checkBoxDropDown {
+	float: right;
+	width: 20px;
+	height: 20px;
+	background-image: url(/fin/cmn/usr/media/Common/edit.png);
+	background-repeat: no-repeat;
+	cursor: pointer;
+}
+
+#ServiceContainer {
+	float: left;
+	width: 210px; 
+	padding: 3px 0px 3px 0px;
+}
+
+#ServiceGroup {
+	left: 625px;
+	width: 225px;
+	height: 250px;
+	border-top: solid #AAAAAA thin;
+	border-bottom: solid #AAAAAA thin;
+	border-width: 1px;
+	margin-top: 25px;
 	position: absolute;
-	z-index: 5030;
+	overflow-y: auto;
+	overflow-x: hidden;
+	z-index: 6800;
 	display: none;
 }
 
@@ -228,4 +107,23 @@
 	float: left;
 	width: 80px;
 	padding: 5px 0px 0px 10px;
+}	
+
+#ManagerPopup {
+	background-color: white;
+	position: absolute;
+	z-index: 5030;
+	display: none;
+}
+
+#backgroundPopup {
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	z-index: 5000;
+	position: fixed;
+	border: 1px solid #cecece;
+	background-color: black;
+	display: none;
 }

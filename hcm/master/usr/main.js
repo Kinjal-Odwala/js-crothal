@@ -22,28 +22,29 @@ ii.Class({
 	Extends: "ui.lay.HouseCodeSearch",
     Definition: {		 
         init: function() {
-			var args = ii.args(arguments, {});
 			var me = this;
-			
+
 			me.status = true;
 			me.hirNode = 0;
 			me.loadCount = 0;
-			
-			if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;
-			if (!parent.fin.appUI.hirNode) parent.fin.appUI.hirNode = 0;
 
-			me.gateway = ii.ajax.addGateway("hcm", ii.config.xmlProvider); 
+			if (!parent.fin.appUI.houseCodeId)
+				parent.fin.appUI.houseCodeId = 0;
+			if (!parent.fin.appUI.hirNode)
+				parent.fin.appUI.hirNode = 0;
+
+			me.gateway = ii.ajax.addGateway("hcm", ii.config.xmlProvider);
 			me.cache = new ii.ajax.Cache(me.gateway);
 			me.session = new ii.Session(me.cache);
-			
+
 			me.transactionMonitor = new ii.ajax.TransactionMonitor(
-				me.gateway, 
+				me.gateway,
 				function(status, errorMessage) { me.nonPendingError(status, errorMessage); }
 			);
-			
+
 			$(window).bind("resize", me, me.resize);
 			$(document).bind("keydown", me, me.controlKeyProcessor);
-			
+
 			me.authorizer = new ii.ajax.Authorizer( me.gateway );
 			me.authorizePath = "\\crothall\\chimes\\fin\\HouseCodeSetup\\HouseCodes";
 			me.authorizer.authorize([me.authorizePath],
@@ -56,25 +57,24 @@ ii.Class({
 			me.configureCommunications();
 			me.setStatus("Loading");
 			me.modified(false);
-			
-			me.activeFrameId = 0;			
+
+			me.activeFrameId = 0;
 			me.houseCodeNeedUpdate = true;
 			me.statisticsNeedUpdate = true;
 			me.financialNeedUpdate = true;
 			me.payrollNeedUpdate = true;
 			me.safetyNeedUpdate = true;
 			me.unionSetupNeedUpdate = true;
-			
+
 			me.houseCodeSearch = new ui.lay.HouseCodeSearch();
 
-			if (parent.fin.appUI.houseCodeId == 0) //usually happens on pageLoad			
+			if (parent.fin.appUI.houseCodeId == 0)
 				me.houseCodeStore.fetch("userId:[user],defaultOnly:true,", me.houseCodesLoaded, me);
 			else {
 				me.houseCodesLoaded(me, 0);
 			}
-			
+
 			$("#TabCollection a").click(function() {
-				
 				switch(this.id) {
 					case "TabHouseCode":
 
@@ -90,7 +90,7 @@ ii.Class({
 						fin.hcmMasterUi.activeFrameId = 0;
 						fin.hcmMasterUi.houseCodeNeedUpdate = false;
 						break;
-						
+
 					case "TabStatistics":
 
 						if ($("iframe")[1].contentWindow.fin == undefined || fin.hcmMasterUi.statisticsNeedUpdate) {
@@ -116,7 +116,7 @@ ii.Class({
 							me.setStatus("Edit");
 						else 
 							me.setStatus("Loaded");
-							
+
 						fin.hcmMasterUi.activeFrameId = 2;
 						fin.hcmMasterUi.financialNeedUpdate = false;
 						break;
@@ -131,11 +131,11 @@ ii.Class({
 							me.setStatus("Edit");
 						else 
 							me.setStatus("Loaded");
-	
+
 						fin.hcmMasterUi.activeFrameId = 3;
 						fin.hcmMasterUi.payrollNeedUpdate = false;
 						break;
-						
+
 					case "TabSafety":
 
 						if ($("iframe")[4].contentWindow.fin == undefined || fin.hcmMasterUi.safetyNeedUpdate) {
@@ -146,11 +146,11 @@ ii.Class({
 							me.setStatus("Edit");
 						else 
 							me.setStatus("Loaded");
-	
+
 						fin.hcmMasterUi.activeFrameId = 4;
 						fin.hcmMasterUi.safetyNeedUpdate = false;
 						break;
-						
+
 					case "TabUnionSetup":
 
 						if ($("iframe")[5].contentWindow.fin == undefined || fin.hcmMasterUi.unionSetupNeedUpdate) {
@@ -161,7 +161,7 @@ ii.Class({
 							me.setStatus("Edit");
 						else 
 							me.setStatus("Loaded");
-	
+
 						fin.hcmMasterUi.activeFrameId = 5;
 						fin.hcmMasterUi.unionSetupNeedUpdate = false;
 						break;
@@ -172,18 +172,17 @@ ii.Class({
 			$("iframe")[0].src = "/fin/hcm/houseCode/usr/markup.htm?unitId=" + parent.fin.appUI.unitId;
 			$(window).bind("resize", me, me.resize);
 			ii.trace("HouseCode Master Init", ii.traceTypes.information, "Info");
-			
+
 			if (top.ui.ctl.menu) {
 				top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
 			}
         },
-		
-		authorizationProcess: function fin_hcm_master_UserInterface_authorizationProcess() {
-			var args = ii.args(arguments,{});
+
+		authorizationProcess: function() {
 			var me = this;
-			
+
 			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
-			
+
 			if (me.isAuthorized) {
 				$("#pageLoading").hide();
 				$("#pageLoading").css({
@@ -193,70 +192,66 @@ ii.Class({
 				$("#messageToUser").css({ "color": "white" });
 				$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
 				$("#pageLoading").fadeIn("slow");
-				
+
 				ii.timer.timing("Page displayed");
 				me.session.registerFetchNotify(me.sessionLoaded, me);
-			}				
+			}
 			else
 				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
-			
+
 			me.houseCodeWrite = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\Write");
 			me.houseCodeReadOnly = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\Read");
-			
+
 			me.tabHouseCodeShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\TabHouseCode");
 			me.tabStatisticsShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\TabStatistics");
 			me.tabFinancialShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\TabFinancial");
-			me.tabPayrollShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\TabPayroll");
+			me.tabPayrollShow = false; //parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\TabPayroll");
 			me.tabSafetyShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\TabSafety");
-			me.tabUnionSetupShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\TabUnionSetup");
-			
+			me.tabUnionSetupShow = false; //parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\TabUnionSetup");
+
 			me.tabHouseCodeWrite = me.authorizer.isAuthorized(me.authorizePath + "\\TabHouseCode\\Write");
 			me.tabHouseCodeReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\TabHouseCode\\Read");
-			
+
 			/*if(!me.tabHouseCodeShow && !me.houseCodeWrite && !me.houseCodeReadOnly)
 				$("#TabHouseCode").hide();
 			else //when child nodes under HouseCode>tabs are not selected
 				me.tabHouseCodeShow = true;
-			*/	
+			*/
 			if (!me.tabStatisticsShow && !me.houseCodeWrite && !me.houseCodeReadOnly)
 				$("#TabStatistics").hide();
 			else
 				me.tabStatisticsShow = true;
-				
+
 			if (!me.tabFinancialShow && !me.houseCodeWrite && !me.houseCodeReadOnly)
 				$("#TabFinancial").hide();
 			else
 				me.tabFinancialShow = true;
-			
-			if (!me.tabPayrollShow && !me.houseCodeWrite && !me.houseCodeReadOnly)
+
+//			if (!me.tabPayrollShow && !me.houseCodeWrite && !me.houseCodeReadOnly)
 				$("#TabPayroll").hide();
-			else
-				me.tabPayrollShow = true;
-				
+//			else
+//				me.tabPayrollShow = true;
+
 			if (!me.tabSafetyShow && !me.houseCodeWrite && !me.houseCodeReadOnly)
 				$("#TabSafety").hide();
 			else
 				me.tabSafetyShow = true;		
-			
-			if (!me.tabUnionSetupShow && !me.houseCodeWrite && !me.houseCodeReadOnly)
+
+//			if (!me.tabUnionSetupShow && !me.houseCodeWrite && !me.houseCodeReadOnly)
 				$("#TabUnionSetup").hide();
-			else
-				me.tabUnionSetupShow = true;
-				
+//			else
+//				me.tabUnionSetupShow = true;
+
 			if (me.tabHouseCodeReadOnly || me.houseCodeReadOnly) {
 				$("#actionMenu").hide();
 			}
 		},	
-		
-		sessionLoaded: function fin_hcm_master_UserInterface_sessionLoaded() {
-			var args = ii.args(arguments, {
-				me: {type: Object}
-			});
-			var me = args.me;
+
+		sessionLoaded: function() {
 
 			ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
 		},
-		
+
 		resize: function() {
 			var args = ii.args(arguments,{});
 			var me = this;
@@ -291,11 +286,10 @@ ii.Class({
 					actionFunction: function() { me.actionUndoItem(); }
 				})
 		},
-		
+
 		configureCommunications: function() {
-			var args = ii.args(arguments,{});
 			var me = this;
-			
+
 			me.hirNodes = [];
 			me.hirNodeStore = me.cache.register({
 				storeId: "hirNodes",
@@ -320,30 +314,29 @@ ii.Class({
 				injectionArray: me.houseCodeDetails
 			});			
 		},
-		
+
 		setStatus: function(status) {
-			var me = this;
 
 			fin.cmn.status.setStatus(status);
 		},
-		
+
 		dirtyCheck: function(me) {
-				
+			
 			return !fin.cmn.status.itemValid();
 		},
-		
+
 		modified: function() {
 			var args = ii.args(arguments, {
 				modified: {type: Boolean, required: false, defaultValue: true}
 			});
 			var me = this;
-			
+
 			parent.fin.appUI.modified = args.modified;
 			if (args.modified)
 				me.setStatus("Edit");
 		},
-		
-		setLoadCount: function(me, activeId) {
+
+		setLoadCount: function() {
 			var me = this;
 
 			me.loadCount++;
@@ -351,7 +344,7 @@ ii.Class({
 			$("#messageToUser").text("Loading");
 			$("#pageLoading").fadeIn("slow");
 		},
-		
+
 		checkLoadCount: function() {
 			var me = this;
 
@@ -361,7 +354,7 @@ ii.Class({
 				$("#pageLoading").fadeOut("slow");
 			}
 		},
-		
+
 		showPageLoading: function(status) {
 			var me = this;
 
@@ -369,31 +362,29 @@ ii.Class({
 			$("#messageToUser").text(status);
 			$("#pageLoading").fadeIn("slow");
 		},
-		
+
 		houseCodesLoaded: function(me, activeId) {
-					
 			ii.trace("HouseCode Master - UnitsLoaded", ii.traceTypes.information, "Info");			
-			
+
 			if (parent.fin.appUI.houseCodeId == 0) {
 				if (me.houseCodes.length <= 0) {
-				
 					return me.houseCodeSearchError();
 				}
-				
+
 				me.houseCodeGlobalParametersUpdate(false, me.houseCodes[0]);
 			}
-			
+
 			me.houseCodeGlobalParametersUpdate(false);			
 			me.houseCodeDetailStore.fetch("userId:[user],unitId:" + parent.fin.appUI.unitId, me.houseCodeDetailsLoaded, me);
 		},
-		
+
 		houseCodeChanged: function() {
-			var args = ii.args(arguments,{});
 			var me = this;
 
 			ii.trace("HouseCode Master - UnitChanged", ii.traceTypes.information, "Info");			
 
-			if (parent.fin.appUI.houseCodeId <= 0) return;
+			if (parent.fin.appUI.houseCodeId <= 0)
+				return;
 
 			me.houseCodeNeedUpdate = true;
 			me.statisticsNeedUpdate = true;
@@ -406,49 +397,45 @@ ii.Class({
 
 			me.houseCodeDetailStore.fetch("userId:[user],unitId:" + parent.fin.appUI.unitId, me.houseCodeDetailsLoaded, me);
 		},
-		
+
 		getHouseCodeId: function() {
-			var args = ii.args(arguments,{});
 			var me = this;
 
 			return parent.fin.appUI.houseCodeId;
 		},
-		
+
 		getHouseCodeBrief: function() {
-			var args = ii.args(arguments,{});
 			var me = this;
 
 			return (parent.fin.appUI.houseCodeBrief ? parent.fin.appUI.houseCodeBrief : "");
 		},
 
 		houseCodeDetailsLoaded: function(me, activeId) {
-
 			ii.trace("HouseCode Master - HouseCode Loaded", ii.traceTypes.information, "Info");			
-			
+
 			$("#unitLoading").hide();
-           
+
 			if (me.houseCodeDetails[0] == undefined) {
 				alert("Error: Selected House code is not setup correctly. Please review.");
 				me.status = false;
 				return false;
 			}
-						
+				
 			parent.fin.appUI.houseCodeId = me.houseCodeDetails[0].id;	
 			if (me.houseCodes.length > 0) {
 				parent.fin.appUI.hirNode = me.houseCodes[0].hirNode;
 			}
 
-			if (me.houseCodeDetails[0].houseCodeTypeId == "1")
-				$("#TabUnionSetup").hide();
-			else {
-				if (!me.tabUnionSetupShow && !me.houseCodeWrite && !me.houseCodeReadOnly)
-					$("#TabUnionSetup").hide();
-				else
-					$("#TabUnionSetup").show();
-			}
-			
+//			if (me.houseCodeDetails[0].houseCodeTypeId == "1")
+//				$("#TabUnionSetup").hide();
+//			else {
+//				if (!me.tabUnionSetupShow && !me.houseCodeWrite && !me.houseCodeReadOnly)
+//					$("#TabUnionSetup").hide();
+//				else
+//					$("#TabUnionSetup").show();
+//			}
+
 			switch (fin.hcmMasterUi.activeFrameId) {
-				
 				case 0:	
 
 					$("iframe")[0].src = "/fin/hcm/houseCode/usr/markup.htm?unitId=" + parent.fin.appUI.unitId;
@@ -473,13 +460,13 @@ ii.Class({
 					$("iframe")[3].src = "/fin/hcm/payroll/usr/markup.htm?unitId=" + parent.fin.appUI.unitId;
 					me.payrollNeedUpdate = false;
 					break;
-					
+
 				case 4:
 
 					$("iframe")[4].src = "/fin/hcm/safety/usr/markup.htm?unitId=" + parent.fin.appUI.unitId;
 					me.safetyNeedUpdate = false;
 					break;
-					
+
 				case 5:
 
 					$("iframe")[5].src = "/fin/hcm/unionSetup/usr/markup.htm?unitId=" + parent.fin.appUI.unitId;
@@ -488,46 +475,43 @@ ii.Class({
 			}
 		},
 
-		controlKeyProcessor: function ii_ui_Layouts_ListItem_controlKeyProcessor() {
+		controlKeyProcessor: function() {
 			var args = ii.args(arguments, {
-				event: {type: Object} // The (key) event object
-			});			
+				event: {type: Object}
+			});
 			var event = args.event;
 			var me = event.data;
 			var processed = false;
-			
+
 			if (event.ctrlKey) {
-			
 				switch (event.keyCode) {
 					case 83: // Ctrl+S
 						me.actionSaveItem();
 						processed = true;
 						break;
-						
+
 					case 85: // Ctrl+U
 						me.actionUndoItem();
 						processed = true;
 						break;
 				}
 			}
-			
+
 			if (processed) {
 				return false;
 			}
 		},
 
 		actionUndoItem: function() {
-			var args = ii.args(arguments,{});
 			var me = this;
-			
+
 			if (!parent.fin.cmn.status.itemValid())
 				return;
-						
+					
 			me.houseCodeDetailsLoaded(me, 0);
 		},
 
 		actionSaveItem: function() {			
-			var args = ii.args(arguments,{});
 			var me = this;			
 			var houseCodeUIControls;
 			var statisticsUIControls;
@@ -536,13 +520,14 @@ ii.Class({
 			var safetyUIControls;
 			var unionUIControls;
 
-			if (me.houseCodeReadOnly || me.tabHouseCodeReadOnly) return;
-			
+			if (me.houseCodeReadOnly || me.tabHouseCodeReadOnly)
+				return;
+
 			if (me.status == false || parent.fin.appUI.houseCodeId <= 0) {
 				alert("House Code information not loaded properly. Please reload.");
 				return false;
 			}
-			
+
 			houseCodeUIControls = $("iframe")[0].contentWindow.fin.hcmHouseCodeUi;
 
 			me.houseCodeDetails[0].appSiteId = (houseCodeUIControls.site.indexSelected < 0 ? 0 : houseCodeUIControls.siteTypes[houseCodeUIControls.site.indexSelected].id);		
@@ -552,7 +537,7 @@ ii.Class({
 			me.houseCodeDetails[0].closedReason = houseCodeUIControls.closedReason.getValue();
 			me.houseCodeDetails[0].serviceTypeId = (houseCodeUIControls.primaryService.indexSelected < 0 ? 0 : houseCodeUIControls.jdeServices[houseCodeUIControls.primaryService.indexSelected].id);
 			me.houseCodeDetails[0].serviceLineId = (houseCodeUIControls.serviceLine.indexSelected <= 0 ? 0 : houseCodeUIControls.serviceLines[houseCodeUIControls.serviceLine.indexSelected].id);
-			me.houseCodeDetails[0].enforceLaborControl = true; //($(houseCodeUIControls.enforceLaborControl).attr("checked").val() == "true" ? true : false)
+			me.houseCodeDetails[0].enforceLaborControl = true;
 			me.houseCodeDetails[0].managerName = houseCodeUIControls.managerName.getValue();
 			me.houseCodeDetails[0].managerId = houseCodeUIControls.managerId;
 			me.houseCodeDetails[0].managerEmail = houseCodeUIControls.managerEmail.getValue();
@@ -573,7 +558,7 @@ ii.Class({
 			//Statistics
 			if ($("iframe")[1].contentWindow.fin != undefined && me.statisticsNeedUpdate == false) {
 				statisticsUIControls = $("iframe")[1].contentWindow.fin.hcmStatisticsUi;
-				
+
 				me.houseCodeDetails[0].managedEmployees = statisticsUIControls.managedEmployees.getValue();
 				me.houseCodeDetails[0].bedsLicensed = statisticsUIControls.bedsLicensed.getValue();
 				me.houseCodeDetails[0].patientDays = statisticsUIControls.patientDays.getValue();
@@ -613,7 +598,7 @@ ii.Class({
 			//Financial
 			if ($("iframe")[2].contentWindow.fin != undefined && me.financialNeedUpdate == false) {
 				financialUIControls = $("iframe")[2].contentWindow.fin.hcmFinancialUi;
-				
+
 				me.houseCodeDetails[0].shippingAddress1 = financialUIControls.shippingAddress1.getValue();
 				me.houseCodeDetails[0].shippingAddress2 = financialUIControls.shippingAddress2.getValue();
 				me.houseCodeDetails[0].shippingCity = financialUIControls.shippingCity.getValue();
@@ -649,21 +634,21 @@ ii.Class({
 			//Payroll			
 			if ($("iframe")[3].contentWindow.fin != undefined && me.payrollNeedUpdate == false) {
 				payrollUIControls = $("iframe")[3].contentWindow.fin.hcmPayrollCodeUi;
-				
+
 				me.houseCodeDetails[0].payrollProcessingLocationTypeId = (payrollUIControls.payrollProcessing.indexSelected <= 0 ? 0 : payrollUIControls.payrollProcessings[payrollUIControls.payrollProcessing.indexSelected].id);
 				me.houseCodeDetails[0].timeAndAttendance = payrollUIControls.payrollTimeAttendance;
 				me.houseCodeDetails[0].defaultLunchBreak = payrollUIControls.payrollDefaultLunchBreak;
-				
+
 				if (me.houseCodeDetails[0].defaultLunchBreak == 0) {
 					me.houseCodeDetails[0].defaultLunchBreak = payrollUIControls.breakOthers.getValue();
 				}
-				
+
 				me.houseCodeDetails[0].lunchBreakTrigger = payrollUIControls.payrollLunchBreakTrigger;
 
 				if (me.houseCodeDetails[0].lunchBreakTrigger == 0) {
 					me.houseCodeDetails[0].lunchBreakTrigger = payrollUIControls.breakTrigger.getValue();
 				}
-					
+
 				me.houseCodeDetails[0].houseCodeTypeId = payrollUIControls.payrollHouseCodeType;
 				me.houseCodeDetails[0].roundingTimePeriod = payrollUIControls.payrollRoundingTimePeriod;
 				me.houseCodeDetails[0].ePaySite = payrollUIControls.ePaySiteSelect;
@@ -673,7 +658,7 @@ ii.Class({
 				me.houseCodeDetails[0].pbjReporting = payrollUIControls.payrollPBJReporting;
 				me.houseCodeDetails[0].facilityId = payrollUIControls.facilityId.getValue();
 			}
-			
+
 			//Safety
 			if ($("iframe")[4].contentWindow.fin != undefined && me.safetyNeedUpdate == false) {
 				safetyUIControls = $("iframe")[4].contentWindow.fin.hcmSafetyUi;
@@ -690,18 +675,18 @@ ii.Class({
 				alert("[JDE Company] is a required field. Please select it on HouseCode Tab.");	
 				return;
 			}
-						
+
 			if (me.houseCodeDetails[0].appSiteId == 0) {
 				alert("[Site] is a required field. Please select it on HouseCode Tab.");	
 				return;
 			}
-						
+
 			if (me.houseCodeDetails[0].startDate == "") {
 				alert("[Start Date] is required in order for TeamFin to recognize the House Code throughout the application. Please select it on HouseCode Tab.");
 				me.houseCodeDetails[0].startDate = "01/01/1900";
 				return;
 			}
-			
+
 			if (me.houseCodeDetails[0].serviceTypeId < 0) {
 				alert("[Primary Service] Provided is required for accurate reporting. Please select it on HouseCode Tab.");
 				return;
@@ -711,17 +696,17 @@ ii.Class({
 				alert("[Building Population] is invalid. Please enter numeric value on Statistics Tab.");
 				return false;
 			}
-			
+
 			if (me.houseCodeDetails[0].integrator && me.houseCodeDetails[0].integratorName == "") {
 				alert("[Integrator Name] is a required field. Please select it on Statistics Tab.");
 				return false;
 			}
-			
+
 			if (me.houseCodeDetails[0].remitToLocationId <= 0) {
 				alert("[Remit To] is a required field. Please select it on Financial Tab.");
 				return false;
 			}
-			
+
 			if (me.houseCodeDetails[0].contractTypeId <= 0) {
 				alert("[Contract Type] is a required field. Please select it on Financial Tab.");
 				return false;
@@ -746,22 +731,22 @@ ii.Class({
 				alert("[Default Lunch Break] enter data for others option. Please select it on Payroll Tab.");
 				return false;
 			}
-			
+
 			if (me.houseCodeDetails[0].lunchBreakTrigger == "" && me.houseCodeDetails[0].timeAndAttendance == true) {
 				alert("[Lunch Break Trigger] enter data for others option. Please select it on Payroll Tab.");
 				return false;
 			}
-			
+
 			if (payrollUIControls != undefined && payrollUIControls.ceridianCompanyHourly.indexSelected == payrollUIControls.ceridianCompanySalaried.indexSelected) {
 				alert("[Ceridian Company Hourly] & [Ceridian Company Salaried] cannot be same. Please select other option on Payroll Tab.");
 				return false;
 			}
-			
+
 			if (me.houseCodeDetails[0].pbjReporting == true && me.houseCodeDetails[0].facilityId == "") {
 				alert("[Facility Id] is a required field. Please enter it on Payroll Tab.");
 				return false;
 			}
-			
+
 			if ($("iframe")[5].contentWindow.fin != undefined && me.unionSetupNeedUpdate == false) {
 				var unionSetupUIControls = $("iframe")[5].contentWindow.fin.hcmUnionSetupUi;
 
@@ -800,14 +785,14 @@ ii.Class({
 						alert("In order to continue, the errors on the Union Setup Tab must be corrected.");
 						return false;
 					}
-					
+
 					if (unionSetupUIControls.validationMessage != "") {
 						alert(unionSetupUIControls.validationMessage);
 						return false;
 					}
 				}
 			}
-			
+
 			var item = new fin.hcm.master.HouseCodeDetail(
 				parent.fin.appUI.houseCodeId
 				, parent.fin.appUI.hirNode
@@ -836,7 +821,7 @@ ii.Class({
 				, fin.cmn.text.mask.phone(me.houseCodeDetails[0].clientFax, true)
 				, me.houseCodeDetails[0].clientAssistantName
 				, me.houseCodeDetails[0].clientAssistantPhone
-				
+
 				//Statistics				
 				, me.houseCodeDetails[0].managedEmployees == "" ? 0 : parseInt(me.houseCodeDetails[0].managedEmployees)
 				, me.houseCodeDetails[0].bedsLicensed == "" ? 0 : parseInt(me.houseCodeDetails[0].bedsLicensed)
@@ -872,7 +857,7 @@ ii.Class({
 				, me.houseCodeDetails[0].edHours == "" ? 0 : parseFloat(me.houseCodeDetails[0].edHours)
 				, me.houseCodeDetails[0].groundsHours == "" ? 0 : parseFloat(me.houseCodeDetails[0].groundsHours)
 				, me.houseCodeDetails[0].otherLockInHours == "" ? 0 : parseFloat(me.houseCodeDetails[0].otherLockInHours)
-				
+
 				//Financial
 				, me.houseCodeDetails[0].shippingAddress1
 				, me.houseCodeDetails[0].shippingAddress2
@@ -906,7 +891,7 @@ ii.Class({
 				, me.houseCodeDetails[0].stateTaxPercent
 				, me.houseCodeDetails[0].localTaxPercent
 				, me.houseCodeDetails[0].financialEntityId				
-				
+
 				//Payroll
 				, parseInt(me.houseCodeDetails[0].payrollProcessingLocationTypeId)
 				, me.houseCodeDetails[0].timeAndAttendance
@@ -920,7 +905,7 @@ ii.Class({
 				, me.houseCodeDetails[0].ePayHours
 				, me.houseCodeDetails[0].pbjReporting
 				, me.houseCodeDetails[0].facilityId
-				
+
 				//Safety
 				, me.houseCodeDetails[0].incidentFrequencyRate
 				, me.houseCodeDetails[0].trir
@@ -929,14 +914,14 @@ ii.Class({
 				, me.houseCodeDetails[0].nearMisses
 				, me.houseCodeDetails[0].oshaRecordable
 			);
-				
+
 			var xml = me.saveXmlBuild(item);
-			
+
 			me.setStatus("Saving");
-			
+
 			$("#messageToUser").text("Saving");			
 			$("#pageLoading").fadeIn("slow");
-			
+
 			// Send the object back to the server as a transaction
 			me.transactionMonitor.commit({
 				transactionType: "itemUpdate",
@@ -944,19 +929,19 @@ ii.Class({
 				responseFunction: me.saveResponse,
 				referenceData: {me: me, item: item}
 			});
-			
+
 			return true;
 		},
-		
+
 		saveXmlBuild: function() {
 			var args = ii.args(arguments, {
 				item: {type: fin.hcm.master.HouseCodeDetail}
-			});			
+			});	
 			var me = this;
 			var clientId = 0;
 			var item = args.item;						
 			var xml = "";		
-			
+
 			xml += '<houseCode';
 			xml += ' id="' + item.id + '"';
 			xml += ' hirNode="' + item.hirNode + '"';
@@ -985,7 +970,7 @@ ii.Class({
 			xml += ' clientFax="' + item.clientFax + '"';
 			xml += ' clientAssistantName="' + ui.cmn.text.xml.encode(item.clientAssistantName) + '"';
 			xml += ' clientAssistantPhone="' + item.clientAssistantPhone + '"';
-			
+
 			//Statistics
 			xml += ' managedEmployees="' + item.managedEmployees + '"';
 			xml += ' bedsLicensed="' + item.bedsLicensed + '"';
@@ -1021,7 +1006,7 @@ ii.Class({
 			xml += ' edHours="' + item.edHours + '"';
 			xml += ' groundsHours="' + item.groundsHours + '"';
 			xml += ' otherLockInHours="' + item.otherLockInHours + '"';
-			
+
 			//Financial
 			xml += ' shippingAddress1="' + ui.cmn.text.xml.encode(item.shippingAddress1) + '"';
 			xml += ' shippingAddress2="' + ui.cmn.text.xml.encode(item.shippingAddress2) + '"';
@@ -1055,7 +1040,7 @@ ii.Class({
 			xml += ' stateTaxPercent="' + item.stateTaxPercent + '"';
 			xml += ' localTaxPercent="' + item.localTaxPercent + '"';
 			xml += ' financialEntityId="' + item.financialEntityId + '"';
-	
+
 			//Payrolls
 			xml += ' payrollProcessingLocationTypeId="' + item.payrollProcessingLocationTypeId + '"';
 			xml += ' timeAndAttendance="' + item.timeAndAttendance + '"';
@@ -1077,31 +1062,30 @@ ii.Class({
 			xml += ' reportedClaims="' + ui.cmn.text.xml.encode(item.reportedClaims) + '"';
 			xml += ' nearMisses="' + ui.cmn.text.xml.encode(item.nearMisses) + '"';
 			xml += ' oshaRecordable="' + ui.cmn.text.xml.encode(item.oshaRecordable) + '"';
-			
+
 			xml += ' clientId="' + ++clientId + '">';
 
 			if ($("iframe")[0].contentWindow.fin != undefined) {
-			
 				var houseCodeUIControls = $("iframe")[0].contentWindow.fin.hcmHouseCodeUi;
 				var serviceNames = "";
 				for (var index in houseCodeUIControls.serviceGroup.selectedItems) {
 					if (index >= 0) {
 						xml += '<houseCodeService id="0" houseCodeId="' + item.id + '" serviceTypeId="' + houseCodeUIControls.serviceGroup.selectedItems[index].id + '" clientId="' + ++clientId + '"/>';
-					}					
-				}				
-			}	
-			
+					}			
+				}		
+			}
+
 			//Payroll - Ceridian Company Options
 			if ($("iframe")[3].contentWindow.fin != undefined && me.payrollNeedUpdate == false) {
 				var payrollUIControls = $("iframe")[3].contentWindow.fin.hcmPayrollCodeUi;
-				
+
 				xml += '<houseCodePayrollCompany';
 				xml += ' id="0"';
 				xml += ' payrollCompanyId="' + (payrollUIControls.ceridianCompanySalaried.indexSelected >= 0 ? payrollUIControls.payPayrollCompanys[payrollUIControls.ceridianCompanySalaried.indexSelected].id : 0) + '"';
 				xml += ' houseCodeId="' + item.id.toString() + '"';
 				xml += ' salary="1"';					
 				xml += '/>';
-				
+
 				xml += '<houseCodePayrollCompany';
 				xml += ' id="0"';
 				xml += ' payrollCompanyId="' + (payrollUIControls.ceridianCompanyHourly.indexSelected >= 0 ? payrollUIControls.payPayrollCompanys[payrollUIControls.ceridianCompanyHourly.indexSelected].id : 0) + '"';
@@ -1109,7 +1093,7 @@ ii.Class({
 				xml += ' hourly="1"';
 				xml += '/>';					
 			}
-			
+
 			//Union Setup
 			if ($("iframe")[5].contentWindow.fin != undefined && me.unionSetupNeedUpdate == false) {
 				var unionSetupUIControls = $("iframe")[5].contentWindow.fin.hcmUnionSetupUi;
@@ -1177,7 +1161,7 @@ ii.Class({
 			}
 
 			xml += '</houseCode>';
-			
+
 			return xml;
 		},
 		
@@ -1193,13 +1177,13 @@ ii.Class({
 			var me = transaction.referenceData.me;
 			var item = transaction.referenceData.item;
 			var status = $(args.xmlNode).attr("status");
-			
+
 			if (status == "success") {
 				me.modified(false);	
 				if ($("iframe")[0].contentWindow.fin != undefined) {
 					$("iframe")[0].contentWindow.fin.hcmHouseCodeUi.reloadHouseCodeServices();
 				}
-				
+
 				$(args.xmlNode).find("*").each(function() {
 					switch (this.tagName) {
 						case "hcmHouseCodeUnionDeduction":
@@ -1217,7 +1201,7 @@ ii.Class({
 				me.setStatus("Error");
 				alert("[SAVE FAILURE] Error while updating House Code details: " + $(args.xmlNode).attr("message"));
 			}
-			
+
 			$("#pageLoading").fadeOut("slow");
 		}
 	}

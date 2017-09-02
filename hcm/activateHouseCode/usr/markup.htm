@@ -1,0 +1,410 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>Activate House Code</title>
+		<script type="text/javascript">
+			var globalContext = "/net/crothall/chimes/fin/hcm/act";
+			var js = document.createElement("script");
+			js.id = "loader";
+			js.type = "text/javascript";
+			js.src = "/fin/ii/framework/core/krn/sys/cycligent.js";
+			document.getElementsByTagName("head")[0].appendChild(js);
+		</script>
+	</head>
+	<!-- onload is necessary to overcome jQuery/IE7 $(document).ready bug when page loaded into an IFrame -->
+	<body id="appBody">
+		<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: white;">
+			<table width="100%" height="100%">
+				<tr>
+					<td align="center">
+						<img id="imgLoading" src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+						<div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;">Loading</div>    
+		        	</td>
+				</tr>
+			</table>
+		</div>
+		<div style="clear:both;"></div>
+		<div id="itemStatusDiv">
+			<div id="itemStatusImage" class="itemStatusImage"></div>
+			<div id="itemModifiedImage" class="itemModifiedImage"></div>
+			<div id="itemStatusText">Loading, please wait...</div>
+		</div>
+		<div style="clear:both;"></div>
+		<div class="pageBody">
+			<div class="leftContainer">
+				<div class="contentArea">
+					<div class="header">House Codes</div>
+					<div class="body">
+						<div id="HouseCodeGrid"></div>
+						<div style="clear:both;"></div>
+					</div>
+				</div>
+			</div>
+			<div class="rightContainer">
+				<div class="contentArea">
+					<div class="header">House Code Details</div>
+					<div id="houseCodeDetailContainer" class="body">
+						<div class="subHeader">Hierarchy Information:</div>
+						<div class="innerLeftContainer">
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>SVP:
+								</div>
+								<div class="inputTextArea">
+									<div id="SVP"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>DVP:
+								</div>
+								<div class="inputTextArea">
+									<div id="DVP"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>RVP:
+								</div>
+								<div class="inputTextArea">
+									<div id="RVP"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>SRM:
+								</div>
+								<div class="inputTextArea">
+									<div id="SRM"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>RM:
+								</div>
+								<div class="inputTextArea">
+									<div id="RM"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>AM:
+								</div>
+								<div class="inputTextArea">
+									<div id="AM"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+						</div>
+						<div class="innerRightContainer">
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="nonRequiredFieldIndicator"></span>SVP Brief:
+								</div>
+								<div class="inputTextArea">
+									<div id="SVPBrief"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="nonRequiredFieldIndicator"></span>DVP Brief:
+								</div>
+								<div class="inputTextArea">
+									<div id="DVPBrief"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="nonRequiredFieldIndicator"></span>RVP Brief:
+								</div>
+								<div class="inputTextArea">
+									<div id="RVPBrief"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="nonRequiredFieldIndicator"></span>SRM Brief:
+								</div>
+								<div class="inputTextArea">
+									<div id="SRMBrief"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="nonRequiredFieldIndicator"></span>RM Brief:
+								</div>
+								<div class="inputTextArea">
+									<div id="RMBrief"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="nonRequiredFieldIndicator"></span>AM Brief:
+								</div>
+								<div class="inputTextArea">
+									<div id="AMBrief"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+						</div>
+						<div class="subHeader" style="clear:both;">Site Information:</div>
+						<div class="innerLeftContainer">
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>Site Name:
+								</div>
+								<div class="inputTextArea">
+									<div id="SiteName"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>Address 1:
+								</div>
+								<div class="inputTextArea">
+									<div id="Address1"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>Zip Code:
+								</div>
+								<div class="inputTextArea">
+									<div id="ZipCode"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>State:
+								</div>
+								<div class="inputTextArea">
+									<div id="State"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>Industry Type:
+								</div>
+								<div class="inputTextArea">
+									<div id="IndustryType"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="nonRequiredFieldIndicator">GPO:</span>
+								</div>
+								<div class="inputTextArea">
+									<div id="GPO"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+						</div>
+						<div class="innerRightContainer">
+							<div id="TableEditArea">
+								<div class="labelTextArea"></div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="nonRequiredFieldIndicator"></span>Address 2:
+								</div>
+								<div class="inputTextArea">
+									<div id="Address2"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>City:
+								</div>
+								<div class="inputTextArea">
+									<div id="City"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div class="labelTextArea"></div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>Primary Business:
+								</div>
+								<div class="inputTextArea">
+									<div id="PrimaryBusiness"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="nonRequiredFieldIndicator"></span>Specify GPO:
+								</div>
+								<div class="inputTextArea">
+									<div id="SpecifyGPO"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+						</div>
+						<div class="subHeader" style="clear:both;">Services Provided:</div>
+						<div class="innerLeftContainer">
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>Primary Service Provided:
+								</div>
+								<div class="inputTextArea">
+									<div id="PrimaryServiceProvided"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="nonRequiredFieldIndicator">Service Line:</span>
+								</div>
+								<div class="inputTextArea">
+									<div id="ServiceLine"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+						</div>
+						<div class="innerRightContainer">
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="nonRequiredFieldIndicator">Additional Services:</span>
+								</div>
+								<div class="inputTextArea">
+									<select id="OtherServicesProvided" name="OtherServicesProvided" multiple="multiple" tabindex="24"></select>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+						</div>
+						<div class="subHeader" style="clear:both;">Payroll Information:</div>
+						<div class="innerLeftContainer">
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>House Code Type:
+								</div>
+								<div class="inputTextArea">
+									<div id="HouseCodeType"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+						</div>
+						<div class="innerRightContainer">
+							<div id="TableEditArea">
+								<div class="labelTextArea"></div>
+								<div class="inputTextArea"></div>
+								<div style="clear:both;"></div>
+							</div>
+						</div>
+						<div class="subHeader" style="clear:both;">Financial Information:</div>
+						<div class="innerLeftContainer">
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>Remit To:
+								</div>
+								<div class="inputTextArea">
+									<div id="RemitTo"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="nonRequiredFieldIndicator">Billing Cycle Frequency:</span>
+								</div>
+								<div class="inputTextArea">
+									<div id="BillingCycleFrequency"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+						</div>
+						<div class="innerRightContainer">
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>Contract Type:
+								</div>
+								<div class="inputTextArea">
+									<div id="ContractType"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="nonRequiredFieldIndicator">Financial Entity:</span>
+								</div>
+								<div class="inputTextArea">
+									<div id="FinancialEntity"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+						</div>
+						<div class="subHeader" style="clear:both;">Statistic Information:</div>
+						<div class="innerLeftContainer">
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="nonRequiredFieldIndicator">Net Cleanable Square Footage:</span>
+								</div>
+								<div class="inputTextArea">
+									<div id="NetCleanable"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="nonRequiredFieldIndicator">Contact:</span>
+								</div>
+								<div class="inputTextArea">
+									<div id="Contact"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+						</div>
+						<div class="innerRightContainer">
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="nonRequiredFieldIndicator">Licensed Beds:</span>
+								</div>
+								<div class="inputTextArea">
+									<div id="LicensedBeds"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="nonRequiredFieldIndicator">EST # of Hourly Employees:</span>
+								</div>
+								<div class="inputTextArea">
+									<div id="HourlyEmployees"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+						</div>
+					</div>
+					<div class="footer">
+                        <div id="AnchorSave"></div>
+                        <div id="AnchorUndo"></div>
+                        <div style="clear:both;"></div>
+                    </div>
+				</div>
+			</div>
+		</div>
+		<div id="backgroundPopup"></div>
+	    <div id="iiInputValidationMaster"></div>
+	</body>
+</html>

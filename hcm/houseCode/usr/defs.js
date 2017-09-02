@@ -7,6 +7,12 @@ ii.init.register( function() {
 
 ii.init.register( function() {
 
+	fin.hcm.houseCode.countryTypeArgs = {
+		id: {type: Number}
+		, brief: {type: String}
+		, name: {type: String}
+	};
+
 	fin.hcm.houseCode.siteTypeArgs = {
 		id: {type: Number}
 		, number: {type: Number}
@@ -58,6 +64,16 @@ ii.init.register( function() {
 	};
 
 }, 2);
+
+ii.Class({
+	Name: "fin.hcm.houseCode.CountryType",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.hcm.houseCode.countryTypeArgs);
+			$.extend(this, args);
+		}
+	}
+});
 
 ii.Class({
 	Name: "fin.hcm.houseCode.SiteType",

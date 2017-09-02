@@ -6,7 +6,7 @@ ii.init.register( function() {
 }, 1);
 
 ii.init.register( function() {
-	
+
 	fin.hcm.master.hirNodeArgs = {
 		id: {type: Number}
 		, nodeParentId: {type: Number}
@@ -26,7 +26,7 @@ ii.init.register( function() {
 		, brief:{type: String, required: false, defaultValue: ""}
 		, hirNode: {type: Number}
 	};
-	
+
 	fin.hcm.master.houseCodeDetailArgs = {
 		id: {type: Number}
 		, hirNode: {type: Number, defaultValue: 0}
@@ -138,7 +138,23 @@ ii.init.register( function() {
 		, lostDays: {type: String, required: false, defaultValue: ""}
 		, reportedClaims: {type: String, required: false, defaultValue: ""}
 		, nearMisses: {type: String, required: false, defaultValue: ""}
-		, oshaRecordable: {type: String, required: false, defaultValue: ""}		
+		, oshaRecordable: {type: String, required: false, defaultValue: ""}
+		, controllingArea: {type: String, required: false, defaultValue: ""}
+		, companyCode: {type: String, required: false, defaultValue: ""}
+		, businessArea: {type: String, required: false, defaultValue: ""}
+		, costCenterCategory: {type: String, required: false, defaultValue: ""}
+		, responsiblePerson: {type: String, required: false, defaultValue: ""}
+		, jurisdictionCode: {type: String, required: false, defaultValue: ""}
+		, profitCenter: {type: String, required: false, defaultValue: ""}
+		, departmentName: {type: String, required: false, defaultValue: ""}
+		, country: {type: Number, required: false, defaultValue: 0}
+		, name1: {type: String, required: false, defaultValue: ""}
+		, name2: {type: String, required: false, defaultValue: ""}
+		, name3: {type: String, required: false, defaultValue: ""}
+		, name4: {type: String, required: false, defaultValue: ""}
+		, district: {type: String, required: false, defaultValue: ""}
+		, poBoxZipCode: {type: String, required: false, defaultValue: ""}
+		, costCenterShortName: {type: String, required: false, defaultValue: ""}
 	};
 }, 2);
 

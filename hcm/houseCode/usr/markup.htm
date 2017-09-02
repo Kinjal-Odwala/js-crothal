@@ -16,62 +16,62 @@
 	<!-- onload is necessary to overcome jQuery/IE7 $(document).ready bug when page loaded into an IFrame -->
 	<body id="appBody" onload="iiForceBodyReady = true;">
 		<div id="pageBody" class="pageBody" style="display:none;">
-			<div class="houseCodeAreasContainerLeft">
+			<div class="leftContainer">
 				<div class="body">
-					<div class="TableEditArea">
-						<div class="LabelhouseCodeAreaLeft">
+					<div class="tableEditArea">
+						<div class="labelTextArea">
 							<span class="requiredFieldIndicator">&#149;</span>JDE Company:
 						</div>
-						<div class="InputTextAreaRight">
+						<div class="inputTextArea">
 							<div id="JDECompanys"></div>
 						</div>
 						<div style="clear:both;"></div>
 					</div>
-					<div class="TableEditArea">
-						<div class="LabelhouseCodeAreaLeft">
+					<div class="tableEditArea">
+						<div class="labelTextArea">
 							<span class="requiredFieldIndicator">&#149;</span>House Code:
 						</div>
-						<div class="InputTextAreaRight">
+						<div class="inputTextArea">
 							<div id="HouseCodeNumber"></div>
 						</div>
 						<div style="clear:both;"></div>
 					</div>
-					<div class="TableEditArea">
-						<div class="LabelhouseCodeAreaLeft">
+					<div class="tableEditArea">
+						<div class="labelTextArea">
 							<span class="nonRequiredFieldIndicator">Closed Date:</span>
 						</div>
-						<div class="InputTextAreaRight">
+						<div class="inputTextArea">
 							<div id="ClosedDate"></div>
 						</div>
 						<div style="clear:both;"></div>
 					</div>
 				</div>
 			</div>
-			<div class="houseCodeAreasContainerRight">
+			<div class="rightContainer">
 				<div class="body">
-					<div class="TableEditArea">
-						<div class="LabelhouseCodeAreaLeft">
+					<div class="tableEditArea">
+						<div class="labelTextArea">
 							<span class="requiredFieldIndicator">&#149;</span>Site:
 						</div>
-						<div class="InputTextAreaSite">
+						<div class="inputTextAreaLarge">
 							<div id="Sites"></div>
 						</div>
 						<div style="clear:both;"></div>
 					</div>
-					<div class="TableEditArea">
-						<div class="LabelhouseCodeAreaLeft">
+					<div class="tableEditArea">
+						<div class="labelTextArea">
 							<span class="requiredFieldIndicator">&#149;</span>Start Date:
 						</div>
-						<div class="InputTextAreaRight">
+						<div class="inputTextArea">
 							<div id="StartDate"></div>
 						</div>
 						<div style="clear:both;"></div>
 					</div>
-					<div class="TableEditArea">
-                        <div class="LabelhouseCodeAreaLeft">
+					<div class="tableEditArea">
+                        <div class="labelTextArea">
 							<span class="nonRequiredFieldIndicator">Closed Reason:</span>
 						</div>
-						<div class="InputTextAreaRight">
+						<div class="inputTextArea">
                         	<div id="ClosedReason"></div>
 						</div>
 					</div>
@@ -83,56 +83,42 @@
 	        	<div class="header">Services Provided</div>
         	</div>
 			<div style="height:10px;"></div>			
-			<div class="houseCodeAreasContainerLeft">
+			<div class="leftContainer">
 				<div class="body">
-					<div class="TableEditArea">
-						<div class="LabelhouseCodeAreaLeft">
+					<div class="tableEditArea">
+						<div class="labelTextArea">
 							<span class="requiredFieldIndicator">&#149;</span>Primary Service Provided:
 						</div>
-						<div class="InputTextAreaRight">
+						<div class="inputTextArea">
 							<div id="PrimaryServiceProvided"></div>
 						</div>
 						<div style="clear:both;"></div>
 					</div>
-					<div class="TableEditArea">
-						<div class="LabelhouseCodeAreaLeft" style="display:none">
-							<span class="nonRequiredFieldIndicator">Enforce Labor Control:</span>
-						</div>
-						<div class="InputTextAreaRight" style="display:none">
-							<div id="LabelRadioEnforceLaborControl">
-								<div id="houseCodeYesRadioButtonLeft">
-									<input id="EnforceLaborControlYes" name="EnforceLaborControl" tabindex="6" type="radio" value="true"/>
-								</div>
-								<div id="houseCodeYesRadioTextLeft">Yes</div>
-								<div id="houseCodeNoRadioButtonRight">
-									<input id="EnforceLaborControlNo" name="EnforceLaborControl" tabindex="7" type="radio" checked="true" value="false"/>
-								</div>
-								<div id="houseCodeNoRadioTextRight">No</div>
-							</div>	
-						</div>
-						<div style="clear:both;"></div>
-					</div>
-					<div class="TableEditArea">
-						<div class="LabelhouseCodeAreaLeft">
+					<div class="tableEditArea">
+						<div class="labelTextArea">
 							<span class="nonRequiredFieldIndicator">Service Line:</span>
 						</div>
-						<div class="InputTextAreaRight">
+						<div class="inputTextArea">
 							<div id="ServiceLine"></div>
 						</div>
 						<div style="clear:both;"></div>
-					</div>					
+					</div>
+					<div class="tableEditArea">
+						<div class="labelTextArea"></div>
+						<div class="inputTextArea"></div>
+						<div style="clear:both;"></div>
+					</div>				
 				</div>
 			</div>			
-			<div class="houseCodeAreasContainerRight">
+			<div class="rightContainer">
 				<div class="body">					
-					<div class="TableEditArea">
-						<div class="LabelhouseCodeAreaLeft">
+					<div class="tableEditArea">
+						<div class="labelTextArea">
 							<span class="nonRequiredFieldIndicator">Additional Services:</span>
 						</div>
-						<div id="AddServicevContainer">
-							<div id="AdditionalServiceContainer" class="CheckBoxContainer">
-							</div>
-							<div id="CheckBoxTextDropImage" class="CheckBoxDropDown"></div>
+						<div id="ServiceContainer">
+							<div id="AdditionalServiceContainer" class="checkBoxContainer"></div>
+							<div id="CheckBoxTextDropImage" class="checkBoxDropDown"></div>
 						</div>
 						<div id="ServiceGroup"></div>
 						<div style="clear:both;"></div>
@@ -144,80 +130,80 @@
 	        	<div class="header">Manager Information</div>
         	</div>
 			<div style="height:10px;"></div>
-			<div class="houseCodeAreasContainerLeft">
+			<div class="leftContainer">
 				<div class="body">
-					<div class="TableEditArea">
-						<div class="LabelhouseCodeAreaLeft">
+					<div class="tableEditArea">
+						<div class="labelTextArea">
 							<span class="nonRequiredFieldIndicator">Manager Name:</span>
 						</div>
-						<div class="InputTextAreaRight">
+						<div class="inputTextArea">
 							<div id="ManagerName"></div>
 						</div>
 						<div style="clear:both;"></div>
 					</div>
-					<div class="TableEditArea">
-						<div class="LabelhouseCodeAreaLeft">
+					<div class="tableEditArea">
+						<div class="labelTextArea">
 							<span class="nonRequiredFieldIndicator">Phone:</span>
 						</div>
-						<div class="InputTextAreaRight">
+						<div class="inputTextArea">
 							<div id="ManagerPhone"></div>
 						</div>
 						<div style="clear:both;"></div>
 					</div>
-					<div class="TableEditArea">
-						<div class="LabelhouseCodeAreaLeft">
+					<div class="tableEditArea">
+						<div class="labelTextArea">
 							<span class="nonRequiredFieldIndicator">Cell Phone Number:</span>
 						</div>
-						<div class="InputTextAreaRight">
+						<div class="inputTextArea">
 							<div id="ManagerCellPhone"></div>
 						</div>
 						<div style="clear:both;"></div>
 					</div>
-					<div class="TableEditArea">
-						<div class="LabelhouseCodeAreaLeft">
+					<div class="tableEditArea">
+						<div class="labelTextArea">
 							<span class="nonRequiredFieldIndicator">Assistant Name:</span>
 						</div>
-						<div class="InputTextAreaRight">
+						<div class="inputTextArea">
 							<div id="ManagerAssistantName"></div>
 						</div>
 						<div style="clear:both;"></div>
 					</div>
 				</div>
 			</div>
-			<div class="houseCodeAreasContainerRight">
+			<div class="rightContainer">
 				<div class="body">
-					<div class="TableEditArea">
-						<div class="LabelhouseCodeAreaLeft">
+					<div class="tableEditArea">
+						<div class="labelTextArea">
 							<span class="nonRequiredFieldIndicator">Email:</span>
 						</div>
-						<div class="InputTextAreaRight">
+						<div class="inputTextArea">
 							<div id="ManagerEmail"></div>
 						</div>
 						<div style="clear:both;"></div>
 					</div>
-					<div class="TableEditArea">
-						<div class="LabelhouseCodeAreaLeft">
+					<div class="tableEditArea">
+						<div class="labelTextArea">
 							<span class="nonRequiredFieldIndicator">Fax:</span>
 						</div>
-						<div class="InputTextAreaRight">
+						<div class="inputTextArea">
 							<div id="ManagerFax"></div>
 						</div>
 						<div style="clear:both;"></div>
 					</div>
-					<div class="TableEditArea">
-						<div class="LabelhouseCodeAreaLeft">
+					<div class="tableEditArea">
+						<div class="labelTextArea">
 							<span class="nonRequiredFieldIndicator">Pager Number:</span>
 						</div>
-						<div class="InputTextAreaRight">
+						<div class="inputTextArea">
 							<div id="ManagerPager"></div>
 						</div>
 						<div style="clear:both;"></div>
 					</div>
-					<div class="TableEditArea">
-						<div class="LabelhouseCodeAreaLeft">
+					<div class="tableEditArea">
+						<div class="labelTextArea">
 							<span class="nonRequiredFieldIndicator">Assistant Phone:</span>
 						</div>
-						<div class="InputTextAreaRight">
+						<div class="inputTextArea">
 							<div id="ManagerAssistantPhone"></div>
 						</div>
 						<div style="clear:both;"></div>
@@ -229,77 +215,239 @@
 	        	<div class="header">Client Information</div>
         	</div>
 			<div style="height:10px;"></div>			
-			<div class="houseCodeAreasContainerLeft">
+			<div class="leftContainer">
 				<div class="body">
-					<div class="TableEditArea">
-						<div class="LabelhouseCodeAreaLeft">
+					<div class="tableEditArea">
+						<div class="labelTextArea">
 							<span class="nonRequiredFieldIndicator">First Name:</span>
 						</div>
-						<div class="InputTextAreaRight">
+						<div class="inputTextArea">
 							<div id="ClientFirstName"></div>
 						</div>
 						<div style="clear:both;"></div>
 					</div>
-					<div class="TableEditArea">
-						<div class="LabelhouseCodeAreaLeft">
+					<div class="tableEditArea">
+						<div class="labelTextArea">
 							<span class="nonRequiredFieldIndicator">Title:</span>
 						</div>
-						<div class="InputTextAreaRight">
+						<div class="inputTextArea">
 							<div id="ClientTitle"></div>
 						</div>
 						<div style="clear:both;"></div>
 					</div>
-					<div class="TableEditArea">
-						<div class="LabelhouseCodeAreaLeft">
+					<div class="tableEditArea">
+						<div class="labelTextArea">
 							<span class="nonRequiredFieldIndicator">Phone:</span>
 						</div>
-						<div class="InputTextAreaRight">
+						<div class="inputTextArea">
 							<div id="ClientPhone"></div>
 						</div>
 						<div style="clear:both;"></div>
 					</div>
-					<div class="TableEditArea">
-						<div class="LabelhouseCodeAreaLeft">
+					<div class="tableEditArea">
+						<div class="labelTextArea">
 							<span class="nonRequiredFieldIndicator">Assistant Name:</span>
 						</div>
-						<div class="InputTextAreaRight">
+						<div class="inputTextArea">
 							<div id="ClientAssistantName"></div>
 						</div>
 						<div style="clear:both;"></div>
 					</div>
 				</div>
 			</div>
-			<div class="houseCodeAreasContainerRight">
+			<div class="rightContainer">
 				<div class="body">
-					<div class="TableEditArea">
-						<div class="LabelhouseCodeAreaLeft">
+					<div class="tableEditArea">
+						<div class="labelTextArea">
 							<span class="nonRequiredFieldIndicator">Last Name:</span>
 						</div>
-						<div class="InputTextAreaRight">
+						<div class="inputTextArea">
 							<div id="ClientLastName"></div>
 						</div>
 						<div style="clear:both;"></div>
 					</div>
-					<div class="TableEditArea">
-						<div class="LabelhouseCodeAreaLeft"></div>
-						<div class="InputTextAreaRight"></div>
+					<div class="tableEditArea">
+						<div class="labelTextArea"></div>
+						<div class="inputTextArea"></div>
 						<div style="clear:both;"></div>
 					</div>
-					<div class="TableEditArea">
-						<div class="LabelhouseCodeAreaLeft">
+					<div class="tableEditArea">
+						<div class="labelTextArea">
 							<span class="nonRequiredFieldIndicator">Fax:</span>
 						</div>
-						<div class="InputTextAreaRight">
+						<div class="inputTextArea">
 							<div id="ClientFax"></div>
 						</div>
 						<div style="clear:both;"></div>
 					</div>
-					<div class="TableEditArea">
-						<div class="LabelhouseCodeAreaLeft">
+					<div class="tableEditArea">
+						<div class="labelTextArea">
 							<span class="nonRequiredFieldIndicator">Assistant Phone:</span>
 						</div>
-						<div class="InputTextAreaRight">
+						<div class="inputTextArea">
 							<div id="ClientAssistantPhone"></div>
+						</div>
+						<div style="clear:both;"></div>
+					</div>
+				</div>
+			</div>
+			<div style="clear:both;"></div>
+			<div class="contentArea">
+	        	<div class="header">Other Information</div>
+        	</div>
+			<div style="height:10px;"></div>
+			<div class="leftContainer">
+				<div class="body">
+					<div class="tableEditArea">
+						<div class="labelTextArea">
+							<span class="nonRequiredFieldIndicator">Controlling Area:</span>
+						</div>
+						<div class="inputTextArea">
+							<div id="ControllingArea"></div>
+						</div>
+						<div style="clear:both;"></div>
+					</div>
+					<div class="tableEditArea">
+						<div class="labelTextArea">
+							<span class="nonRequiredFieldIndicator">Business Area:</span>
+						</div>
+						<div class="inputTextArea">
+							<div id="BusinessArea"></div>
+						</div>
+						<div style="clear:both;"></div>
+					</div>
+					<div class="tableEditArea">
+						<div class="labelTextArea">
+							<span class="nonRequiredFieldIndicator">Responsible Person:</span>
+						</div>
+						<div class="inputTextArea">
+							<div id="ResponsiblePerson"></div>
+						</div>
+						<div style="clear:both;"></div>
+					</div>
+					<div class="tableEditArea">
+						<div class="labelTextArea">
+							<span class="nonRequiredFieldIndicator">Profit Center:</span>
+						</div>
+						<div class="inputTextArea">
+							<div id="ProfitCenter"></div>
+						</div>
+						<div style="clear:both;"></div>
+					</div>
+					<div class="tableEditArea">
+						<div class="labelTextArea">
+							<span class="nonRequiredFieldIndicator">Country:</span>
+						</div>
+						<div class="inputTextArea">
+							<div id="Country"></div>
+						</div>
+						<div style="clear:both;"></div>
+					</div>
+					<div class="tableEditArea">
+						<div class="labelTextArea">
+							<span class="nonRequiredFieldIndicator">Name 1:</span>
+						</div>
+						<div class="inputTextArea">
+							<div id="Name1"></div>
+						</div>
+						<div style="clear:both;"></div>
+					</div>
+					<div class="tableEditArea">
+						<div class="labelTextArea">
+							<span class="nonRequiredFieldIndicator">Name 3:</span>
+						</div>
+						<div class="inputTextArea">
+							<div id="Name3"></div>
+						</div>
+						<div style="clear:both;"></div>
+					</div>
+					<div class="tableEditArea">
+						<div class="labelTextArea">
+							<span class="nonRequiredFieldIndicator">District:</span>
+						</div>
+						<div class="inputTextArea">
+							<div id="District"></div>
+						</div>
+						<div style="clear:both;"></div>
+					</div>
+					<div class="tableEditArea">
+						<div class="labelTextArea">
+							<span class="nonRequiredFieldIndicator">Cost Center Short Name:</span>
+						</div>
+						<div class="inputTextArea">
+							<div id="CostCenterShortName"></div>
+						</div>
+						<div style="clear:both;"></div>
+					</div>
+				</div>
+			</div>
+			<div class="rightContainer">
+				<div class="body">
+					<div class="tableEditArea">
+						<div class="labelTextArea">
+							<span class="nonRequiredFieldIndicator">Company Code:</span>
+						</div>
+						<div class="inputTextArea">
+							<div id="CompanyCode"></div>
+						</div>
+						<div style="clear:both;"></div>
+					</div>
+					<div class="tableEditArea">
+						<div class="labelTextArea">
+							<span class="nonRequiredFieldIndicator">Cost Center Category:</span>
+						</div>
+						<div class="inputTextArea">
+							<div id="CostCenterCategory"></div>
+						</div>
+						<div style="clear:both;"></div>
+					</div>
+					<div class="tableEditArea">
+						<div class="labelTextArea">
+							<span class="nonRequiredFieldIndicator">Jurisdiction Code:</span>
+						</div>
+						<div class="inputTextArea">
+							<div id="JurisdictionCode"></div>
+						</div>
+						<div style="clear:both;"></div>
+					</div>
+					<div class="tableEditArea">
+						<div class="labelTextArea">
+							<span class="nonRequiredFieldIndicator">DepartmentName:</span>
+						</div>
+						<div class="inputTextArea">
+							<div id="DepartmentName"></div>
+						</div>
+						<div style="clear:both;"></div>
+					</div>
+					<div class="tableEditArea">
+						<div class="labelTextArea"></div>
+						<div class="inputTextArea"></div>
+						<div style="clear:both;"></div>
+					</div>
+					<div class="tableEditArea">
+						<div class="labelTextArea">
+							<span class="nonRequiredFieldIndicator">Name 2:</span>
+						</div>
+						<div class="inputTextArea">
+							<div id="Name2"></div>
+						</div>
+						<div style="clear:both;"></div>
+					</div>
+					<div class="tableEditArea">
+						<div class="labelTextArea">
+							<span class="nonRequiredFieldIndicator">Name 4:</span>
+						</div>
+						<div class="inputTextArea">
+							<div id="Name4"></div>
+						</div>
+						<div style="clear:both;"></div>
+					</div>
+					<div class="tableEditArea">
+						<div class="labelTextArea">
+							<span class="nonRequiredFieldIndicator">POBox Zip Code:</span>
+						</div>
+						<div class="inputTextArea">
+							<div id="POBoxZipCode"></div>
 						</div>
 						<div style="clear:both;"></div>
 					</div>

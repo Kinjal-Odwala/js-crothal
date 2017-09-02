@@ -88,12 +88,12 @@ ii.Class({
 			me.ssStateShow = me.isCtrlVisible(me.authorizePath + "\\TabFinancial\\SectionShipping\\State", me.sectionShippingShow, (me.sectionShippingWrite || me.sectionShippingReadOnly));
 			me.ssPostalCodeShow = me.isCtrlVisible(me.authorizePath + "\\TabFinancial\\SectionShipping\\PostalCode", me.sectionShippingShow, (me.sectionShippingWrite || me.sectionShippingReadOnly));
 			
-			me.ssCompanyReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabFinancial\\SectionShipping\\Company\\Read", me.sectionShippingWrite, me.sectionShippingReadOnly);
-			me.ssAddress1ReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabFinancial\\SectionShipping\\Address1\\Read", me.sectionShippingWrite, me.sectionShippingReadOnly);
-			me.ssAddress2ReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabFinancial\\SectionShipping\\Address2\\Read", me.sectionShippingWrite, me.sectionShippingReadOnly);
-			me.ssCityReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabFinancial\\SectionShipping\\City\\Read", me.sectionShippingWrite, me.sectionShippingReadOnly);
-			me.ssStateReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabFinancial\\SectionShipping\\State\\Read", me.sectionShippingWrite, me.sectionShippingReadOnly);
-			me.ssPostalCodeReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabFinancial\\SectionShipping\\PostalCode\\Read", me.sectionShippingWrite, me.sectionShippingReadOnly);
+			me.ssCompanyReadOnly = true; //me.isCtrlReadOnly(me.authorizePath + "\\TabFinancial\\SectionShipping\\Company\\Read", me.sectionShippingWrite, me.sectionShippingReadOnly);
+			me.ssAddress1ReadOnly = true; // me.isCtrlReadOnly(me.authorizePath + "\\TabFinancial\\SectionShipping\\Address1\\Read", me.sectionShippingWrite, me.sectionShippingReadOnly);
+			me.ssAddress2ReadOnly = true; //me.isCtrlReadOnly(me.authorizePath + "\\TabFinancial\\SectionShipping\\Address2\\Read", me.sectionShippingWrite, me.sectionShippingReadOnly);
+			me.ssCityReadOnly = true; //me.isCtrlReadOnly(me.authorizePath + "\\TabFinancial\\SectionShipping\\City\\Read", me.sectionShippingWrite, me.sectionShippingReadOnly);
+			me.ssStateReadOnly = true; //me.isCtrlReadOnly(me.authorizePath + "\\TabFinancial\\SectionShipping\\State\\Read", me.sectionShippingWrite, me.sectionShippingReadOnly);
+			me.ssPostalCodeReadOnly = true; //me.isCtrlReadOnly(me.authorizePath + "\\TabFinancial\\SectionShipping\\PostalCode\\Read", me.sectionShippingWrite, me.sectionShippingReadOnly);
 			
 			//si=SectionInvoices
 			me.siRemitToShow = me.isCtrlVisible(me.authorizePath + "\\TabFinancial\\SectionInvoices\\RemitTo", me.sectionInvoicesShow, (me.sectionInvoicesWrite || me.sectionInvoicesReadOnly));
