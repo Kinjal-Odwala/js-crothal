@@ -156,6 +156,7 @@
     table-layout: fixed;
 }
 
+
 .table th, table td { 
     overflow: hidden;
     table-layout: fixed;
@@ -173,6 +174,23 @@
 
 .table tbody tr {
     width: 100%;
+}
+
+.disabled {
+  background-color: rgba(0,0,0,.175);
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+.ptoDays {
+	color: blue;
+	cursor: pointer;
+	text-decoration: underline;
+}
+
+.ptoDays:hover {	
+	color: red;
+	text-decoration: underline;
 }
 
 #planModal {
@@ -197,7 +215,7 @@ ul {
 }
 li {
     float: left;
-    border-bottom-width: 0;
+    border-bottom-width: 0px;
     margin: 1px 1px 0px 1px;
     padding: 2px 2px 0px 2px;
     height: 33px;
@@ -238,15 +256,5 @@ li {
 }
 
 #multiselectBtn {
-    width: 238px;
+    width: 240px;
 }
-
-
-
-
-
-
-
-
-
-
