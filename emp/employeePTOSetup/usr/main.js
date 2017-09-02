@@ -650,7 +650,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
             $scope.ptoForm.planTypeMinHours.$setValidity("required", false);
             if ($scope.ptoPlanType.FullTime && $scope.ptoPlanType.PartTime) {
                 $scope.ptoPlanType.ptoPlanTypeMinHours = 0;
-                $scope.ptoPlanType.ptoPlanTypeMaxnHours = 0;
+                $scope.ptoPlanType.ptoPlanTypeMaxnHours = 40;
                 $scope.ptoForm.planTypeMaxHours.$setValidity("required", true);
                 $scope.ptoForm.planTypeMinHours.$setValidity("required", true);
             }
@@ -674,7 +674,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         }
         else if (!$scope.isHourly) {
             $scope.ptoPlanType.ptoPlanTypeMinHours = 0;
-            $scope.ptoPlanType.ptoPlanTypeMaxHours = 0;
+            $scope.ptoPlanType.ptoPlanTypeMaxHours = 40;
             $scope.ptoForm.payType.$setValidity("required", false);
         }
     };
@@ -796,13 +796,13 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
             $scope.planTypes = [];
             $scope.planTypes = $scope.ptoPlanTypes;
             if ($scope.ptoPlanType.ptoPlanTypeMaxHours === null || $scope.ptoPlanType.ptoPlanTypeMaxHours === undefined)
-                $scope.ptoPlanType.ptoPlanTypeMaxHours = 0;
+                $scope.ptoPlanType.ptoPlanTypeMaxHours = 40;
             if ($scope.ptoPlanType.ptoPlanTypeMinHours === null || $scope.ptoPlanType.ptoPlanTypeMinHours === undefined)
                 $scope.ptoPlanType.ptoPlanTypeMinHours = 0;
 
 			if (($scope.ptoPlanType.Salary && !$scope.ptoPlanType.Hourly) || ($scope.ptoPlanType.PartTime && $scope.ptoPlanType.FullTime)) {
 				$scope.ptoPlanType.ptoPlanTypeMinHours = 0;
-				$scope.ptoPlanType.ptoPlanTypeMaxHours = 0;
+				$scope.ptoPlanType.ptoPlanTypeMaxHours = 40;
 			}
 
             for (var index = 0; index < $scope.planTypes.length; index++) {
@@ -1979,6 +1979,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
     $scope.ptoDaySearch = function () {
         $scope.dayEmployees = [];
         $scope.employeePTOs = [];
+		$scope.empPTOBalanceHours = [];
         $scope.loadingTitle = " Loading...";
         $scope.pageStatus = 'Loading, Please Wait...';
         setStatus("Loading");
