@@ -850,54 +850,112 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 
 	$scope.validatePlan = function(assignedPlans) {
 		var found = false;
+		var selectedPlans = [];
 
 		outerLoop:
 		for (var index = 0; index < $scope.plans.length; index++) {
 		    if ($scope.plans[index].isChecked) {
+				selectedPlans.push($scope.plans[index]);
 		        for (var iIndex = 0; iIndex < assignedPlans.length; iIndex++) {
-		            if ($scope.plans[index].ptoTypeTitle === assignedPlans[iIndex].ptoTypeTitle
-                        && (($scope.plans[index].minHours >= assignedPlans[iIndex].minHours || $scope.plans[index].minHours <= assignedPlans[iIndex].minHours) && $scope.plans[index].minHours <= assignedPlans[iIndex].maxHours)
-                        && ($scope.plans[index].maxHours >= assignedPlans[iIndex].minHours && ($scope.plans[index].maxHours <= assignedPlans[iIndex].maxHours || $scope.plans[index].maxHours >= assignedPlans[iIndex].maxHours))
-                        && ($scope.plans[index].hourly === assignedPlans[iIndex].hourly || $scope.plans[index].salary === assignedPlans[iIndex].salary)
-                        && $scope.plans[index].ptoPlanTypeFullTime === assignedPlans[iIndex].ptoPlanTypeFullTime && $scope.plans[index].ptoPlanTypePartTime === assignedPlans[iIndex].ptoPlanTypePartTime) {
-		                alert("Plan with PTO Type: [" + assignedPlans[iIndex].ptoTypeTitle + "], Plan Type: [" + assignedPlans[iIndex].ptoPlanTypeTitle + "], Pay Type, Pay Status and Hours Range is already exists.");
-		                found = true;
-		                break outerLoop;
-		            }
-		            if ($scope.plans[index].ptoTypeTitle === assignedPlans[iIndex].ptoTypeTitle && (($scope.getDate($scope.plans[index].startDate) >= $scope.getDate(assignedPlans[iIndex].ptoPlanStartDate) && $scope.getDate($scope.plans[index].startDate) <= $scope.getDate(assignedPlans[iIndex].ptoPlanEndDate))
-                        || ($scope.getDate($scope.plans[index].endDate) >= $scope.getDate(assignedPlans[iIndex].ptoPlanStartDate) && $scope.getDate($scope.plans[index].endDate) <= $scope.getDate(assignedPlans[iIndex].ptoPlanEndDate)))) {
-		                alert("Plan with overlap date already exists.");
-		                found = true;
-		                break outerLoop;
-		            }
+					if ($scope.plans[index].ptoType === assignedPlans[iIndex].ptoType) {
+						if (assignedPlans[iIndex].ptoPlanTypeFullTime && assignedPlans[iIndex].ptoPlanTypePartTime) {
+							if (assignedPlans[iIndex].hourly && assignedPlans[iIndex].salary) {
+								alert("Plan with PTO Type [" + assignedPlans[iIndex].ptoTypeTitle + "], Pay Type [Salary & Hourly], Status Category [Full Time & Part Time] is already assigned.");
+				                found = true;
+				                break outerLoop;
+							}
+							else if ($scope.plans[index].salary && ($scope.plans[index].salary === assignedPlans[iIndex].salary)) {
+								alert("Plan with PTO Type [" + assignedPlans[iIndex].ptoTypeTitle + "], Pay Type [Salary], Status Category [Full Time & Part Time] is already assigned.");
+				                found = true;
+				                break outerLoop;
+							}
+							else if ($scope.plans[index].hourly && ($scope.plans[index].hourly === assignedPlans[iIndex].hourly)) {
+								alert("Plan with PTO Type [" + assignedPlans[iIndex].ptoTypeTitle + "], Pay Type [Hourly], Status Category [Full Time & Part Time] is already assigned.");
+				                found = true;
+				                break outerLoop;
+							}
+						}
+						else if ((($scope.plans[index].ptoPlanTypeFullTime && ($scope.plans[index].ptoPlanTypeFullTime === assignedPlans[iIndex].ptoPlanTypeFullTime)) 
+							|| ($scope.plans[index].ptoPlanTypePartTime && ($scope.plans[index].ptoPlanTypePartTime === assignedPlans[iIndex].ptoPlanTypePartTime)))
+							&& $scope.plans[index].salary && ($scope.plans[index].salary === assignedPlans[iIndex].salary)) {
+							alert("Plan with PTO Type [" + assignedPlans[iIndex].ptoTypeTitle + "], Pay Type [Salary], Status Category [Full Time/Part Time] is already assigned.");
+			                found = true;
+			                break outerLoop;
+						}
+//						else if ($scope.plans[index].ptoPlanTypePartTime === assignedPlans[iIndex].ptoPlanTypePartTime && $scope.plans[index].salary === assignedPlans[iIndex].salary) {
+//							alert("Plan with PTO Type [" + assignedPlans[iIndex].ptoTypeTitle + "], Pay Type [Salary], Status Category [Part Time] is already assigned.");
+//			                found = true;
+//			                break outerLoop;
+//						}
+						else if ($scope.plans[index].salary && ($scope.plans[index].salary === assignedPlans[iIndex].salary) && $scope.plans[index].hourly && ($scope.plans[index].hourly === assignedPlans[iIndex].hourly)) {
+							if (($scope.plans[index].ptoPlanTypeFullTime && ($scope.plans[index].ptoPlanTypeFullTime === assignedPlans[iIndex].ptoPlanTypeFullTime)) || ($scope.plans[index].ptoPlanTypePartTime && ($scope.plans[index].ptoPlanTypePartTime === assignedPlans[iIndex].ptoPlanTypePartTime))
+								&& ((($scope.plans[index].minHours >= assignedPlans[iIndex].minHours || $scope.plans[index].minHours <= assignedPlans[iIndex].minHours) && $scope.plans[index].minHours <= assignedPlans[iIndex].maxHours)
+		                        && ($scope.plans[index].maxHours >= assignedPlans[iIndex].minHours && ($scope.plans[index].maxHours <= assignedPlans[iIndex].maxHours || $scope.plans[index].maxHours >= assignedPlans[iIndex].maxHours)))) {
+				                alert("Plan with PTO Type [" + assignedPlans[iIndex].ptoTypeTitle + "], Pay Type [Salary, Hourly], Status Category [Full Time/Part Time] and Hours range is already assigned.");
+				                found = true;
+				                break outerLoop;
+			            	}
+						}
+						else if ((($scope.plans[index].ptoPlanTypeFullTime && ($scope.plans[index].ptoPlanTypeFullTime === assignedPlans[iIndex].ptoPlanTypeFullTime)) || ($scope.plans[index].ptoPlanTypePartTime && ($scope.plans[index].ptoPlanTypePartTime === assignedPlans[iIndex].ptoPlanTypePartTime)))
+							&& $scope.plans[index].hourly && ($scope.plans[index].hourly === assignedPlans[iIndex].hourly)) {
+							if (((($scope.plans[index].minHours >= assignedPlans[iIndex].minHours || $scope.plans[index].minHours <= assignedPlans[iIndex].minHours) && $scope.plans[index].minHours <= assignedPlans[iIndex].maxHours)
+		                        && ($scope.plans[index].maxHours >= assignedPlans[iIndex].minHours && ($scope.plans[index].maxHours <= assignedPlans[iIndex].maxHours || $scope.plans[index].maxHours >= assignedPlans[iIndex].maxHours)))) {
+				                alert("Plan with PTO Type [" + assignedPlans[iIndex].ptoTypeTitle + "], Pay Type [Hourly], Status Category [Full Time/Part Time] and Hours range is already assigned.");
+				                found = true;
+				                break outerLoop;
+			            	}
+						}
+//						else if ($scope.plans[index].ptoPlanTypePartTime === assignedPlans[iIndex].ptoPlanTypePartTime && $scope.plans[index].hourly === assignedPlans[iIndex].hourly) {
+//							if ((($scope.plans[index].minHours >= assignedPlans[iIndex].minHours && ($scope.plans[index].maxHours <= assignedPlans[iIndex].maxHours || $scope.plans[index].maxHours >= assignedPlans[iIndex].maxHours))
+//		                        || ($scope.plans[index].minHours <= assignedPlans[iIndex].minHours && ($scope.plans[index].maxHours >= assignedPlans[iIndex].maxHours || $scope.plans[index].maxHours <= assignedPlans[iIndex].maxHours)))) {
+//				                alert("Plan with PTO Type [" + assignedPlans[iIndex].ptoTypeTitle + "], Pay Type [Hourly], Status Category [Part Time] and Hours range is already assigned.");
+//				                found = true;
+//				                break outerLoop;
+//			            	}
+//						}
+						
+//			            if (($scope.getDate($scope.plans[index].startDate) >= $scope.getDate(assignedPlans[iIndex].startDate) && ($scope.getDate($scope.plans[index].endDate) <= $scope.getDate(assignedPlans[iIndex].endDate) || $scope.getDate($scope.plans[index].endDate) >= $scope.getDate(assignedPlans[iIndex].endDate)))
+//	                        || ($scope.getDate($scope.plans[index].startDate) <= $scope.getDate(assignedPlans[iIndex].startDate) && ($scope.getDate($scope.plans[index].endDate) >= $scope.getDate(assignedPlans[iIndex].endDate) || $scope.getDate($scope.plans[index].endDate) <= $scope.getDate(assignedPlans[iIndex].endDate)))) {
+//			                alert("You cannot select plan with overlap dates.");
+//			                found = true;
+//			                break outerLoop;
+//			            }
+					}
 		        }
-
-				for (var iIndex = 0; iIndex < $scope.plans.length; iIndex++) {
-					if ($scope.plans[iIndex].isChecked && $scope.plans[index].id !== $scope.plans[iIndex].id 
-						&& $scope.plans[index].ptoTypeTitle === $scope.plans[iIndex].ptoTypeTitle
-                        && (($scope.plans[index].minHours >= $scope.plans[iIndex].minHours || $scope.plans[index].minHours <= $scope.plans[iIndex].minHours) && $scope.plans[index].minHours <= $scope.plans[iIndex].maxHours)
-                        && ($scope.plans[index].maxHours >= $scope.plans[iIndex].minHours && ($scope.plans[index].maxHours <= $scope.plans[iIndex].maxHours || $scope.plans[index].maxHours >= $scope.plans[iIndex].maxHours))
-                        && $scope.plans[index].hourly === $scope.plans[iIndex].hourly && $scope.plans[index].salary === $scope.plans[iIndex].salary
-                        && $scope.plans[index].ptoPlanTypeFullTime === $scope.plans[iIndex].ptoPlanTypeFullTime && $scope.plans[index].ptoPlanTypePartTime === $scope.plans[iIndex].ptoPlanTypePartTime) {
-					    alert("You cannot select plan with same PTO Type: [" + $scope.plans[index].ptoTypeTitle + "], Plan Type: [" + $scope.plans[index].ptoPlanTypeTitle + "], Pay Type, Pay Status and Hours Range.");
-						found = true;
-						break outerLoop;
-                    }
-                }
             }
         }
 
+		if (!found) {
+			outerLoop:
+			for (var index = 0; index <selectedPlans.length; index++) {
+		        for (var iIndex = index + 1; iIndex < selectedPlans.length; iIndex++) {
+					if (selectedPlans[index].ptoType === selectedPlans[iIndex].ptoType) {
+						alert("Please select any one plan of same PTO Type.");
+						found = true;
+			            break outerLoop;
+					}
+		        }
+	        }
+		}
+
 		return !found;
+	};
+	
+	$scope.numberRangeOverlaps = function(a_start, a_end, b_start, b_end) {
+	    if (a_start <= b_start && b_start <= a_end) return true; // b starts in a
+	    if (a_start <= b_end   && b_end <= a_end) return true; // b ends in a
+	    if (b_start <  a_start && a_end <  b_end) return true; // a in b
+	    return false;
 	};
 
 	$scope.validateHigherLevelPlan = function (level, plan) {
 	    if (level === "state" || level === "county" || level === "city" || level === "houseCode") {
 	        for (var index = 0; index < $scope.companyPlans.length; index++) {
-	            if ($scope.companyPlans[index].ptoTypeTitle === plan.ptoTypeTitle
+	            if ($scope.companyPlans[index].ptoType === plan.ptoType
                     && ((plan.minHours <= $scope.companyPlans[index].minHours || plan.minHours >= $scope.companyPlans[index].minHours) && plan.minHours <= $scope.companyPlans[index].maxHours)
                     && ((plan.maxHours <= $scope.companyPlans[index].maxHours || plan.maxHours >= $scope.companyPlans[index].maxHours) && plan.maxHours >= $scope.companyPlans[index].minHours)
-                    && plan.hourly === $scope.companyPlans[index].hourly && plan.salary === $scope.companyPlans[index].salary
-                    && plan.ptoPlanTypeFullTime === $scope.companyPlans[index].ptoPlanTypeFullTime && plan.ptoPlanTypePartTime === $scope.companyPlans[index].ptoPlanTypePartTime) {
+                    && (plan.hourly === $scope.companyPlans[index].hourly || plan.salary === $scope.companyPlans[index].salary)
+                    && (plan.ptoPlanTypeFullTime === $scope.companyPlans[index].ptoPlanTypeFullTime || plan.ptoPlanTypePartTime === $scope.companyPlans[index].ptoPlanTypePartTime)) {
 	                $scope.assigned = true;
 	                if (!$scope.validAlert)
 	                if (!confirm("Plans are assigned at higher level. Do you want to override the assigned plans?")) {
@@ -913,11 +971,11 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 	    if (!$scope.assigned) {
 	        if (level === "county" || level === "city" || level === "houseCode") {
 	            for (var index = 0; index < $scope.statePlans.length; index++) {
-	                if ($scope.statePlans[index].ptoTypeTitle === plan.ptoTypeTitle
+	                if ($scope.statePlans[index].ptoType === plan.ptoType
                         && ((plan.minHours <= $scope.statePlans[index].minHours || plan.minHours >= $scope.statePlans[index].minHours) && plan.minHours <= $scope.statePlans[index].maxHours)
                         && ((plan.maxHours <= $scope.statePlans[index].maxHours || plan.maxHours >= $scope.statePlans[index].maxHours) && plan.maxHours >= $scope.statePlans[index].minHours)
-                        && plan.hourly === $scope.statePlans[index].hourly && plan.salary === $scope.statePlans[index].salary
-                        && plan.ptoPlanTypeFullTime === $scope.statePlans[index].ptoPlanTypeFullTime && plan.ptoPlanTypePartTime === $scope.statePlans[index].ptoPlanTypePartTime) {
+                        && (plan.hourly === $scope.statePlans[index].hourly || plan.salary === $scope.statePlans[index].salary)
+                        && (plan.ptoPlanTypeFullTime === $scope.statePlans[index].ptoPlanTypeFullTime || plan.ptoPlanTypePartTime === $scope.statePlans[index].ptoPlanTypePartTime)) {
 	                    $scope.assigned = true;
 	                    if (!$scope.validAlert)
 	                    if (!confirm("Plans are assigned at higher level. Do you want to override the assigned plans?")) {
@@ -962,6 +1020,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                     item["ptoYearId"] = $scope.ptoYear;
                     item["houseCodeId"] = 0;
                     item["ptoPlanId"] = $scope.plans[index].id;
+					item["ptoType"] = $scope.plans[index].ptoType;
                     item["active"] = true;
                     item["modified"] = true;
                     item["ptoPlanTitle"] = $scope.plans[index].title;
@@ -973,8 +1032,8 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
                     item["salary"] = $scope.plans[index].salary;
                     item["ptoPlanTypeFullTime"] = $scope.plans[index].ptoPlanTypeFullTime;
                     item["ptoPlanTypePartTime"] = $scope.plans[index].ptoPlanTypePartTime;
-                    item["ptoPlanStartDate"] = $scope.plans[index].ptoPlanStartDate;
-                    item["ptoPlanEndDate"] = $scope.plans[index].ptoPlanEndDate;
+                    item["startDate"] = $scope.plans[index].startDate;
+                    item["endDate"] = $scope.plans[index].endDate;
                     item["excludeUnion"] = $scope.plans[index].excludeUnion;
                     item["appZipCodeType"] = 0;
                    
@@ -1021,11 +1080,11 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 					            if ($scope.countys[index1].name == $scope.selectedCity.title.substring($scope.selectedCity.title.indexOf("(") + 1, $scope.selectedCity.title.indexOf(")")))
 					                if ($scope.countys[index1].countyPlans.length > 0) {
 					                    for (var index2 = 0; index2 < $scope.countys[index1].countyPlans.length; index2++) {
-					                        if ($scope.countys[index1].countyPlans[index2].ptoTypeTitle === $scope.plans[index].ptoTypeTitle
+					                        if ($scope.countys[index1].countyPlans[index2].ptoType === $scope.plans[index].ptoType
                                                 && (($scope.plans[index].minHours <= $scope.countys[index1].countyPlans[index2].minHours || $scope.plans[index].minHours >= $scope.countys[index1].countyPlans[index2].minHours) && $scope.plans[index].minHours <= $scope.countys[index1].countyPlans[index2].maxHours)
                                                 && (($scope.plans[index].maxHours <= $scope.countys[index1].countyPlans[index2].maxHours || $scope.plans[index].maxHours >= $scope.countys[index1].countyPlans[index2].maxHours) && $scope.plans[index].maxHours >= $scope.countys[index1].countyPlans[index2].minHours)
-                                                && $scope.plans[index].hourly === $scope.countys[index1].countyPlans[index2].hourly && $scope.plans[index].salary === $scope.countys[index1].countyPlans[index2].salary
-                                                && $scope.plans[index].ptoPlanTypeFullTime === $scope.countys[index1].countyPlans[index2].ptoPlanTypeFullTime && $scope.plans[index].ptoPlanTypePartTime === $scope.countys[index1].countyPlans[index2].ptoPlanTypePartTime) {
+                                                && ($scope.plans[index].hourly === $scope.countys[index1].countyPlans[index2].hourly || $scope.plans[index].salary === $scope.countys[index1].countyPlans[index2].salary)
+                                                && ($scope.plans[index].ptoPlanTypeFullTime === $scope.countys[index1].countyPlans[index2].ptoPlanTypeFullTime || $scope.plans[index].ptoPlanTypePartTime === $scope.countys[index1].countyPlans[index2].ptoPlanTypePartTime)) {
 					                            $scope.assigned = true;
 					                            if (!$scope.validAlert)
 					                                if (!confirm("Plans are assigned at higher level. Do you want to override the assigned plans?")) {
@@ -1053,18 +1112,18 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 					else if ($scope.levelSelected === "houseCode") {
 					    if ($scope.statePlans.length > 0 || $scope.companyPlans.length > 0) {
 					        if ($scope.statePlans.length > 0 || $scope.companyPlans.length > 0)
-					            $scope.validateHigherLevelPlan("county", $scope.plans[index]);
+					            $scope.validateHigherLevelPlan("houseCode", $scope.plans[index]);
 					    }
 					    if (!$scope.assigned) {
 					        for (var index3 = 0; index3 < $scope.countys.length; index3++) {
 					            if ($scope.countys[index3].name == $scope.selectedHouseCode.title.substring($scope.selectedHouseCode.title.indexOf("(") + 1, $scope.selectedHouseCode.title.indexOf(")"))) {
 					                if ($scope.countys[index3].countyPlans.length > 0) {
 					                    for (var index4 = 0; index4 < $scope.countys[index3].countyPlans.length; index4++) {
-					                        if ($scope.countys[index3].countyPlans[index4].ptoTypeTitle === $scope.plans[index].ptoTypeTitle
+					                        if ($scope.countys[index3].countyPlans[index4].ptoType === $scope.plans[index].ptoType
                                                 && (($scope.plans[index].minHours <= $scope.countys[index3].countyPlans[index4].minHours || $scope.plans[index].minHours >= $scope.countys[index3].countyPlans[index4].minHours) && $scope.plans[index].minHours <= $scope.countys[index3].countyPlans[index4].maxHours)
                                                 && (($scope.plans[index].maxHours <= $scope.countys[index3].countyPlans[index4].maxHours || $scope.plans[index].maxHours >= $scope.countys[index3].countyPlans[index4].maxHours) && $scope.plans[index].maxHours >= $scope.countys[index3].countyPlans[index4].minHours)
-                                                && $scope.plans[index].hourly === $scope.countys[index3].countyPlans[index4].hourly && $scope.plans[index].salary === $scope.countys[index3].countyPlans[index4].salary
-                                                && $scope.plans[index].ptoPlanTypeFullTime === $scope.countys[index3].countyPlans[index4].ptoPlanTypeFullTime && $scope.plans[index].ptoPlanTypePartTime === $scope.countys[index3].countyPlans[index4].ptoPlanTypePartTime) {
+                                                && ($scope.plans[index].hourly === $scope.countys[index3].countyPlans[index4].hourly || $scope.plans[index].salary === $scope.countys[index3].countyPlans[index4].salary)
+                                                && ($scope.plans[index].ptoPlanTypeFullTime === $scope.countys[index3].countyPlans[index4].ptoPlanTypeFullTime || $scope.plans[index].ptoPlanTypePartTime === $scope.countys[index3].countyPlans[index4].ptoPlanTypePartTime)) {
 					                            $scope.assigned = true;
 					                            if (!$scope.validAlert)
 					                                if (!confirm("Plans are assigned at higher level. Do you want to override the assigned plans?")) {
@@ -1086,11 +1145,11 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 					            if ($scope.cities[index5].name.replace(/\s*$/, "") == $scope.selectedHouseCode.title.substring($scope.selectedHouseCode.title.indexOf("{") + 1, $scope.selectedHouseCode.title.indexOf("}"))) {
 					                if ($scope.cities[index5].cityPlans.length > 0) {
 					                    for (var index6 = 0; index6 < $scope.cities[index5].cityPlans.length; index6++) {
-					                        if ($scope.cities[index5].cityPlans[index6].ptoTypeTitle === $scope.plans[index].ptoTypeTitle
+					                        if ($scope.cities[index5].cityPlans[index6].ptoType === $scope.plans[index].ptoType
                                                 && (($scope.plans[index].minHours <= $scope.cities[index5].cityPlans[index6].minHours || $scope.plans[index].minHours >= $scope.cities[index5].cityPlans[index6].minHours) && $scope.plans[index].minHours <= $scope.cities[index5].cityPlans[index6].maxHours)
                                                 && (($scope.plans[index].maxHours <= $scope.cities[index5].cityPlans[index6].maxHours || $scope.plans[index].maxHours >= $scope.cities[index5].cityPlans[index6].maxHours) && $scope.plans[index].maxHours >= $scope.cities[index5].cityPlans[index6].minHours)
-                                                && $scope.plans[index].hourly === $scope.cities[index5].cityPlans[index6].hourly && $scope.plans[index].salary === $scope.cities[index5].cityPlans[index6].salary
-                                                && $scope.plans[index].ptoPlanTypeFullTime === $scope.cities[index5].cityPlans[index6].ptoPlanTypeFullTime && $scope.plans[index].ptoPlanTypePartTime === $scope.cities[index5].cityPlans[index6].ptoPlanTypePartTime) {
+                                                && ($scope.plans[index].hourly === $scope.cities[index5].cityPlans[index6].hourly || $scope.plans[index].salary === $scope.cities[index5].cityPlans[index6].salary)
+                                                && ($scope.plans[index].ptoPlanTypeFullTime === $scope.cities[index5].cityPlans[index6].ptoPlanTypeFullTime || $scope.plans[index].ptoPlanTypePartTime === $scope.cities[index5].cityPlans[index6].ptoPlanTypePartTime)) {
 					                            $scope.assigned = true;
 					                            if (!$scope.validAlert)
 					                                if (!confirm("Plans are assigned at higher level. Do you want to override the assigned plans?")) {
@@ -1107,29 +1166,29 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 					            }
 					        }
 					    }
-					    if (!$scope.assigned) {
-					        EmpActions.getPTOPlans($scope.selectedHouseCode, $scope.ptoYear, $scope.selectedState.id, 0, 0, function (result) {
-					            if (result.length > 0) {
-					                for (var index7 = 0; index7 < result.length; index7++) {
-					                    if (result[index7].ptoTypeTitle === $scope.plans[index].ptoTypeTitle
-                                            && (($scope.plans[index].minHours <= result[index7].minHours || $scope.plans[index].minHours >= result[index7].minHours) && $scope.plans[index].minHours <= result[index7].maxHours)
-                                            && (($scope.plans[index].maxHours <= result[index7].maxHours || $scope.plans[index].maxHours >= result[index7].maxHours) && $scope.plans[index].maxHours >= result[index7].minHours)
-                                            && $scope.plans[index].hourly === result[index7].hourly && $scope.plans[index].salary === result[index7].salary
-                                            && $scope.plans[index].ptoPlanTypeFullTime === result[index7].ptoPlanTypeFullTime && $scope.plans[index].ptoPlanTypePartTime === result[index7].ptoPlanTypePartTime) {
-					                        $scope.assigned = true;
-					                        if (!$scope.validAlert)
-					                            if (!confirm("Plans are assigned at higher level. Do you want to override the assigned plans?")) {
-					                                $scope.validPlan = false;
-					                                $scope.validAlert = true;
-					                                return;
-					                            }
-					                        $scope.validAlert = true;
-					                        break;
-					                    }
-					                }
-					            }
-					        });
-					    }
+//					    if (!$scope.assigned) {
+//					        EmpActions.getPTOPlans($scope.selectedHouseCode, $scope.ptoYear, $scope.selectedState.id, 0, 0, function (result) {
+//					            if (result.length > 0) {
+//					                for (var index7 = 0; index7 < result.length; index7++) {
+//					                    if (result[index7].ptoTypeTitle === $scope.plans[index].ptoTypeTitle
+//                                            && (($scope.plans[index].minHours <= result[index7].minHours || $scope.plans[index].minHours >= result[index7].minHours) && $scope.plans[index].minHours <= result[index7].maxHours)
+//                                            && (($scope.plans[index].maxHours <= result[index7].maxHours || $scope.plans[index].maxHours >= result[index7].maxHours) && $scope.plans[index].maxHours >= result[index7].minHours)
+//                                            && $scope.plans[index].hourly === result[index7].hourly && $scope.plans[index].salary === result[index7].salary
+//                                            && $scope.plans[index].ptoPlanTypeFullTime === result[index7].ptoPlanTypeFullTime && $scope.plans[index].ptoPlanTypePartTime === result[index7].ptoPlanTypePartTime) {
+//					                        $scope.assigned = true;
+//					                        if (!$scope.validAlert)
+//					                            if (!confirm("Plans are assigned at higher level. Do you want to override the assigned plans?")) {
+//					                                $scope.validPlan = false;
+//					                                $scope.validAlert = true;
+//					                                return;
+//					                            }
+//					                        $scope.validAlert = true;
+//					                        break;
+//					                    }
+//					                }
+//					            }
+//					        });
+//					    }
 
 					    if ($scope.validPlan) {
 					        item["stateType"] = $scope.selectedState.id;
@@ -1476,7 +1535,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 		}
 
 		if (level === "company") {
-		    EmpActions.getPlanAssignments($scope.cloneFromYearId, 0, 1, 0, function (data) {
+		    EmpActions.getPlanAssignments($scope.cloneFromYearId, 0, 1, 1, function (data) {
                 $scope.clonePlans = data;
                 $scope.pageLoading = false;
                 setStatus("Normal");
@@ -1484,7 +1543,7 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
             });
         }
         else {
-		    EmpActions.getPlanAssignments($scope.cloneFromYearId, $scope.selectedState.id, groupType, 0, function (data) {
+		    EmpActions.getPlanAssignments($scope.cloneFromYearId, $scope.selectedState.id, groupType, 1, function (data) {
 				if (level === "state") {
 					$scope.clonePlans = data;
 				}
@@ -1997,7 +2056,7 @@ pto.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
             + ',name:' + name
 			+ ',</criteria>', function(xml) {
 			if (callback) {
-			    callback(deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id', 'houseCodeId', 'ptoYear', 'ptoType', 'ptoPlanType'] }));
+			    callback(deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id', 'houseCodeId', 'ptoYear', 'ptoType', 'ptoPlanType', 'days', 'accrualInterval', 'maxHours', 'minHours'], boolItems: ['accrual', 'active', 'excludeUnion', 'hourly', 'salary', 'ptoPlanTypeFullTime', 'ptoPlanTypePartTime'], dateItems: ['startDate', 'endDate'] }));
 			}
 		});
     };
@@ -2010,7 +2069,7 @@ pto.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
 		   + ',clonePlan:' + clonePlan
            + ',</criteria>', function(xml) {
            if (callback) {
-               callback(deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id', 'ptoYearId', 'houseCodeId', 'ptoPlanId'], boolItems: ['active'] }));
+               callback(deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id', 'ptoYearId', 'houseCodeId', 'ptoPlanId', 'ptoType', 'ptoPlanType', 'stateType', 'groupType', 'appZipCodeType', 'minHours', 'maxHours'], boolItems: ['active', 'ptoPlanTypeFullTime', 'ptoPlanTypePartTime', 'hourly', 'salary', 'excludeUnion'], dateItems: ['startDate', 'endDate'] }));
            }
        });
     };
