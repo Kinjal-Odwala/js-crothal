@@ -1712,7 +1712,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.pageStatus = "Loading, Please Wait...";
         setStatus("Loading");
 
-        EmpActions.getEmployees($scope.assignment.hcmHouseCode, $scope.selectedPTOPlanAssignment.ptoPlanId, 1, function (employees) {
+        EmpActions.getEmployees($scope.assignment.hcmHouseCode, $scope.assignment.ptoAssignYear, $scope.selectedPTOPlanAssignment.ptoPlanId, $scope.selectedPTOPlanAssignment.groupType, 1, function (employees) {
 			$scope.employees = employees;
             $scope.pageLoading = false;
             $scope.pageStatus = "Normal";
@@ -1726,7 +1726,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.pageStatus = "Loading, Please Wait...";
         setStatus("Loading");
     
-        EmpActions.getEmployees($scope.assignment.hcmHouseCode, $scope.selectedPTOPlanAssignment.ptoPlanId, 0, function (employees) {
+        EmpActions.getEmployees($scope.assignment.hcmHouseCode, $scope.assignment.ptoAssignYear, $scope.selectedPTOPlanAssignment.ptoPlanId, $scope.selectedPTOPlanAssignment.groupType, 0, function (employees) {
 			$scope.unAssignedEmployees = employees;
 
             var ptoModalInstance = $modal.open({
@@ -1770,7 +1770,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
                 });
             }
            
-            EmpActions.getEmployees($scope.ptoDay.hcmHouseCode, -1, 1, function (employees) {
+            EmpActions.getEmployees($scope.ptoDay.hcmHouseCode, $scope.ptoDay.ptoYear, -1, -1, 1, function (employees) {
                 $scope.dayEmployees = employees;
                 $scope.pageLoading = false;
                 $scope.pageStatus = 'Normal';
@@ -1788,7 +1788,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.pageStatus = "Loading, Please Wait...";
         setStatus("Loading");
         
-        EmpActions.getEmployees($scope.ptoDay.hcmHouseCode, -1, 1, function (employees) {
+        EmpActions.getEmployees($scope.ptoDay.hcmHouseCode, $scope.ptoDay.ptoYear, -1, -1, 1, function (employees) {
             $scope.dayEmployees = employees;
             $scope.pageLoading = false;
             $scope.pageStatus = 'Normal';
@@ -2261,12 +2261,14 @@ pto.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
            });
     };
 
-    var getEmployees = function (houseCodeId, ptoPlanId, assigned, callback) {
+    var getEmployees = function (houseCodeId, ptoYearId, ptoPlanId, groupType, assigned, callback) {
         apiRequest('emp', 'iiCache', '<criteria>storeId:ptoEmployees,userId:[user]'
            + ',houseCodeId:' + houseCodeId
+		   + ',ptoYearId:' + ptoYearId
            + ',ptoPlanId:' + ptoPlanId
+		   + ',groupType:' + groupType
            + ',assigned:' + assigned
-		   + ',searchType:' + 'Employee'
+		   + ',searchType:Employee'
            + ',</criteria>', function (xml) {
                if (callback) {
                    callback(deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id', 'ptoAssignmentId', 'employeeNumber'], boolItems: ['active'] }));
