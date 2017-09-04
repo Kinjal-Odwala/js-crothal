@@ -105,12 +105,7 @@ ii.Class({
 					if (!(/^[0-9]+$/.test(enteredText)))
 						this.setInvalid("Please enter valid Invoice #");
 			});
-										
-			me.customer = new ui.ctl.Input.Text({
-				id: "Customer", 
-				required: false
-		    });
-			
+
 			me.invoiceDate = new ui.ctl.Input.Date({
 		        id: "InvoiceDate",
 				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
@@ -127,7 +122,22 @@ ii.Class({
 					if(ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false)
 						this.setInvalid("Please enter valid date.");					
 			});
-				
+
+			me.customer = new ui.ctl.Input.Text({
+				id: "Customer", 
+				required: false
+		    });
+
+			me.serviceLocation = new ui.ctl.Input.Text({
+				id: "ServiceLocation", 
+				required: false
+		    });
+
+			me.poNumber = new ui.ctl.Input.Text({
+				id: "PONumber", 
+				required: false
+		    });
+
 			me.searchButton = new ui.ctl.buttons.Sizeable({
 				id: "SearchButton",
 				appendToId: "SearchButton",
@@ -144,14 +154,16 @@ ii.Class({
 				allowAdds: false
 			});
 			
-			me.invoiceSearch.addColumn("invoiceNumber", "invoiceNumber", "Invoice", "Invoice", 80);
-			me.invoiceSearch.addColumn("amount", "amount", "Amount", "Amount", 100);
+			me.invoiceSearch.addColumn("invoiceNumber", "invoiceNumber", "Invoice #", "Invoice #", 90);
+			me.invoiceSearch.addColumn("amount", "amount", "Amount", "Amount", 110);
 			me.invoiceSearch.addColumn("billTo", "billTo", "Customer", "Customer", null);
 			me.invoiceSearch.addColumn("houseCodeBrief", "houseCodeBrief", "House Code", "House Code", 110);
 			me.invoiceSearch.addColumn("invoiceDate", "invoiceDate", "Invoice Date", "Invoice Date", 110);
-			me.invoiceSearch.addColumn("collected", "collected", "Collected", "Collected", 100);
-			me.invoiceSearch.addColumn("credited", "credited", "Credited", "Credited", 80);
+			me.invoiceSearch.addColumn("collected", "collected", "Collected", "Collected", 110);
+			me.invoiceSearch.addColumn("credited", "credited", "Credited", "Credited", 110);
 			me.invoiceSearch.addColumn("lastPrinted", "lastPrinted", "Last Printed", "Last Printed", 120);
+			me.invoiceSearch.addColumn("serviceLocation", "serviceLocation", "Service Location", "Service Location", 250);
+			me.invoiceSearch.addColumn("poNumber", "poNumber", "PO Number", "PO Number", 100);
 			me.invoiceSearch.capColumns();
 			me.invoiceSearch.setHeight($("#pageLoading").height() - 155);
 			
@@ -273,30 +285,33 @@ ii.Class({
 				return false;
 			}	
 			
-			if ($("#InvoiceText").val() == ''
-				&& $("#InvoiceDateText").val() == ''
-				&& $("#CustomerText").val() == ''
-				&& $("#houseCodeText").val() == ''
-				) {
-					alert("Please enter search criteria: Invoice #, Invoice Date, Customer or House Code.")
-					return false;
-				}
+			if (me.invoice.getValue() === ""
+				&& me.invoiceDate.text.value === ""
+				&& me.customer.getValue() === ""
+				&& $("#houseCodeText").val() === ""
+				&& me.serviceLocation.getValue() === ""
+				&& me.poNumber.getValue() === "") {
+				alert("Please enter search criteria: Invoice #, Invoice Date, Customer or House Code.")
+				return false;
+			}
 				
 			me.setLoadCount();
 
 			var invoiceNumber = me.invoice.getValue();
 			var invoiceDate = me.invoiceDate.text.value;
 			var customer = me.customer.getValue();
-			
-			if(invoiceDate == undefined || invoiceDate == '')
-				invoiceDate = '1/1/1900';			
+			var serviceLocation = me.serviceLocation.getValue();
+			var poNumber = me.poNumber.getValue();
+
+			if (invoiceDate === undefined || invoiceDate === "")
+				invoiceDate = "1/1/1900";		
 			
 			me.invoiceStore.reset();
 			me.invoiceStore.fetch("userId:[user],houseCode:" 				
 				+ ($("#houseCodeText").val() != "" ? + parent.fin.appUI.houseCodeId : "0")
 				+ ",status:-1,year:-1,invoiceNumber:" + invoiceNumber
 				+ ",invoiceByHouseCode:-1"
-				+ ",invoiceDate:" + invoiceDate + ",customer:" + customer, me.invoiceLoaded, me);
+				+ ",invoiceDate:" + invoiceDate + ",customer:" + customer + ",serviceLocation:" + serviceLocation + ",poNumber:" + poNumber, me.invoiceLoaded, me);
 		},
 		
 		invoiceLoaded: function(me, activeId) { 					
@@ -399,6 +414,3 @@ function main() {
 	fin.invoiceSearchUi.resize();
 	fin.houseCodeSearchUi = fin.invoiceSearchUi;
 }
-
-
-

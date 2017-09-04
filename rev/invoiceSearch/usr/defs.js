@@ -56,6 +56,7 @@ ii.init.register( function() {
 		taxNumber: {type: String, required: false, defaultValue: ""},
 		stateTax: {type: String, required: false, defaultValue: ""},
 		localTax: {type: String, required: false, defaultValue: ""},
+		serviceLocation: {type: String, required: false, defaultValue: ""},
 		poNumber: {type: String, required: false, defaultValue: ""},
 		version: {type: Number, required: false, defaultValue: 0},
 		active: {type: Boolean, required: false, defaultValue: true}		
