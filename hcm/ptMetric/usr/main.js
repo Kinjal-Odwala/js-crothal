@@ -442,24 +442,30 @@ ii.Class({
 				});
 				
 			me.contractedAnnualTrips = new ui.ctl.Input.Text({
-		        id: "ContractedAnnualTrips",
-		        maxLength: 9,
-				changeFunction: function() { me.modified(); }
-		    });
+			    id: "ContractedAnnualTrips",
+			    maxLength: 9,
+			    changeFunction: function () { me.modified(); }
+			});
 
 			me.contractedAnnualTrips
-				.setValidationMaster( me.validator )
-				.addValidation( function( isFinal, dataMap ) {
-					var enteredText = me.contractedAnnualTrips.getValue();
+				.setValidationMaster(me.validator)
+				.addValidation(function (isFinal, dataMap) {
+				    var enteredText = me.contractedAnnualTrips.getValue();
 
-					if (enteredText == "")
-						return;
+				    if (enteredText == "")
+				        return;
 
-					if (!(/^\d{1,9}$/.test(enteredText)))
-						this.setInvalid("Please enter valid number.");
-				});
+				    if (!(/^\d{1,9}$/.test(enteredText)))
+				        this.setInvalid("Please enter valid number.");
+			    });
 
-			  me.contractTripEscalator
+			me.contractTripEscalator = new ui.ctl.Input.Text({
+			    id: "ContractTripEscalator",
+			    maxLength: 9,
+			    changeFunction: function () { me.modified(); }
+			});
+
+			me.contractTripEscalator
 				.setValidationMaster(me.validator)
 				.addValidation(function (isFinal, dataMap) {
 				    var enteredText = me.contractTripEscalator.getValue();
@@ -469,7 +475,7 @@ ii.Class({
 
 				    if (!(/^\d{1,9}$/.test(enteredText)))
 				        this.setInvalid("Please enter valid number.");
-				});
+			    });
 				
 			me.taskManagementSystem = new ui.ctl.Input.DropDown.Filtered({
 		        id: "TaskManagementSystem",
@@ -1410,8 +1416,8 @@ ii.Class({
 				});
 				
 			me.auditScoreGrid.addColumn("ptMetricTypeTitle", "ptMetricTypeTitle", "", "", null, null, me.asMetricTypeTitle);
-			me.auditScoreGrid.addColumn("annual1", "annual1", "January / February", "January / February", 200, null, me.annual1);
-			me.auditScoreGrid.addColumn("annual2", "annual2", "July / August", "July / August", 200, null, me.annual2);
+			me.auditScoreGrid.addColumn("annual1", "annual1", "Mid-Year", "Mid-Year", 200, null, me.annual1);
+			me.auditScoreGrid.addColumn("annual2", "annual2", "Year-End", "Year-End", 200, null, me.annual2);
 			me.auditScoreGrid.capColumns();
 
 			me.adminObjectiveGrid = new ui.ctl.Grid({
