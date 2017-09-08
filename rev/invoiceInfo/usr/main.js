@@ -248,8 +248,7 @@ ii.Class({
 			});
 			
 			me.company.makeEnterTab()
-				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
+				.setValidationMaster(me.validator);
 			
 			me.address1 = new ui.ctl.Input.Text({
 				id: "Address1",
