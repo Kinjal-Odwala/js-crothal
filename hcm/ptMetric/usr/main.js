@@ -209,15 +209,15 @@ ii.Class({
 			me.inHouseStandardMetricGrid.setHeight(200);
 			me.thirdPartyStandardMetricGrid.setHeight(200);
 
-			var divPFCGridWidth = $(window).width() - 22;
-			var divPFCGridHeight = 185;
+			var divPFCGridWidth = $(window).width() - 45;
+			var divPFCGridHeight = 190;
 			$("#divPFCGrid").css({"width" : divPFCGridWidth + "px", "height" : divPFCGridHeight + "px"});
 
-			var divNonPFCGridWidth = $(window).width() - 22;
-			var divNonPFCGridHeight = 370;
+			var divNonPFCGridWidth = $(window).width() - 45;
+			var divNonPFCGridHeight = 400;
 			$("#divNonPFCGrid").css({"width" : divNonPFCGridWidth + "px", "height" : divNonPFCGridHeight + "px"});
 
-			var divCommentsGridWidth = $(window).width() - 22;
+			var divCommentsGridWidth = $(window).width() - 45;
 			var divCommentsGridHeight = 50;
 			$("#divCommentsGrid").css({"width" : divCommentsGridWidth + "px", "height" : divCommentsGridHeight + "px"});
 		},
