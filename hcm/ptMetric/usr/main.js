@@ -104,7 +104,8 @@ ii.Class({
 			me.qualityAssuranceShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\QualityAssurance");
 			me.adminObjectivesShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\AdminObjectives");
 			me.administrativeShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\Administrative");
-			
+			me.ptStatisticShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\PTStatistcs");
+						
 			if (me.hospitalContractShow)
 				$("#TabHospitalContract").show();
 			if (me.laborControlShow)
@@ -118,22 +119,26 @@ ii.Class({
 			if (me.adminObjectivesShow)
 				$("#TabAdminObjectives").show();
 			if (me.administrativeShow)
-				$("#TabAdministrative").show();
+			    $("#TabAdministrative").show();
+			if (me.ptStatisticShow)
+			    $("#TabPTStatistics").show();
 
 			if (me.hospitalContractShow)
-				me.activeFrameId = 1;
+			    me.activeFrameId = 1;
 			else if (me.laborControlShow)
-				me.activeFrameId = 2;
+			    me.activeFrameId = 2;
 			else if (me.strategicInitiativesShow)
-				me.activeFrameId = 3;
+			    me.activeFrameId = 3;
 			else if (me.qualityControlShow)
-				me.activeFrameId = 4;
+			    me.activeFrameId = 4;
 			else if (me.qualityAssuranceShow)
-				me.activeFrameId = 5;
+			    me.activeFrameId = 5;
 			else if (me.adminObjectivesShow)
-				me.activeFrameId = 6;
+			    me.activeFrameId = 6;
 			else if (me.administrativeShow)
-				me.activeFrameId = 7;
+			    me.activeFrameId = 7;
+			else if (me.ptStatisticShow)
+			    me.activeFrameId = 8;
 
 			setTimeout(function() {
 				$("#container-1").tabs(me.activeFrameId);
@@ -159,6 +164,7 @@ ii.Class({
 			$("#QualityAssuranceContainer").height($(window).height() - offset);
 			$("#AdminObjectiveContainer").height($(window).height() - offset);
 			$("#AdministrativeContainer").height($(window).height() - offset);
+			$("#PTStatisticContainer").height($(window).height() - offset);
 
 			if ($("#LaborControlGridContainer").width() < 2650) {
 				$("#LaborControlGrid").width(2650);
@@ -185,6 +191,13 @@ ii.Class({
 			}
 			if ($("#ThirdPartyStandardMetricGridContainer").width() < 1800) {
 				$("#ThirdPartyStandardMetricGrid").width(1800);
+			}
+			if ($("#PTStatisticGridContainer").width() < 2500) {
+			    $("#PTStatisticGrid").width(2500);
+			    me.ptStatisticGrid.setHeight($(window).height() - 168);
+			}
+			else {
+			    me.ptStatisticGrid.setHeight($(window).height() - 143);
 			}
 
 			me.strategicInitiativeGrid.setHeight($(window).height() - 145);
@@ -442,22 +455,22 @@ ii.Class({
 				});
 				
 			me.contractedAnnualTrips = new ui.ctl.Input.Text({
-			    id: "ContractedAnnualTrips",
-			    maxLength: 9,
-			    changeFunction: function () { me.modified(); }
-			});
+		        id: "ContractedAnnualTrips",
+		        maxLength: 9,
+				changeFunction: function() { me.modified(); }
+		    });
 
 			me.contractedAnnualTrips
-				.setValidationMaster(me.validator)
-				.addValidation(function (isFinal, dataMap) {
-				    var enteredText = me.contractedAnnualTrips.getValue();
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ) {
+					var enteredText = me.contractedAnnualTrips.getValue();
 
-				    if (enteredText == "")
-				        return;
+					if (enteredText == "")
+						return;
 
-				    if (!(/^\d{1,9}$/.test(enteredText)))
-				        this.setInvalid("Please enter valid number.");
-			    });
+					if (!(/^\d{1,9}$/.test(enteredText)))
+						this.setInvalid("Please enter valid number.");
+				});
 
 			me.contractTripEscalator = new ui.ctl.Input.Text({
 			    id: "ContractTripEscalator",
@@ -465,7 +478,7 @@ ii.Class({
 			    changeFunction: function () { me.modified(); }
 			});
 
-			me.contractTripEscalator
+		    me.contractTripEscalator
 				.setValidationMaster(me.validator)
 				.addValidation(function (isFinal, dataMap) {
 				    var enteredText = me.contractTripEscalator.getValue();
@@ -475,7 +488,7 @@ ii.Class({
 
 				    if (!(/^\d{1,9}$/.test(enteredText)))
 				        this.setInvalid("Please enter valid number.");
-			    });
+				});
 				
 			me.taskManagementSystem = new ui.ctl.Input.DropDown.Filtered({
 		        id: "TaskManagementSystem",
@@ -913,7 +926,7 @@ ii.Class({
 			me.qualityControlGrid.addColumn("qcPeriod11", "period11", "Period 11", "Period 11", 180, null, me.qcPeriod11);
 			me.qualityControlGrid.addColumn("qcPeriod12", "period12", "Period 12", "Period 12", 180, null, me.qcPeriod12);
 			me.qualityControlGrid.capColumns();
-			
+
 			me.ptPressGaneyGrid = new ui.ctl.Grid({
 				id: "PTPressGaneyGrid",
 				appendToId: "divForm",
@@ -2040,10 +2053,192 @@ ii.Class({
 			me.thirdPartyStandardMetricGrid.addColumn("tpDelay", "delay", "Delay (%)", "Delay (%)", 150, null, me.tpDelay);
 			me.thirdPartyStandardMetricGrid.addColumn("tpDischarges", "discharges", "Discharges (%)", "Discharges (%)", 150, null, me.tpDischarges);
 			me.thirdPartyStandardMetricGrid.capColumns();
+			
+			me.ptStatisticGrid = new ui.ctl.Grid({
+			    id: "PTStatisticGrid",
+			    appendToId: "divForm",
+			    selectFunction: function (index) { me.ptStatisticItemSelect(index); },
+			    deleteFunction: function () { return true; }
+			});
+
+			me.ptsMetricTypeTitle = new ui.ctl.Input.Text({
+			    id: "PTSMetricTypeTitle",
+			    appendToId: "PTStatisticGridControlHolder"
+			});
+
+			me.ptsPeriod1 = new ui.ctl.Input.Text({
+			    id: "PTSPeriod1",
+			    appendToId: "PTStatisticGridControlHolder",
+			    changeFunction: function () { me.modified(); }
+			});
+
+			me.ptsPeriod1.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(function (isFinal, dataMap) {
+
+				    me.validateControl(me.ptsPeriod1, me.ptStatisticGrid);
+				});
+
+			me.ptsPeriod2 = new ui.ctl.Input.Text({
+			    id: "PTSPeriod2",
+			    appendToId: "PTStatisticGridControlHolder",
+			    changeFunction: function () { me.modified(); }
+			});
+
+			me.ptsPeriod2.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(function (isFinal, dataMap) {
+
+				    me.validateControl(me.ptsPeriod2, me.ptStatisticGrid);
+				});
+
+			me.ptsPeriod3 = new ui.ctl.Input.Text({
+			    id: "PTSPeriod3",
+			    appendToId: "PTStatisticGridControlHolder",
+			    changeFunction: function () { me.modified(); }
+			});
+
+			me.ptsPeriod3.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(function (isFinal, dataMap) {
+
+				    me.validateControl(me.ptsPeriod3, me.ptStatisticGrid);
+				});
+
+			me.ptsPeriod4 = new ui.ctl.Input.Text({
+			    id: "PTSPeriod4",
+			    appendToId: "PTStatisticGridControlHolder",
+			    changeFunction: function () { me.modified(); }
+			});
+
+			me.ptsPeriod4.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(function (isFinal, dataMap) {
+
+				    me.validateControl(me.ptsPeriod4, me.ptStatisticGrid);
+				});
+
+			me.ptsPeriod5 = new ui.ctl.Input.Text({
+			    id: "PTSPeriod5",
+			    appendToId: "PTStatisticGridControlHolder",
+			    changeFunction: function () { me.modified(); }
+			});
+
+			me.ptsPeriod5.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(function (isFinal, dataMap) {
+
+				    me.validateControl(me.ptsPeriod5, me.ptStatisticGrid);
+				});
+
+			me.ptsPeriod6 = new ui.ctl.Input.Text({
+			    id: "PTSPeriod6",
+			    appendToId: "PTStatisticGridControlHolder",
+			    changeFunction: function () { me.modified(); }
+			});
+
+			me.ptsPeriod6.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(function (isFinal, dataMap) {
+
+				    me.validateControl(me.ptsPeriod6, me.ptStatisticGrid);
+				});
+
+			me.ptsPeriod7 = new ui.ctl.Input.Text({
+			    id: "PTSPeriod7",
+			    appendToId: "PTStatisticGridControlHolder",
+			    changeFunction: function () { me.modified(); }
+			});
+
+			me.ptsPeriod7.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(function (isFinal, dataMap) {
+
+				    me.validateControl(me.ptsPeriod7, me.ptStatisticGrid);
+				});
+
+			me.ptsPeriod8 = new ui.ctl.Input.Text({
+			    id: "PTSPeriod8",
+			    appendToId: "PTStatisticGridControlHolder",
+			    changeFunction: function () { me.modified(); }
+			});
+
+			me.ptsPeriod8.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(function (isFinal, dataMap) {
+
+				    me.validateControl(me.ptsPeriod8, me.ptStatisticGrid);
+				});
+
+			me.ptsPeriod9 = new ui.ctl.Input.Text({
+			    id: "PTSPeriod9",
+			    appendToId: "PTStatisticGridControlHolder",
+			    changeFunction: function () { me.modified(); }
+			});
+
+			me.ptsPeriod9.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(function (isFinal, dataMap) {
+
+				    me.validateControl(me.ptsPeriod9, me.ptStatisticGrid);
+				});
+
+			me.ptsPeriod10 = new ui.ctl.Input.Text({
+			    id: "PTSPeriod10",
+			    appendToId: "PTStatisticGridControlHolder",
+			    changeFunction: function () { me.modified(); }
+			});
+
+			me.ptsPeriod10.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(function (isFinal, dataMap) {
+
+				    me.validateControl(me.ptsPeriod10, me.ptStatisticGrid);
+				});
+
+			me.ptsPeriod11 = new ui.ctl.Input.Text({
+			    id: "PTSPeriod11",
+			    appendToId: "PTStatisticGridControlHolder",
+			    changeFunction: function () { me.modified(); }
+			});
+
+			me.ptsPeriod11.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(function (isFinal, dataMap) {
+
+				    me.validateControl(me.ptsPeriod11, me.ptStatisticGrid);
+				});
+
+			me.ptsPeriod12 = new ui.ctl.Input.Text({
+			    id: "PTSPeriod12",
+			    appendToId: "PTStatisticGridControlHolder",
+			    changeFunction: function () { me.modified(); }
+			});
+
+			me.ptsPeriod12.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(function (isFinal, dataMap) {
+
+				    me.validateControl(me.ptsPeriod12, me.ptStatisticGrid);
+				});
+
+			me.ptStatisticGrid.addColumn("ptMetricTypeTitle", "ptMetricTypeTitle", "", "", null, null, me.ptsMetricTypeTitle);
+			me.ptStatisticGrid.addColumn("ptsPeriod1", "period1", "Period 1", "Period 1", 180, null, me.ptsPeriod1);
+			me.ptStatisticGrid.addColumn("ptsPeriod2", "period2", "Period 2", "Period 2", 180, null, me.ptsPeriod2);
+			me.ptStatisticGrid.addColumn("ptsPeriod3", "period3", "Period 3", "Period 3", 180, null, me.ptsPeriod3);
+			me.ptStatisticGrid.addColumn("ptsPeriod4", "period4", "Period 4", "Period 4", 180, null, me.ptsPeriod4);
+			me.ptStatisticGrid.addColumn("ptsPeriod5", "period5", "Period 5", "Period 5", 180, null, me.ptsPeriod5);
+			me.ptStatisticGrid.addColumn("ptsPeriod6", "period6", "Period 6", "Period 6", 180, null, me.ptsPeriod6);
+			me.ptStatisticGrid.addColumn("ptsPeriod7", "period7", "Period 7", "Period 7", 180, null, me.ptsPeriod7);
+			me.ptStatisticGrid.addColumn("ptsPeriod8", "period8", "Period 8", "Period 8", 180, null, me.ptsPeriod8);
+			me.ptStatisticGrid.addColumn("ptsPeriod9", "period9", "Period 9", "Period 9", 180, null, me.ptsPeriod9);
+			me.ptStatisticGrid.addColumn("ptsPeriod10", "period10", "Period 10", "Period 10", 180, null, me.ptsPeriod10);
+			me.ptStatisticGrid.addColumn("ptsPeriod11", "period11", "Period 11", "Period 11", 180, null, me.ptsPeriod11);
+			me.ptStatisticGrid.addColumn("ptsPeriod12", "period12", "Period 12", "Period 12", 180, null, me.ptsPeriod12);
+			me.ptStatisticGrid.capColumns();
 		},
-		
+
 		configureCommunications: function() {
-			var args = ii.args(arguments,{});
 			var me = this;
 			
 			me.hirNodes = [];
@@ -2199,6 +2394,15 @@ ii.Class({
 				injectionArray: me.standardMetrics,
 				lookupSpec: { ptMetricType: me.metricTypes }
 			});
+
+			me.ptStatistics = [];			
+			me.ptStatisticStore = me.cache.register({               
+			    storeId: "ptStaticstics",
+			    itemConstructor: fin.hcm.ptMetric.PTStatistic,
+			    itemConstructorArgs: fin.hcm.ptMetric.ptStatisticArgs,
+			    injectionArray: me.ptStatistics,
+			    lookupSpec: { ptMetricType: me.metricTypes }
+			});
 		},
 		
 		initialize: function() {
@@ -2206,6 +2410,7 @@ ii.Class({
 			
 			$("#TabCollection a").mousedown(function() {
 				me.activeFrameId = 0;
+
 				if (this.id == "TabHospitalContract")
 					me.activeFrameId = 1;
 				else if (this.id == "TabLaborControl")
@@ -2219,7 +2424,9 @@ ii.Class({
 				else if (this.id == "TabAdminObjectives")
 					me.activeFrameId = 6;
 				else if (this.id == "TabAdministrative")
-					me.activeFrameId = 7;
+				    me.activeFrameId = 7;
+				else if (this.id == "TabPTStatistics")
+				    me.activeFrameId = 8;
 					
 				$("#container-1").tabs(me.activeFrameId);
 				$("#container-1").triggerTab(me.activeFrameId);
@@ -2383,6 +2590,15 @@ ii.Class({
 				me.inHouseStandardMetricGrid.setHeight(200);
 				me.thirdPartyStandardMetricGrid.setHeight(200);
 			}
+			else if (selectedTab == 8) {			   
+			    if ($("#PTStatisticGridContainer").width() < 2500) {
+			        $("#PTStatisticGrid").width(2500);
+			        me.ptStatisticGrid.setHeight($(window).height() - 168);
+			    }
+			    else {
+			        me.ptStatisticGrid.setHeight($(window).height() - 143);
+			    }
+			}
 		},
 		
 		resetControls: function() {
@@ -2427,7 +2643,9 @@ ii.Class({
 			if (me.auditScoreGrid.activeRowIndex != - 1)
 				me.auditScoreGrid.body.deselect(me.auditScoreGrid.activeRowIndex, true);
 			if (me.adminObjectiveGrid.activeRowIndex != - 1)
-				me.adminObjectiveGrid.body.deselect(me.adminObjectiveGrid.activeRowIndex, true);	
+			    me.adminObjectiveGrid.body.deselect(me.adminObjectiveGrid.activeRowIndex, true);
+			if (me.ptStatisticGrid.activeRowIndex != -1)
+			    me.ptStatisticGrid.body.deselect(me.ptStatisticGrid.activeRowIndex, true);
 
 			me.laborControlGrid.setData([]);
 			me.strategicInitiativeGrid.setData([]);
@@ -2437,6 +2655,7 @@ ii.Class({
 			me.qualityPartnershipGrid.setData([]);
 			me.auditScoreGrid.setData([]);
 			me.adminObjectiveGrid.setData([]);
+			me.ptStatisticGrid.setData([]);
 
 			me.numericDetailStore.reset();
 			me.textDetailStore.reset();
@@ -2713,6 +2932,7 @@ ii.Class({
 			me.qualityControls = [];
 			me.ptPressGaneys = [];
 			me.evsHCAHPS = [];
+			me.ptStatistics = [];
 
  			if (me.numericDetails.length == 0) {
 				for (var index = 0; index < me.metricTypes.length; index++) {
@@ -2784,6 +3004,16 @@ ii.Class({
 							, me.metricTypes[index].title
 							)
 						me.adminObjectives.push(item);
+					}
+					else if (me.metricTypes[index].subType == "PT Statistics") {
+					    var item = new fin.hcm.ptMetric.PTStatistic(
+							0
+							, me.ptMetricId
+							, me.metricTypes[index]
+							, me.metricTypes[index].title
+							)
+
+					    me.ptStatistics.push(item);
 					}
 				}
 
@@ -2881,6 +3111,28 @@ ii.Class({
 							)
 							
 						me.evsHCAHPS.push(item);
+					}
+					else if (me.numericDetails[index].ptMetricType.subType == "PT Statistics") {
+					    var item = new fin.hcm.ptMetric.PTStatistic(
+							me.numericDetails[index].id
+							, me.numericDetails[index].ptMetricId
+							, me.numericDetails[index].ptMetricType
+							, me.numericDetails[index].ptMetricType.title
+							, (me.numericDetails[index].ptMetricType.dataType == "Decimal" ? me.numericDetails[index].period1 : (me.numericDetails[index].period1 == "" ? "" : parseInt(me.numericDetails[index].period1, 10)))
+							, (me.numericDetails[index].ptMetricType.dataType == "Decimal" ? me.numericDetails[index].period2 : (me.numericDetails[index].period2 == "" ? "" : parseInt(me.numericDetails[index].period2, 10)))
+							, (me.numericDetails[index].ptMetricType.dataType == "Decimal" ? me.numericDetails[index].period3 : (me.numericDetails[index].period3 == "" ? "" : parseInt(me.numericDetails[index].period3, 10)))
+							, (me.numericDetails[index].ptMetricType.dataType == "Decimal" ? me.numericDetails[index].period4 : (me.numericDetails[index].period4 == "" ? "" : parseInt(me.numericDetails[index].period4, 10)))
+							, (me.numericDetails[index].ptMetricType.dataType == "Decimal" ? me.numericDetails[index].period5 : (me.numericDetails[index].period5 == "" ? "" : parseInt(me.numericDetails[index].period5, 10)))
+							, (me.numericDetails[index].ptMetricType.dataType == "Decimal" ? me.numericDetails[index].period6 : (me.numericDetails[index].period6 == "" ? "" : parseInt(me.numericDetails[index].period6, 10)))
+							, (me.numericDetails[index].ptMetricType.dataType == "Decimal" ? me.numericDetails[index].period7 : (me.numericDetails[index].period7 == "" ? "" : parseInt(me.numericDetails[index].period7, 10)))
+							, (me.numericDetails[index].ptMetricType.dataType == "Decimal" ? me.numericDetails[index].period8 : (me.numericDetails[index].period8 == "" ? "" : parseInt(me.numericDetails[index].period8, 10)))
+							, (me.numericDetails[index].ptMetricType.dataType == "Decimal" ? me.numericDetails[index].period9 : (me.numericDetails[index].period9 == "" ? "" : parseInt(me.numericDetails[index].period9, 10)))
+							, (me.numericDetails[index].ptMetricType.dataType == "Decimal" ? me.numericDetails[index].period10 : (me.numericDetails[index].period10 == "" ? "" : parseInt(me.numericDetails[index].period10, 10)))
+							, (me.numericDetails[index].ptMetricType.dataType == "Decimal" ? me.numericDetails[index].period11 : (me.numericDetails[index].period11 == "" ? "" : parseInt(me.numericDetails[index].period11, 10)))
+							, (me.numericDetails[index].ptMetricType.dataType == "Decimal" ? me.numericDetails[index].period12 : (me.numericDetails[index].period12 == "" ? "" : parseInt(me.numericDetails[index].period12, 10)))
+							)
+
+					    me.ptStatistics.push(item);
 					}
 				}
 
@@ -2989,6 +3241,14 @@ ii.Class({
                        		me.evsHCAHPS.push(new fin.hcm.ptMetric.EVSHCAHPS(0, me.ptMetricId, me.metricTypes[index], me.metricTypes[index].title));
 					}
 				}
+
+				for (var index = 0; index < me.metricTypes.length; index++) {
+				    if (me.metricTypes[index].subType == "PT Statistics") {
+				        var result = $.grep(me.ptStatistics, function (item) { return item.ptMetricType.id == me.metricTypes[index].id; });
+				        if (result.length == 0)
+				            me.ptStatistics.push(new fin.hcm.ptMetric.PTStatistic(0, me.ptMetricId, me.metricTypes[index], me.metricTypes[index].title));
+				    }
+				}
 			}
 
 			me.ptPressGaneys.sort(me.customSort);
@@ -2997,6 +3257,7 @@ ii.Class({
 			me.qualityControlGrid.setData(me.qualityControls);
 			me.ptPressGaneyGrid.setData(me.ptPressGaneys);
 			me.evsHCAHPSGrid.setData(me.evsHCAHPS);
+			me.ptStatisticGrid.setData(me.ptStatistics);
 
 			if (me.reloadData) {
 				me.reloadData = false;
@@ -3176,14 +3437,29 @@ ii.Class({
 				me.tpMetricTypeTitle.text.readOnly = true;
 			}
 		},
+
+		ptStatisticItemSelect: function () {
+		    var args = ii.args(arguments, {
+		        index: { type: Number }  // The index of the data subItem to select
+		    });
+		    var me = this;
+		    var index = args.index;
+
+		    if (me.ptStatisticGrid.data[index] != undefined) {
+		        me.ptStatisticGrid.data[index].modified = true;
+		        me.ptsPeriod1.text.select();
+		        me.ptsPeriod1.text.focus();
+		        me.ptsMetricTypeTitle.text.readOnly = true;
+		    }
+		},
 		
 		actionUndoItem: function() {
 			var args = ii.args(arguments,{});
 			var me = this;
-			
+
 			if (!parent.fin.cmn.status.itemValid())
 				return;
-						
+
 			me.yearChanged();
 		},
 
@@ -3203,6 +3479,7 @@ ii.Class({
 			me.adminObjectiveGrid.body.deselectAll();
 			me.inHouseStandardMetricGrid.body.deselectAll();
 			me.thirdPartyStandardMetricGrid.body.deselectAll();
+			me.ptStatisticGrid.body.deselectAll();
 
 			me.validator.forceBlur();
 			me.validator.queryValidity(true);
@@ -3253,6 +3530,11 @@ ii.Class({
 			if (me.administrativeShow && (me.inHouseStandardMetricGrid.activeRowIndex >= 0 || me.thirdPartyStandardMetricGrid.activeRowIndex >= 0)) {
 				alert("In order to save, the errors on the page must be corrected. Please verify the data on Administrative tab.");
 				return false;
+			}
+
+			if (me.ptStatisticShow && me.ptStatisticGrid.activeRowIndex >= 0) {
+			    alert("In order to save, the errors on the page must be corrected. Please verify the data on PT Statistics tab.");
+			    return false;
 			}
 
 			item = new fin.hcm.ptMetric.Metric(
@@ -3308,7 +3590,7 @@ ii.Class({
 			var item = args.item;
 			var xml = "";
 
-			if (me.hospitalContractShow || me.laborControlShow || me.strategicInitiativesShow || me.qualityControlShow || me.qualityAssuranceShow || me.adminObjectivesShow) {
+			if (me.hospitalContractShow || me.laborControlShow || me.strategicInitiativesShow || me.qualityControlShow || me.qualityAssuranceShow || me.adminObjectivesShow || me.ptStatisticShow) {
 				xml += '<ptMetric';
 				xml += ' id="' + item.id + '"';
 				xml += ' houseCodeId="' + item.houseCodeId + '"';
@@ -3561,6 +3843,36 @@ ii.Class({
 						xml += '/>';
 					}
 				}
+			}
+
+			if (me.ptStatisticShow) {
+			    for (var index = 0; index < me.ptStatistics.length; index++) {
+			        if (me.ptStatistics[index].modified || me.ptStatistics[index].id == 0) {
+			            me.ptStatistics[index].modified = false;
+			            if (me.ptStatistics[index].id == 0)
+			                me.reloadData = true;
+			            if (me.ptStatistics[index].ptMetricType.dataType == "Decimal" || me.ptStatistics[index].ptMetricType.dataType == "Integer")
+			                xml += '<ptMetricNumericDetail';
+			            else
+			                xml += '<ptMetricTextDetail';
+			            xml += ' id="' + me.ptStatistics[index].id + '"';
+			            xml += ' ptMetricId="' + me.ptMetricId + '"';
+			            xml += ' ptMetricTypeId="' + me.ptStatistics[index].ptMetricType.id + '"';
+			            xml += ' period1="' + ui.cmn.text.xml.encode(me.ptStatistics[index].period1) + '"';
+			            xml += ' period2="' + ui.cmn.text.xml.encode(me.ptStatistics[index].period2) + '"';
+			            xml += ' period3="' + ui.cmn.text.xml.encode(me.ptStatistics[index].period3) + '"';
+			            xml += ' period4="' + ui.cmn.text.xml.encode(me.ptStatistics[index].period4) + '"';
+			            xml += ' period5="' + ui.cmn.text.xml.encode(me.ptStatistics[index].period5) + '"';
+			            xml += ' period6="' + ui.cmn.text.xml.encode(me.ptStatistics[index].period6) + '"';
+			            xml += ' period7="' + ui.cmn.text.xml.encode(me.ptStatistics[index].period7) + '"';
+			            xml += ' period8="' + ui.cmn.text.xml.encode(me.ptStatistics[index].period8) + '"';
+			            xml += ' period9="' + ui.cmn.text.xml.encode(me.ptStatistics[index].period9) + '"';
+			            xml += ' period10="' + ui.cmn.text.xml.encode(me.ptStatistics[index].period10) + '"';
+			            xml += ' period11="' + ui.cmn.text.xml.encode(me.ptStatistics[index].period11) + '"';
+			            xml += ' period12="' + ui.cmn.text.xml.encode(me.ptStatistics[index].period12) + '"';
+			            xml += '/>';
+			        }
+			    }
 			}
 
 			return xml;

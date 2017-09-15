@@ -288,6 +288,26 @@ ii.init.register( function() {
 		, discharges: {type: String, required: false, defaultValue: ""}
 		, modified: {type: Boolean, required: false, defaultValue: false}
 	};
+
+	fin.hcm.ptMetric.ptStatisticArgs = {
+	    id: { type: Number, required: false, defaultValue: 0 }
+        , ptMetricId: { type: Number, required: false, defaultValue: 0 }
+        , ptMetricType: { type: fin.hcm.ptMetric.MetricType, required: false }
+        , ptMetricTypeTitle: { type: String, required: false, defaultValue: "" }
+        , period1: { type: String, required: false, defaultValue: "" }
+        , period2: { type: String, required: false, defaultValue: "" }
+        , period3: { type: String, required: false, defaultValue: "" }
+        , period4: { type: String, required: false, defaultValue: "" }
+        , period5: { type: String, required: false, defaultValue: "" }
+        , period6: { type: String, required: false, defaultValue: "" }
+        , period7: { type: String, required: false, defaultValue: "" }
+        , period8: { type: String, required: false, defaultValue: "" }
+        , period9: { type: String, required: false, defaultValue: "" }
+        , period10: { type: String, required: false, defaultValue: "" }
+        , period11: { type: String, required: false, defaultValue: "" }
+        , period12: { type: String, required: false, defaultValue: "" }
+        , modified: { type: Boolean, required: false, defaultValue: false }
+	};
 	
 }, 2);
 
@@ -489,4 +509,14 @@ ii.Class({
 			$.extend(this, args);
 		}
 	}
+});
+
+ii.Class({
+    Name: "fin.hcm.ptMetric.PTStatistic",
+    Definition: {
+        init: function() {
+            var args = ii.args(arguments, fin.hcm.ptMetric.ptStatisticArgs);
+            $.extend(this, args);
+        }
+    }
 });

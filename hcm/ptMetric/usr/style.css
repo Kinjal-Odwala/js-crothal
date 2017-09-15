@@ -81,11 +81,11 @@
 	color: black;
 }
 
-#GridLaborControl, #StrategicInitiativeGrid, #GridQualityControl, #GridQualityAssurance, #AdminObjectiveGrid, #GridAdministrative {
+#GridLaborControl, #StrategicInitiativeGrid, #GridQualityControl, #GridQualityAssurance, #AdminObjectiveGrid, #GridAdministrative, #GridPTStatistic {
 	margin: 10px;
 }
 
-#LaborControlGridContainer, #QualityControlGridContainer, #PTPressGaneyGridContainer, #EVSHCAHPSGridContainer, #InHouseStandardMetricGridContainer, #ThirdPartyStandardMetricGridContainer {
+#LaborControlGridContainer, #QualityControlGridContainer, #PTPressGaneyGridContainer, #EVSHCAHPSGridContainer, #InHouseStandardMetricGridContainer, #ThirdPartyStandardMetricGridContainer, #PTStatisticGridContainer {
 	float: left;
 	width: 100%;
 	position: relative;
