@@ -35,6 +35,7 @@ ii.init.register( function() {
 	fin.hcm.ptMetric.metricTypeArgs = {
 		id: {type: Number, required: false, defaultValue: 0}
 		, subType: {type: String, required: false, defaultValue: ""}
+		, brief: {type: String, required: false, defaultValue: ""}
 		, title: {type: String, required: false, defaultValue: ""}
 		, dataType: {type: String, required: false, defaultValue: ""}
 		, displayOrder: {type: Number, required: false, defaultValue: 0}

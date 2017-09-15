@@ -166,13 +166,13 @@ ii.Class({
 			$("#AdministrativeContainer").height($(window).height() - offset);
 			$("#PTStatisticContainer").height($(window).height() - offset);
 
-			if ($("#LaborControlGridContainer").width() < 2650) {
-				$("#LaborControlGrid").width(2650);
-				me.laborControlGrid.setHeight($(window).height() - 168);
-			}
-			else {
-				me.laborControlGrid.setHeight($(window).height() - 143);
-			}
+//			if ($("#LaborControlGridContainer").width() < 2650) {
+//				$("#LaborControlGrid").width(2650);
+//				me.laborControlGrid.setHeight($(window).height() - 168);
+//			}
+//			else {
+//				me.laborControlGrid.setHeight($(window).height() - 143);
+//			}
 			if ($("#QualityControlGridContainer").width() < 2600) {
 				$("#QualityControlGrid").width(2600);
 				me.qualityControlGrid.setHeight($(window).height() - 168);
@@ -208,6 +208,18 @@ ii.Class({
 			me.adminObjectiveGrid.setHeight($(window).height() - 145);
 			me.inHouseStandardMetricGrid.setHeight(200);
 			me.thirdPartyStandardMetricGrid.setHeight(200);
+
+			var divPFCGridWidth = $(window).width() - 22;
+			var divPFCGridHeight = 185;
+			$("#divPFCGrid").css({"width" : divPFCGridWidth + "px", "height" : divPFCGridHeight + "px"});
+
+			var divNonPFCGridWidth = $(window).width() - 22;
+			var divNonPFCGridHeight = 370;
+			$("#divNonPFCGrid").css({"width" : divNonPFCGridWidth + "px", "height" : divNonPFCGridHeight + "px"});
+
+			var divCommentsGridWidth = $(window).width() - 22;
+			var divCommentsGridHeight = 50;
+			$("#divCommentsGrid").css({"width" : divCommentsGridWidth + "px", "height" : divCommentsGridHeight + "px"});
 		},
 
 		controlKeyProcessor: function() {
@@ -529,188 +541,188 @@ ii.Class({
 			$("#Notes").height(100);
 			$("#Notes").change(function() { me.modified(); });
 			
-			me.laborControlGrid = new ui.ctl.Grid({
-				id: "LaborControlGrid",
-				appendToId: "divForm",
-				selectFunction: function( index ) { me.laborControlItemSelect(index); },
-				deleteFunction: function() { return true; }
-			});
-
-			me.metricTypeTitle = new ui.ctl.Input.Text({
-		        id: "MetricTypeTitle",
-				appendToId: "LaborControlGridControlHolder"
-		    });
-
-			me.period1 = new ui.ctl.Input.Text({
-				id: "Period1",
-				appendToId: "LaborControlGridControlHolder",
-				changeFunction: function() { me.modified(); }
-			});
-
-			me.period1.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( function( isFinal, dataMap ) {
-
-					me.validateControl(me.period1, me.laborControlGrid);
-				});
-
-			me.period2 = new ui.ctl.Input.Text({
-				id: "Period2",
-				appendToId: "LaborControlGridControlHolder",
-				changeFunction: function() { me.modified(); }
-			});
-			
-			me.period2.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( function( isFinal, dataMap ) {
-
-					me.validateControl(me.period2, me.laborControlGrid);
-				});
-				
-			me.period3 = new ui.ctl.Input.Text({
-				id: "Period3",
-				appendToId: "LaborControlGridControlHolder",
-				changeFunction: function() { me.modified(); }
-			});
-
-			me.period3.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( function( isFinal, dataMap ) {
-
-					me.validateControl(me.period3, me.laborControlGrid);
-				});
-	
-			me.period4 = new ui.ctl.Input.Text({
-				id: "Period4",
-				appendToId: "LaborControlGridControlHolder",
-				changeFunction: function() { me.modified(); }
-			});
-
-			me.period4.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( function( isFinal, dataMap ) {
-
-					me.validateControl(me.period4, me.laborControlGrid);
-				});
-				
-			me.period5 = new ui.ctl.Input.Text({
-				id: "Period5",
-				appendToId: "LaborControlGridControlHolder",
-				changeFunction: function() { me.modified(); }
-			});
-			
-			me.period5.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( function( isFinal, dataMap ) {
-
-					me.validateControl(me.period5, me.laborControlGrid);
-				});
-				
-			me.period6 = new ui.ctl.Input.Text({
-				id: "Period6",
-				appendToId: "LaborControlGridControlHolder",
-				changeFunction: function() { me.modified(); }
-			});
-			
-			me.period6.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( function( isFinal, dataMap ) {
-
-					me.validateControl(me.period6, me.laborControlGrid);
-				});
-
-			me.period7 = new ui.ctl.Input.Text({
-				id: "Period7",
-				appendToId: "LaborControlGridControlHolder",
-				changeFunction: function() { me.modified(); }
-			});
-			
-			me.period7.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( function( isFinal, dataMap ) {
-
-					me.validateControl(me.period7, me.laborControlGrid);
-				});
-				
-			me.period8 = new ui.ctl.Input.Text({
-				id: "Period8",
-				appendToId: "LaborControlGridControlHolder",
-				changeFunction: function() { me.modified(); }
-			});
-			
-			me.period8.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( function( isFinal, dataMap ) {
-
-					me.validateControl(me.period8, me.laborControlGrid);
-				});
-				
-			me.period9 = new ui.ctl.Input.Text({
-				id: "Period9",
-				appendToId: "LaborControlGridControlHolder",
-				changeFunction: function() { me.modified(); }
-			});
-			
-			me.period9.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( function( isFinal, dataMap ) {
-
-					me.validateControl(me.period9, me.laborControlGrid);
-				});
-				
-			me.period10 = new ui.ctl.Input.Text({
-				id: "Period10",
-				appendToId: "LaborControlGridControlHolder",
-				changeFunction: function() { me.modified(); }
-			});
-			
-			me.period10.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( function( isFinal, dataMap ) {
-
-					me.validateControl(me.period10, me.laborControlGrid);
-				});
-				
-			me.period11 = new ui.ctl.Input.Text({
-				id: "Period11",
-				appendToId: "LaborControlGridControlHolder",
-				changeFunction: function() { me.modified(); }
-			});
-			
-			me.period11.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( function( isFinal, dataMap ) {
-
-					me.validateControl(me.period11, me.laborControlGrid);
-				});
-				
-			me.period12 = new ui.ctl.Input.Text({
-				id: "Period12",
-				appendToId: "LaborControlGridControlHolder",
-				changeFunction: function() { me.modified(); }
-			});
-			
-			me.period12.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( function( isFinal, dataMap ) {
-
-					me.validateControl(me.period12, me.laborControlGrid);
-				});
-				
-			me.laborControlGrid.addColumn("ptMetricTypeTitle", "ptMetricTypeTitle", "", "", null, null, me.metricTypeTitle);
-			me.laborControlGrid.addColumn("period1", "period1", "Period 1", "Period 1", 200, null, me.period1);
-			me.laborControlGrid.addColumn("period2", "period2", "Period 2", "Period 2", 200, null, me.period2);
-			me.laborControlGrid.addColumn("period3", "period3", "Period 3", "Period 3", 200, null, me.period3);
-			me.laborControlGrid.addColumn("period4", "period4", "Period 4", "Period 4", 200, null, me.period4);
-			me.laborControlGrid.addColumn("period5", "period5", "Period 5", "Period 5", 200, null, me.period5);
-			me.laborControlGrid.addColumn("period6", "period6", "Period 6", "Period 6", 200, null, me.period6);
-			me.laborControlGrid.addColumn("period7", "period7", "Period 7", "Period 7", 200, null, me.period7);
-			me.laborControlGrid.addColumn("period8", "period8", "Period 8", "Period 8", 200, null, me.period8);
-			me.laborControlGrid.addColumn("period9", "period9", "Period 9", "Period 9", 200, null, me.period9);
-			me.laborControlGrid.addColumn("period10", "period10", "Period 10", "Period 10", 200, null, me.period10);
-			me.laborControlGrid.addColumn("period11", "period11", "Period 11", "Period 11", 200, null, me.period11);
-			me.laborControlGrid.addColumn("period12", "period12", "Period 12", "Period 12", 200, null, me.period12);
-			me.laborControlGrid.capColumns();
+//			me.laborControlGrid = new ui.ctl.Grid({
+//				id: "LaborControlGrid",
+//				appendToId: "divForm",
+//				selectFunction: function( index ) { me.laborControlItemSelect(index); },
+//				deleteFunction: function() { return true; }
+//			});
+//
+//			me.metricTypeTitle = new ui.ctl.Input.Text({
+//		        id: "MetricTypeTitle",
+//				appendToId: "LaborControlGridControlHolder"
+//		    });
+//
+//			me.period1 = new ui.ctl.Input.Text({
+//				id: "Period1",
+//				appendToId: "LaborControlGridControlHolder",
+//				changeFunction: function() { me.modified(); }
+//			});
+//
+//			me.period1.makeEnterTab()
+//				.setValidationMaster( me.validator )
+//				.addValidation( function( isFinal, dataMap ) {
+//
+//					me.validateControl(me.period1, me.laborControlGrid);
+//				});
+//
+//			me.period2 = new ui.ctl.Input.Text({
+//				id: "Period2",
+//				appendToId: "LaborControlGridControlHolder",
+//				changeFunction: function() { me.modified(); }
+//			});
+//			
+//			me.period2.makeEnterTab()
+//				.setValidationMaster( me.validator )
+//				.addValidation( function( isFinal, dataMap ) {
+//
+//					me.validateControl(me.period2, me.laborControlGrid);
+//				});
+//				
+//			me.period3 = new ui.ctl.Input.Text({
+//				id: "Period3",
+//				appendToId: "LaborControlGridControlHolder",
+//				changeFunction: function() { me.modified(); }
+//			});
+//
+//			me.period3.makeEnterTab()
+//				.setValidationMaster( me.validator )
+//				.addValidation( function( isFinal, dataMap ) {
+//
+//					me.validateControl(me.period3, me.laborControlGrid);
+//				});
+//	
+//			me.period4 = new ui.ctl.Input.Text({
+//				id: "Period4",
+//				appendToId: "LaborControlGridControlHolder",
+//				changeFunction: function() { me.modified(); }
+//			});
+//
+//			me.period4.makeEnterTab()
+//				.setValidationMaster( me.validator )
+//				.addValidation( function( isFinal, dataMap ) {
+//
+//					me.validateControl(me.period4, me.laborControlGrid);
+//				});
+//				
+//			me.period5 = new ui.ctl.Input.Text({
+//				id: "Period5",
+//				appendToId: "LaborControlGridControlHolder",
+//				changeFunction: function() { me.modified(); }
+//			});
+//			
+//			me.period5.makeEnterTab()
+//				.setValidationMaster( me.validator )
+//				.addValidation( function( isFinal, dataMap ) {
+//
+//					me.validateControl(me.period5, me.laborControlGrid);
+//				});
+//				
+//			me.period6 = new ui.ctl.Input.Text({
+//				id: "Period6",
+//				appendToId: "LaborControlGridControlHolder",
+//				changeFunction: function() { me.modified(); }
+//			});
+//			
+//			me.period6.makeEnterTab()
+//				.setValidationMaster( me.validator )
+//				.addValidation( function( isFinal, dataMap ) {
+//
+//					me.validateControl(me.period6, me.laborControlGrid);
+//				});
+//
+//			me.period7 = new ui.ctl.Input.Text({
+//				id: "Period7",
+//				appendToId: "LaborControlGridControlHolder",
+//				changeFunction: function() { me.modified(); }
+//			});
+//			
+//			me.period7.makeEnterTab()
+//				.setValidationMaster( me.validator )
+//				.addValidation( function( isFinal, dataMap ) {
+//
+//					me.validateControl(me.period7, me.laborControlGrid);
+//				});
+//				
+//			me.period8 = new ui.ctl.Input.Text({
+//				id: "Period8",
+//				appendToId: "LaborControlGridControlHolder",
+//				changeFunction: function() { me.modified(); }
+//			});
+//			
+//			me.period8.makeEnterTab()
+//				.setValidationMaster( me.validator )
+//				.addValidation( function( isFinal, dataMap ) {
+//
+//					me.validateControl(me.period8, me.laborControlGrid);
+//				});
+//				
+//			me.period9 = new ui.ctl.Input.Text({
+//				id: "Period9",
+//				appendToId: "LaborControlGridControlHolder",
+//				changeFunction: function() { me.modified(); }
+//			});
+//			
+//			me.period9.makeEnterTab()
+//				.setValidationMaster( me.validator )
+//				.addValidation( function( isFinal, dataMap ) {
+//
+//					me.validateControl(me.period9, me.laborControlGrid);
+//				});
+//				
+//			me.period10 = new ui.ctl.Input.Text({
+//				id: "Period10",
+//				appendToId: "LaborControlGridControlHolder",
+//				changeFunction: function() { me.modified(); }
+//			});
+//			
+//			me.period10.makeEnterTab()
+//				.setValidationMaster( me.validator )
+//				.addValidation( function( isFinal, dataMap ) {
+//
+//					me.validateControl(me.period10, me.laborControlGrid);
+//				});
+//				
+//			me.period11 = new ui.ctl.Input.Text({
+//				id: "Period11",
+//				appendToId: "LaborControlGridControlHolder",
+//				changeFunction: function() { me.modified(); }
+//			});
+//			
+//			me.period11.makeEnterTab()
+//				.setValidationMaster( me.validator )
+//				.addValidation( function( isFinal, dataMap ) {
+//
+//					me.validateControl(me.period11, me.laborControlGrid);
+//				});
+//				
+//			me.period12 = new ui.ctl.Input.Text({
+//				id: "Period12",
+//				appendToId: "LaborControlGridControlHolder",
+//				changeFunction: function() { me.modified(); }
+//			});
+//			
+//			me.period12.makeEnterTab()
+//				.setValidationMaster( me.validator )
+//				.addValidation( function( isFinal, dataMap ) {
+//
+//					me.validateControl(me.period12, me.laborControlGrid);
+//				});
+//				
+//			me.laborControlGrid.addColumn("ptMetricTypeTitle", "ptMetricTypeTitle", "", "", null, null, me.metricTypeTitle);
+//			me.laborControlGrid.addColumn("period1", "period1", "Period 1", "Period 1", 200, null, me.period1);
+//			me.laborControlGrid.addColumn("period2", "period2", "Period 2", "Period 2", 200, null, me.period2);
+//			me.laborControlGrid.addColumn("period3", "period3", "Period 3", "Period 3", 200, null, me.period3);
+//			me.laborControlGrid.addColumn("period4", "period4", "Period 4", "Period 4", 200, null, me.period4);
+//			me.laborControlGrid.addColumn("period5", "period5", "Period 5", "Period 5", 200, null, me.period5);
+//			me.laborControlGrid.addColumn("period6", "period6", "Period 6", "Period 6", 200, null, me.period6);
+//			me.laborControlGrid.addColumn("period7", "period7", "Period 7", "Period 7", 200, null, me.period7);
+//			me.laborControlGrid.addColumn("period8", "period8", "Period 8", "Period 8", 200, null, me.period8);
+//			me.laborControlGrid.addColumn("period9", "period9", "Period 9", "Period 9", 200, null, me.period9);
+//			me.laborControlGrid.addColumn("period10", "period10", "Period 10", "Period 10", 200, null, me.period10);
+//			me.laborControlGrid.addColumn("period11", "period11", "Period 11", "Period 11", 200, null, me.period11);
+//			me.laborControlGrid.addColumn("period12", "period12", "Period 12", "Period 12", 200, null, me.period12);
+//			me.laborControlGrid.capColumns();
 
 			me.strategicInitiativeGrid = new ui.ctl.Grid({
 				id: "StrategicInitiativeGrid",
@@ -2441,6 +2453,9 @@ ii.Class({
 			});
 
 			$("#QualityAssuranceContainer").bind("scroll", me.qualityAssuranceGridScroll);
+			$("#divPFCGrid").bind("scroll", me.pfcGridScroll);
+			$("#divNonPFCGrid").bind("scroll", me.nonPFCGridScroll);
+			$("#divCommentsGrid").bind("scroll", me.commentsGridScroll);
 		},
 
 		setStatus: function(status) {
@@ -2519,6 +2534,24 @@ ii.Class({
 			me.auditScoreGrid.setHeight(150);
 		},
 
+		pfcGridScroll: function() {
+		    var scrollLeft = $("#divPFCGrid").scrollLeft();
+
+			$("#tblPFCGridHeader").css("left", -scrollLeft + "px");
+		},
+
+		nonPFCGridScroll: function() {
+		    var scrollLeft = $("#divNonPFCGrid").scrollLeft();
+
+			$("#tblNonPFCGridHeader").css("left", -scrollLeft + "px");
+		},
+
+		commentsGridScroll: function() {
+		    var scrollLeft = $("#divCommentsGrid").scrollLeft();
+
+			$("#tblCommentsGridHeader").css("left", -scrollLeft + "px");
+		},
+
 		resizeControls: function(selectedTab) {
 			var me = this;
 
@@ -2544,15 +2577,15 @@ ii.Class({
 				me.taskManagementSystem.resizeText();
 				me.taskManagementSystemOther.resizeText();
 			}
-			else if (selectedTab == 2) {
-				if ($("#LaborControlGridContainer").width() < 2650) {
-					$("#LaborControlGrid").width(2650);
-					me.laborControlGrid.setHeight($(window).height() - 168);
-				}
-				else {
-					me.laborControlGrid.setHeight($(window).height() - 143);
-				}
-			}
+//			else if (selectedTab == 2) {
+//				if ($("#LaborControlGridContainer").width() < 2650) {
+//					$("#LaborControlGrid").width(2650);
+//					me.laborControlGrid.setHeight($(window).height() - 168);
+//				}
+//				else {
+//					me.laborControlGrid.setHeight($(window).height() - 143);
+//				}
+//			}
 			else if (selectedTab == 3) {
 				me.strategicInitiativeGrid.setHeight($(window).height() - 145);
 			}
@@ -2628,8 +2661,8 @@ ii.Class({
 			me.notes.value = "";
 			$("#TMSOtherContainer").hide();
 
-			if (me.laborControlGrid.activeRowIndex != - 1)
-				me.laborControlGrid.body.deselect(me.laborControlGrid.activeRowIndex, true);
+//			if (me.laborControlGrid.activeRowIndex != - 1)
+//				me.laborControlGrid.body.deselect(me.laborControlGrid.activeRowIndex, true);
 			if (me.strategicInitiativeGrid.activeRowIndex != - 1)
 				me.strategicInitiativeGrid.body.deselect(me.strategicInitiativeGrid.activeRowIndex, true);
 			if (me.qualityControlGrid.activeRowIndex != - 1)
@@ -2647,7 +2680,7 @@ ii.Class({
 			if (me.ptStatisticGrid.activeRowIndex != -1)
 			    me.ptStatisticGrid.body.deselect(me.ptStatisticGrid.activeRowIndex, true);
 
-			me.laborControlGrid.setData([]);
+//			me.laborControlGrid.setData([]);
 			me.strategicInitiativeGrid.setData([]);
 			me.qualityControlGrid.setData([]);
 			me.ptPressGaneyGrid.setData([]);
@@ -2936,7 +2969,7 @@ ii.Class({
 
  			if (me.numericDetails.length == 0) {
 				for (var index = 0; index < me.metricTypes.length; index++) {
-					if (me.metricTypes[index].subType == "Labor Control") {
+					if (me.metricTypes[index].subType == "Labor Control" && me.metricTypes[index].brief != "") {
 						var item = new fin.hcm.ptMetric.LaborControl(
 							0
 							, me.ptMetricId
@@ -3006,7 +3039,7 @@ ii.Class({
 						me.adminObjectives.push(item);
 					}
 					else if (me.metricTypes[index].subType == "PT Statistics") {
-					    var item = new fin.hcm.ptMetric.ptStaticstics(
+					    var item = new fin.hcm.ptMetric.PTStatistic(
 							0
 							, me.ptMetricId
 							, me.metricTypes[index]
@@ -3024,7 +3057,7 @@ ii.Class({
 			}
 			else {
 				for (var index = 0; index < me.numericDetails.length; index++) {
-					if (me.numericDetails[index].ptMetricType.subType == "Labor Control") {
+					if (me.numericDetails[index].ptMetricType.subType == "Labor Control" && me.numericDetails[index].ptMetricType.brief != "") {
 						var item = new fin.hcm.ptMetric.LaborControl(
 							me.numericDetails[index].id
 							, me.numericDetails[index].ptMetricId
@@ -3137,7 +3170,7 @@ ii.Class({
 				}
 
 				for (var index = 0; index < me.textDetails.length; index++) {
-					if (me.textDetails[index].ptMetricType.subType == "Labor Control") {
+					if (me.textDetails[index].ptMetricType.subType == "Labor Control" && me.textDetails[index].ptMetricType.brief != "") {
 						var item = new fin.hcm.ptMetric.LaborControl(
 							me.textDetails[index].id
 							, me.textDetails[index].ptMetricId
@@ -3157,11 +3190,11 @@ ii.Class({
 							, me.textDetails[index].period12
 							)
 
-						if (me.textDetails[index].ptMetricType.title == "Total Paid Labor Comments")
-							me.laborControls.splice(2, 0, item);
-						else if (me.textDetails[index].ptMetricType.title == "Total Hours Labor Comments")
-							me.laborControls.splice(5, 0, item);
-						else
+//						if (me.textDetails[index].ptMetricType.title == "Total Paid Labor Comments")
+//							me.laborControls.splice(2, 0, item);
+//						else if (me.textDetails[index].ptMetricType.title == "Total Hours Labor Comments")
+//							me.laborControls.splice(5, 0, item);
+//						else
 							me.laborControls.push(item);
 					}
 					else if (me.textDetails[index].ptMetricType.subType == "Quality Assurance - PT Press Ganey") {
@@ -3211,7 +3244,7 @@ ii.Class({
 				}
 				
 				for (var index = 0; index < me.metricTypes.length; index++) {
-					if (me.metricTypes[index].subType == "Labor Control") {
+					if (me.metricTypes[index].subType == "Labor Control" && me.metricTypes[index].brief != "") {
 						var result = $.grep(me.laborControls, function(item) { return item.ptMetricType.id == me.metricTypes[index].id; });
 						if (result.length == 0)
                         	me.laborControls.push(new fin.hcm.ptMetric.LaborControl(0, me.ptMetricId, me.metricTypes[index], me.metricTypes[index].title));
@@ -3253,12 +3286,12 @@ ii.Class({
 
 			me.ptPressGaneys.sort(me.customSort);
 			me.evsHCAHPS.sort(me.customSort);
-			me.laborControlGrid.setData(me.laborControls);
+//			me.laborControlGrid.setData(me.laborControls);
 			me.qualityControlGrid.setData(me.qualityControls);
 			me.ptPressGaneyGrid.setData(me.ptPressGaneys);
 			me.evsHCAHPSGrid.setData(me.evsHCAHPS);
 			me.ptStatisticGrid.setData(me.ptStatistics);
-
+			me.setLaborControlGrids();
 			if (me.reloadData) {
 				me.reloadData = false;
 				$("#pageLoading").fadeOut("slow");
@@ -3266,6 +3299,246 @@ ii.Class({
 			else {
 				me.checkLoadCount();
 			}
+		},
+
+		setLaborControlGrids: function() {
+			var me = this;
+			var rowIndex = 0;
+			var total = 0;
+			var laborControlRow = "";
+			var laborControlRowTemplate = $("#tblLaborControlTemplate").html();
+			var laborControlRowTotalTemplate = $("#tblLaborControlTotalTemplate").html();
+			var commentsRowTemplate = $("#tblCommentsTemplate").html();
+			$("#PFCGridBody").html("");
+			$("#NonPFCGridBody").html("");
+			$("#CommentsGridBody").html("");
+
+			for (var index = 0; index < me.laborControls.length; index++) {
+				if (me.laborControls[index].ptMetricType.brief === "BudgetPFC" || me.laborControls[index].ptMetricType.brief === "BudgetNonPFC") {
+					laborControlRow = laborControlRowTemplate;
+					laborControlRow = laborControlRow.replace("RowStyle", ((rowIndex % 2) ? "gridRow" : "alternateGridRow"));
+					laborControlRow = laborControlRow.replace(/RowCount/g, index);
+					if (me.laborControls[index].ptMetricType.brief === "BudgetPFC")
+						$("#PFCGridBody").append(laborControlRow);
+					else
+						$("#NonPFCGridBody").append(laborControlRow);
+					$("#tdTitle" + index).html(me.laborControls[index].ptMetricTypeTitle);
+					rowIndex++;
+				}
+				else if (me.laborControls[index].ptMetricType.brief === "Comments") {
+					$("#CommentsGridBody").append(commentsRowTemplate);
+					$("#trComments input[id^=txtPeriod]").bind("blur", function() { me.commentsBlur(this); });
+				}
+				
+				if (index == 3 || index == 7 || index == 11 || index == 15 || index == 19 || index == 23) {
+					laborControlRow = laborControlRowTotalTemplate;
+					laborControlRow = laborControlRow.replace(/RowCount/g, index);
+					laborControlRow = laborControlRow.replace("RowStyle", "totalGridRow");
+					if (index == 3 || index == 7)
+						$("#PFCGridBody").append(laborControlRow);
+					else
+						$("#NonPFCGridBody").append(laborControlRow);
+
+					if (index == 3)
+						$("#tdTitleTotal" + index).html("Paid Total Hours");
+					else if (index == 7)
+						$("#tdTitleTotal" + index).html("Paid Total Dollars");
+					else if (index == 11)
+						$("#tdTitleTotal" + index).html("Total Productive Hours");
+					else if (index == 15) {
+						$("#tdTitleTotal" + index).html("Total Non-Productive Hours");
+						laborControlRow = laborControlRowTotalTemplate;
+						laborControlRow = laborControlRow.replace(/RowCount/g, "Paid" + index);
+						laborControlRow = laborControlRow.replace("RowStyle", "grandTotalGridRow");
+						$("#NonPFCGridBody").append(laborControlRow);
+						$("#tdTitleTotalPaid" + index).html("Paid Total Hours");
+					}
+					else if (index == 19)
+						$("#tdTitleTotal" + index).html("Total Productive Dollars");
+					else if (index == 23) {
+						$("#tdTitleTotal" + index).html("Total Non-Productive Dollars");
+						laborControlRow = laborControlRowTotalTemplate;
+						laborControlRow = laborControlRow.replace(/RowCount/g, "Paid" + index);
+						laborControlRow = laborControlRow.replace("RowStyle", "grandTotalGridRow");
+						$("#NonPFCGridBody").append(laborControlRow);
+						$("#tdTitleTotalPaid" + index).html("Paid Total Dollars");
+					}
+				}
+				
+				$("#trLaborControl" + index + " input[id^=txtPeriod]").keypress(function (e) {
+					if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57))
+						return false;
+				});
+				$("#trLaborControl" + index + " input[id^=txtPeriod]").bind("blur", function() { me.periodBlur(this); });
+			}
+
+			for (var index = 0; index < me.laborControls.length; index++) {
+				if (me.laborControls[index].ptMetricType.brief == "BudgetPFC" || me.laborControls[index].ptMetricType.brief == "BudgetNonPFC") {
+					for (var iIndex = 1; iIndex <= 12; iIndex++) {
+						$("#txtPeriod" + iIndex + "Budget" + index).val(me.laborControls[index]["period" + iIndex] == "" ? "" : parseInt(me.laborControls[index]["period" + iIndex], 10));
+					}
+				}
+				else if (me.laborControls[index].ptMetricType.brief == "ActualPFC" || me.laborControls[index].ptMetricType.brief == "ActualNonPFC") {
+					for (var iIndex = 1; iIndex <= 12; iIndex++) {
+						$("#txtPeriod" + iIndex + "Actual" + (index - 1)).val(me.laborControls[index]["period" + iIndex] == "" ? "" : parseInt(me.laborControls[index]["period" + iIndex], 10));
+					}
+				}
+				else if (me.laborControls[index].ptMetricType.brief == "Comments") {
+					for (var iIndex = 1; iIndex <= 12; iIndex++) {
+						$("#txtPeriod" + iIndex).val(me.laborControls[index]["period" + iIndex]);
+					}
+				}
+				
+				if (index == 3 || index == 7) {
+					for (var iIndex = 1; iIndex <= 12; iIndex++) {
+						total = ($("#txtPeriod" + iIndex + "Budget" + (index - 3)).val() == "" ? 0 : parseInt($("#txtPeriod" + iIndex + "Budget" + (index - 3)).val(), 10))
+							+ ($("#txtPeriod" + iIndex + "Budget" + (index - 1)).val() == "" ? 0 : parseInt($("#txtPeriod" + iIndex + "Budget" + (index - 1)).val(), 10));
+						$("#spnPeriod" + iIndex + "Budget" + index).html(total);
+						total = ($("#txtPeriod" + iIndex + "Actual" + (index - 3)).val() == "" ? 0 : parseInt($("#txtPeriod" + iIndex + "Actual" + (index - 3)).val(), 10))
+							+ ($("#txtPeriod" + iIndex + "Actual" + (index - 1)).val() == "" ? 0 : parseInt($("#txtPeriod" + iIndex + "Actual" + (index - 1)).val(), 10));
+						$("#spnPeriod" + iIndex + "Actual" + index).html(total);
+					}
+				}
+				else if (index == 11 || index == 15 || index == 19 || index == 23) {
+					for (var iIndex = 1; iIndex <= 12; iIndex++) {
+						total = ($("#txtPeriod" + iIndex + "Budget" + (index - 3)).val() == "" ? 0 : parseInt($("#txtPeriod" + iIndex + "Budget" + (index - 3)).val(), 10))
+							+ ($("#txtPeriod" + iIndex + "Budget" + (index - 1)).val() == "" ? 0 : parseInt($("#txtPeriod" + iIndex + "Budget" + (index - 1)).val(), 10));
+						$("#spnPeriod" + iIndex + "Budget" + index).html(total);
+						total = ($("#txtPeriod" + iIndex + "Actual" + (index - 3)).val() == "" ? 0 : parseInt($("#txtPeriod" + iIndex + "Actual" + (index - 3)).val(), 10))
+							+ ($("#txtPeriod" + iIndex + "Actual" + (index - 1)).val() == "" ? 0 : parseInt($("#txtPeriod" + iIndex + "Actual" + (index - 1)).val(), 10));
+						$("#spnPeriod" + iIndex + "Actual" + index).html(total);
+					}
+					
+					if (index == 15 || index == 23) {
+						for (var iIndex = 1; iIndex <= 12; iIndex++) {
+							total = parseInt($("#spnPeriod" + iIndex + "Budget" + (index - 4)).html(), 10) + parseInt($("#spnPeriod" + iIndex + "Budget" + index).html(), 10);
+							$("#spnPeriod" + iIndex + "BudgetPaid" + index).html(total);
+							total = parseInt($("#spnPeriod" + iIndex + "Actual" + (index - 4)).html(), 10) + parseInt($("#spnPeriod" + iIndex + "Actual" + index).html(), 10);
+							$("#spnPeriod" + iIndex + "ActualPaid" + index).html(total);
+						}
+					}
+				}
+			}
+  		},
+
+		periodBlur: function(objInput) {
+		    var me = this;
+			var rowCount = 0;
+			var total = 0;
+			var startRowNumber = 0;
+			var endRowNumber = 0;
+			var totalRowNumber = 0;
+			var period = "";
+			var type = "";
+			var id = objInput.id.replace("txtPeriod", "");
+
+			//Remove any unwanted characters
+			objInput.value = objInput.value.replace(/[^0-9]/g, "");
+			
+			if (id.indexOf("Budget") > 0) {
+				type = "Budget";
+				period = id.substring(0, id.indexOf("Budget"));
+				rowCount = parseInt(id.substring(id.indexOf("Budget")).replace("Budget", ""), 10);
+			}
+			else if (id.indexOf("Actual") > 0) {
+				type = "Actual";
+				period = id.substring(0, id.indexOf("Actual"));
+				rowCount = parseInt(id.substring(id.indexOf("Actual")).replace("Actual", ""), 10) + 1;
+			}
+
+		    //Make sure we have a change
+		    if (objInput.value != me.laborControls[rowCount]["period" + period]) {
+ 				me.laborControls[rowCount]["period" + period] = objInput.value;
+				me.laborControls[rowCount].modified = true;
+				me.modified();
+
+				if (rowCount == 0 || rowCount == 2) {
+					startRowNumber = 0;
+					endRowNumber = 2;
+					totalRowNumber = 3;
+				}
+				else if (rowCount == 1 || rowCount == 3) {
+					startRowNumber = 1;
+					endRowNumber = 3;
+					totalRowNumber = 3;
+				}
+				else if (rowCount == 4 || rowCount == 6) {
+					startRowNumber = 4;
+					endRowNumber = 6;
+					totalRowNumber = 7;
+				}
+				else if (rowCount == 5 || rowCount == 7) {
+					startRowNumber = 5;
+					endRowNumber = 7;
+					totalRowNumber = 7;
+				}
+				else if (rowCount == 8 || rowCount == 10) {
+					startRowNumber = 8;
+					endRowNumber = 10;
+					totalRowNumber = 11;
+				}
+				else if (rowCount == 9 || rowCount == 11) {
+					startRowNumber = 9;
+					endRowNumber = 11;
+					totalRowNumber = 11;
+				}
+				else if (rowCount == 12 || rowCount == 14) {
+					startRowNumber = 12;
+					endRowNumber = 14;
+					totalRowNumber = 15;
+				}
+				else if (rowCount == 13 || rowCount == 15) {
+					startRowNumber = 13;
+					endRowNumber = 15;
+					totalRowNumber = 15;
+				}
+				else if (rowCount == 16 || rowCount == 18) {
+					startRowNumber = 16;
+					endRowNumber = 18;
+					totalRowNumber = 19;
+				}
+				else if (rowCount == 17 || rowCount == 19) {
+					startRowNumber = 17;
+					endRowNumber = 19;
+					totalRowNumber = 19;
+				}
+				else if (rowCount == 20 || rowCount == 22) {
+					startRowNumber = 20;
+					endRowNumber = 22;
+					totalRowNumber = 23;
+				}
+				else if (rowCount == 21 || rowCount == 23) {
+					startRowNumber = 21;
+					endRowNumber = 23;
+					totalRowNumber = 23;
+				}
+				
+				total = (me.laborControls[startRowNumber]["period" + period] == "" ? 0 : parseInt(me.laborControls[startRowNumber]["period" + period], 10))
+					+ (me.laborControls[endRowNumber]["period" + period] == "" ? 0 : parseInt(me.laborControls[endRowNumber]["period" + period], 10));
+				$("#spnPeriod" + period + type + totalRowNumber).html(total);
+
+				if (rowCount >= 8 && rowCount <= 15) {
+					total = ($("#spnPeriod" + period + type + "11").html() == "" ? 0 : parseInt($("#spnPeriod" + period + type + "11").html(), 10))
+						+ ($("#spnPeriod" + period + type + "15").html() == "" ? 0 : parseInt($("#spnPeriod" + period + type + "15").html(), 10));
+					$("#spnPeriod" + period + type + "Paid15").html(total);
+				}
+				else if (rowCount >= 16 && rowCount <= 23) {
+					total = ($("#spnPeriod" + period + type + "19").html() == "" ? 0 : parseInt($("#spnPeriod" + period + type + "19").html(), 10))
+						+ ($("#spnPeriod" + period + type + "23").html() == "" ? 0 : parseInt($("#spnPeriod" + period + type + "23").html(), 10));
+					$("#spnPeriod" + period + type + "Paid23").html(total);
+				}
+		    }
+		},
+
+		commentsBlur: function(objInput) {
+		    var me = this;
+			var period = objInput.id.replace("txtPeriod", "");
+
+		    if (objInput.value != me.laborControls[24]["period" + period]) {
+ 				me.laborControls[24]["period" + period] = objInput.value;
+				me.laborControls[24].modified = true;
+				me.modified();
+		    }
 		},
 
 		// This is a comparison function that will result in data being sorted in display order.
@@ -3297,20 +3570,20 @@ ii.Class({
 			}
 		},
 
-		laborControlItemSelect: function() { 
-			var args = ii.args(arguments, {
-				index: {type: Number}  // The index of the data subItem to select
-			});
-			var me = this;
-			var index = args.index;
-						
-			if (me.laborControlGrid.data[index] != undefined) {
-				me.laborControlGrid.data[index].modified = true;
-				me.period1.text.select();
-				me.period1.text.focus();
-				me.metricTypeTitle.text.readOnly = true;
-			}
-		},
+//		laborControlItemSelect: function() { 
+//			var args = ii.args(arguments, {
+//				index: {type: Number}  // The index of the data subItem to select
+//			});
+//			var me = this;
+//			var index = args.index;
+//						
+//			if (me.laborControlGrid.data[index] != undefined) {
+//				me.laborControlGrid.data[index].modified = true;
+//				me.period1.text.select();
+//				me.period1.text.focus();
+//				me.metricTypeTitle.text.readOnly = true;
+//			}
+//		},
 		
 		strategicInitiativeItemSelect: function() { 
 			var args = ii.args(arguments, {
@@ -3469,7 +3742,7 @@ ii.Class({
 			var item = [];
 
 			// Check to see if the data entered is valid
-			me.laborControlGrid.body.deselectAll();
+//			me.laborControlGrid.body.deselectAll();
 			me.strategicInitiativeGrid.body.deselectAll();
 			me.qualityControlGrid.body.deselectAll();
 			me.ptPressGaneyGrid.body.deselectAll();
@@ -3501,10 +3774,10 @@ ii.Class({
 				}
 			}
 
-			if (me.laborControlShow && me.laborControlGrid.activeRowIndex >= 0) {
-				alert("In order to save, the errors on the page must be corrected. Please verify the data on Labor Control tab.");
-				return false;
-			}
+//			if (me.laborControlShow && me.laborControlGrid.activeRowIndex >= 0) {
+//				alert("In order to save, the errors on the page must be corrected. Please verify the data on Labor Control tab.");
+//				return false;
+//			}
 
 			if (me.strategicInitiativesShow && me.strategicInitiativeGrid.activeRowIndex >= 0) {
 				alert("In order to save, the errors on the page must be corrected. Please verify the data on Strategic Initiatives tab.");
@@ -3625,7 +3898,7 @@ ii.Class({
 						me.laborControls[index].modified = false;
 						if (me.laborControls[index].id == 0)
 							me.reloadData = true;
-						if (me.laborControls[index].ptMetricType.dataType == "Decimal")
+						if (me.laborControls[index].ptMetricType.dataType == "Decimal" || me.laborControls[index].ptMetricType.dataType == "Integer")
 							xml += '<ptMetricNumericDetail';
 						else
 							xml += '<ptMetricTextDetail';
