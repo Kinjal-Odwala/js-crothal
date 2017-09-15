@@ -35,6 +35,7 @@ ii.init.register( function() {
 	fin.hcm.ptMetric.metricTypeArgs = {
 		id: {type: Number, required: false, defaultValue: 0}
 		, subType: {type: String, required: false, defaultValue: ""}
+		, brief: {type: String, required: false, defaultValue: ""}
 		, title: {type: String, required: false, defaultValue: ""}
 		, dataType: {type: String, required: false, defaultValue: ""}
 		, displayOrder: {type: Number, required: false, defaultValue: 0}
@@ -70,8 +71,8 @@ ii.init.register( function() {
 		, serviceLinePOM: {type: String, required: false, defaultValue: ""}
 		, serviceLineCES: {type: String, required: false, defaultValue: ""}
 		, costedTripCycleTime: {type: String, required: false, defaultValue: ""}
-		, contractedAnnualTrips: { type: String, required: false, defaultValue: "" }
-        , contractTripEscalator: { type: String, required: false, defaultValue: "" }
+		, contractedAnnualTrips: {type: String, required: false, defaultValue: ""}
+        , contractTripEscalator: {type: String, required: false, defaultValue: ""}
 		, taskManagementSystem: {type: Number, required: false, defaultValue: 0}
 		, taskManagementSystemOther: {type: String, required: false, defaultValue: ""}
 		, notes: {type: String, required: false, defaultValue: ""}
@@ -290,23 +291,23 @@ ii.init.register( function() {
 	};
 
 	fin.hcm.ptMetric.ptStatisticArgs = {
-	    id: { type: Number, required: false, defaultValue: 0 }
-        , ptMetricId: { type: Number, required: false, defaultValue: 0 }
-        , ptMetricType: { type: fin.hcm.ptMetric.MetricType, required: false }
-        , ptMetricTypeTitle: { type: String, required: false, defaultValue: "" }
-        , period1: { type: String, required: false, defaultValue: "" }
-        , period2: { type: String, required: false, defaultValue: "" }
-        , period3: { type: String, required: false, defaultValue: "" }
-        , period4: { type: String, required: false, defaultValue: "" }
-        , period5: { type: String, required: false, defaultValue: "" }
-        , period6: { type: String, required: false, defaultValue: "" }
-        , period7: { type: String, required: false, defaultValue: "" }
-        , period8: { type: String, required: false, defaultValue: "" }
-        , period9: { type: String, required: false, defaultValue: "" }
-        , period10: { type: String, required: false, defaultValue: "" }
-        , period11: { type: String, required: false, defaultValue: "" }
-        , period12: { type: String, required: false, defaultValue: "" }
-        , modified: { type: Boolean, required: false, defaultValue: false }
+	    id: {type: Number, required: false, defaultValue: 0}
+        , ptMetricId: {type: Number, required: false, defaultValue: 0}
+        , ptMetricType: {type: fin.hcm.ptMetric.MetricType, required: false}
+        , ptMetricTypeTitle: {type: String, required: false, defaultValue: ""}
+        , period1: {type: String, required: false, defaultValue: ""}
+        , period2: {type: String, required: false, defaultValue: ""}
+        , period3: {type: String, required: false, defaultValue: ""}
+        , period4: {type: String, required: false, defaultValue: ""}
+        , period5: {type: String, required: false, defaultValue: ""}
+        , period6: {type: String, required: false, defaultValue: ""}
+        , period7: {type: String, required: false, defaultValue: ""}
+        , period8: {type: String, required: false, defaultValue: ""}
+        , period9: {type: String, required: false, defaultValue: ""}
+        , period10: {type: String, required: false, defaultValue: ""}
+        , period11: {type: String, required: false, defaultValue: ""}
+        , period12: {type: String, required: false, defaultValue: ""}
+        , modified: {type: Boolean, required: false, defaultValue: false}
 	};
 	
 }, 2);

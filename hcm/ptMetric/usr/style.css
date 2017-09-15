@@ -73,6 +73,104 @@
 	font-size: 8pt;
 }
 
+.gridBorder {
+	border: solid #AAAAAA thin;
+	border-width: 1px;
+}
+
+.gridHeaderColumn {
+	background-color: #669966;
+	border-right: solid #AAAAAA thin;
+	border-width: 1px;
+	border-bottom: solid #AAAAAA thin;
+	border-width: 1px;
+	border-spacing: 0px 0px;
+	border-collapse: collapse;
+	font-family: Verdana;
+	font-size: 8pt;
+	font-weight: bold;
+	color: white;
+	text-align: center;
+	padding: 3px 2px 3px 2px;
+}
+
+.gridHeaderColumnRight {
+	background-color: #669966;
+	border-bottom: solid #AAAAAA thin;
+	border-width: 1px;
+	border-spacing: 0px 0px;
+	border-collapse: collapse;
+	font-family: Verdana;
+	font-size: 8pt;
+	font-weight: bold;
+	color: white;	
+	text-align: center;
+	padding: 3px 2px 3px 2px;
+}
+
+.gridColumn {	
+	border-right: solid #AAAAAA thin;
+	border-width: 1px;
+	border-spacing: 0px 0px;
+	border-collapse: collapse;
+	font-family: Verdana;
+	font-size: 8pt;
+	color: #032D23;
+	height: 18px;
+	vertical-align: middle;
+	padding: 3px 2px 3px 2px;
+}
+
+.gridColumnRight {	
+	border-spacing: 0px 0px;
+	border-collapse: collapse;
+	font-family: Verdana;
+	font-size: 8pt;
+	color: #032D23;
+	height: 18px;
+	vertical-align: middle;
+	padding: 3px 2px 3px 2px;
+}
+
+.gridRow { 
+	background-color: #F0EFDD;
+}
+
+.gridRow input {
+    font-family: Verdana;
+    font-size: 8pt;
+	color: #032D23;
+	padding: 0px;
+}
+
+.alternateGridRow { 
+	background-color: #FFFFFF;
+}
+
+.alternateGridRow input {
+    font-family: Verdana;
+    font-size: 8pt;
+	color: #032D23;
+	padding: 0px;
+}
+
+.spanColumn {	
+	padding-right: 3px;
+}
+
+.totalGridRow {
+	height: 20px;
+	font-weight: bold;
+	background-color: #C2E4C1;
+}
+
+.grandTotalGridRow {
+	height: 20px;
+	color: white;
+	font-weight: bold;
+	background-color: #669966;
+}
+
 #Notes {
 	float: left;
 	width: 620px;
@@ -93,7 +191,7 @@
 	overflow-y: hidden;
 }
 
-#QualityAssuranceContainer {
+#LaborControlContainer, #QualityAssuranceContainer {
 	position: relative;
 	overflow-x: hidden;
 	overflow-y: auto;

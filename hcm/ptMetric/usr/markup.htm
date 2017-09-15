@@ -21,7 +21,6 @@
 		        <div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
 		    </div>
 		</div>
-        
 		<div class="pageHeader">
 	        <div id="actionMenu" title="Menu of actions that you can perform.">Actions<span>&nbsp;</span></div>
 			<div id="HouseCode">
@@ -35,7 +34,6 @@
 				<div id="Year"></div>
 			</div>
         </div>
-		
 		<div style="clear:both;"></div>
 		<div id="itemStatusDiv">
 			<div id="itemStatusImage" class="itemStatusImage"></div>
@@ -43,7 +41,6 @@
 			<div id="itemStatusText">Loading, please wait...</div>
 		</div>
 		<div style="clear:both;"></div>
-			
 		<div id="pageBody" class="pageBody">
 	        <div id="container-1">
 	    		<div id="fragment-1" class="fragment">
@@ -261,16 +258,185 @@
 							</div>
 							<div style="clear:both;"></div>
 						</div>
-                        <div style="clear:both;"></div> 
+                        <div style="clear:both;"></div>
 					</div>
 	        	</div>
 				<div id="fragment-2" class="fragment">
 					<div id="LaborControlContainer" class="contentArea">
 			        	<div class="header">Labor Control</div>
-						<div id="GridLaborControl">
+						<div id="GridLaborControl" style="display: none">
 							<div id="LaborControlGridContainer">
 								<div id="LaborControlGrid"></div>
 							</div>
+						</div>
+						<div id="GridLaborControl">
+							<table class="gridBorder" cellpadding="0" cellspacing="0" width="100%;" height="100%;">
+						    	<tr>
+						        	<td>
+						        		<div class="header">PFC</div>
+										<div style="height: 40px; width: 100%; position: relative; z-index: 3; overflow: hidden;">
+											<table id="tblPFCGridHeader" border="0" cellpadding="0" cellspacing="0" style="position: absolute; z-index: 2; width: 3495px;">
+												<thead id="PFCGridHead">
+													<tr>
+														<th class="gridHeaderColumn">&nbsp;</th>
+														<th class="gridHeaderColumn" colspan="2">Period 1</th>
+														<th class="gridHeaderColumn" colspan="2">Period 2</th>
+														<th class="gridHeaderColumn" colspan="2">Period 3</th>
+														<th class="gridHeaderColumn" colspan="2">Period 4</th>
+														<th class="gridHeaderColumn" colspan="2">Period 5</th>
+														<th class="gridHeaderColumn" colspan="2">Period 6</th>
+														<th class="gridHeaderColumn" colspan="2">Period 7</th>
+														<th class="gridHeaderColumn" colspan="2">Period 8</th>
+														<th class="gridHeaderColumn" colspan="2">Period 9</th>
+														<th class="gridHeaderColumn" colspan="2">Period 10</th>
+														<th class="gridHeaderColumn" colspan="2">Period 11</th>
+														<th class="gridHeaderColumnRight" colspan="2">Period 12</th>
+													</tr>
+													<tr id="trPFCGridHead">
+														<th class="gridHeaderColumn" width="250px">Title</th>
+														<th class="gridHeaderColumn" width="130px">Budget</th>
+														<th class="gridHeaderColumn" width="130px">Actual</th>
+														<th class="gridHeaderColumn" width="130px">Budget</th>
+														<th class="gridHeaderColumn" width="130px">Actual</th>
+														<th class="gridHeaderColumn" width="130px">Budget</th>
+														<th class="gridHeaderColumn" width="130px">Actual</th>
+														<th class="gridHeaderColumn" width="130px">Budget</th>
+														<th class="gridHeaderColumn" width="130px">Actual</th>
+														<th class="gridHeaderColumn" width="130px">Budget</th>
+														<th class="gridHeaderColumn" width="130px">Actual</th>
+														<th class="gridHeaderColumn" width="130px">Budget</th>
+														<th class="gridHeaderColumn" width="130px">Actual</th>
+														<th class="gridHeaderColumn" width="130px">Budget</th>
+														<th class="gridHeaderColumn" width="130px">Actual</th>
+														<th class="gridHeaderColumn" width="130px">Budget</th>
+														<th class="gridHeaderColumn" width="130px">Actual</th>
+														<th class="gridHeaderColumn" width="130px">Budget</th>
+														<th class="gridHeaderColumn" width="130px">Actual</th>
+														<th class="gridHeaderColumn" width="130px">Budget</th>
+														<th class="gridHeaderColumn" width="130px">Actual</th>
+														<th class="gridHeaderColumn" width="130px">Budget</th>
+														<th class="gridHeaderColumn" width="130px">Actual</th>
+														<th class="gridHeaderColumn" width="130px">Budget</th>
+														<th class="gridHeaderColumnRight" width="130px">Actual</th>
+													</tr>
+												</thead>
+											</table>
+										</div>
+									</td>
+								</tr>
+								<tr>
+					                <td>
+					                    <div id="divPFCGrid" style="position: relative; overflow: auto;">                              
+					                        <table id="PFCGrid" border="0" cellpadding="0" cellspacing="0" style="position: absolute; z-index: 1; width: 3495px;">
+					                            <tbody id="PFCGridBody"></tbody>
+					                        </table>
+					                    </div>
+					                </td>
+				            	</tr>
+			        		</table>
+							<div style="clear:both;height:10px;"></div>
+							<table class="gridBorder" cellpadding="0" cellspacing="0" width="100%;" height="100%;">
+						    	<tr>
+						        	<td>
+						        		<div class="header">Non - PFC</div>
+										<div style="height: 40px; width: 100%; position: relative; z-index: 13; overflow: hidden;">
+											<table id="tblNonPFCGridHeader" border="0" cellpadding="0" cellspacing="0" style="position: absolute; z-index: 12; width: 3495px;">
+												<thead id="NonPFCGridHead">
+													<tr>
+														<th class="gridHeaderColumn">&nbsp;</th>
+														<th class="gridHeaderColumn" colspan="2">Period 1</th>
+														<th class="gridHeaderColumn" colspan="2">Period 2</th>
+														<th class="gridHeaderColumn" colspan="2">Period 3</th>
+														<th class="gridHeaderColumn" colspan="2">Period 4</th>
+														<th class="gridHeaderColumn" colspan="2">Period 5</th>
+														<th class="gridHeaderColumn" colspan="2">Period 6</th>
+														<th class="gridHeaderColumn" colspan="2">Period 7</th>
+														<th class="gridHeaderColumn" colspan="2">Period 8</th>
+														<th class="gridHeaderColumn" colspan="2">Period 9</th>
+														<th class="gridHeaderColumn" colspan="2">Period 10</th>
+														<th class="gridHeaderColumn" colspan="2">Period 11</th>
+														<th class="gridHeaderColumnRight" colspan="2">Period 12</th>
+													</tr>
+													<tr id="trNonPFCGridHead">
+														<th class="gridHeaderColumn" width="250px">Title</th>
+														<th class="gridHeaderColumn" width="130px">Budget</th>
+														<th class="gridHeaderColumn" width="130px">Actual</th>
+														<th class="gridHeaderColumn" width="130px">Budget</th>
+														<th class="gridHeaderColumn" width="130px">Actual</th>
+														<th class="gridHeaderColumn" width="130px">Budget</th>
+														<th class="gridHeaderColumn" width="130px">Actual</th>
+														<th class="gridHeaderColumn" width="130px">Budget</th>
+														<th class="gridHeaderColumn" width="130px">Actual</th>
+														<th class="gridHeaderColumn" width="130px">Budget</th>
+														<th class="gridHeaderColumn" width="130px">Actual</th>
+														<th class="gridHeaderColumn" width="130px">Budget</th>
+														<th class="gridHeaderColumn" width="130px">Actual</th>
+														<th class="gridHeaderColumn" width="130px">Budget</th>
+														<th class="gridHeaderColumn" width="130px">Actual</th>
+														<th class="gridHeaderColumn" width="130px">Budget</th>
+														<th class="gridHeaderColumn" width="130px">Actual</th>
+														<th class="gridHeaderColumn" width="130px">Budget</th>
+														<th class="gridHeaderColumn" width="130px">Actual</th>
+														<th class="gridHeaderColumn" width="130px">Budget</th>
+														<th class="gridHeaderColumn" width="130px">Actual</th>
+														<th class="gridHeaderColumn" width="130px">Budget</th>
+														<th class="gridHeaderColumn" width="130px">Actual</th>
+														<th class="gridHeaderColumn" width="130px">Budget</th>
+														<th class="gridHeaderColumnRight" width="130px">Actual</th>
+													</tr>
+												</thead>
+											</table>
+										</div>
+									</td>
+								</tr>
+								<tr>
+					                <td>
+					                    <div id="divNonPFCGrid" style="position: relative; overflow: auto;">                              
+					                        <table id="NonPFCGrid" border="0" cellpadding="0" cellspacing="0" style="position: absolute; z-index: 11; width: 3495px;">
+					                            <tbody id="NonPFCGridBody"></tbody>
+					                        </table>
+					                    </div>
+					                </td>
+				            	</tr>
+			        		</table>
+							<div style="clear:both;height:10px;"></div>
+							<table class="gridBorder" cellpadding="0" cellspacing="0" width="100%;" height="100%;">
+						    	<tr>
+						        	<td>
+						        		<div class="header">Comments</div>
+										<div style="height: 20px; width: 100%; position: relative; z-index: 13; overflow: hidden;">
+											<table id="tblCommentsGridHeader" border="0" cellpadding="0" cellspacing="0" style="position: absolute; z-index: 12; width: 3495px;">
+												<thead id="CommentsHead">
+													<tr>
+														<th class="gridHeaderColumn" width="250px">&nbsp;</th>
+														<th class="gridHeaderColumn" width="260px">Period 1</th>
+														<th class="gridHeaderColumn" width="260px">Period 2</th>
+														<th class="gridHeaderColumn" width="260px">Period 3</th>
+														<th class="gridHeaderColumn" width="260px">Period 4</th>
+														<th class="gridHeaderColumn" width="260px">Period 5</th>
+														<th class="gridHeaderColumn" width="260px">Period 6</th>
+														<th class="gridHeaderColumn" width="260px">Period 7</th>
+														<th class="gridHeaderColumn" width="260px">Period 8</th>
+														<th class="gridHeaderColumn" width="260px">Period 9</th>
+														<th class="gridHeaderColumn" width="260px">Period 10</th>
+														<th class="gridHeaderColumn" width="260px">Period 11</th>
+														<th class="gridHeaderColumnRight" width="260px">Period 12</th>
+													</tr>
+												</thead>
+											</table>
+										</div>
+									</td>
+								</tr>
+								<tr>
+					                <td>
+					                    <div id="divCommentsGrid" style="position: relative; overflow: auto;">                              
+					                        <table id="CommentsGrid" border="0" cellpadding="0" cellspacing="0" style="position: absolute; z-index: 11; width: 3495px;">
+					                            <tbody id="CommentsGridBody"></tbody>
+					                        </table>
+					                    </div>
+					                </td>
+				            	</tr>
+			        		</table>
 						</div>
 					</div>
 					<div style="clear:both;"></div>
@@ -369,6 +535,86 @@
 	            </ul>
 			</div>
 			<div style="clear:both;"></div>
+		</div>
+		<!-- This area holds the templates for the labor controls -->
+		<div style="display: none">		    
+		    <table>
+		        <tbody id="tblLaborControlTemplate">
+		            <tr id="trLaborControlRowCount" class="RowStyle">
+						<td class="gridColumn" style="width: 250px" id="tdTitleRowCount">&nbsp;</td>
+						<td class="gridColumn" style="width: 130px" align="center"><input type="text" maxlength="9" id="txtPeriod1BudgetRowCount" style="width: 126px; height: 17px; text-align: right;" /></td>
+                        <td class="gridColumn" style="width: 130px" align="center"><input type="text" maxlength="9" id="txtPeriod1ActualRowCount" style="width: 126px; height: 17px; text-align: right;" /></td>
+                        <td class="gridColumn" style="width: 130px" align="center"><input type="text" maxlength="9" id="txtPeriod2BudgetRowCount" style="width: 126px; height: 17px; text-align: right;" /></td>
+                        <td class="gridColumn" style="width: 130px" align="center"><input type="text" maxlength="9" id="txtPeriod2ActualRowCount" style="width: 126px; height: 17px; text-align: right;" /></td>
+                        <td class="gridColumn" style="width: 130px" align="center"><input type="text" maxlength="9" id="txtPeriod3BudgetRowCount" style="width: 126px; height: 17px; text-align: right;" /></td>
+                        <td class="gridColumn" style="width: 130px" align="center"><input type="text" maxlength="9" id="txtPeriod3ActualRowCount" style="width: 126px; height: 17px; text-align: right;" /></td>
+						<td class="gridColumn" style="width: 130px" align="center"><input type="text" maxlength="9" id="txtPeriod4BudgetRowCount" style="width: 126px; height: 17px; text-align: right;" /></td>
+                        <td class="gridColumn" style="width: 130px" align="center"><input type="text" maxlength="9" id="txtPeriod4ActualRowCount" style="width: 126px; height: 17px; text-align: right;" /></td>
+					  	<td class="gridColumn" style="width: 130px" align="center"><input type="text" maxlength="9" id="txtPeriod5BudgetRowCount" style="width: 126px; height: 17px; text-align: right;" /></td>
+                        <td class="gridColumn" style="width: 130px" align="center"><input type="text" maxlength="9" id="txtPeriod5ActualRowCount" style="width: 126px; height: 17px; text-align: right;" /></td>
+                     	<td class="gridColumn" style="width: 130px" align="center"><input type="text" maxlength="9" id="txtPeriod6BudgetRowCount" style="width: 126px; height: 17px; text-align: right;" /></td>
+                        <td class="gridColumn" style="width: 130px" align="center"><input type="text" maxlength="9" id="txtPeriod6ActualRowCount" style="width: 126px; height: 17px; text-align: right;" /></td>
+                        <td class="gridColumn" style="width: 130px" align="center"><input type="text" maxlength="9" id="txtPeriod7BudgetRowCount" style="width: 126px; height: 17px; text-align: right;" /></td>
+                        <td class="gridColumn" style="width: 130px" align="center"><input type="text" maxlength="9" id="txtPeriod7ActualRowCount" style="width: 126px; height: 17px; text-align: right;" /></td>
+						<td class="gridColumn" style="width: 130px" align="center"><input type="text" maxlength="9" id="txtPeriod8BudgetRowCount" style="width: 126px; height: 17px; text-align: right;" /></td>
+                        <td class="gridColumn" style="width: 130px" align="center"><input type="text" maxlength="9" id="txtPeriod8ActualRowCount" style="width: 126px; height: 17px; text-align: right;" /></td>
+						<td class="gridColumn" style="width: 130px" align="center"><input type="text" maxlength="9" id="txtPeriod9BudgetRowCount" style="width: 126px; height: 17px; text-align: right;" /></td>
+                        <td class="gridColumn" style="width: 130px" align="center"><input type="text" maxlength="9" id="txtPeriod9ActualRowCount" style="width: 126px; height: 17px; text-align: right;" /></td>
+						<td class="gridColumn" style="width: 130px" align="center"><input type="text" maxlength="9" id="txtPeriod10BudgetRowCount" style="width: 126px; height: 17px; text-align: right;" /></td>
+                        <td class="gridColumn" style="width: 130px" align="center"><input type="text" maxlength="9" id="txtPeriod10ActualRowCount" style="width: 126px; height: 17px; text-align: right;" /></td>
+						<td class="gridColumn" style="width: 130px" align="center"><input type="text" maxlength="9" id="txtPeriod11BudgetRowCount" style="width: 126px; height: 17px; text-align: right;" /></td>
+                        <td class="gridColumn" style="width: 130px" align="center"><input type="text" maxlength="9" id="txtPeriod11ActualRowCount" style="width: 126px; height: 17px; text-align: right;" /></td>
+						<td class="gridColumn" style="width: 130px" align="center"><input type="text" maxlength="9" id="txtPeriod12BudgetRowCount" style="width: 126px; height: 17px; text-align: right;" /></td>
+                        <td class="gridColumnRight" style="width: 130px" align="center"><input type="text" maxlength="9" id="txtPeriod12ActualRowCount" style="width: 126px; height: 17px; text-align: right;" /></td>
+					</tr>
+                </tbody>
+				<tbody id="tblLaborControlTotalTemplate">
+		            <tr id="trLaborControlTotalRowCount" class="RowStyle">
+						<td class="gridColumn" style="width: 250px" id="tdTitleTotalRowCount">&nbsp;</td>
+                        <td class="gridColumn" style="width: 130px" align="right"><span id="spnPeriod1BudgetRowCount" class="spanColumn"></span></td>
+						<td class="gridColumn" style="width: 130px" align="right"><span id="spnPeriod1ActualRowCount" class="spanColumn"></span></td>
+						<td class="gridColumn" style="width: 130px" align="right"><span id="spnPeriod2BudgetRowCount" class="spanColumn"></span></td>
+                        <td class="gridColumn" style="width: 130px" align="right"><span id="spnPeriod2ActualRowCount" class="spanColumn"></span></td>
+                        <td class="gridColumn" style="width: 130px" align="right"><span id="spnPeriod3BudgetRowCount" class="spanColumn"></span></td>
+                        <td class="gridColumn" style="width: 130px" align="right"><span id="spnPeriod3ActualRowCount" class="spanColumn"></span></td>
+                        <td class="gridColumn" style="width: 130px" align="right"><span id="spnPeriod4BudgetRowCount" class="spanColumn"></span></td>
+						<td class="gridColumn" style="width: 130px" align="right"><span id="spnPeriod4ActualRowCount" class="spanColumn"></span></td>
+                        <td class="gridColumn" style="width: 130px" align="right"><span id="spnPeriod5BudgetRowCount" class="spanColumn"></span></td>
+					  	<td class="gridColumn" style="width: 130px" align="right"><span id="spnPeriod5ActualRowCount" class="spanColumn"></span></td>
+                        <td class="gridColumn" style="width: 130px" align="right"><span id="spnPeriod6BudgetRowCount" class="spanColumn"></span></td>
+                     	<td class="gridColumn" style="width: 130px" align="right"><span id="spnPeriod6ActualRowCount" class="spanColumn"></span></td>
+                        <td class="gridColumn" style="width: 130px" align="right"><span id="spnPeriod7BudgetRowCount" class="spanColumn"></span></td>
+                        <td class="gridColumn" style="width: 130px" align="right"><span id="spnPeriod7ActualRowCount" class="spanColumn"></span></td>
+                        <td class="gridColumn" style="width: 130px" align="right"><span id="spnPeriod8BudgetRowCount" class="spanColumn"></span></td>
+						<td class="gridColumn" style="width: 130px" align="right"><span id="spnPeriod8ActualRowCount" class="spanColumn"></span></td>
+                        <td class="gridColumn" style="width: 130px" align="right"><span id="spnPeriod9BudgetRowCount" class="spanColumn"></span></td>
+						<td class="gridColumn" style="width: 130px" align="right"><span id="spnPeriod9ActualRowCount" class="spanColumn"></span></td>
+                        <td class="gridColumn" style="width: 130px" align="right"><span id="spnPeriod10BudgetRowCount" class="spanColumn"></span></td>
+						<td class="gridColumn" style="width: 130px" align="right"><span id="spnPeriod10ActualRowCount" class="spanColumn"></span></td>
+                        <td class="gridColumn" style="width: 130px" align="right"><span id="spnPeriod11BudgetRowCount" class="spanColumn"></span></td>
+						<td class="gridColumn" style="width: 130px" align="right"><span id="spnPeriod11ActualRowCount" class="spanColumn"></span></td>
+						<td class="gridColumn" style="width: 130px" align="right"><span id="spnPeriod12BudgetRowCount" class="spanColumn"></span></td>
+                        <td class="gridColumnRight" style="width: 130px" align="right"><span id="spnPeriod12ActualRowCount" class="spanColumn"></span></td>
+					</tr>
+                </tbody>
+				<tbody id="tblCommentsTemplate">
+		            <tr id="trComments" class="gridRow">
+						<td class="gridColumn" style="width: 250px">Comments</td>
+						<td class="gridColumn" style="width: 260px" align="center"><input type="text" id="txtPeriod1" style="width: 256px; height: 17px;" /></td>
+                        <td class="gridColumn" style="width: 260px" align="center"><input type="text" id="txtPeriod2" style="width: 256px; height: 17px;" /></td>
+						<td class="gridColumn" style="width: 260px" align="center"><input type="text" id="txtPeriod3" style="width: 256px; height: 17px;" /></td>
+						<td class="gridColumn" style="width: 260px" align="center"><input type="text" id="txtPeriod4" style="width: 256px; height: 17px;" /></td>
+						<td class="gridColumn" style="width: 260px" align="center"><input type="text" id="txtPeriod5" style="width: 256px; height: 17px;" /></td>
+						<td class="gridColumn" style="width: 260px" align="center"><input type="text" id="txtPeriod6" style="width: 256px; height: 17px;" /></td>
+						<td class="gridColumn" style="width: 260px" align="center"><input type="text" id="txtPeriod7" style="width: 256px; height: 17px;" /></td>
+						<td class="gridColumn" style="width: 260px" align="center"><input type="text" id="txtPeriod8" style="width: 256px; height: 17px;" /></td>
+						<td class="gridColumn" style="width: 260px" align="center"><input type="text" id="txtPeriod9" style="width: 256px; height: 17px;" /></td>
+						<td class="gridColumn" style="width: 260px" align="center"><input type="text" id="txtPeriod10" style="width: 256px; height: 17px;" /></td>
+						<td class="gridColumn" style="width: 260px" align="center"><input type="text" id="txtPeriod11" style="width: 256px; height: 17px;" /></td>
+                        <td class="gridColumnRight" style="width: 260px" align="center"><input type="text" maxlength="9" id="txtPeriod12" style="width: 256px; height: 17px;" /></td>
+					</tr>
+                </tbody>
+            </table>
 		</div>
 		<div id="iiInputValidationMaster"></div>
 	</body>
