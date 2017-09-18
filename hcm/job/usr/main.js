@@ -27,7 +27,6 @@ ii.Class({
     Definition: {
 	
 		init: function fin_hcm_job_UserInterface_init() {
-			var args = ii.args(arguments, {});
 			var me = this;
 
 			me.jobId = 0;
@@ -82,6 +81,7 @@ ii.Class({
 			$("#JobTemplateDiv").hide();
 			$("#TaxIdDiv").hide();
 			$("#OverrideSiteTaxDiv").hide();
+			$("#CPIContainer").hide();
 			$("#SearchInput").bind("keydown", me, me.actionSearchItem);
 			
 			// blur event is not firing when clicking on the tab. Due to this dirty check function and prompt message was not working.
@@ -162,6 +162,11 @@ ii.Class({
 			me.jOverrideSiteTaxShow = me.isCtrlVisible(me.authorizePath + "\\OverrideSiteTax", me.jobsShow, (me.jobsWrite || me.jobsReadOnly));
 			me.jServiceContractShow = me.isCtrlVisible(me.authorizePath + "\\ServiceContract", me.jobsShow, (me.jobsWrite || me.jobsReadOnly));
 			me.jGeneralLocationCodeShow = me.isCtrlVisible(me.authorizePath + "\\GeneralLocationCode", me.jobsShow, (me.jobsWrite || me.jobsReadOnly));
+			me.jBOLSReportTypeShow = me.isCtrlVisible(me.authorizePath + "\\BOLSReportType", me.jobsShow, (me.jobsWrite || me.jobsReadOnly));
+			me.jCPIPercentageShow = me.isCtrlVisible(me.authorizePath + "\\CPIPercentage", me.jobsShow, (me.jobsWrite || me.jobsReadOnly));
+			me.jCPIAmountShow = me.isCtrlVisible(me.authorizePath + "\\CPIAmount", me.jobsShow, (me.jobsWrite || me.jobsReadOnly));
+			me.jCPIDateShow = me.isCtrlVisible(me.authorizePath + "\\CPIDate", me.jobsShow, (me.jobsWrite || me.jobsReadOnly));
+			me.jCPIECIWaivedShow = me.isCtrlVisible(me.authorizePath + "\\CPIECIWaived", me.jobsShow, (me.jobsWrite || me.jobsReadOnly));
 			me.jActiveShow = me.isCtrlVisible(me.authorizePath + "\\Active", me.jobsShow, (me.jobsWrite || me.jobsReadOnly));
 			
 			me.jJobNumberReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\JobNumber\\Read", me.jobsWrite, me.jobsReadOnly);
@@ -179,6 +184,11 @@ ii.Class({
 			me.jOverrideSiteTaxReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\OverrideSiteTax\\Read", me.jobsWrite, me.jobsReadOnly);
 			me.jServiceContractReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\ServiceContract\\Read", me.jobsWrite, me.jobsReadOnly);
 			me.jGeneralLocationCodeReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\GeneralLocationCode\\Read", me.jobsWrite, me.jobsReadOnly);
+			me.jBOLSReportTypeReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\CPIPercentage\\Read", me.jobsWrite, me.jobsReadOnly);
+			me.jCPIPercentageReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\CPIPercentage\\Read", me.jobsWrite, me.jobsReadOnly);
+			me.jCPIAmountReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\CPIAmount\\Read", me.jobsWrite, me.jobsReadOnly);
+			me.jCPIDateReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\CPIDate\\Read", me.jobsWrite, me.jobsReadOnly);
+			me.jCPIECIWaivedReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\CPIECIWaived\\Read", me.jobsWrite, me.jobsReadOnly);
 			me.jActiveReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\Active\\Read", me.jobsWrite, me.jobsReadOnly);
 						
 			me.resetUIElements();
@@ -281,6 +291,11 @@ ii.Class({
 			me.setControlState("OverrideSiteTax", me.jOverrideSiteTaxReadOnly, me.jOverrideSiteTaxShow, "Check", "InputTextAreaRight");
 			me.setControlState("ServiceContract", me.jServiceContractReadOnly, me.jServiceContractShow);
 			me.setControlState("GeneralLocationCode", me.jGeneralLocationCodeReadOnly, me.jGeneralLocationCodeShow);
+			me.setControlState("BOLSReportType", me.jBOLSReportTypeReadOnly, me.jCPIPercentageShow);
+			me.setControlState("CPIPercentage", me.jCPIPercentageReadOnly, me.jCPIPercentageShow);
+			me.setControlState("CPIAmount", me.jCPIAmountReadOnly, me.jCPIAmountShow);
+			me.setControlState("CPIDate", me.jCPIDateReadOnly, me.jCPIDateShow);
+			me.setControlState("CPIECIWaived", me.jCPIECIWaivedReadOnly, me.jCPIECIWaivedShow, "Check", "CPIECIWaivedCheck");
 			me.setControlState("JobActive", me.jActiveReadOnly, me.jActiveShow, "Check", "InputTextAreaRight");
 		},
 
@@ -364,6 +379,10 @@ ii.Class({
 			me.taxId.resizeText();
 			me.serviceContract.resizeText();
 			me.generalLocationCode.resizeText();
+			me.bolsReportType.resizeText();
+			me.cpiPercentage.resizeText();
+			me.cpiAmount.resizeText();
+			me.cpiDate.resizeText();
 		},
 
 		defineFormControls: function fin_hcm_job_UserInterface_defineFormControls() {
@@ -655,7 +674,82 @@ ii.Class({
 				maxLength: 50,
 				changeFunction: function() { me.modified(); }
 			});
-			
+
+			me.bolsReportType = new ui.ctl.Input.DropDown.Filtered({
+				id: "BOLSReportType",
+				formatFunction: function(type) { return type.name; },
+				changeFunction: function() { me.modified(); },
+				title: "Select BOLS Report Type"
+			});
+
+			me.bolsReportType.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation( function( isFinal, dataMap ) {
+
+					if ((this.focused || this.touched) && me.bolsReportType.lastBlurValue != "" && me.bolsReportType.indexSelected == -1)
+						this.setInvalid("Please select the correct BOLS Report Type.");
+				});
+
+			me.cpiPercentage = new ui.ctl.Input.Text({
+		        id: "CPIPercentage",
+		        maxLength: 6,
+				changeFunction: function() { me.modified(); },
+		    });
+
+			me.cpiPercentage
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ) {
+
+					var enteredText = me.cpiPercentage.getValue();
+
+					if (enteredText == "") return;
+
+					if (!(ui.cmn.text.validate.generic(enteredText, "^\\d+(\\.\\d{1,2})?$")))
+						this.setInvalid("Please enter valid number.");
+			});
+
+			me.cpiAmount = new ui.ctl.Input.Text({
+		        id: "CPIAmount",
+		        maxLength: 19,
+				changeFunction: function() { me.modified(); },
+		    });
+
+			me.cpiAmount
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ) {
+
+					var enteredText = me.cpiAmount.getValue();
+
+					if (enteredText == "") return;
+
+					if (!(ui.cmn.text.validate.generic(enteredText, "^\\d+(\\.\\d{1,2})?$")))
+						this.setInvalid("Please enter valid number.");
+			});
+
+			me.cpiDate = new ui.ctl.Input.Date({
+		        id: "CPIDate",
+				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); },
+				changeFunction: function() { me.modified(); },
+		    });
+
+			me.cpiDate.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation( function( isFinal, dataMap ) {					
+					var enteredText = me.cpiDate.text.value;
+
+					if (enteredText == "") 
+						return;
+
+					if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
+						this.setInvalid("Please enter valid date.");
+				});
+
+			me.cpiECIWaived = new ui.ctl.Input.Check({
+		        id: "CPIECIWaived",
+				required: false,
+				changeFunction: function() { me.modified(); },
+		    });
+
 			me.jobActive = new ui.ctl.Input.Check({
 				id: "JobActive",
 				changeFunction: function() { me.modified(); }
@@ -750,6 +844,14 @@ ii.Class({
 				itemConstructor: fin.hcm.job.JobType,
 				itemConstructorArgs: fin.hcm.job.jobTypeArgs,
 				injectionArray: me.jobTypes	
+			});
+
+			me.bolsReportTypes = [];
+			me.bolsReportTypeStore = me.cache.register({
+				storeId: "bolsReportTypes",
+				itemConstructor: fin.hcm.job.BOLSReportType,
+				itemConstructorArgs: fin.hcm.job.bolsReportTypeArgs,
+				injectionArray: me.bolsReportTypes	
 			});
 
 			me.invoiceTemplates = [];
@@ -870,6 +972,7 @@ ii.Class({
 
 			me.jobType.setData(me.jobTypes);
 			me.jobTemplate.setData(me.jobTemplates);
+			me.bolsReportType.setData(me.bolsReportTypes);
 			me.loadJobs();
 		},
 		
@@ -1005,7 +1108,7 @@ ii.Class({
 					else 
 						me.jobType.reset();
 					
-					if (index == 2) {
+					if (me.jobType.data[me.jobType.indexSelected].name === "Customer") {
 						$("#TaxIdDiv").show();
 						$("#OverrideSiteTaxDiv").hide();
 						index = ii.ajax.util.findIndexById(args.job.invoiceTemplate.toString(), me.invoiceTemplates);
@@ -1025,6 +1128,11 @@ ii.Class({
 						$("#TaxIdDiv").hide();
 						$("#OverrideSiteTaxDiv").show();
 					}
+
+					if (me.jobType.data[me.jobType.indexSelected].name === "Service Location")
+						$("#CPIContainer").show();
+					else
+						$("#CPIContainer").hide();
 				}
 				else 
 					me.jobType.reset();
@@ -1032,6 +1140,15 @@ ii.Class({
 				me.overrideSiteTax.setValue(args.job.overrideSiteTax.toString());
 				me.serviceContract.setValue(args.job.serviceContract);
 				me.generalLocationCode.setValue(args.job.generalLocationCode);
+				index = ii.ajax.util.findIndexById(args.job.bolsReportType.toString(), me.bolsReportTypes);
+				if (index != null) 
+					me.bolsReportType.select(index, me.bolsReportType.focused);
+				else 
+					me.bolsReportType.reset();
+				me.cpiPercentage.setValue(args.job.cpiPercentage);
+				me.cpiAmount.setValue(args.job.cpiAmount);
+				me.cpiDate.setValue(args.job.cpiDate);
+				me.cpiECIWaived.setValue(args.job.cpiECIWaived.toString());
 				me.jobActive.setValue(args.job.active.toString());				
 			}
 
@@ -1215,7 +1332,7 @@ ii.Class({
 		jobTypeChange: function() {
 			var me = this;
 
-			if (me.jobType.indexSelected == 2) {
+			if (me.jobType.data[me.jobType.indexSelected].name === "Customer") {
 				$("#TaxIdDiv").show();
 				$("#OverrideSiteTaxDiv").hide();
 			}
@@ -1223,6 +1340,11 @@ ii.Class({
 				$("#TaxIdDiv").hide();
 				$("#OverrideSiteTaxDiv").show();
 			}
+			
+			if (me.jobType.data[me.jobType.indexSelected].name === "Service Location")
+				$("#CPIContainer").show();
+			else
+				$("#CPIContainer").hide();
 		},
 		
 		actionOkItem: function() {
@@ -1289,6 +1411,11 @@ ii.Class({
 			me.overrideSiteTax.setValue("false");
 			me.serviceContract.setValue("");
 			me.generalLocationCode.setValue("");
+			me.bolsReportType.reset();
+			me.cpiPercentage.setValue("");
+			me.cpiAmount.setValue("");
+			me.cpiDate.setValue("");
+			me.cpiECIWaived.setValue("false");
 			me.jobActive.setValue("true");
 			me.jobTemplate.reset();
 			me.jobTemplate.resizeText();
@@ -1425,6 +1552,11 @@ ii.Class({
 				overrideSiteTax: me.overrideSiteTax.getValue(),
 				serviceContract: me.serviceContract.getValue(),
 				generalLocationCode: me.generalLocationCode.getValue(),
+				bolsReportType: me.bolsReportType.indexSelected != -1 ? me.bolsReportTypes[me.bolsReportType.indexSelected].id : 0,
+				cpiPercentage: me.cpiPercentage.getValue(),
+				cpiAmount: me.cpiAmount.getValue(),
+				cpiDate: me.cpiDate.lastBlurValue,
+				cpiECIWaived: me.cpiECIWaived.getValue(),
 				active: me.jobActive.getValue()
 			});
 
@@ -1465,7 +1597,12 @@ ii.Class({
 				xml += ' overrideSiteTax="' + item.overrideSiteTax + '"';
 				xml += ' serviceContract="' + ui.cmn.text.xml.encode(item.serviceContract) + '"';
 				xml += ' generalLocationCode="' + ui.cmn.text.xml.encode(item.generalLocationCode) + '"';
-				xml += ' active="' + item.active + '"';				
+				xml += ' bolsReportType="' + item.bolsReportType + '"';	
+				xml += ' cpiPercentage="' + item.cpiPercentage + '"';	
+				xml += ' cpiAmount="' + item.cpiAmount + '"';	
+				xml += ' cpiDate="' + item.cpiDate + '"';	
+				xml += ' cpiECIWaived="' + item.cpiECIWaived + '"';	
+				xml += ' active="' + item.active + '"';
 				xml += ' clone="' + (me.status == "clone" ? true : false) + '"';
 				if ($("#SearchByHouseCode")[0].checked) 
 					xml += ' houseCodeId="' + parent.fin.appUI.houseCodeId + '"';		
