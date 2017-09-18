@@ -64,6 +64,11 @@ ii.init.register( function() {
 		, name: {type: String}
 	};
 
+	fin.hcm.job.bolsReportTypeArgs = {
+		id: {type: Number}
+		, name: {type: String}
+	};
+
 	fin.hcm.job.invoiceTemplateArgs = {
 		id: {type: Number}
 		, title: {type: String}
@@ -94,6 +99,11 @@ ii.init.register( function() {
 		, overrideSiteTax: {type: Boolean, required: false, defaultValue: false}
 		, serviceContract: {type: String, required: false, defaultValue: ""}
 		, generalLocationCode: {type: String, required: false, defaultValue: ""}
+		, bolsReportType: {type: Number, required: false, defaultValue: 0}
+		, cpiPercentage: {type: String, required: false, defaultValue: ""}
+		, cpiAmount: {type: String, required: false, defaultValue: ""}
+		, cpiDate: {type: String, required: false, defaultValue: ""}
+		, cpiECIWaived: {type: Boolean, required: false, defaultValue: false}
         , active: {type: Boolean, required: false, defaultValue: false}
 	};
 
@@ -198,6 +208,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.hcm.job.jobTypeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.hcm.job.BOLSReportType",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.hcm.job.bolsReportTypeArgs);
 			$.extend(this, args);
 		}
 	}

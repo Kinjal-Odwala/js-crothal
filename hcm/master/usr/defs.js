@@ -114,10 +114,6 @@ ii.init.register( function() {
 		, budgetTemplateId: {type: Number, required: false, defaultValue: 0}
 		, budgetLaborCalcMethod: {type: Number, required: false, defaultValue: 0}
 		, budgetComputerRelatedCharge: {type: Boolean, required: false, defaultValue: false}
-		, cpiPercentage: {type: String, required: false, defaultValue: ""}
-		, cpiAmount: {type: String, required: false, defaultValue: ""}
-		, cpiDate: {type: String, required: false, defaultValue: ""}
-		, cpiECIWaived: {type: Boolean, required: false, defaultValue: false}
 		, stateTaxPercent: {type: String, required: false, defaultValue: ""}
 		, localTaxPercent: {type: String, required: false, defaultValue: ""}
 		, financialEntityId: {type: Number, required: false, defaultValue: 0}

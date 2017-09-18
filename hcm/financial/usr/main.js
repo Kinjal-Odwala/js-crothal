@@ -133,10 +133,6 @@ ii.Class({
 			me.sfBudgetTemplateShow = me.isCtrlVisible(me.authorizePath + "\\TabFinancial\\SectionFinancial\\BudgetTemplate", me.sectionFinancialShow, (me.sectionFinancialWrite || me.sectionFinancialReadOnly));
 			me.sfBudgetLaborCalcMethodShow = me.isCtrlVisible(me.authorizePath + "\\TabFinancial\\SectionFinancial\\BudgetLaborCalcMethod", me.sectionFinancialShow, (me.sectionFinancialWrite || me.sectionFinancialReadOnly));
 			me.sfBudgetComputerRelatedChargeShow = me.isCtrlVisible(me.authorizePath + "\\TabFinancial\\SectionFinancial\\BudgetComputerRelatedCharge", me.sectionFinancialShow, (me.sectionFinancialWrite || me.sectionFinancialReadOnly));
-			me.sfCPIPercentageShow = me.isCtrlVisible(me.authorizePath + "\\TabFinancial\\SectionFinancial\\CPIPercentage", me.sectionFinancialShow, (me.sectionFinancialWrite || me.sectionFinancialReadOnly));
-			me.sfCPIAmountShow = me.isCtrlVisible(me.authorizePath + "\\TabFinancial\\SectionFinancial\\CPIAmount", me.sectionFinancialShow, (me.sectionFinancialWrite || me.sectionFinancialReadOnly));
-			me.sfCPIDateShow = me.isCtrlVisible(me.authorizePath + "\\TabFinancial\\SectionFinancial\\CPIDate", me.sectionFinancialShow, (me.sectionFinancialWrite || me.sectionFinancialReadOnly));
-			me.sfCPIECIWaivedShow = me.isCtrlVisible(me.authorizePath + "\\TabFinancial\\SectionFinancial\\CPIECIWaived", me.sectionFinancialShow, (me.sectionFinancialWrite || me.sectionFinancialReadOnly));
 
 			me.sfContractTypeReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabFinancial\\SectionFinancial\\ContractType\\Read", me.sectionFinancialWrite, me.sectionFinancialReadOnly);
 			me.sfTermsOfContractReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabFinancial\\SectionFinancial\\TermsOfContract\\Read", me.sectionFinancialWrite, me.sectionFinancialReadOnly);
@@ -158,10 +154,6 @@ ii.Class({
 			me.sfBudgetTemplateReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabFinancial\\SectionFinancial\\BudgetTemplate\\Read", me.sectionFinancialWrite, me.sectionFinancialReadOnly);
 			me.sfBudgetLaborCalcMethodReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabFinancial\\SectionFinancial\\BudgetLaborCalcMethod\\Read", me.sectionFinancialWrite, me.sectionFinancialReadOnly);
 			me.sfBudgetComputerRelatedChargeReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabFinancial\\SectionFinancial\\BudgetComputerRelatedCharge\\Read", me.sectionFinancialWrite, me.sectionFinancialReadOnly);
-			me.sfCPIPercentageReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabFinancial\\SectionFinancial\\CPIPercentage\\Read", me.sectionFinancialWrite, me.sectionFinancialReadOnly);
-			me.sfCPIAmountReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabFinancial\\SectionFinancial\\CPIAmount\\Read", me.sectionFinancialWrite, me.sectionFinancialReadOnly);
-			me.sfCPIDateReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabFinancial\\SectionFinancial\\CPIDate\\Read", me.sectionFinancialWrite, me.sectionFinancialReadOnly);
-			me.sfCPIECIWaivedReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabFinancial\\SectionFinancial\\CPIECIWaived\\Read", me.sectionFinancialWrite, me.sectionFinancialReadOnly);
 
 			me.resetUIElements();
 			
@@ -272,10 +264,6 @@ ii.Class({
 			me.setControlState("BudgetTemplate", me.sfBudgetTemplateReadOnly, me.sfBudgetTemplateShow);
 			me.setControlState("BudgetLaborCalcMethod", me.sfBudgetLaborCalcMethodReadOnly, me.sfBudgetLaborCalcMethodShow);
 			me.setControlState("BudgetComputerRelatedCharge", me.sfBudgetComputerRelatedChargeReadOnly, me.sfBudgetComputerRelatedChargeShow, "Check", "BudgetComputerRelatedChargeCheck");
-			me.setControlState("CPIPercentage", me.sfCPIPercentageReadOnly, me.sfCPIPercentageShow);
-			me.setControlState("CPIAmount", me.sfCPIAmountReadOnly, me.sfCPIAmountShow);
-			me.setControlState("CPIDate", me.sfCPIDateReadOnly, me.sfCPIDateShow);
-			me.setControlState("CPIECIWaived", me.sfCPIECIWaivedReadOnly, me.sfCPIECIWaivedShow, "Check", "CPIECIWaivedCheck");
 		},
 		
 		setControlState: function(){
@@ -613,66 +601,6 @@ ii.Class({
 				changeFunction: function() { parent.fin.hcmMasterUi.modified(); } 
 		    });
 
-			me.cpiPercentage = new ui.ctl.Input.Text({
-		        id: "CPIPercentage",
-		        maxLength: 6,
-				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
-		    });
-
-			me.cpiPercentage
-				.setValidationMaster( me.validator )
-				.addValidation( function( isFinal, dataMap ) {
-
-					var enteredText = me.cpiPercentage.getValue();
-
-					if (enteredText == "") return;
-
-					if (!(ui.cmn.text.validate.generic(enteredText, "^\\d+(\\.\\d{1,2})?$")))
-						this.setInvalid("Please enter valid number.");
-			});
-
-			me.cpiAmount = new ui.ctl.Input.Text({
-		        id: "CPIAmount",
-		        maxLength: 19,
-				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
-		    });
-
-			me.cpiAmount
-				.setValidationMaster( me.validator )
-				.addValidation( function( isFinal, dataMap ) {
-
-					var enteredText = me.cpiAmount.getValue();
-
-					if (enteredText == "") return;
-
-					if (!(ui.cmn.text.validate.generic(enteredText, "^\\d+(\\.\\d{1,2})?$")))
-						this.setInvalid("Please enter valid number.");
-			});
-
-			me.cpiDate = new ui.ctl.Input.Date({
-		        id: "CPIDate",
-				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); },
-				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
-		    });
-
-			me.cpiDate.makeEnterTab()
-				.setValidationMaster(me.validator)
-				.addValidation( function( isFinal, dataMap ) {					
-					var enteredText = me.cpiDate.text.value;
-
-					if (enteredText == "") 
-						return;
-
-					if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
-						this.setInvalid("Please enter valid date.");
-				});
-
-			me.cpiECIWaived = new ui.ctl.Input.Check({
-		        id: "CPIECIWaived",
-				required: false,
-				changeFunction: function() { parent.fin.hcmMasterUi.modified(); } 
-		    });
-
 			me.company.text.readOnly = true;
 			me.remitToTitle.text.readOnly = true;
 			me.remitToAddress1.text.readOnly = true;
@@ -714,10 +642,6 @@ ii.Class({
 			me.budgetTemplate.text.tabIndex = 31;
 			me.budgetLaborCalcMethod.text.tabIndex = 32;
 			me.budgetComputerRelatedCharge.check.tabIndex = 33;
-			me.cpiPercentage.text.tabIndex = 34;
-			me.cpiAmount.text.tabIndex = 35;
-			me.cpiDate.text.tabIndex = 36;
-			me.cpiECIWaived.check.tabIndex = 37;
 		},		
 		
 		resizeControls: function() {
@@ -762,9 +686,6 @@ ii.Class({
 			me.invoiceLogo.resizeText();
 			me.budgetTemplate.resizeText();
 			me.budgetLaborCalcMethod.resizeText();
-			me.cpiPercentage.resizeText();
-			me.cpiAmount.resizeText();
-			me.cpiDate.resizeText();
 			me.resize();
 		},
 	
@@ -1010,10 +931,6 @@ ii.Class({
 				me.budgetLaborCalcMethod.select(index, me.budgetLaborCalcMethod.focused);
 			
 			me.budgetComputerRelatedCharge.check.checked = houseCode.budgetComputerRelatedCharge;
-			me.cpiPercentage.setValue(houseCode.cpiPercentage);
-			me.cpiAmount.setValue(houseCode.cpiAmount);
-			me.cpiDate.setValue(houseCode.cpiDate);
-			me.cpiECIWaived.setValue(houseCode.cpiECIWaived.toString());
 
 			parent.fin.hcmMasterUi.checkLoadCount();
 			if (parent.parent.fin.appUI.modified)
