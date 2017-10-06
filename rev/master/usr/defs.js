@@ -60,6 +60,7 @@ ii.init.register( function() {
 		, jobBrief: {type: String, required: false, defaultValue: ""}
 		, invoiceByHouseCode: {type: Boolean, required: false, defaultValue: false}
 		, invoiceNumber: {type: Number, required: false, defaultValue: 0}
+		, documentNumber: {type: String, required: false, defaultValue: ""}
 		, invoiceDate: {type: String, required: false, defaultValue: ""}
 		, dueDate: {type: String, required: false, defaultValue: ""}
 		, periodStartDate: {type: String, required: false, defaultValue: ""}

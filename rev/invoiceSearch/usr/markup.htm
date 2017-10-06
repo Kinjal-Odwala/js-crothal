@@ -21,13 +21,6 @@
 		        <div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
 		    </div>
 		</div>
-		
-		<div id="employeeGridLoading" style="position: absolute; top: 80px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: white;display:none;">
-		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
-		        <img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
-		        <div id="messageToUser2" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
-		    </div>
-		</div>
 		<div style="clear:both;"></div>
 		<div id="itemStatusDiv">
 			<div id="itemStatusImage" class="itemStatusImage"></div>
@@ -40,50 +33,54 @@
                 <div class="header">Invoice Search</div>
                 <div class="body">
                     <div id="searchArea">
-                        <div id="searchAreaEmp">
+                        <div class="labelTextArea">
                             <div class="labelText">Invoice #:</div>
-                            <div id="inputInvSearch">
-                                <div id="Invoice"></div>
+                            <div class="inputTextArea">
+                                <div id="InvoiceNumber"></div>
                             </div>
                         </div>
-						<div id="searchAreaEmp">
+						<div class="labelTextArea">
+                            <div class="labelText">Document #:</div>
+                            <div class="inputTextArea">
+                                <div id="DocumentNumber"></div>
+                            </div>
+                        </div>
+						<div class="labelTextArea">
                              <div class="labelText">Invoice Date:</div>
-                            <div id="inputInvSearch">
+                            <div class="inputTextArea">
 						        <div id="InvoiceDate"></div>
 					        </div>
                         </div>
-                        <div id="houseCodeAreaCust">
+                        <div class="labelTextArea">
                             <div class="labelText">Customer:</div>
-                            <div id="customerInput">
+                            <div class="inputTextArea">
 						        <div id="Customer"></div>
 					        </div>
                         </div>
-						<div id="houseCodeAreaCust">
+						<div class="labelTextArea">
                             <div class="labelText">Service Location:</div>
-                            <div id="customerInput">
+                            <div class="inputTextArea">
 						        <div id="ServiceLocation"></div>
 					        </div>
                         </div>
-						<div id="houseCodeAreaCust">
+						<div class="labelTextArea">
                             <div class="labelText">PO Number:</div>
-                            <div id="customerInput">
+                            <div class="inputTextArea">
 						        <div id="PONumber"></div>
 					        </div>
                         </div>
-                        <div id="houseCodeAreaHouse">
-                             <div class="labelText">House Code:</div>
-                            <div id="houseCodeInputUnits">
+                        <div class="labelTextArea">
+                        	<div class="labelText">House Code:</div>
+                            <div class="inputTextAreaLarge">
 						        <div id="houseCodeContainer" class="HouseCodeContainer"></div>
 					        </div>
                         </div>
-					    <div id="searchAreaButtons">
-					        <div id="searchButtonEmp">
-						        <div id="SearchButton"></div>
-					        </div>
+					    <div id="searchaButtonContainer">
+							<div id="AnchorSearch"></div>
 					    </div>
                         <div style="clear:both;"/>
                     </div>
-                    <div id="InvoiceSearch"></div>
+                    <div id="InvoiceGrid"></div>
 				    <div style="clear:both;"></div>
                 </div>                
 			</div>

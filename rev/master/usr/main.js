@@ -612,6 +612,7 @@ ii.Class({
             });
 
             me.invoiceGrid.addColumn("invoiceNumber", "invoiceNumber", "Invoice #", "Invoice #", 90);
+			me.invoiceGrid.addColumn("documentNumber", "documentNumber", "Document #", "Document #", 100);
             me.invoiceGrid.addColumn("amount", "amount", "Amount", "Amount", 80);
             me.invoiceGrid.addColumn("invoiceDate", "invoiceDate", "Date Received", "Date Received", 120);
             me.invoiceGrid.addColumn("collected", "collected", "Collected", "Collected", 100);
@@ -1940,6 +1941,7 @@ ii.Class({
 					, houseCode: parent.fin.appUI.houseCodeId
 					, invoiceByHouseCode: invoiceByHouseCode
 					, invoiceNumber: 0
+					, documentNumber: ""
 					, invoiceDate: me.invoiceDate.lastBlurValue
 					, dueDate: me.dueDate.lastBlurValue
 					, periodStartDate: me.startDate.lastBlurValue
@@ -1980,6 +1982,7 @@ ii.Class({
 					, houseCode: parent.fin.appUI.houseCodeId
 					, invoiceByHouseCode: me.invoices[me.lastSelectedRowIndex].invoiceByHouseCode
 					, invoiceNumber: me.invoices[me.lastSelectedRowIndex].invoiceNumber
+					, documentNumber: me.invoices[me.lastSelectedRowIndex].documentNumber
 					, invoiceDate: invoiceInfoUIControls.invoiceDate.lastBlurValue
 					, dueDate: invoiceInfoUIControls.dueDate.lastBlurValue
 					, periodStartDate: invoiceInfoUIControls.startDate.lastBlurValue

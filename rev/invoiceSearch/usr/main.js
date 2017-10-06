@@ -20,179 +20,197 @@ ii.Class({
     Name: "fin.rev.UserInterface",
 	Extends: "ui.lay.HouseCodeSearch",
     Definition: {
-	
+
 		init: function() {
-			var args = ii.args(arguments, {});
 			var me = this;
+
 			me.loadCount = 0;
-			
+			me.houseCodeChangedAtSearch = false;
+			me.sortSelections = [];
+
 			me.gateway = ii.ajax.addGateway("rev", ii.config.xmlProvider);
 			me.cache = new ii.ajax.Cache(me.gateway);
 			me.ajaxValidator = new ii.ajax.Validator(me.gateway);
-			
-			me.houseCodeChangedAtInvoiceSearch = false;
-			if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;	
-			
+
+			if (!parent.fin.appUI.houseCodeId)
+				parent.fin.appUI.houseCodeId = 0;	
+
 			me.validator = new ui.ctl.Input.Validation.Master();
-			
-			me.authorizer = new ii.ajax.Authorizer( me.gateway );	//@iiDoc {Property:ii.ajax.Authorizer} Boolean
+			me.session = new ii.Session(me.cache);
+
+			me.authorizer = new ii.ajax.Authorizer( me.gateway );
 			me.authorizePath = "rev\\invoiceSearch";
 			me.authorizer.authorize([me.authorizePath],
 				function authorizationsLoaded() {
 					me.authorizationProcess.apply(me);
 				},
 				me);
-			
-			me.session = new ii.Session(me.cache);
 
 			me.defineFormControls();
 			me.configureCommunications();
 			me.setStatus("Loading");
-			
-			me.sortSelections = [];
-			
+
 			$(window).bind("resize", me, me.resize);
-			
+
 			me.houseCodeSearch = new ui.lay.HouseCodeSearch();			
-			if (parent.fin.appUI.houseCodeId == 0 || parent.fin.appUI.houseCodeId == undefined) //usually happens on pageLoad			
+			if (parent.fin.appUI.houseCodeId === 0 || parent.fin.appUI.houseCodeId === undefined)
 				me.houseCodeStore.fetch("userId:[user],defaultOnly:true,", me.houseCodesLoaded, me);
 			else
 				me.houseCodesLoaded(me, 0);
 		},
-		
-		authorizationProcess: function fin_rev_invoiceSearch_UserInterface_authorizationProcess() {
-			var args = ii.args(arguments,{});
+
+		authorizationProcess: function() {
 			var me = this;
-			
+
 			me.isAuthorized = me.authorizer.isAuthorized(me.authorizePath);
-				
+
 			ii.timer.timing("Page displayed");
 			me.session.registerFetchNotify(me.sessionLoaded,me);
 		},	
 		
-		sessionLoaded: function fin_rev_invoiceSearch_UserInterface_sessionLoaded(){
-			var args = ii.args(arguments, {
-				me: {type: Object}
-			});
+		sessionLoaded: function() {
 
 			ii.trace("session loaded.", ii.traceTypes.Information, "Session");
 		},
-		
+
 		resize: function() {
-			var args = ii.args(arguments,{});
-			
-			if(!fin.invoiceSearchUi) return;
-			
-		    fin.invoiceSearchUi.invoiceSearch.setHeight($(window).height() - 140);
+
+			if (!fin.invoiceSearchUi)
+				return;
+
+		    fin.invoiceSearchUi.invoiceGrid.setHeight($(window).height() - 130);
 		},
-		
-		defineFormControls: function() {			
+
+		defineFormControls: function() {
 			var me = this;
-			
-			me.invoice = new ui.ctl.Input.Text({
-				id: "Invoice",
-				maxLength: 50
+
+			me.invoiceNumber = new ui.ctl.Input.Text({
+				id: "InvoiceNumber",
+				maxLength: 10
 			});
-			
-			me.invoice.makeEnterTab()
+
+			me.invoiceNumber.makeEnterTab()
 				.setValidationMaster( me.validator )
 				.addValidation( function( isFinal, dataMap ) {
 
-					var enteredText = me.invoice.getValue();
+					var enteredText = me.invoiceNumber.getValue();
 
-					if(enteredText == '') return;
+					if (enteredText === "")
+						return;
 
 					if (!(/^[0-9]+$/.test(enteredText)))
 						this.setInvalid("Please enter valid Invoice #");
+			});
+
+			me.documentNumber = new ui.ctl.Input.Text({
+				id: "DocumentNumber",
+				maxLength: 10
+			});
+
+			me.documentNumber.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ) {
+
+					var enteredText = me.documentNumber.getValue();
+
+					if (enteredText === "")
+						return;
+
+					if (!(/^[0-9]+$/.test(enteredText)))
+						this.setInvalid("Please enter valid Document #");
 			});
 
 			me.invoiceDate = new ui.ctl.Input.Date({
 		        id: "InvoiceDate",
 				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
 		    });
-			
+
 			me.invoiceDate.makeEnterTab()
 				.setValidationMaster( me.validator )
 				.addValidation( function( isFinal, dataMap ) {
 
 					var enteredText = me.invoiceDate.text.value;
-					
-					if(enteredText == '') return;
-											
-					if(ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false)
+
+					if (enteredText === "")
+						return;
+
+					if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
 						this.setInvalid("Please enter valid date.");					
 			});
 
 			me.customer = new ui.ctl.Input.Text({
-				id: "Customer", 
+				id: "Customer",
 				required: false
 		    });
 
 			me.serviceLocation = new ui.ctl.Input.Text({
-				id: "ServiceLocation", 
+				id: "ServiceLocation",
 				required: false
 		    });
 
 			me.poNumber = new ui.ctl.Input.Text({
-				id: "PONumber", 
+				id: "PONumber",
 				required: false
 		    });
 
-			me.searchButton = new ui.ctl.buttons.Sizeable({
-				id: "SearchButton",
-				appendToId: "SearchButton",
+			me.anchorSearch = new ui.ctl.buttons.Sizeable({
+				id: "AnchorSearch",
 				className: "iiButton",
-				text: "<span>&nbsp;Search&nbsp;</span>",
-				clickFunction: function() { me.actionInvoicesLoad(); },
+				text: "<span>&nbsp;&nbsp;Search&nbsp;&nbsp;</span>",
+				clickFunction: function() { me.actionLoadInvoices(); },
 				hasHotState: true
 			});
-			
-			me.invoiceSearch = new ui.ctl.Grid({
-				id: "InvoiceSearch",
+
+			me.invoiceGrid = new ui.ctl.Grid({
+				id: "InvoiceGrid",
 				appendToId: "divForm",
 				selectFunction: function(index) { me.itemSelect(index); },
 				allowAdds: false
 			});
-			
-			me.invoiceSearch.addColumn("invoiceNumber", "invoiceNumber", "Invoice #", "Invoice #", 90);
-			me.invoiceSearch.addColumn("amount", "amount", "Amount", "Amount", 110);
-			me.invoiceSearch.addColumn("billTo", "billTo", "Customer", "Customer", null);
-			me.invoiceSearch.addColumn("houseCodeBrief", "houseCodeBrief", "House Code", "House Code", 110);
-			me.invoiceSearch.addColumn("invoiceDate", "invoiceDate", "Invoice Date", "Invoice Date", 110);
-			me.invoiceSearch.addColumn("collected", "collected", "Collected", "Collected", 110);
-			me.invoiceSearch.addColumn("credited", "credited", "Credited", "Credited", 110);
-			me.invoiceSearch.addColumn("lastPrinted", "lastPrinted", "Last Printed", "Last Printed", 120);
-			me.invoiceSearch.addColumn("serviceLocation", "serviceLocation", "Service Location", "Service Location", 250);
-			me.invoiceSearch.addColumn("poNumber", "poNumber", "PO Number", "PO Number", 100);
-			me.invoiceSearch.capColumns();
-			me.invoiceSearch.setHeight($("#pageLoading").height() - 155);
-			
-			$("#InvoiceText").bind("keydown", me, me.actionSearchItem);
+
+			me.invoiceGrid.addColumn("invoiceNumber", "invoiceNumber", "Invoice #", "Invoice #", 90);
+			me.invoiceGrid.addColumn("documentNumber", "documentNumber", "Document #", "Document #", 100);
+			me.invoiceGrid.addColumn("amount", "amount", "Amount", "Amount", 110);
+			me.invoiceGrid.addColumn("billTo", "billTo", "Customer", "Customer", null);
+			me.invoiceGrid.addColumn("houseCodeBrief", "houseCodeBrief", "House Code", "House Code", 110);
+			me.invoiceGrid.addColumn("invoiceDate", "invoiceDate", "Invoice Date", "Invoice Date", 110);
+			me.invoiceGrid.addColumn("collected", "collected", "Collected", "Collected", 110);
+			me.invoiceGrid.addColumn("credited", "credited", "Credited", "Credited", 110);
+			me.invoiceGrid.addColumn("lastPrinted", "lastPrinted", "Last Printed", "Last Printed", 120);
+			me.invoiceGrid.addColumn("serviceLocation", "serviceLocation", "Service Location", "Service Location", 250);
+			me.invoiceGrid.addColumn("poNumber", "poNumber", "PO Number", "PO Number", 100);
+			me.invoiceGrid.capColumns();
+
+			$("#InvoiceNumberText").bind("keydown", me, me.actionSearchItem);
+			$("#DocumentNumberText").bind("keydown", me, me.actionSearchItem);
 			$("#InvoiceDateText").bind("keydown", me, me.actionSearchItem);
 			$("#CustomerText").bind("keydown", me, me.actionSearchItem);
-			
+			$("#ServiceLocationText").bind("keydown", me, me.actionSearchItem);
+			$("#PONumberText").bind("keydown", me, me.actionSearchItem);
+
 			$("#pageLoading").css({
 				"opacity": "0.5",
 				"background-color": "black"
 			});
 			$("#messageToUser").css({ "color": "white" });
 			$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
-		},				
-		
+		},
+
 		resizeControls: function() {
 			var me = this;
-			
-			me.invoice.resizeText();
-			me.customer.resizeText();
+
+			me.invoiceNumber.resizeText();
+			me.documentNumber.resizeText();
 			me.invoiceDate.resizeText();
-			
+			me.customer.resizeText();
+			me.serviceLocation.resizeText();
+			me.poNumber.resizeText();
 			me.resize();
 		},
-		
-		configureCommunications: function fin_rev_invoiceSearch_configureCommunications() {
-			var args = ii.args(arguments, {});
+
+		configureCommunications: function() {
 			var me = this;
-			
+
 			me.hirNodes = [];
 			me.hirNodeStore = me.cache.register({
 				storeId: "hirNodes",
@@ -208,7 +226,7 @@ ii.Class({
 				itemConstructorArgs: fin.rev.invoiceSearch.houseCodeArgs,
 				injectionArray: me.houseCodes
 			});
-			
+
 			me.invoices = [];
 			me.invoiceStore = me.cache.register({
 				storeId: "revInvoices",
@@ -217,14 +235,14 @@ ii.Class({
 				injectionArray: me.invoices
 			});			
 		},
-		
+
 		setStatus: function(status) {
 			var me = this;
 
 			fin.cmn.status.setStatus(status);
 		},
-		
-		setLoadCount: function(me, activeId) {
+
+		setLoadCount: function() {
 			var me = this;
 
 			me.loadCount++;
@@ -232,7 +250,7 @@ ii.Class({
 			$("#messageToUser").text("Loading");
 			$("#pageLoading").fadeIn("slow");
 		},
-		
+
 		checkLoadCount: function() {
 			var me = this;
 
@@ -244,168 +262,158 @@ ii.Class({
 		},
 		
 		houseCodesLoaded: function(me, activeId) {			
-			ii.trace("HouseCodesLoaded", ii.traceTypes.information, "Startup");
 
-			if (parent.fin.appUI.houseCodeId == 0) {
+			if (parent.fin.appUI.houseCodeId === 0) {
 				if (me.houseCodes.length <= 0) {
-				
 					return me.houseCodeSearchError();
 				}
-				
+
 				me.houseCodeGlobalParametersUpdate(false, me.houseCodes[0]);
 			}
 
-			if (me.houseCodeChangedAtInvoiceSearch == true) {
+			if (me.houseCodeChangedAtSearch) {
 				me.houseCodeGlobalParametersUpdate(false, me.houseCodes[0]);
-				if (!me.columnSorted()) 
-					window.location = "/fin/rev/master/usr/markup.htm?invoiceSearch=true&invoiceId=" + me.invoiceId + "&invoiceNumber=" + me.invoiceNumber;
+				if (!me.columnSorted())
+					window.location = "/fin/rev/master/usr/markup.htm?invoiceSearch=true&invoiceId=" + me.invoiceId + "&invoiceNumber=" + me.invoiceNumberValue;
 			}
 			else {
 				me.houseCodeGlobalParametersUpdate(false);
 			}
-			
+
 			me.resizeControls();	
 			me.setStatus("Loaded");
 			$("#pageLoading").fadeOut("slow");
 		},
 
 		houseCodeChanged: function() {
-			var args = ii.args(arguments,{});
 			var me = this;
+
+			$("#pageLoading").fadeIn("slow");
+			me.actionLoadInvoices();
 		},
-		
-		actionInvoicesLoad: function() {
+
+		actionSearchItem: function() {
+			var args = ii.args(arguments, {
+				event: {type: Object}
+			});			
+			var event = args.event;
+			var me = event.data;
+
+			if (event.keyCode === 13) {
+				me.actionLoadInvoices();
+			}
+		},
+
+		actionLoadInvoices: function() {
 			var me = this;
-			
+
 			me.validator.forceBlur();
-			
 			// Check to see if the data entered is valid
 		    if (!me.validator.queryValidity(true)) {
 				alert("In order to search, the errors on the page must be corrected.");
 				return false;
-			}	
-			
-			if (me.invoice.getValue() === ""
-				&& me.invoiceDate.text.value === ""
-				&& me.customer.getValue() === ""
-				&& $("#houseCodeText").val() === ""
-				&& me.serviceLocation.getValue() === ""
-				&& me.poNumber.getValue() === "") {
-				alert("Please enter search criteria: Invoice #, Invoice Date, Customer or House Code.")
+			}
+
+			if (me.invoiceNumber.getValue() === "" && me.documentNumber.getValue() === "" && me.invoiceDate.text.value === "" && me.customer.getValue() === "" 
+				&& me.serviceLocation.getValue() === "" && me.poNumber.getValue() === "" && $("#houseCodeText").val() === "") {
+				alert("Please enter search criteria: Invoice #, Document #, Invoice Date, Customer, Service Location, PO Number or House Code.")
 				return false;
 			}
-				
+
 			me.setLoadCount();
 
-			var invoiceNumber = me.invoice.getValue();
+			var invoiceNumber = me.invoiceNumber.getValue();
+			var documentNumber = me.documentNumber.getValue();
 			var invoiceDate = me.invoiceDate.text.value;
 			var customer = me.customer.getValue();
 			var serviceLocation = me.serviceLocation.getValue();
 			var poNumber = me.poNumber.getValue();
 
 			if (invoiceDate === undefined || invoiceDate === "")
-				invoiceDate = "1/1/1900";		
-			
+				invoiceDate = "1/1/1900";
+
 			me.invoiceStore.reset();
-			me.invoiceStore.fetch("userId:[user],houseCode:" 				
-				+ ($("#houseCodeText").val() != "" ? + parent.fin.appUI.houseCodeId : "0")
-				+ ",status:-1,year:-1,invoiceNumber:" + invoiceNumber
-				+ ",invoiceByHouseCode:-1"
+			me.invoiceStore.fetch("userId:[user],houseCode:"
+				+ ($("#houseCodeText").val() !== "" ? + parent.fin.appUI.houseCodeId : "0")
+				+ ",status:-1,year:-1,invoiceByHouseCode:-1,invoiceNumber:" + invoiceNumber
+				+ ",documentNumber:" + documentNumber
 				+ ",invoiceDate:" + invoiceDate + ",customer:" + customer + ",serviceLocation:" + serviceLocation + ",poNumber:" + poNumber, me.invoiceLoaded, me);
 		},
-		
-		invoiceLoaded: function(me, activeId) { 					
-			me.invoiceSearch.setData(me.invoices);
-			
+
+		invoiceLoaded: function(me, activeId) {
+
+			me.invoiceGrid.setData(me.invoices);
 			me.checkLoadCount();
 			me.resize();
   		},
-		
+
 		itemSelect: function() {
 			var args = ii.args(arguments,{
-				index: {type: Number}  // The index of the data subItem to select
+				index: {type: Number}
 			});			
 			var me = this;
 			var index = args.index;
-			var item = me.invoiceSearch.data[index];
-			
-			if (parent.fin.appUI.houseCodeId != item.houseCode) {
-				me.houseCodeChangedAtInvoiceSearch = true;
+			var item = me.invoiceGrid.data[index];
+
+			if (parent.fin.appUI.houseCodeId !== item.houseCode) {
+				me.houseCodeChangedAtSearch = true;
 				me.invoiceId = item.id;
-				me.invoiceNumber = item.invoiceNumber;
+				me.invoiceNumberValue = item.invoiceNumber;
 				me.setStatus("Loading");
 				$("#messageToUser").text("Loading");
 				$("#pageLoading").fadeIn("slow");
 				me.houseCodeStore.fetch("userId:[user],appUnitBrief:" + item.houseCodeBrief + ",", me.houseCodesLoaded, me);
 			}
 			else {
-				if(!me.columnSorted())
+				if (!me.columnSorted())
 					window.location = "/fin/rev/master/usr/markup.htm?invoiceSearch=true&invoiceId=" + item.id + "&invoiceNumber=" + item.invoiceNumber + "&fscYear=" + item.fscYear + "&statusType=" + item.paidOff;
 			}
 		},
-		
-		columnSorted: function esm_ppl_peopleSearch_UserInterface_columnSorted() {
-			var args = ii.args(arguments, {
-			});
+
+		columnSorted: function() {
 			var me = this;
 			var columnExists = false;
 			var generalColumnSorted = false;
 			var columnSorted = false;
 			var column;
 			var columnSelected;
-			
-			for (index in me.invoiceSearch.columns) {
-			
-				column = me.invoiceSearch.columns[index];
+
+			for (index in me.invoiceGrid.columns) {
+				column = me.invoiceGrid.columns[index];
 				if (column) {
-				
-					if (index == "rowNumber") 
+					if (index === "rowNumber") 
 						continue;
-					
+
 					for (sortColumnIndex in me.sortSelections) {
-					
 						columnSelected = me.sortSelections[sortColumnIndex];
-						if (columnSelected.name == index) {
-						
+						if (columnSelected.name === index) {
 							columnExists = true;
-							if (columnSelected.sortStatus != column.sortStatus) {
+							if (columnSelected.sortStatus !== column.sortStatus) {
 								columnSorted = true;
 								me.sortSelections[sortColumnIndex].name = index;
 								me.sortSelections[sortColumnIndex].sortStatus = column.sortStatus;
 							}
 						}
 					}
-					
+
 					if (!columnExists) {
 						me.sortSelections.push({
-							name: index,
-							sortStatus: column.sortStatus
+							name: index
+							, sortStatus: column.sortStatus
 						});
-						
-						if (column.sortStatus != "none") 
+
+						if (column.sortStatus !== "none") 
 							columnSorted = true;
 					}
-					
-					if (columnSorted) generalColumnSorted = true;
+
+					if (columnSorted)
+						generalColumnSorted = true;
 					columnSorted = false;
 				}
 			}
-						
-			return generalColumnSorted;
-		},
 
-		actionSearchItem: function() {
-			var args = ii.args(arguments, {
-				event: {type: Object} // The (key) event object
-			});			
-			var event = args.event;
-			var me = event.data;
-				
-			if (event.keyCode == 13) {
-				me.actionInvoicesLoad();
-			}
+			return generalColumnSorted;
 		}
-		
 	}
 });
 
