@@ -4,7 +4,8 @@ ii.Import( "fin.pur.placedOrder.usr.defs" );
 
 ii.Style( "style" , 1);
 ii.Style( "fin.cmn.usr.common" , 2);
-ii.Style( "fin.cmn.usr.statusBar" , 3);
+ii.Style("fin.cmn.usr.statusBar", 3);
+ii.Style("fin.cmn.usr.button", 4);
 
 ii.Class({
     Name: "fin.pur.placedOrder.UserInterface",
@@ -70,13 +71,29 @@ ii.Class({
 			
 			width = gridDiv[0].offsetWidth - gridDiv[0].clientWidth;
 			
-			$("#divPurchaseOrderGrid").height($(window).height() - 45);
-			$("#PurchaseOrderGrid").width(gridDiv.width() - width);
+			$("#divPurchaseOrderGrid").height($(window).height() - 85);
 		},
 				
 		defineFormControls: function(){
-			var me = this;				
-			
+		    var me = this;
+
+		    me.anchorPrint = new ui.ctl.buttons.Sizeable({
+		        id: "AnchorPrint",
+			    className: "iiButton",
+			    text: "<span>&nbsp;&nbsp;Print&nbsp;&nbsp;</span>",
+			    title: "Print selected Purchase Order",
+			    clickFunction: function () { me.actionPrintOrder(); },
+			    hasHotState: true
+			});
+
+		    me.anchorOpen = new ui.ctl.buttons.Sizeable({
+		        id: "AnchorOpen",
+			    className: "iiButton",
+			    text: "<span>Open&nbsp;&nbsp;</span>",
+			    title: "Purchase Order back to Open",
+			    clickFunction: function () { me.actionOpenItem(); },
+			    hasHotState: true
+			});
 		},
 		
 		configureCommunications: function fin_pur_UserInterface_configureCommunications() {
@@ -177,7 +194,7 @@ ii.Class({
 					category = "&nbsp;";
 				
 				rowNumber++;
-				cost = me.purchaseOrderDetails[index].quantityOverride * parseFloat(me.purchaseOrderDetails[index].price);	
+				cost = me.purchaseOrderDetails[index].quantity * parseFloat(me.purchaseOrderDetails[index].price);	
 				rowHtml += "<tr>";
 
 				rowHtml += me.getPODetailGridRow(
@@ -187,8 +204,9 @@ ii.Class({
 					, me.getJobTitle(me.purchaseOrderDetails[index].houseCodeJob)
 					, me.purchaseOrderDetails[index].number
 					, me.purchaseOrderDetails[index].description
+                    , me.purchaseOrderDetails[index].accountCode
 					, me.purchaseOrderDetails[index].unit
-					, me.purchaseOrderDetails[index].quantityOverride.toString()
+					, me.purchaseOrderDetails[index].quantity.toString()
 					, "$" + me.purchaseOrderDetails[index].price
 					, "$" + cost.toFixed(2)
 					, me.purchaseOrderDetails[index].priceChanged
@@ -224,6 +242,20 @@ ii.Class({
 			me.resize();
 			parent.fin.purMasterUi.checkLoadCount();
 		},
+
+		actionPrintOrder: function() {
+		    var me = this;
+		    if (me.purchaseOrderId < 0)
+		        return;
+		    window.open(location.protocol + '//' + location.hostname + '/reports/po.aspx?purchaseorder=' + me.purchaseOrderId, 'PrintPO', 'type=fullWindow,status=yes,toolbar=no,menubar=no,location=no,resizable=yes');
+		},
+
+		actionOpenItem: function () {
+		    var me = this;
+		    me.status = "Open";
+		    me.transactionStatusType = 1;
+		    me.actionSaveItem();
+		},
 		
 		orderDetailsLoaded: function(me) {
 								
@@ -253,6 +285,7 @@ ii.Class({
 				, "&nbsp;"
 				, "&nbsp;"
 				, "&nbsp;"
+                , "&nbsp;"
 				, "&nbsp;"
 				, "&nbsp;"
 				, "&nbsp;"
@@ -272,9 +305,10 @@ ii.Class({
 				, vendor: {type: String}
 				, job: {type: String}
 				, itemNumber: {type: String}
-				, description: {type: String}
+				, description: { type: String }
+                , accountCode: { type: String }
 				, unit: {type: String}
-				, quantityOverride: {type: String}
+				, quantity: {type: String}
 				, unitPrice: {type: String}
 				, cost: {type: String}
 				, priceChanged: {type: Boolean}
@@ -295,10 +329,11 @@ ii.Class({
 			rowHtml += me.getEditableRowColumn(false, 2, "job", args.job, 10, "left");		
 			rowHtml += me.getEditableRowColumn(false, 3, "itemNumber", args.itemNumber, 10, "left");
 			rowHtml += me.getEditableRowColumn(false, 4, "description", args.description, 34, "left");
-			rowHtml += me.getEditableRowColumn(false, 5, "unit", args.unit, 5, "left");
-			rowHtml += me.getEditableRowColumn(false, 6, "quantityOverride", args.quantityOverride, 7, "right");
-			rowHtml += me.getEditableRowColumn(false, 7, "unitPrice", args.unitPrice, 7, "right", args.priceChanged);
-			rowHtml += me.getEditableRowColumn(columnBold, 8, "cost", args.cost, 8, "right");
+			rowHtml += me.getEditableRowColumn(false, 5, "accountCode", args.accountCode.toString(), 10, "left");
+			rowHtml += me.getEditableRowColumn(false, 6, "unit", args.unit, 5, "left");
+			rowHtml += me.getEditableRowColumn(false, 7, "quantity", args.quantity, 7, "right");
+			rowHtml += me.getEditableRowColumn(false, 8, "unitPrice", args.unitPrice, 7, "right", args.priceChanged);
+			rowHtml += me.getEditableRowColumn(columnBold, 9, "cost", args.cost, 8, "right");
 			
 			return rowHtml;
 		},		
@@ -327,9 +362,66 @@ ii.Class({
 			return "<td class='gridColumn' width='" + args.columnWidth + "%' style='" + styleName + "'>" + args.columnValue + "</td>";
 		},
 				
-		actionSaveItem: function() {
+		actionSaveItem: function () {
+		    var args = ii.args(arguments, {});
+		    var me = this;
+		    var item = [];
+
+		    var xml = me.saveXmlBuildPurchaseOrder(item);
+
+		    // Send the object back to the server as a transaction
+		    me.transactionMonitor.commit({
+		        transactionType: "itemUpdate",
+		        transactionXml: xml,
+		        responseFunction: me.saveResponse,
+		        referenceData: { me: me, item: item }
+		    });
 			
 			return true;
+		},
+
+		saveXmlBuildPurchaseOrder: function () {
+		    var args = ii.args(arguments, {
+		        item: { type: [fin.pur.placedOrder.PurchaseOrder] }
+		    });
+		    var me = this;
+		    var xml = "";
+
+		    if (me.status === "Open") {
+		        xml += '<purPurchaseOrderStatus';
+		        xml += ' id="' + me.purchaseOrderId + '"';
+		        xml += ' transactionStatusType="' + me.transactionStatusType + '"';
+		        xml += '/>';
+		    }
+
+		    return xml;
+		},
+
+        /* @iiDoc {Method}
+        * Handles the server's response to a save transaction.
+        */
+		saveResponse: function () {
+		    var args = ii.args(arguments, {
+		        transaction: { type: ii.ajax.TransactionMonitor.Transaction },
+		        xmlNode: { type: "XmlNode:transaction" }
+		    });
+		    var transaction = args.transaction;
+		    var me = transaction.referenceData.me;
+		    var status = $(args.xmlNode).attr("status");
+
+		    if (status == "success") {
+		        me.status = "";
+		        parent.fin.purMasterUi.purchaseOrders.splice(parent.fin.purMasterUi.purchaseOrderGrid.activeRowIndex, 1);
+		        parent.fin.purMasterUi.purchaseOrderGrid.setData(parent.fin.purMasterUi.purchaseOrders);
+		        parent.fin.purMasterUi.placedOrderNeedUpdate = true;
+		        $("#pageBody").hide();
+		        $('#ButtonPlaceOrder').hide();
+		    }
+		    else {
+		        parent.fin.purMasterUi.setStatus("Error");
+		        parent.fin.purMasterUi.hidePageLoading();
+		        alert("Error while updating Purchase Order info: " + $(args.xmlNode).attr("message"));
+		    }
 		},
 		
 		actionUndoItem: function() {

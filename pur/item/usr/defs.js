@@ -9,7 +9,6 @@ ii.init.register( function(){
 	
 	fin.pur.item.itemArgs = {
 		id: {type: Number, defaultValue: 0},
-		masterId: {type: String},
 		number: {type: String},
 		number2: {type: String},
 		description: {type: String},

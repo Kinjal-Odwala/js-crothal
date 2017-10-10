@@ -39,7 +39,6 @@ ii.Class({
 			me.activeFrameId = 0;			
 			me.openOrderNeedUpdate = true;
 			me.placedOrderNeedUpdate = true;
-			me.postedOrderNeedUpdate = true;
 			me.transactionStatusType = 0;
 			me.status = "";
 			me.checkStatus = false;
@@ -82,7 +81,6 @@ ii.Class({
 			
 			$(window).bind("resize", me, me.resize);
 			$(document).bind("keydown", me, me.controlKeyProcessor);
-			$("#Print").hide();
 
 			me.$reportFooter = $("#ReportFooterTextArea")[0];
 			$("#ReportFooterTextArea").keyup(function(){
@@ -111,8 +109,6 @@ ii.Class({
 						tabIndex = 1;
 					else if (this.id == "TabPlacedOrders")
 						tabIndex = 2;
-					else if (this.id == "TabPostedOrders")
-						tabIndex = 3;
 							
 					$("#container-1").tabs(tabIndex);
 					$("#container-1").triggerTab(tabIndex);
@@ -131,10 +127,8 @@ ii.Class({
 						}													
 						
 						$("#Buttons").show();
-						$("#Print").hide();
 						me.openOrderNeedUpdate = false;
 						me.placedOrderNeedUpdate = true;
-						me.postedOrderNeedUpdate = true;
 						break;
 						
 					case "TabPlacedOrders":
@@ -146,25 +140,8 @@ ii.Class({
 						}							
 						
 						$("#Buttons").hide();
-						$("#Print").show();
 						me.openOrderNeedUpdate = true;
 						me.placedOrderNeedUpdate = false;
-						me.postedOrderNeedUpdate = true;
-						break;
-
-					case "TabPostedOrders":
-
-						me.activeFrameId = 2;
-						if (me.postedOrderNeedUpdate) {
-							me.lastSelectedRowIndex = -1;
-							me.loadPurchaseOrders();
-						}														
-						
-						$("#Buttons").hide();
-						$("#Print").show();
-						me.openOrderNeedUpdate = true;
-						me.placedOrderNeedUpdate = true;
-						me.postedOrderNeedUpdate = false;
 						break;
 				}
 			});
@@ -262,7 +239,6 @@ ii.Class({
 
 				$("#iFrameOpenOrders").height(offset);
 				$("#iFramePlacedOrders").height(offset);
-				$("#iFramePostedOrders").height(offset);
 				
 				me.windowWidth = $(window).width();
 				me.windowHeight = $(window).height();
@@ -276,9 +252,7 @@ ii.Class({
 			if (me.activeFrameId == 0 && $("iframe")[0].contentWindow.fin != undefined)
 				$("iframe")[0].contentWindow.fin.openOrderUi.resize();
 			else if (me.activeFrameId == 1 && $("iframe")[1].contentWindow.fin != undefined)
-				$("iframe")[1].contentWindow.fin.placedOrderUi.resize();
-			else if (me.activeFrameId == 2 && $("iframe")[2].contentWindow.fin != undefined)
-				$("iframe")[2].contentWindow.fin.postedOrderUi.resize();			
+				$("iframe")[1].contentWindow.fin.placedOrderUi.resize();			
 		},
 		
 		defineFormControls: function() {
@@ -596,17 +570,8 @@ ii.Class({
 				text: "<span>&nbsp;&nbsp;Cancel&nbsp;&nbsp;</span>",
 				clickFunction: function() { me.actionItemCancel(); },
 				hasHotState: true
-			});
-			
-			me.print = new ui.ctl.buttons.Sizeable({
-				id: "Print",
-				className: "iiButton",
-				text: "<span>&nbsp;&nbsp;Print&nbsp;&nbsp;</span>",
-				title: "Print selected Purchase Order",
-				clickFunction: function() { me.actionPrintOrder(); },
-				hasHotState: true
-			});
-			
+			});			
+		
 			me.purchaseOrderGrid = new ui.ctl.Grid({
 				id: "PurchaseOrders",
 				appendToId: "divForm",
@@ -933,7 +898,6 @@ ii.Class({
 			me.lastSelectedRowIndex = -1;
 			me.openOrderNeedUpdate = true;
 			me.placedOrderNeedUpdate = true;
-			me.postedOrderNeedUpdate = true;
 			me.houseCodeDetailStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId, me.houseCodeDetailsLoaded, me);
 			me.houseCodeJobStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId, me.houseCodeJobsLoaded, me);
 			me.loadPurchaseOrders();
@@ -1064,7 +1028,6 @@ ii.Class({
 					}
 					else if (me.purchaseOrders[0].statusType == 3) {
 						me.activeFrameId = 2;
-						me.postedOrderNeedUpdate = false;
 						$("#container-1").triggerTab(3);
 					}
 				}
@@ -1098,7 +1061,6 @@ ii.Class({
 			
 			me.openOrderNeedUpdate = true;
 			me.placedOrderNeedUpdate = true;
-			me.postedOrderNeedUpdate = true;
 			me.lastSelectedRowIndex = index;
 			me.status = "";
 			
@@ -1129,12 +1091,7 @@ ii.Class({
 					
 					me.placedOrderNeedUpdate = false;
 					break;
-
-				case 2:
-					$("iframe")[2].src = "/fin/pur/postedOrder/usr/markup.htm?orderId=" + me.purchaseOrderId;
-					
-					me.postedOrderNeedUpdate = false;
-					break;
+				
 			}
 		},
 		
@@ -1144,9 +1101,7 @@ ii.Class({
 				
 			if ($("iframe")[1].contentWindow.fin != undefined)
 				$("iframe")[1].contentWindow.fin.placedOrderUi.resetGrid();
-			
-			if ($("iframe")[2].contentWindow.fin != undefined)
-				$("iframe")[2].contentWindow.fin.postedOrderUi.resetGrid();
+
 		},
 		
 		vendorsLoaded: function(me, activeId) {
@@ -1473,19 +1428,10 @@ ii.Class({
 			$("#popupLoading").hide();
 		},
 
-		actionPrintOrder: function fin_pur_item_master_actionPrintOrder() {
-			var me = this;
+		printPurchaseOrder: function (id) {
+		    var me = this;
 
-			if(me.purchaseOrderGrid.activeRowIndex < 0) 
-				return;
-
-			me.printPurchaseOrder(me.purchaseOrderGrid.data[me.purchaseOrderGrid.activeRowIndex].id);			
-		},
-		
-		printPurchaseOrder: function(id) {
-			var me = this;
-			
-			window.open(location.protocol + '//' + location.hostname + '/reports/po.aspx?purchaseorder=' + id,'PrintPO','type=fullWindow,status=yes,toolbar=no,menubar=no,location=no,resizable=yes');
+		    window.open(location.protocol + '//' + location.hostname + '/reports/po.aspx?purchaseorder=' + id, 'PrintPO', 'type=fullWindow,status=yes,toolbar=no,menubar=no,location=no,resizable=yes');
 		},
 				
 		actionItemContinue: function() {
@@ -1737,8 +1683,6 @@ ii.Class({
 				$("iframe")[0].contentWindow.fin.openOrderUi.actionUndoItem();
 			else if (me.activeFrameId == 1 && $("iframe")[1].contentWindow.fin != undefined)
 				$("iframe")[1].contentWindow.fin.placedOrderUi.actionUndoItem();
-			else if (me.activeFrameId == 2 && $("iframe")[2].contentWindow.fin != undefined) 
-				$("iframe")[2].contentWindow.fin.postedOrderUi.actionUndoItem();
 		},
 		
 		actionSaveItem: function() {
@@ -1785,8 +1729,6 @@ ii.Class({
 			}				
 			else if (me.activeFrameId == 1 && $("iframe")[1].contentWindow.fin != undefined) 
 				$("iframe")[1].contentWindow.fin.placedOrderUi.actionSaveItem();
-			else if (me.activeFrameId == 2 && $("iframe")[2].contentWindow.fin != undefined) 
-				$("iframe")[2].contentWindow.fin.postedOrderUi.actionSaveItem();
 		},
 		
 		saveXmlBuildPurchaseOrder: function() {

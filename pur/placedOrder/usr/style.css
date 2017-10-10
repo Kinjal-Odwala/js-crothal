@@ -1,3 +1,17 @@
 ﻿#divPurchaseOrderDetails {
     padding: 0px 0px 0px 0px;
 }
+#buttonAlign {
+    padding-bottom: 5px;
+    clear: both;
+}
+#ButtonPlaceOrder {
+    padding: 0px 0px 0px 0px;
+}
+#AnchorPrint, #AnchorOpen {
+    float: left;
+    width: 75px;
+    padding-left: 5px;
+    padding-top: 5px;
+}
+

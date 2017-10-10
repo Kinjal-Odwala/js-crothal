@@ -255,16 +255,6 @@ ii.Class({
 					else if (me.itemStatus.indexSelected == -1)
 						this.setInvalid("Please select the correct Status.");
 				});
-
-			me.itemMasterId = new ui.ctl.Input.Text({
-		        id: "ItemMasterId",
-				maxLength: 255,
-				changeFunction: function() { me.modified(); }
-		    });
-			
-			me.itemMasterId.makeEnterTab()
-				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
 			
 			me.itemNumber = new ui.ctl.Input.Text({
 		        id: "ItemNumber",
@@ -391,9 +381,9 @@ ii.Class({
 						return parent.fin.cmn.status.itemValid();
 				}
 			});
-			
-			me.itemGrid.addColumn("masterId", "masterId", "Master Id", "Master Id", 150);
-			me.itemGrid.addColumn("number", "number", "Number", "Number", null);
+
+			me.itemGrid.addColumn("number", "number", "Number", "Number", 110);
+			me.itemGrid.addColumn("description", "description", "Description", "description", null);
 			me.itemGrid.addColumn("active", "active", "Active", "Active", 70, function (active) { return (active == "1" ? "Yes" : "No") });
 			me.itemGrid.capColumns();
 			
@@ -406,7 +396,6 @@ ii.Class({
 			
 			me.searchInput.resizeText();
 			me.itemStatus.resizeText();
-			me.itemMasterId.resizeText();
 			me.itemNumber.resizeText();
 			me.itemNumber2.resizeText();
 			me.itemDescription.resizeText();
@@ -538,7 +527,6 @@ ii.Class({
 		controlVisible: function() {
 			
 			if (me.itemsReadOnly) {
-				$("#ItemMasterIdText").attr('disabled', true);
 				$("#ItemNumberText").attr('disabled', true);
 				$("#ItemNumber2Text").attr('disabled', true);
 				$("#ItemDescriptionText").attr('disabled', true);
@@ -642,7 +630,6 @@ ii.Class({
 			if (me.itemGrid.data[index] != undefined) {
 
 				me.itemId = me.itemGrid.data[index].id;		
-				me.itemMasterId.setValue(me.itemGrid.data[index].masterId);
 				me.itemNumber.setValue(me.itemGrid.data[index].number);
 				me.itemNumber2.setValue(me.itemGrid.data[index].number2);
 				me.itemDescription.setValue(me.itemGrid.data[index].description);
@@ -707,7 +694,6 @@ ii.Class({
 			me.validator.reset();
 			me.validateControl = false;
 			me.itemId = 0;
-			me.itemMasterId.setValue("");
 			me.itemNumber.setValue("");
 			me.itemNumber2.setValue("");
 			me.itemDescription.setValue("");
@@ -851,7 +837,6 @@ ii.Class({
 			
 			var item = new fin.pur.item.Item(
 				me.itemId
-				, me.itemMasterId.getValue()
 				, me.itemNumber.getValue()
 				, me.itemNumber2.getValue()
 				, me.itemDescription.getValue()
@@ -888,7 +873,6 @@ ii.Class({
 				
 			xml += '<purItem';
 			xml += ' id="' + item.id + '"';
-			xml += ' masterId="' + ui.cmn.text.xml.encode(item.masterId) + '"';
 			xml += ' number="' + ui.cmn.text.xml.encode(item.number) + '"';
 			xml += ' number2="' + ui.cmn.text.xml.encode(item.number2) + '"';
 			xml += ' description="' + ui.cmn.text.xml.encode(item.description) + '"';

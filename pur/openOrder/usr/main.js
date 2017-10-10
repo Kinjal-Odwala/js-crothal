@@ -272,7 +272,7 @@ ii.Class({
 			return jobTitle == "None - None" ? "&nbsp;" : jobTitle;
 		},
 		
-		purchaseOrderDetailsLoaded: function(me, activeId) {
+		purchaseOrderDetailsLoaded: function (me, activeId) {
 			var index = 0;
 			var rowNumber = 0;
 			var rowHtml = "";
@@ -294,7 +294,7 @@ ii.Class({
 			for (index = 0; index < me.purchaseOrderDetails.length; index++) {
 
 				rowNumber++;
-				cost = me.purchaseOrderDetails[index].quantityOverride * parseFloat(me.purchaseOrderDetails[index].price);
+				cost = me.purchaseOrderDetails[index].quantity * parseFloat(me.purchaseOrderDetails[index].price);
 				jobTotalCost += cost;				
 				jobTitle = me.getJobTitle(me.purchaseOrderDetails[index].houseCodeJob);
 
@@ -337,9 +337,9 @@ ii.Class({
 					, jobTitle
 					, me.purchaseOrderDetails[index].number
 					, me.purchaseOrderDetails[index].description
+                    , me.purchaseOrderDetails[index].accountCode
 					, me.purchaseOrderDetails[index].unit
-					, me.purchaseOrderDetails[index].recQuantity.toString()
-					, me.purchaseOrderDetails[index].quantityOverride.toString()
+					, me.purchaseOrderDetails[index].quantity.toString()
 					, "$" + me.purchaseOrderDetails[index].price
 					, "$" + cost.toFixed(2)
 					, jobPeriodBudget
@@ -492,24 +492,24 @@ ii.Class({
 			});			
 		},
 		
-		getPODetailGridRow: function() {
-			var args = ii.args(arguments,{
-				rowNumber: {type: Number}
-				, rowEditable: {type: Boolean}
-				, id: {type: Number}
-				, vendor: {type: String}
-				, job: {type: String}
-				, itemNumber: {type: String}
-				, description: {type: String}
-				, unit: {type: String}
-				, recommendedQuantity: {type: String}
-				, quantityOverride: {type: String}
-				, unitPrice: {type: String}
-				, cost: {type: String}
-				, periodBudget: {type: String}
-				, budgetRemaining: {type: String}
-				, priceChanged: {type: Boolean}
-			});			
+		getPODetailGridRow: function () {
+		    var args = ii.args(arguments, {
+		        rowNumber: { type: Number }
+				, rowEditable: { type: Boolean }
+				, id: { type: Number }
+				, vendor: { type: String }
+				, job: { type: String }
+				, itemNumber: { type: String }
+				, description: { type: String }
+                , accountCode: { type: String }
+				, unit: { type: String }
+				, quantity: { type: String }
+				, unitPrice: { type: String }
+				, cost: { type: String }
+				, periodBudget: { type: String }
+				, budgetRemaining: { type: String }
+				, priceChanged: { type: Boolean }
+		    });
 			var me = this;
 			var rowHtml = "";
 			var columnBold = false;
@@ -520,36 +520,36 @@ ii.Class({
 				categoryAlign = "right";
 			}
 					
-			if(args.rowEditable) {
-				// Row Editable
-				rowHtml += me.getEditableRowColumn(false, false, 0, "rowNumber", args.rowNumber.toString(), 4, "right");
-				rowHtml += me.getEditableRowColumn(false, false, 1, "id", args.id.toString(), 0, "left");
-				rowHtml += me.getEditableRowColumn(false, true, 2, "vendor", args.vendor, 17, categoryAlign);
-				rowHtml += me.getEditableRowColumn(true, false, 3, "job" + args.rowNumber, args.job, 20, "left");				
-				rowHtml += me.getEditableRowColumn(false, false, 4, "itemNumber", args.itemNumber, 8, "left");
-				rowHtml += me.getEditableRowColumn(false, false, 5, "description", args.description, 35, "left");
-				rowHtml += me.getEditableRowColumn(false, false, 6, "unit", args.unit, 6, "left");
-				rowHtml += me.getEditableRowColumn(false, false, 7, "recQuantity" + args.rowNumber, args.recommendedQuantity, 7, "right");
-				rowHtml += me.getEditableRowColumn(true, false, 8, "qtyOverride" + args.rowNumber, args.quantityOverride, 7, "right");
-				rowHtml += me.getEditableRowColumn(false, false, 9, "unitPrice", args.unitPrice, 7, "right", args.priceChanged);
-				rowHtml += me.getEditableRowColumn(false, false, 10, "cost", args.cost, 7, "right");
-				rowHtml += me.getEditableRowColumn(false, true, 11, "periodBudget", args.periodBudget, 7, "right");
-				rowHtml += me.getEditableRowColumn(false, true, 12, "budgetRemaining", args.budgetRemaining, 10, "right");
+			if (args.rowEditable) {
+			    // Row Editable
+			    rowHtml += me.getEditableRowColumn(false, false, 0, "rowNumber", args.rowNumber.toString(), 4, "right");
+			    rowHtml += me.getEditableRowColumn(false, false, 1, "id", args.id.toString(), 0, "left");
+			    rowHtml += me.getEditableRowColumn(false, true, 2, "vendor", args.vendor, 17, categoryAlign);
+			    rowHtml += me.getEditableRowColumn(true, false, 3, "job" + args.rowNumber, args.job, 20, "left");
+			    rowHtml += me.getEditableRowColumn(false, false, 4, "itemNumber", args.itemNumber, 8, "left");
+			    rowHtml += me.getEditableRowColumn(false, false, 5, "description", args.description, 35, "left");
+			    rowHtml += me.getEditableRowColumn(false, false, 6, "accountCode", args.accountCode.toString(), 10, "left");
+			    rowHtml += me.getEditableRowColumn(false, false, 7, "unit", args.unit, 6, "left");
+			    rowHtml += me.getEditableRowColumn(true, false, 8, "quantity" + args.rowNumber, args.quantity, 7, "right");
+			    rowHtml += me.getEditableRowColumn(false, false, 9, "unitPrice", args.unitPrice, 7, "right", args.priceChanged);
+			    rowHtml += me.getEditableRowColumn(false, false, 10, "cost", args.cost, 7, "right");
+			    rowHtml += me.getEditableRowColumn(false, true, 11, "periodBudget", args.periodBudget, 7, "right");
+			    rowHtml += me.getEditableRowColumn(false, true, 12, "budgetRemaining", args.budgetRemaining, 10, "right");
 			}
 			else {
-				rowHtml += me.getEditableRowColumn(false, false, 0, "rowNumber", args.rowNumber.toString(), 4, "right");
-				rowHtml += me.getEditableRowColumn(false, false, 1, "id", args.id.toString(), 0, "left");
-				rowHtml += me.getEditableRowColumn(false, true, 2, "vendor", args.vendor, 17, categoryAlign);
-				rowHtml += me.getEditableRowColumn(false, false, 3, "job", args.job, 20, "left");
-				rowHtml += me.getEditableRowColumn(false, false, 4, "itemNumber", args.itemNumber, 8, "left");
-				rowHtml += me.getEditableRowColumn(false, false, 5, "description", args.description, 35, "left");
-				rowHtml += me.getEditableRowColumn(false, false, 6, "unit", args.unit, 6, "left");
-				rowHtml += me.getEditableRowColumn(false, false, 7, "recQuantity", args.recommendedQuantity, 7, "right");
-				rowHtml += me.getEditableRowColumn(false, false, 8, "qtyOverride", args.quantityOverride, 7, "right");
-				rowHtml += me.getEditableRowColumn(false, false, 9, "unitPrice", args.unitPrice, 7, "right", args.priceChanged);
-				rowHtml += me.getEditableRowColumn(false, columnBold, 10, "cost", args.cost, 7, "right");
-				rowHtml += me.getEditableRowColumn(false, true, 11, "periodBudget", args.periodBudget, 7, "right");
-				rowHtml += me.getEditableRowColumn(false, true, 12, "budgetRemaining", args.budgetRemaining, 10, "right");
+			    rowHtml += me.getEditableRowColumn(false, false, 0, "rowNumber", args.rowNumber.toString(), 4, "right");
+			    rowHtml += me.getEditableRowColumn(false, false, 1, "id", args.id.toString(), 0, "left");
+			    rowHtml += me.getEditableRowColumn(false, true, 2, "vendor", args.vendor, 17, categoryAlign);
+			    rowHtml += me.getEditableRowColumn(false, false, 3, "job", args.job, 20, "left");
+			    rowHtml += me.getEditableRowColumn(false, false, 4, "itemNumber", args.itemNumber, 8, "left");
+			    rowHtml += me.getEditableRowColumn(false, false, 5, "description", args.description, 35, "left");
+			    rowHtml += me.getEditableRowColumn(false, false, 6, "accountCode", args.accountCode.toString(), 10, "left");
+			    rowHtml += me.getEditableRowColumn(false, false, 7, "unit", args.unit, 6, "left");
+			    rowHtml += me.getEditableRowColumn(false, false, 8, "quantity", args.quantity, 7, "right");
+			    rowHtml += me.getEditableRowColumn(false, false, 9, "unitPrice", args.unitPrice, 7, "right", args.priceChanged);
+			    rowHtml += me.getEditableRowColumn(false, columnBold, 10, "cost", args.cost, 7, "right");
+			    rowHtml += me.getEditableRowColumn(false, true, 11, "periodBudget", args.periodBudget, 7, "right");
+			    rowHtml += me.getEditableRowColumn(false, true, 12, "budgetRemaining", args.budgetRemaining, 10, "right");
 			}
 	
 			return rowHtml;
@@ -624,23 +624,23 @@ ii.Class({
 				rowNumber++;
 
 				if (parseInt(this.cells[1].innerHTML) > 0) {
-					rowHtml = me.getPODetailGridRow(
-						rowNumber
-						, true
-						, parseInt(this.cells[1].innerHTML)
-						, this.cells[2].innerHTML
-						, this.cells[3].innerHTML
-						, this.cells[4].innerHTML
-						, this.cells[5].innerHTML
-						, this.cells[6].innerHTML
-						, this.cells[7].innerHTML
-						, this.cells[8].innerHTML
-						, this.cells[9].innerHTML
-						, this.cells[10].innerHTML
-						, this.cells[11].innerHTML
-						, this.cells[12].innerHTML
-						, me.purchaseOrderDetails[dataRow].priceChanged
-						)
+				    rowHtml = me.getPODetailGridRow(
+                            rowNumber
+                            , true
+                            , parseInt(this.cells[1].innerHTML)
+                            , this.cells[2].innerHTML
+                            , this.cells[3].innerHTML
+                            , this.cells[4].innerHTML
+                            , this.cells[5].innerHTML
+                            , this.cells[6].innerHTML
+                            , this.cells[7].innerHTML
+                            , this.cells[8].innerHTML
+                            , this.cells[9].innerHTML
+                            , this.cells[10].innerHTML
+                            , this.cells[11].innerHTML
+                            , this.cells[12].innerHTML
+                            , me.purchaseOrderDetails[dataRow].priceChanged
+                            )
 						
 					dataRow++;
 					$(this).html(rowHtml);
@@ -716,7 +716,7 @@ ii.Class({
 					rowNumber++;
 					
 					if (parseInt(this.cells[1].innerHTML) > 0) {
-						rowHtml = me.getPODetailGridRow(
+					    rowHtml = me.getPODetailGridRow(
 							rowNumber
 							, false
 							, parseInt(this.cells[1].innerHTML)
@@ -725,12 +725,12 @@ ii.Class({
 							, this.cells[4].innerHTML
 							, this.cells[5].innerHTML
 							, this.cells[6].innerHTML
-							, this.cells[7].innerHTML
-							, this.cells[8].childNodes[0].defaultValue
+							, this.cells[7].childNodes[0].defaultValue
+							, this.cells[8].innerHTML
 							, this.cells[9].innerHTML
 							, this.cells[10].innerHTML
 							, this.cells[11].innerHTML
-							, this.cells[12].innerHTML
+                            , this.cells[12].innerHTML
 							, me.purchaseOrderDetails[dataRow].priceChanged
 							)
 						
@@ -783,10 +783,10 @@ ii.Class({
 						
 					if (parseInt(this.cells[1].innerHTML) > 0) {
 						
-						if ($("#qtyOverride" + rowNumber).val() == "")
+					    if ($("#quantity" + rowNumber).val() == "")
 							quantity = 0;
 						else
-							quantity = parseInt($("#qtyOverride" + rowNumber).val());
+					        quantity = parseInt($("#quantity" + rowNumber).val());
 									
 						xml += '<purPurchaseOrderDetail';
 						xml += ' id="' + parseInt(this.cells[1].innerHTML) + '"';

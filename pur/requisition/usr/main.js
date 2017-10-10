@@ -128,7 +128,6 @@ ii.Class({
 
 				if (!me.poRequisitionShow && !me.writeInProcess && me.convertPORequisitionToPOShow) {
 					$("#AnchorGeneratePurchaseOrder").show();
-					$("#AnchorJDEEntry").show();
 					me.action = "GeneratePurchaseOrder";
 				}
 
@@ -246,14 +245,6 @@ ii.Class({
 				className: "iiButton",
 				text: "<span>&nbsp;&nbsp;Generate Purchase Order&nbsp;&nbsp;</span>",
 				clickFunction: function() { me.actionGeneratePurchaseOrderItem(); },
-				hasHotState: true
-			});
-			
-			me.anchorJDEEntry = new ui.ctl.buttons.Sizeable({
-				id: "AnchorJDEEntry",
-				className: "iiButton",
-				text: "<span>&nbsp;&nbsp;JDE Entry&nbsp;&nbsp;</span>",
-				clickFunction: function() { me.actionJDEEntryItem(); },
 				hasHotState: true
 			});
 
@@ -392,15 +383,11 @@ ii.Class({
 				else if (statusType == 6)
                 	return "Cancelled";
 				else if (statusType == 8)
-                	return "Approved";
-				else if (statusType == 9)
-                	return "Completed";				
+                	return "Approved";		
 				else if (statusType == 10)
                 	return "Unapproved";
 				else if (statusType == 11)
-                	return "Completed - PO";
-				else if (statusType == 12)
-                	return "Completed - JDE";
+                	return "Completed";
 				else if (statusType == 13)
                 	return "Template";
            	});
@@ -691,7 +678,7 @@ ii.Class({
 		        id: "ItemNumber",
 		        maxLength: 255,
 				appendToId: "ItemGridControlHolder",
-				changeFunction: function() { me.modified(); }
+				changeFunction: function () { me.modified(); me.populateItemDetails(); }
 		    });
 			
 			me.itemNumber.makeEnterTab()
@@ -1249,7 +1236,6 @@ ii.Class({
 			$("#AnchorSendRequisition").hide();
 			$("#AnchorCancelRequisition").hide();
 			$("#AnchorGeneratePurchaseOrder").hide();
-			$("#AnchorJDEEntry").hide();
 			$("#AnchorPrint").hide();
 			$("#AnchorApprove").hide();
 		},
@@ -1473,8 +1459,7 @@ ii.Class({
 				me.statuses.push(new fin.pur.poRequisition.Status(1, "Open"));
 				me.statuses.push(new fin.pur.poRequisition.Status(2, "In Process"));
 				me.statuses.push(new fin.pur.poRequisition.Status(8, "Approved"));
-				me.statuses.push(new fin.pur.poRequisition.Status(11, "Completed - PO"));
-				me.statuses.push(new fin.pur.poRequisition.Status(12, "Completed - JDE"));
+				me.statuses.push(new fin.pur.poRequisition.Status(11, "Completed"));
 				me.statuses.push(new fin.pur.poRequisition.Status(6, "Cancelled"));
 				me.statuses.push(new fin.pur.poRequisition.Status(10, "Unapproved"));
 				me.statuses.push(new fin.pur.poRequisition.Status(13, "Template"));
@@ -1641,7 +1626,6 @@ ii.Class({
 			$("#AnchorSendRequisition").hide();
 			$("#AnchorCancelRequisition").hide();
 			$("#AnchorGeneratePurchaseOrder").hide();
-			$("#AnchorJDEEntry").hide();
 			$("#AnchorPrint").hide();
 			$("#AnchorApprove").hide();
 		},
@@ -1697,6 +1681,27 @@ ii.Class({
 			me.itemReadOnlyGrid.setData(me.poRequisitionDetails);
 			me.setTotal();
 			$("#popupLoading").hide();
+		},
+
+		populateItemDetails: function () {
+		    var me = this;
+
+		    $("#ItemNumberText").addClass("Loading");
+		    me.itemStore.fetch("houseCode:" + parent.fin.appUI.houseCodeId + ",vendorId:" + me.vendorId + ",searchValue:" + me.itemNumber.getValue(), me.loadItemDetails, me);
+		},
+
+		loadItemDetails: function (me, activeId) {
+		    var itemIndex = 0;
+		    if (me.items.length == 1 && me.items[0].number == me.itemNumber.getValue()) {
+		        me.itemDescription.setValue(me.items[0].description);
+		        me.alternateDescription.setValue(me.items[0].alternateDescription);
+		        itemIndex = ii.ajax.util.findIndexById(me.items[0].account.id.toString(), me.account.data);
+		        if (itemIndex >= 0 && itemIndex != undefined)
+		            me.account.select(itemIndex, me.account.focused);
+		        me.uom.setValue(me.items[0].unit);
+		        me.price.setValue(me.items[0].price);
+		    }
+		    $("#ItemNumberText").removeClass("Loading");
 		},
 
 		personsLoaded: function(me, activeId) {
@@ -1814,7 +1819,6 @@ ii.Class({
 			}
 			else {
 				$("#AnchorGeneratePurchaseOrder").show();
-				$("#AnchorJDEEntry").show();
 			}
 		},
 
@@ -2728,19 +2732,8 @@ ii.Class({
 			$("#messageToUser").text("Generating Purchase Order");
 			me.status = "GeneratePurchaseOrder";
 			me.actionSaveItem();
-		},
-		
-		actionJDEEntryItem: function() {
-			var me = this;
-			
-			if (me.requisitionGrid.activeRowIndex == -1)
-				return true;
-
-			$("#messageToUser").text("Saving JDE Entry");
-			me.status = "JDEEntry";
-			me.actionSaveItem();
-		},
-		
+		},		
+	
 		actionPrintItem: function() {
 			var me = this;
 			
@@ -2841,10 +2834,6 @@ ii.Class({
 			else if (me.status == "GeneratePurchaseOrder" || me.status == "PrintRequisition") {
 				item = me.requisitionGrid.data[index];
 			}
-			else if (me.status == "JDEEntry") {
-                item = me.requisitionGrid.data[index];
-                item.statusType = 9;
-            }
 			else if (me.status == "GenerateRequisition") {
                 item = me.templateGrid.data[me.templateGrid.activeRowIndex];
 				item.statusType = 1;
@@ -3005,7 +2994,6 @@ ii.Class({
 				xml += ' urgencyDate="' + item.urgencyDate + '"';
 				xml += ' chargeToPeriod=""';
 				xml += ' action="' + me.status + '"';
-				xml += ' jdeCompleted="0"';
 				xml += '/>';
 			}
 			else if (me.status == "DeleteDocument") {
@@ -3013,7 +3001,7 @@ ii.Class({
 				xml += ' id="' + me.poRequisitionDocuments[me.documentGrid.activeRowIndex].id + '"';			
 				xml += '/>';
 			}
-			else if (me.status == "CancelRequisition" || me.status == "ApproveRequisition" || me.status == "JDEEntry") {
+			else if (me.status == "CancelRequisition" || me.status == "ApproveRequisition") {
                 xml += '<purPORequisitionStatusUpdate';
 				xml += ' id="' + item.id + '"';
 				xml += ' requestorEmail="' + ui.cmn.text.xml.encode(item.requestorEmail) + '"';
@@ -3023,10 +3011,6 @@ ii.Class({
 				xml += ' vendorNumber="' + ui.cmn.text.xml.encode(item.vendorNumber) + '"';
 				xml += ' statusType="' + item.statusType + '"';
 				xml += ' action="' + me.status + '"';
-				if (me.status == "JDEEntry")
-					xml += ' jdeCompleted="1"';
-				else
-					xml += ' jdeCompleted="0"';
 				xml += '/>';
             }
 			else if (me.status == "GeneratePurchaseOrder") {
@@ -3117,7 +3101,7 @@ ii.Class({
 									me.anchorSave.display(ui.cmn.behaviorStates.disabled);
 									me.setReadOnly(true);
 								}
-								else if (me.status == "GeneratePurchaseOrder" || me.status == "JDEEntry") {
+								else if (me.status == "GeneratePurchaseOrder") {
 									me.poRequisitions.splice(me.requisitionGrid.activeRowIndex, 1);
 									me.requisitionGrid.setData(me.poRequisitions);
 								}

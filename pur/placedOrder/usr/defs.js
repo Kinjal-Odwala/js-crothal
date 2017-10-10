@@ -18,9 +18,10 @@ ii.init.register( function() {
 		, houseCodeJob: {type: Number, required: false, defaultValue: 0}
 		, category: {type: String, required: false, defaultValue: ""}
 		, number: {type: String, required: false, defaultValue: ""}
-		, description: {type: String, required: false, defaultValue: ""}
+		, description: { type: String, required: false, defaultValue: "" }
+        , accountCode: { type: Number, required: false, defaultValue: 0 }
 		, unit: {type: String, required: false, defaultValue: ""}
-		, quantityOverride: {type: Number, required: false, defaultValue: 0}
+		, quantity: {type: Number, required: false, defaultValue: 0}
 		, price: {type: String, required: false, defaultValue: ""}
 		, cost: {type: String, required: false, defaultValue: ""}
 		, priceChanged: {type: Boolean, required: false, defaultValue: false}
