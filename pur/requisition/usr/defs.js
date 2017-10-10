@@ -137,7 +137,7 @@ ii.init.register( function() {
 		, extendedPrice: {type: String, required: false, defaultValue: ""}
 	};
 	
-	fin.pur.poRequisition.itemArgs = {
+	fin.pur.poRequisition.purchaseOrderItemArgs = {
 		id: {type: Number, defaultValue: 0}
 		, poRequisitionId: {type: Number, defaultValue: 0}
 		, account: {type: fin.pur.poRequisition.GLAccount, required: false}
@@ -151,6 +151,15 @@ ii.init.register( function() {
 		, quantity: {type: String, required: false, defaultValue: ""}
 		, modified: {type: Boolean, required: false, defaultValue: false}
 		, extendedPrice: {type: String, required: false, defaultValue: ""}
+	};
+
+	fin.pur.poRequisition.itemArgs = {
+	    id: { type: Number, defaultValue: 0 }
+	    , number: { type: String }
+	    , description: { type: String }
+	    , uom: { type: String }
+	    , account: { type: Number }
+	    , price: { type: String }
 	};
 	
 	fin.pur.poRequisition.vendorArgs = {
@@ -311,10 +320,10 @@ ii.Class({
 });
 
 ii.Class({
-	Name: "fin.pur.poRequisition.Item",
+    Name: "fin.pur.poRequisition.PurchaseOrderItem",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.pur.poRequisition.itemArgs);
+		    var args = ii.args(arguments, fin.pur.poRequisition.purchaseOrderItemArgs);
 			$.extend(this, args);
 			
 			if(!this.account) {
@@ -322,6 +331,16 @@ ii.Class({
 			}
 		}
 	}
+});
+
+ii.Class({
+    Name: "fin.pur.poRequisition.Item",
+    Definition: {
+        init: function() {
+            var args = ii.args(arguments, fin.pur.poRequisition.itemArgs);
+            $.extend(this, args);
+        }
+    }
 });
 
 ii.Class({

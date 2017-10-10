@@ -678,7 +678,7 @@ ii.Class({
 		        id: "ItemNumber",
 		        maxLength: 255,
 				appendToId: "ItemGridControlHolder",
-				changeFunction: function () { me.modified(); me.populateItemDetails(); }
+				changeFunction: function () { me.modified(); me.loadItems(); }
 		    });
 			
 			me.itemNumber.makeEnterTab()
@@ -1117,12 +1117,12 @@ ii.Class({
 				injectionArray: me.poRequisitionTemplates
 			});
 
-			me.items = [];
-			me.itemStore = me.cache.register({
+			me.purchaseOrderItems = [];
+			me.purchaseOrderItemStore = me.cache.register({
 				storeId: "purPurchaseOrderItems",
-				itemConstructor: fin.pur.poRequisition.Item,
-				itemConstructorArgs: fin.pur.poRequisition.itemArgs,
-				injectionArray: me.items,
+				itemConstructor: fin.pur.poRequisition.PurchaseOrderItem,
+				itemConstructorArgs: fin.pur.poRequisition.purchaseOrderItemArgs,
+				injectionArray: me.purchaseOrderItems,
 				lookupSpec: { account: me.glAccounts }	
 			});
 			
@@ -1133,6 +1133,14 @@ ii.Class({
 				itemConstructorArgs: fin.pur.poRequisition.poRequisitionDetailArgs,
 				injectionArray: me.poRequisitionDetails,
 				lookupSpec: { account: me.glAccounts }
+			});
+
+			me.items = [];
+			me.itemStore = me.cache.register({
+			    storeId: "purItems",
+			    itemConstructor: fin.pur.poRequisition.Item,
+			    itemConstructorArgs: fin.pur.poRequisition.itemArgs,
+			    injectionArray: me.items
 			});
 			
 			me.vendors = [];
@@ -1643,17 +1651,17 @@ ii.Class({
 			$("#popupLoading").show();
 			if (me.itemGrid.activeRowIndex >= 0)
 				me.itemGrid.body.deselect(me.itemGrid.activeRowIndex, true);
-			me.itemStore.reset();
-			me.itemStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",vendorId:" + me.vendorId + ",catalogId:" + me.catalogId + ",orderId:0,accountId:" + me.accountId + ",searchValue:" + me.searchItem.getValue(), me.poItemsLoaded, me);
+			me.purchaseOrderItemStore.reset();
+			me.purchaseOrderItemStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",vendorId:" + me.vendorId + ",catalogId:" + me.catalogId + ",orderId:0,accountId:" + me.accountId + ",searchValue:" + me.searchItem.getValue(), me.poItemsLoaded, me);
 			me.searchItem.setValue("");
 		},
 		
 		poItemsLoaded: function(me, activeId) {
 
-			for (var index = 0; index < me.items.length; index++) {
+		    for (var index = 0; index < me.purchaseOrderItems.length; index++) {
 				var found = false;
 				for (var iIndex = 0; iIndex < me.poRequisitionDetails.length; iIndex++) {
-					if (me.items[index].number == me.poRequisitionDetails[iIndex].number) {
+				    if (me.purchaseOrderItems[index].number == me.poRequisitionDetails[iIndex].number) {
 						found = true; 
 						break;
 					}	
@@ -1661,18 +1669,18 @@ ii.Class({
 				if (!found) {
 					me.poRequisitionDetails.push(new fin.pur.poRequisition.PORequisitionDetail(
 						0
-						, me.items[index].poRequisitionId
-						, me.items[index].account
-						, me.items[index].itemSelect
-						, me.items[index].number
-						, me.items[index].description
-						, me.items[index].alternateDescription
-						, me.items[index].unit
-						, me.items[index].manufactured
-						, me.items[index].price
-						, me.items[index].quantity
-						, me.items[index].modified
-						, me.items[index].extendedPrice
+						, me.purchaseOrderItems[index].poRequisitionId
+						, me.purchaseOrderItems[index].account
+						, me.purchaseOrderItems[index].itemSelect
+						, me.purchaseOrderItems[index].number
+						, me.purchaseOrderItems[index].description
+						, me.purchaseOrderItems[index].alternateDescription
+						, me.purchaseOrderItems[index].unit
+						, me.purchaseOrderItems[index].manufactured
+						, me.purchaseOrderItems[index].price
+						, me.purchaseOrderItems[index].quantity
+						, me.purchaseOrderItems[index].modified
+						, me.purchaseOrderItems[index].extendedPrice
 						));
 				}
 			}
@@ -1683,22 +1691,21 @@ ii.Class({
 			$("#popupLoading").hide();
 		},
 
-		populateItemDetails: function () {
+		loadItems: function () {
 		    var me = this;
 
 		    $("#ItemNumberText").addClass("Loading");
-		    me.itemStore.fetch("houseCode:" + parent.fin.appUI.houseCodeId + ",vendorId:" + me.vendorId + ",searchValue:" + me.itemNumber.getValue(), me.loadItemDetails, me);
+		    me.itemStore.fetch("userId:[user],searchValue:" + me.itemNumber.getValue() + ", active:1", me.itemsLoaded, me);
 		},
 
-		loadItemDetails: function (me, activeId) {
+		itemsLoaded: function (me, activeId) {
 		    var itemIndex = 0;
 		    if (me.items.length == 1 && me.items[0].number == me.itemNumber.getValue()) {
 		        me.itemDescription.setValue(me.items[0].description);
-		        me.alternateDescription.setValue(me.items[0].alternateDescription);
-		        itemIndex = ii.ajax.util.findIndexById(me.items[0].account.id.toString(), me.account.data);
+		        itemIndex = ii.ajax.util.findIndexById(me.items[0].account, me.account.data);
 		        if (itemIndex >= 0 && itemIndex != undefined)
 		            me.account.select(itemIndex, me.account.focused);
-		        me.uom.setValue(me.items[0].unit);
+		        me.uom.setValue(me.items[0].uom);
 		        me.price.setValue(me.items[0].price);
 		    }
 		    $("#ItemNumberText").removeClass("Loading");
