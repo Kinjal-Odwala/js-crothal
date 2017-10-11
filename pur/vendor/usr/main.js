@@ -790,6 +790,7 @@ ii.Class({
 		},
 
 		actionVendorSearch: function(statusType) {
+			var me = this;
 
 			if (!parent.fin.cmn.status.itemValid())
 				return;
@@ -797,6 +798,9 @@ ii.Class({
 			if (statusType === 0) {
 				me.lastSelectedRowIndex = -1;
 				me.resetControls();
+				me.searchInput.setValue("");
+				me.searchInput.valid = true;
+				me.searchInput.updateStatus();
 				me.vendorGrid.setData([]);
 				me.setStatus("Normal");
 				$("#SearchArea").show();
@@ -897,6 +901,15 @@ ii.Class({
 
 			me.autoEmail.setValue(item.autoEmail.toString());
 			me.active.setValue(item.active.toString());
+
+			if (item.statusType === 6) {
+				me.anchorSave.display(ui.cmn.behaviorStates.disabled);
+				me.anchorUndo.display(ui.cmn.behaviorStates.disabled);
+			}
+			else {
+				me.anchorSave.display(ui.cmn.behaviorStates.enabled);
+				me.anchorUndo.display(ui.cmn.behaviorStates.enabled);
+			}
 
 			me.setStatus("Loaded");
 		},
