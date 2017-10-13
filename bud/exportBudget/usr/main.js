@@ -586,8 +586,11 @@ ii.Class({
             var selectedNames = [];
 
             $.each(me.orgHierarchy.selectedNodes, function (index, item) {
-                selectedNodes.push(item.id);
-                selectedNames.push(item.fullPath.substr(item.fullPath.lastIndexOf('\\') + 1));
+				var ctrl = $("input:checkbox[name='" + item.id + "']");
+				if (!ctrl[0].disabled) {
+					selectedNodes.push(item.id);
+                	selectedNames.push(item.fullPath.substr(item.fullPath.lastIndexOf('\\') + 1));
+				}
             });
 
             if (selectedNodes.length == 0) {
