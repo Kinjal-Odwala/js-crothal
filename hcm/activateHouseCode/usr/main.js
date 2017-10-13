@@ -94,12 +94,24 @@ ii.Class({
 				$("#pageLoading").fadeIn("slow");
 
 				ii.timer.timing("Page displayed");
-				me.loadCount = 5;
+				me.loadCount = 6;
 				me.session.registerFetchNotify(me.sessionLoaded, me);
+
+				me.state.fetchingData();
+				me.industryType.fetchingData();
+				me.primaryBusiness.fetchingData();
+				me.gpo.fetchingData();
+				me.jdeCompany.fetchingData();
+				me.serviceLine.fetchingData();
+				me.remitTo.fetchingData();
+				me.contractType.fetchingData();
+				me.financialEntity.fetchingData();
+				me.billingCycleFrequency.fetchingData();
 				me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);
 				me.industryTypeStore.fetch("userId:[user]", me.industryTypesLoaded, me);
 				me.primaryBusinessTypeStore.fetch("userId:[user]", me.primaryBusinessTypesLoaded, me);
 				me.gpoTypeStore.fetch("userId:[user]", me.gpoTypesLoaded, me);
+				me.jdeCompanysStore.fetch("userId:[user],", me.jdeCompanysLoaded, me);
 				me.houseCodeActivateMasterStore.fetch("userId:[user]", me.houseCodeActivateMastersLoaded, me);
 				me.hirNodeStore.fetch("userId:[user],hierarchy:2,", me.hirNodesLoaded, me);
 			}
@@ -454,6 +466,21 @@ ii.Class({
 			me.specifyGPO.makeEnterTab()
 				.setValidationMaster(me.validator);
 
+			me.jdeCompany = new ui.ctl.Input.DropDown.Filtered({
+				id : "JDECompany",
+				formatFunction: function( type ) { return type.name; },
+				changeFunction: function() { me.jdeCompanyChanged(); me.modified(); }
+		    });
+
+			me.jdeCompany.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation( function( isFinal, dataMap ) {
+
+					if ((this.focused || this.touched) && me.jdeCompany.indexSelected === -1)
+						this.setInvalid("Please select the correct JDE Company.");
+				});
+
 			me.primaryServiceProvided = new ui.ctl.Input.DropDown.Filtered({
 				id : "PrimaryServiceProvided",
 				formatFunction: function( type ) { return type.name; },
@@ -469,21 +496,6 @@ ii.Class({
 						this.setInvalid("Please select the correct Primary Service Provided.");
 				});
 
-			me.serviceLine = new ui.ctl.Input.DropDown.Filtered({
-				id : "ServiceLine",
-				formatFunction: function( type ) { return type.name; },
-				changeFunction: function() { me.modified(); }
-		    });
-
-			me.serviceLine.makeEnterTab()
-				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
-				.addValidation( function( isFinal, dataMap ) {
-
-					if ((this.focused || this.touched) && me.serviceLine.indexSelected === -1)
-						this.setInvalid("Please select the correct Service Line.");
-				});
-
 			$("#OtherServicesProvided").multiselect({
 				minWidth: 200
 				, header: false
@@ -492,19 +504,21 @@ ii.Class({
 				, click: function() { me.modified(true); }
 			});
 
-			me.houseCodeType = new ui.ctl.Input.DropDown.Filtered({
-				id : "HouseCodeType",
+			me.serviceLine = new ui.ctl.Input.DropDown.Filtered({
+				id : "ServiceLine",
 				formatFunction: function( type ) { return type.name; },
 				changeFunction: function() { me.modified(); }
 		    });
 
-			me.houseCodeType.makeEnterTab()
+			me.serviceLine.makeEnterTab()
 				.setValidationMaster(me.validator)
-				.addValidation(ui.ctl.Input.Validation.required)
 				.addValidation( function( isFinal, dataMap ) {
 
-					if ((this.focused || this.touched) && me.houseCodeType.indexSelected === -1)
-						this.setInvalid("Please select the correct HouseCode Type.");
+					if (me.serviceLine.lastBlurValue === "")
+						return;
+
+					if ((this.focused || this.touched) && me.serviceLine.indexSelected === -1)
+						this.setInvalid("Please select the correct Service Line.");
 				});
 
 			me.remitTo = new ui.ctl.Input.DropDown.Filtered({
@@ -705,12 +719,20 @@ ii.Class({
 				injectionArray: me.gpoTypes
 			});
 
-			me.houseCodes = [];
-			me.houseCodeStore = me.cache.register({
-				storeId: "units",
-				itemConstructor: fin.hcm.activateHouseCode.HouseCode,
-				itemConstructorArgs: fin.hcm.activateHouseCode.houseCodeArgs,
-				injectionArray: me.houseCodes
+			me.jdeCompanys = [];
+			me.jdeCompanysStore = me.cache.register({
+				storeId: "fiscalJDECompanys",
+				itemConstructor: fin.hcm.activateHouseCode.JDECompany,
+				itemConstructorArgs: fin.hcm.activateHouseCode.jdeCompanyArgs,
+				injectionArray: me.jdeCompanys
+			});
+
+			me.jdeServices = [];
+			me.jdeServiceStore = me.cache.register({
+				storeId: "houseCodeJDEServices",
+				itemConstructor: fin.hcm.activateHouseCode.JDEService,
+				itemConstructorArgs: fin.hcm.activateHouseCode.jdeServiceArgs,
+				injectionArray: me.jdeServices
 			});
 
 			me.remitTos = [];
@@ -753,20 +775,28 @@ ii.Class({
 				injectionArray: me.billingCycleFrequencys
 			});
 
-			me.houseCodeTypes = [];
-			me.houseCodeTypeStore = me.cache.register({
-				storeId: "houseCodeTypes",
-				itemConstructor: fin.hcm.activateHouseCode.HouseCodeType,
-				itemConstructorArgs: fin.hcm.activateHouseCode.houseCodeTypeArgs,
-				injectionArray: me.houseCodeTypes
-			});
-
 			me.zipCodeTypes = [];
 			me.zipCodeTypeStore = me.cache.register({
 				storeId: "zipCodeTypes",
 				itemConstructor: fin.hcm.activateHouseCode.ZipCodeType,
 				itemConstructorArgs: fin.hcm.activateHouseCode.zipCodeTypeArgs,
 				injectionArray: me.zipCodeTypes
+			});
+
+			me.houseCodes = [];
+			me.houseCodeStore = me.cache.register({
+				storeId: "units",
+				itemConstructor: fin.hcm.activateHouseCode.HouseCode,
+				itemConstructorArgs: fin.hcm.activateHouseCode.houseCodeArgs,
+				injectionArray: me.houseCodes
+			});
+
+			me.houseCodeDetails = [];
+			me.houseCodeDetailStore = me.cache.register({
+				storeId: "houseCodes",
+				itemConstructor: fin.hcm.activateHouseCode.HouseCodeDetail,
+				itemConstructorArgs: fin.hcm.activateHouseCode.houseCodeDetailArgs,
+				injectionArray: me.houseCodeDetails
 			});
 		},
 
@@ -835,9 +865,9 @@ ii.Class({
 			me.primaryBusiness.resizeText();
 			me.gpo.resizeText();
 			me.specifyGPO.resizeText();
+			me.jdeCompany.resizeText();
 			me.primaryServiceProvided.resizeText();
 			me.serviceLine.resizeText();
-			me.houseCodeType.resizeText();
 			me.remitTo.resizeText();
 			me.contractType.resizeText();
 			me.financialEntity.resizeText();
@@ -873,10 +903,10 @@ ii.Class({
 			me.primaryBusiness.text.tabIndex = 20;
 			me.gpo.text.tabIndex = 21;
 			me.specifyGPO.text.tabIndex = 22;
-			me.primaryServiceProvided.text.tabIndex = 23;
-			$("#OtherServicesProvided")[0].tabIndex = 24;
-			me.serviceLine.text.tabIndex = 25;
-			me.houseCodeType.text.tabIndex = 26;
+			me.jdeCompany.text.tabIndex = 23;
+			me.primaryServiceProvided.text.tabIndex = 24;
+			$("#OtherServicesProvided")[0].tabIndex = 25;
+			me.serviceLine.text.tabIndex = 26;
 			me.remitTo.text.tabIndex = 27;
 			me.contractType.text.tabIndex = 28;
 			me.billingCycleFrequency.text.tabIndex = 29;
@@ -912,11 +942,10 @@ ii.Class({
 			me.industryType.reset();
 			me.primaryBusiness.reset();
 			me.gpo.reset();
-			me.gpo.updateStatus();
 			me.specifyGPO.setValue("");
+			me.jdeCompany.reset();
 			me.primaryServiceProvided.reset();
 			me.serviceLine.reset();
-			me.houseCodeType.reset();
 			me.remitTo.reset();
 			me.contractType.reset();
 			me.financialEntity.reset();
@@ -925,7 +954,8 @@ ii.Class({
 			me.licensedBeds.setValue("");
 			me.contact.setValue("");
 			me.hourlyEmployees.setValue("");
-			$("#OtherServicesProvided").multiselect("uncheckAll");
+			$("#OtherServicesProvided").html("");
+			$("#OtherServicesProvided").multiselect("refresh");
 			me.svp.updateStatus();
 			me.dvp.updateStatus();
 			me.rvp.updateStatus();
@@ -936,14 +966,16 @@ ii.Class({
 			me.state.updateStatus();
 			me.industryType.updateStatus();
 			me.primaryBusiness.updateStatus();
+			me.gpo.updateStatus();
+			me.jdeCompany.updateStatus();
 			me.primaryServiceProvided.updateStatus();
 			me.serviceLine.updateStatus();
-			me.houseCodeType.updateStatus();
 			me.remitTo.updateStatus();
 			me.contractType.updateStatus();
 			me.financialEntity.updateStatus();
 			me.billingCycleFrequency.updateStatus();
 			me.city.setData([]);
+			me.primaryServiceProvided.setData([]);
 		},
 
 		findIndexByTitle: function() {
@@ -980,6 +1012,12 @@ ii.Class({
 			me.checkLoadCount();
 		},
 
+		jdeCompanysLoaded: function(me, activeId) {
+
+			me.jdeCompany.setData(me.jdeCompanys);
+			me.checkLoadCount();
+		},
+
 		gpoTypesLoaded: function(me, activeId) {
 
 			me.gpo.setData(me.gpoTypes);
@@ -1009,23 +1047,37 @@ ii.Class({
 					me.serviceLines.splice(index, 1);
 			}
 
-			me.primaryServiceProvided.setData(me.serviceTypes);
 			me.serviceLine.setData(me.serviceLines);
-			me.houseCodeType.setData(me.houseCodeTypes);
 			me.remitTo.setData(me.remitTos);
 			me.contractType.setData(me.contractTypes);
 			me.financialEntity.setData(me.financialEntities);
 			me.billingCycleFrequency.setData(me.billingCycleFrequencys);
 			me.city.setData([]);
 
-			$("#OtherServicesProvided").html("");
-			for (index = 0; index < me.serviceTypes.length; index++) {
-				$("#OtherServicesProvided").append("<option title='" + me.serviceTypes[index].name + "' value='" + me.serviceTypes[index].id + "'>" + me.serviceTypes[index].name + "</option>");
-			}
-			$("#OtherServicesProvided").multiselect("refresh");
-
 			me.checkLoadCount();
 			me.resizeControls();
+		},
+
+		jdeCompanyChanged: function() {
+			var me = this;
+
+			if (me.jdeCompany.indexSelected < 0)
+				return;
+
+			me.primaryServiceProvided.fetchingData();
+			me.jdeServiceStore.fetch("userId:[user],jdeCompanyId:" + me.jdeCompanys[me.jdeCompany.indexSelected].id, me.jdeServicesLoaded, me);
+		},
+
+		jdeServicesLoaded: function(me, activeId) {
+
+			me.primaryServiceProvided.reset();
+			me.primaryServiceProvided.setData(me.jdeServices);
+
+			$("#OtherServicesProvided").html("");
+			for (index = 0; index < me.jdeServices.length; index++) {
+				$("#OtherServicesProvided").append("<option title='" + me.jdeServices[index].name + "' value='" + me.jdeServices[index].id + "'>" + me.jdeServices[index].name + "</option>");
+			}
+			$("#OtherServicesProvided").multiselect("refresh");
 		},
 
 		hirNodesLoaded: function (me, activeId) {
@@ -1348,22 +1400,41 @@ ii.Class({
 
 			me.lastSelectedRowIndex = index;
 			me.status = "";
+			me.resetControls();
+			me.setLoadCount();
+			me.houseCodeDetailStore.fetch("userId:[user],unitId:" + item.id, me.houseCodeDetailsLoaded, me);
+		},
 
-			if (item === undefined)
-				return;
+		houseCodeDetailsLoaded: function(me, activeId) {
 
-			me.setStatus("Loaded");
+			me.setSiteInfo();
+			me.checkLoadCount();
+		},
+
+		setSiteInfo: function() {
+			var me = this;
+
+			if (me.houseCodeDetails.length > 0) {
+				me.siteName.setValue(me.houseCodes[me.houseCodeGrid.activeRowIndex].title);
+				me.address1.setValue(me.houseCodeDetails[0].shippingAddress1);
+				me.address2.setValue(me.houseCodeDetails[0].shippingAddress2);
+				me.zipCode.setValue(me.houseCodeDetails[0].shippingZip);
+				me.city.setValue(me.houseCodeDetails[0].shippingCity);
+				var index = ii.ajax.util.findIndexById(me.houseCodeDetails[0].shippingState.toString(), me.stateTypes);
+				if (index !== null) 
+					me.state.select(index, me.state.focused);
+			}
 		},
 
 		actionUndoItem: function() {
 			var me = this;
 
 			if (!parent.fin.cmn.status.itemValid()) {
-				//me.houseCodeGrid.body.deselect(index, true);
 				return;
 			}
 
 			me.resetControls();
+			me.setSiteInfo();
 		},
 
 		actionSaveItem: function() {
@@ -1411,10 +1482,10 @@ ii.Class({
 				, (me.primaryBusiness.indexSelected >= 0 ? me.primaryBusiness.data[me.primaryBusiness.indexSelected].id : 0)
 				, (me.gpo.indexSelected >= 0 ? me.gpo.data[me.gpo.indexSelected].id : 0)
 				, me.specifyGPO.getValue()
+				, (me.jdeCompany.indexSelected >= 0 ? me.jdeCompany.data[me.jdeCompany.indexSelected].id : 0)
 				, (me.primaryServiceProvided.indexSelected >= 0 ? me.primaryServiceProvided.data[me.primaryServiceProvided.indexSelected].id : 0)
 				, otherServicesProvided.toString()
 				, (me.serviceLine.indexSelected >= 0 ? me.serviceLine.data[me.serviceLine.indexSelected].id : 0)
-				, (me.houseCodeType.indexSelected >= 0 ? me.houseCodeType.data[me.houseCodeType.indexSelected].id : 0)
 				, (me.remitTo.indexSelected >= 0 ? me.remitTo.data[me.remitTo.indexSelected].id : 0)
 				, (me.contractType.indexSelected >= 0 ? me.contractType.data[me.contractType.indexSelected].id : 0)
 				, (me.billingCycleFrequency.indexSelected >= 0 ? me.billingCycleFrequency.data[me.billingCycleFrequency.indexSelected].id : 0)
@@ -1475,10 +1546,10 @@ ii.Class({
 			xml += ' primaryBusiness="' + item.primaryBusiness + '"';
 			xml += ' gpoType="' + item.gpo + '"';
 			xml += ' specifyGPO="' + ui.cmn.text.xml.encode(item.specifyGPO) + '"';
+			xml += ' jdeCompany="' + item.jdeCompany + '"';
 			xml += ' primaryServiceProvided="' + item.primaryServiceProvided + '"';
 			xml += ' otherServicesProvided="' + item.otherServicesProvided + '"';
 			xml += ' serviceLine="' + item.serviceLine + '"';
-			xml += ' houseCodeType="' + item.houseCodeType + '"';
 			xml += ' remitTo="' + item.remitTo + '"';
 			xml += ' contractType="' + item.contractType + '"';
 			xml += ' billingCycleFrequency="' + item.billingCycleFrequency + '"';

@@ -45,50 +45,19 @@ ii.init.register( function() {
 		, name: {type: String}
 	};
 
-	fin.hcm.activateHouseCode.houseCodeArgs = {
-		id: {type: Number, defaultValue: 0}
-		, brief: {type: String, required: false, defaultValue: ""}
-		, title: {type: String, required: false, defaultValue: ""}
-		, description: {type: String, required: false, defaultValue: ""}
-		, svp: {type: String, required: false, defaultValue: ""}
-		, dvp: {type: String, required: false, defaultValue: ""}
-		, rvp: {type: String, required: false, defaultValue: ""}
-		, srm: {type: String, required: false, defaultValue: ""}
-		, rm: {type: String, required: false, defaultValue: ""}
-		, am: {type: String, required: false, defaultValue: ""}
-		, svpBrief: {type: String, required: false, defaultValue: ""}
-		, dvpBrief: {type: String, required: false, defaultValue: ""}
-		, rvpBrief: {type: String, required: false, defaultValue: ""}
-		, srmBrief: {type: String, required: false, defaultValue: ""}
-		, rmBrief: {type: String, required: false, defaultValue: ""}
-		, amBrief: {type: String, required: false, defaultValue: ""}
-		, siteName: {type: String, required: false, defaultValue: ""}
-		, address1: {type: String, required: false, defaultValue: ""}
-		, address2: {type: String, required: false, defaultValue: ""}
-		, zipCode: {type: String, required: false, defaultValue: ""}
-		, city: {type: String, required: false, defaultValue: ""}
-		, state: {type: String, required: false, defaultValue: ""}
-		, industryType: {type: String, required: false, defaultValue: ""}
-		, primaryBusiness: {type: String, required: false, defaultValue: ""}
-		, gpo: {type: String, required: false, defaultValue: ""}
-		, specifyGPO: {type: String, required: false, defaultValue: ""}
-		, primaryServiceProvided: {type: String, required: false, defaultValue: ""}
-		, otherServicesProvided: {type: String, required: false, defaultValue: ""}
-		, serviceLine: {type: String, required: false, defaultValue: ""}
-		, houseCodeType: {type: String, required: false, defaultValue: ""}
-		, remitTo: {type: String, required: false, defaultValue: ""}
-		, contractType: {type: String, required: false, defaultValue: ""}
-		, billingCycleFrequency: {type: String, required: false, defaultValue: ""}
-		, financialEntity: {type: String, required: false, defaultValue: ""}
-		, netCleanable: {type: String, required: false, defaultValue: ""}
-		, licensedBeds: {type: String, required: false, defaultValue: ""}
-		, contact: {type: String, required: false, defaultValue: ""}
-		, hourlyEmployees: {type: String, required: false, defaultValue: ""}
-	};
-
 	fin.hcm.activateHouseCode.divisionArgs = {
 		id: {type: Number}
 		, brief: {type: String}
+		, name: {type: String}
+	};
+
+	fin.hcm.activateHouseCode.jdeCompanyArgs = {		
+		id: {type: Number}
+		, name: {type: String}		
+	};
+
+	fin.hcm.activateHouseCode.jdeServiceArgs = {
+		id: {type: Number}
 		, name: {type: String}
 	};
 
@@ -125,11 +94,6 @@ ii.init.register( function() {
 		, name: {type: String}
 	};
 
-	fin.hcm.activateHouseCode.houseCodeTypeArgs = {
-		id: {type: Number}
-		, name: {type: String}
-	};
-
 	fin.hcm.activateHouseCode.zipCodeTypeArgs = {
 		id: {type: Number}
 		, stateType: {type: Number, required: false, defaultValue: 0}
@@ -144,8 +108,59 @@ ii.init.register( function() {
 		, city: {type: String, required: false, defaultValue: ""}
 	};
 
-}, 2);
+	fin.hcm.activateHouseCode.houseCodeArgs = {
+		id: {type: Number, defaultValue: 0}
+		, brief: {type: String, required: false, defaultValue: ""}
+		, title: {type: String, required: false, defaultValue: ""}
+		, description: {type: String, required: false, defaultValue: ""}
+		, svp: {type: String, required: false, defaultValue: ""}
+		, dvp: {type: String, required: false, defaultValue: ""}
+		, rvp: {type: String, required: false, defaultValue: ""}
+		, srm: {type: String, required: false, defaultValue: ""}
+		, rm: {type: String, required: false, defaultValue: ""}
+		, am: {type: String, required: false, defaultValue: ""}
+		, svpBrief: {type: String, required: false, defaultValue: ""}
+		, dvpBrief: {type: String, required: false, defaultValue: ""}
+		, rvpBrief: {type: String, required: false, defaultValue: ""}
+		, srmBrief: {type: String, required: false, defaultValue: ""}
+		, rmBrief: {type: String, required: false, defaultValue: ""}
+		, amBrief: {type: String, required: false, defaultValue: ""}
+		, siteName: {type: String, required: false, defaultValue: ""}
+		, address1: {type: String, required: false, defaultValue: ""}
+		, address2: {type: String, required: false, defaultValue: ""}
+		, zipCode: {type: String, required: false, defaultValue: ""}
+		, city: {type: String, required: false, defaultValue: ""}
+		, state: {type: String, required: false, defaultValue: ""}
+		, industryType: {type: String, required: false, defaultValue: ""}
+		, primaryBusiness: {type: String, required: false, defaultValue: ""}
+		, gpo: {type: String, required: false, defaultValue: ""}
+		, specifyGPO: {type: String, required: false, defaultValue: ""}
+		, jdeCompany: {type: String, required: false, defaultValue: ""}
+		, primaryServiceProvided: {type: String, required: false, defaultValue: ""}
+		, otherServicesProvided: {type: String, required: false, defaultValue: ""}
+		, serviceLine: {type: String, required: false, defaultValue: ""}
+		, remitTo: {type: String, required: false, defaultValue: ""}
+		, contractType: {type: String, required: false, defaultValue: ""}
+		, billingCycleFrequency: {type: String, required: false, defaultValue: ""}
+		, financialEntity: {type: String, required: false, defaultValue: ""}
+		, netCleanable: {type: String, required: false, defaultValue: ""}
+		, licensedBeds: {type: String, required: false, defaultValue: ""}
+		, contact: {type: String, required: false, defaultValue: ""}
+		, hourlyEmployees: {type: String, required: false, defaultValue: ""}
+	};
 
+	fin.hcm.activateHouseCode.houseCodeDetailArgs = {
+		id: {type: Number}
+		, hirNode: {type: Number, defaultValue: 0}
+		, appUnitId: {type: String}
+		, shippingAddress1: {type: String, required: false, defaultValue: ""}
+		, shippingAddress2: {type: String, required: false, defaultValue: ""}
+		, shippingZip: {type: String, required: false, defaultValue: ""}
+		, shippingCity: {type: String, required: false, defaultValue: ""}
+		, shippingState: {type: Number, required: false, defaultValue: 0}
+	};
+
+}, 2);
 
 ii.Class({
 	Name: "fin.hcm.activateHouseCode.HirNode",
@@ -208,20 +223,30 @@ ii.Class({
 });
 
 ii.Class({
-	Name: "fin.hcm.activateHouseCode.HouseCode",
+	Name: "fin.hcm.activateHouseCode.Division",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.hcm.activateHouseCode.houseCodeArgs);
+			var args = ii.args(arguments, fin.hcm.activateHouseCode.divisionArgs);
 			$.extend(this, args);
 		}
 	}
 });
 
 ii.Class({
-	Name: "fin.hcm.activateHouseCode.Division",
+	Name: "fin.hcm.activateHouseCode.JDECompany",
 	Definition: {
 		init: function() {
-			var args = ii.args(arguments, fin.hcm.activateHouseCode.divisionArgs);
+			var args = ii.args(arguments, fin.hcm.activateHouseCode.jdeCompanyArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.hcm.activateHouseCode.JDEService",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.hcm.activateHouseCode.jdeServiceArgs);
 			$.extend(this, args);
 		}
 	}
@@ -288,16 +313,6 @@ ii.Class({
 });
 
 ii.Class({
-	Name: "fin.hcm.activateHouseCode.HouseCodeType",
-	Definition: {
-		init: function() {
-			var args = ii.args(arguments, fin.hcm.activateHouseCode.houseCodeTypeArgs);
-			$.extend(this, args);
-		}
-	}
-});
-
-ii.Class({
 	Name: "fin.hcm.activateHouseCode.ZipCodeType",
 	Definition: {
 		init: function() {
@@ -313,6 +328,26 @@ ii.Class({
 		init: function() {
 			var args = ii.args(arguments, fin.hcm.activateHouseCode.cityNameArgs);
 			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.hcm.activateHouseCode.HouseCode",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.hcm.activateHouseCode.houseCodeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.hcm.activateHouseCode.HouseCodeDetail",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.hcm.activateHouseCode.houseCodeDetailArgs);
+			$.extend(this, args);			
 		}
 	}
 });
