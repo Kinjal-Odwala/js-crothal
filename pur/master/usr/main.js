@@ -49,6 +49,7 @@ ii.Class({
 			me.windowHeight = 0;
 			me.lastSelectedItemRowIndex = -1;
 			me.loadCount = 0;
+			me.glAccounts = [];
 			
 			me.gateway = ii.ajax.addGateway("pur", ii.config.xmlProvider); 
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -190,7 +191,7 @@ ii.Class({
 				}
 					
 				ii.timer.timing("Page displayed");
-				me.loadCount = 1;
+				me.loadCount = 2;
 				me.session.registerFetchNotify(me.sessionLoaded,me);
 				
 				if (parent.fin.appUI.houseCodeId == 0) //usually happens on pageLoad			
@@ -199,6 +200,7 @@ ii.Class({
 					me.houseCodesLoaded(me, 0);
 					
 				me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);
+				me.accountStore.fetch("userId:[user]", me.glAccountsLoaded, me);
 			}				
 			else
 				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
@@ -1139,6 +1141,15 @@ ii.Class({
 				me.catalogStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",vendorId:" + me.vendorId, me.catalogsLoaded, me);
 			}
 		},
+
+		glAccountsLoaded: function(me, activeId) {
+
+		    for (var index = 0; index < me.accounts.length; index++) {
+		        var item = new fin.pur.master.Account(me.accounts[index].id, me.accounts[index].code, me.accounts[index].description);
+		        me.glAccounts.push(item);
+		    }
+		    me.checkLoadCount();
+		},
 		
 		accountsLoaded: function(me, activeId) {
 			
@@ -1184,8 +1195,8 @@ ii.Class({
 		houseCodeJobsLoaded: function(me, activeId) {
 
 			me.job.setData(me.houseCodeJobs);			
-		},		
-		
+		},
+	
 		loadPurchaseOrderItems: function() {
 			var me = this;
 			

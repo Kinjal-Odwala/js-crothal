@@ -18,7 +18,7 @@
 		<div id="pageBody" class="pageBody" style="display:none;">
          	<div class="contentArea">
          		<div id="divPurchaseOrderDetails">
-					<div class="header">Purchase Order Details</div>
+					<div id="divPODHeader" class="header"></div>
 					<div class="body">
 						<div id="divPurchaseOrderGrid" class="tbodyBorder">
 							<table width="100%" id="PurchaseOrderGrid" class="gridBorder" border="0" cellpadding="0" cellspacing="0">
@@ -28,15 +28,16 @@
 										<th class="gridColumnHidden" width="0%"></th>
 										<th class="gridHeaderColumn" width="15%">Category</th>
 										<th class="gridHeaderColumn" width="10%">Job</th>
-										<th class="gridHeaderColumn" width="10%">Item #</th>
-										<th class="gridHeaderColumn" width="17%">Description</th>
-                                        <th class="gridHeaderColumn" width="7%">GL Account</th>
+										<th class="gridHeaderColumn" width="8%">Item #</th>
+										<th class="gridHeaderColumn" width="15%">Description</th>
+                                        <th class="gridHeaderColumn" width="12%">GL Account</th>
 										<th class="gridHeaderColumn" width="3%">Unit</th>
-										<th class="gridHeaderColumn" width="7%">Quantity</th>
+										<th class="gridHeaderColumn" width="6%">Quantity</th>
 										<th class="gridHeaderColumn" width="7%">Unit Price</th>
 										<th class="gridHeaderColumn" width="7%">Extended Cost</th>
 										<th class="gridHeaderColumn" width="7%">Period Budget</th>
 										<th class="gridHeaderColumn" width="7%">Pd. Budget Remaining</th>
+                                        <th class="gridHeaderColumn" width="0%" style="display:none">Catalog</th>
 									</tr>
 								</thead>
 								<tbody id="PurchaseOrderGridBody"></tbody>

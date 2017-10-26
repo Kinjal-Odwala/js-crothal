@@ -249,7 +249,7 @@ ii.Class({
 		houseCodeJobsLoaded: function() {			
 			var me = this;
 			var job;
-			
+
 			for (var index = 0; index < parent.fin.purMasterUi.houseCodeJobs.length; index++) {
 				job = parent.fin.purMasterUi.houseCodeJobs[index];
 				me.houseCodeJobs.push(new fin.pur.openOrder.HouseCodeJob(job.id, job.jobNumber, job.jobTitle));
@@ -263,13 +263,27 @@ ii.Class({
 			var me = this;
 			var jobTitle = "None - None";
 			var index = 0;
-	
+
 			index = ii.ajax.util.findIndexById(id.toString(), me.houseCodeJobs);
 	
 			if (index >= 0 && index != undefined)
 				jobTitle = me.houseCodeJobs[index].jobNumber + " - " + me.houseCodeJobs[index].jobTitle;
 
 			return jobTitle == "None - None" ? "&nbsp;" : jobTitle;
+		},
+
+		getAccountCode: function (id) {
+		    var me = this;
+		    var accountCode = "";
+
+		    for (var index = 0; index < parent.fin.purMasterUi.glAccounts.length; index++) {
+		        var item = parent.fin.purMasterUi.glAccounts[index];
+		        if (id == item.id) {
+		            accountCode = item.code;
+		            break;
+		        }
+		    }
+		    return accountCode;
 		},
 		
 		purchaseOrderDetailsLoaded: function (me, activeId) {
@@ -288,8 +302,18 @@ ii.Class({
 			var jobPeriodBudget = "";
 			var jobTitle = "";
 			var nextJobTitle = "";
+			var accountCode = "";
 			var budgetRemaining = "";
 			var jobBudgetRemaining = "";
+
+			if (parent.fin.purMasterUi.purchaseOrders[parent.fin.purMasterUi.lastSelectedRowIndex].miscPurchaseOrder) {
+			    $('#divPODHeader')[0].innerHTML = "Miscellaneous Purchase Order Details";
+			    $('#AnchorAdd').hide();
+			}
+			else {
+			    $('#divPODHeader')[0].innerHTML = "Purchase Order Details";
+			    $('#AnchorAdd').show();
+			}
 
 			for (index = 0; index < me.purchaseOrderDetails.length; index++) {
 
@@ -297,6 +321,7 @@ ii.Class({
 				cost = me.purchaseOrderDetails[index].quantity * parseFloat(me.purchaseOrderDetails[index].price);
 				jobTotalCost += cost;				
 				jobTitle = me.getJobTitle(me.purchaseOrderDetails[index].houseCodeJob);
+				accountCode = me.getAccountCode(me.purchaseOrderDetails[index].accountId);
 
 				if (showCategory) {
 					category = me.purchaseOrderDetails[index].category;					
@@ -337,7 +362,7 @@ ii.Class({
 					, jobTitle
 					, me.purchaseOrderDetails[index].number
 					, me.purchaseOrderDetails[index].description
-                    , me.purchaseOrderDetails[index].accountCode
+                    , accountCode
 					, me.purchaseOrderDetails[index].unit
 					, me.purchaseOrderDetails[index].quantity.toString()
 					, "$" + me.purchaseOrderDetails[index].price
@@ -345,6 +370,7 @@ ii.Class({
 					, jobPeriodBudget
 					, jobBudgetRemaining
 					, me.purchaseOrderDetails[index].priceChanged
+                    , me.purchaseOrderDetails[index].catalogItemId
 				);
 
 				rowHtml += "</tr>";
@@ -403,6 +429,7 @@ ii.Class({
 				$("#ButtonOpenOrder").hide();
 				$("#PurchaseOrderContextMenu").hide();
 			}
+
 		},
 		
 		getTotalGridRow: function() {
@@ -415,7 +442,6 @@ ii.Class({
 			});			
 			var me = this;
 			var rowHtml = "<tr>";
-			
 			rowHtml += me.getPODetailGridRow(
 				args.rowNumber
 				, false
@@ -428,6 +454,7 @@ ii.Class({
 				, "&nbsp;"
 				, "&nbsp;"
 				, "&nbsp;"
+                , "&nbsp;"
 				, "$" + args.totalAmount.toFixed(2)
 				, args.periodBudget
 				, args.budgetRemaining
@@ -492,7 +519,7 @@ ii.Class({
 			});			
 		},
 		
-		getPODetailGridRow: function () {
+		getPODetailGridRow: function() {
 		    var args = ii.args(arguments, {
 		        rowNumber: { type: Number }
 				, rowEditable: { type: Boolean }
@@ -501,7 +528,7 @@ ii.Class({
 				, job: { type: String }
 				, itemNumber: { type: String }
 				, description: { type: String }
-                , accountCode: { type: String }
+                , account: { type: String }
 				, unit: { type: String }
 				, quantity: { type: String }
 				, unitPrice: { type: String }
@@ -509,6 +536,7 @@ ii.Class({
 				, periodBudget: { type: String }
 				, budgetRemaining: { type: String }
 				, priceChanged: { type: Boolean }
+                , catalogItemId: { type: Number }
 		    });
 			var me = this;
 			var rowHtml = "";
@@ -522,19 +550,32 @@ ii.Class({
 					
 			if (args.rowEditable) {
 			    // Row Editable
+			    
 			    rowHtml += me.getEditableRowColumn(false, false, 0, "rowNumber", args.rowNumber.toString(), 4, "right");
 			    rowHtml += me.getEditableRowColumn(false, false, 1, "id", args.id.toString(), 0, "left");
 			    rowHtml += me.getEditableRowColumn(false, true, 2, "vendor", args.vendor, 17, categoryAlign);
-			    rowHtml += me.getEditableRowColumn(true, false, 3, "job" + args.rowNumber, args.job, 20, "left");
-			    rowHtml += me.getEditableRowColumn(false, false, 4, "itemNumber", args.itemNumber, 8, "left");
-			    rowHtml += me.getEditableRowColumn(false, false, 5, "description", args.description, 35, "left");
-			    rowHtml += me.getEditableRowColumn(false, false, 6, "accountCode", args.accountCode.toString(), 10, "left");
-			    rowHtml += me.getEditableRowColumn(false, false, 7, "unit", args.unit, 6, "left");
-			    rowHtml += me.getEditableRowColumn(true, false, 8, "quantity" + args.rowNumber, args.quantity, 7, "right");
-			    rowHtml += me.getEditableRowColumn(false, false, 9, "unitPrice", args.unitPrice, 7, "right", args.priceChanged);
+			    if (args.catalogItemId != 0) {
+			        rowHtml += me.getEditableRowColumn(true, false, 3, "job" + args.rowNumber, args.job, 20, "left");
+			        rowHtml += me.getEditableRowColumn(false, false, 4, "itemNumber", args.itemNumber, 8, "left");
+			        rowHtml += me.getEditableRowColumn(false, false, 5, "description", args.description.toString(), 35, "left");
+			        rowHtml += me.getEditableRowColumn(false, false, 6, "account", args.account.toString(), 10, "left");
+			        rowHtml += me.getEditableRowColumn(false, false, 7, "unit", args.unit, 6, "left");
+			        rowHtml += me.getEditableRowColumn(true, false, 8, "quantity" + args.rowNumber, args.quantity, 7, "right");
+			        rowHtml += me.getEditableRowColumn(false, false, 9, "unitPrice", args.unitPrice, 7, "right", args.priceChanged);
+			    }
+			    else {
+			        rowHtml += me.getEditableRowColumn(true, false, 3, "job" + args.rowNumber, args.job, 20, "left");
+			        rowHtml += me.getEditableRowColumn(true, false, 4, "itemNumber" + args.rowNumber, args.itemNumber, 8, "left");
+			        rowHtml += me.getEditableRowColumn(true, false, 5, "description" + args.rowNumber, args.description.toString(), 35, "left");
+			        rowHtml += me.getEditableRowColumn(true, false, 6, "account" + args.rowNumber, args.account.toString(), 10, "left");
+			        rowHtml += me.getEditableRowColumn(true, false, 7, "unit" + args.rowNumber, args.unit, 6, "left");
+			        rowHtml += me.getEditableRowColumn(true, false, 8, "quantity" + args.rowNumber, args.quantity, 7, "right");
+			        rowHtml += me.getEditableRowColumn(true, false, 9, "unitPrice" + args.rowNumber , args.unitPrice, 7, "right", args.priceChanged);
+			    }
 			    rowHtml += me.getEditableRowColumn(false, false, 10, "cost", args.cost, 7, "right");
 			    rowHtml += me.getEditableRowColumn(false, true, 11, "periodBudget", args.periodBudget, 7, "right");
 			    rowHtml += me.getEditableRowColumn(false, true, 12, "budgetRemaining", args.budgetRemaining, 10, "right");
+			    rowHtml += me.getEditableRowColumn(false, true, 13, "catalogItemId", args.catalogItemId, 3, "right;display:none");
 			}
 			else {
 			    rowHtml += me.getEditableRowColumn(false, false, 0, "rowNumber", args.rowNumber.toString(), 4, "right");
@@ -543,19 +584,21 @@ ii.Class({
 			    rowHtml += me.getEditableRowColumn(false, false, 3, "job", args.job, 20, "left");
 			    rowHtml += me.getEditableRowColumn(false, false, 4, "itemNumber", args.itemNumber, 8, "left");
 			    rowHtml += me.getEditableRowColumn(false, false, 5, "description", args.description, 35, "left");
-			    rowHtml += me.getEditableRowColumn(false, false, 6, "accountCode", args.accountCode.toString(), 10, "left");
+			    rowHtml += me.getEditableRowColumn(false, false, 6, "account", args.account.toString(), 10, "left");
 			    rowHtml += me.getEditableRowColumn(false, false, 7, "unit", args.unit, 6, "left");
 			    rowHtml += me.getEditableRowColumn(false, false, 8, "quantity", args.quantity, 7, "right");
 			    rowHtml += me.getEditableRowColumn(false, false, 9, "unitPrice", args.unitPrice, 7, "right", args.priceChanged);
 			    rowHtml += me.getEditableRowColumn(false, columnBold, 10, "cost", args.cost, 7, "right");
 			    rowHtml += me.getEditableRowColumn(false, true, 11, "periodBudget", args.periodBudget, 7, "right");
 			    rowHtml += me.getEditableRowColumn(false, true, 12, "budgetRemaining", args.budgetRemaining, 10, "right");
+			    rowHtml += me.getEditableRowColumn(false, false, 13, "catalogItemId", args.catalogItemId, 3, "right;display:none");
 			}
 	
 			return rowHtml;
 		},
 																		
 		getEditableRowColumn: function() {
+		   
 			var args = ii.args(arguments, {
 				editable: {type: Boolean}
 				, bold: {type: Boolean}
@@ -573,18 +616,21 @@ ii.Class({
 				styleName += " font-weight:bold;"
 				
 			if (args.priceChanged)
-				styleName += " color:red;"
-				
+			    styleName += " color:red;"
 			if (args.editable) {
-				if (args.columnName.substring(0,3) == "job") 
-					return "<td class='gridColumn'>" + me.populateDropDown(args.columnName, args.columnValue) + "</td>";
+			    if (args.columnName.substring(0,3) == "job")
+			        return "<td class='gridColumn'>" + me.populateDropDown(args.columnName, args.columnValue) + "</td>";
+			    else if (args.columnName.substring(0,7) == "account") {
+			        return "<td class='gridColumn'>" + me.populateAccountDropDown(args.columnName, args.columnValue) + "</td>";
+			    }
 				else
-					return "<td class='gridColumn' align='center'><input type=text style='width:90%; text-align:" + args.columnAlign + ";' id='" + args.columnName + "' value='" + args.columnValue + "'></input></td>";
-			}				
+			        return "<td class='gridColumn' align='center'><input type=text style='width:90%; text-align:" + args.columnAlign + ";' id='" + args.columnName + "' value='" + args.columnValue + "'></input></td>";
+                
+			}			
 			else if (args.columnWidth == 0)
-				return "<td class='gridColumnHidden'>" + args.columnValue + "</td>";
-			else 
-				return "<td class='gridColumn' width='" + args.columnWidth + "%' style='" + styleName + "'>" + args.columnValue + "</td>";
+			    return "<td class='gridColumnHidden'>" + args.columnValue + "</td>";
+			else
+			    return "<td class='gridColumn' width='" + args.columnWidth + "%' style='" + styleName + "'>" + args.columnValue + "</td>";
 		},
 		
 		populateDropDown: function() {
@@ -610,19 +656,43 @@ ii.Class({
 			
 			return rowHtml;
 		},
+
+		populateAccountDropDown: function() {
+		    var args = ii.args(arguments, {
+		        columnName: { type: String }
+                  , columnValue: { type: String }
+		    });
+		    var me = this;
+		    var rowHtml = "";
+		    var title = "";
+		    var account = "";
+		    rowHtml = "<select onchange=parent.fin.purMasterUi.modified(true); id='" + args.columnName + "' style='width:100%;'>";
+		    for (var index = 0; index < parent.fin.purMasterUi.glAccounts.length; index++) {
+		        title = parent.fin.purMasterUi.glAccounts[index].code + " - " + parent.fin.purMasterUi.glAccounts[index].description;
+		        account = parent.fin.purMasterUi.glAccounts[index];
+
+		        if (args.columnValue == account.code)
+		            rowHtml += "	<option title='" + title + "' value='" + account.id + "' selected>" + title + "</option>";
+		        else
+		            rowHtml += "	<option title='" + title + "' value='" + account.id + "'>" + title + "</option>";
+		    }
+
+		    rowHtml += "</select>"
+
+		    return rowHtml;
+		},        
 		
 		purchaseOrderGridColumnEdit: function() {
 			var me = this;
 			var rowHtml = "";
 			var rowNumber = 0;
 			var dataRow = 0;
-	
+
 			if (me.rowBeingEdited) 
 				return;
 				
 			$("#PurchaseOrderGridBody").find('tr').each(function() {
 				rowNumber++;
-
 				if (parseInt(this.cells[1].innerHTML) > 0) {
 				    rowHtml = me.getPODetailGridRow(
                             rowNumber
@@ -640,6 +710,7 @@ ii.Class({
                             , this.cells[11].innerHTML
                             , this.cells[12].innerHTML
                             , me.purchaseOrderDetails[dataRow].priceChanged
+                            , this.cells[13].innerHTML
                             )
 						
 					dataRow++;
@@ -707,33 +778,56 @@ ii.Class({
 			var rowHtml = "";
 			var rowNumber = 0;
 			var dataRow = 0;
-			
+
 			if (!parent.fin.cmn.status.itemValid())
 				return;
 				
 			if (me.status == "EditQuantity") {
 				$("#PurchaseOrderGridBody").find('tr').each(function() {
 					rowNumber++;
-					
 					if (parseInt(this.cells[1].innerHTML) > 0) {
-					    rowHtml = me.getPODetailGridRow(
-							rowNumber
-							, false
-							, parseInt(this.cells[1].innerHTML)
-							, this.cells[2].innerHTML
-							, me.getJobTitle(me.purchaseOrderDetails[dataRow].houseCodeJob)
-							, this.cells[4].innerHTML
-							, this.cells[5].innerHTML
-							, this.cells[6].innerHTML
-							, this.cells[7].childNodes[0].defaultValue
-							, this.cells[8].innerHTML
-							, this.cells[9].innerHTML
-							, this.cells[10].innerHTML
-							, this.cells[11].innerHTML
-                            , this.cells[12].innerHTML
-							, me.purchaseOrderDetails[dataRow].priceChanged
-							)
-						
+					    if (this.cells[13].innerHTML == 0)
+					    {					        
+					        rowHtml = me.getPODetailGridRow(
+                                  rowNumber
+                                , false
+                                , parseInt(this.cells[1].innerHTML)
+                                , this.cells[2].innerHTML
+                                , me.getJobTitle(me.purchaseOrderDetails[dataRow].houseCodeJob)
+                                , me.purchaseOrderDetails[dataRow].number
+                                , me.purchaseOrderDetails[dataRow].description
+                                , me.getAccountCode(me.purchaseOrderDetails[dataRow].accountId)
+                                , me.purchaseOrderDetails[dataRow].unit
+                                , this.cells[8].childNodes[0].defaultValue
+                                , me.purchaseOrderDetails[dataRow].price
+                                , this.cells[10].innerHTML
+                                , this.cells[11].innerHTML
+                                , this.cells[12].innerHTML
+                                , me.purchaseOrderDetails[dataRow].priceChanged
+                                , this.cells[13].innerHTML
+                                )
+					    }
+					    else
+					    {
+					        rowHtml = me.getPODetailGridRow(
+                                rowNumber
+                                , false
+                                , parseInt(this.cells[1].innerHTML)
+                                , this.cells[2].innerHTML
+                                , me.getJobTitle(me.purchaseOrderDetails[dataRow].houseCodeJob)
+                                , this.cells[4].innerHTML
+                                , this.cells[5].innerHTML
+                                , me.getAccountCode(me.purchaseOrderDetails[dataRow].accountId)
+                                , this.cells[7].innerHTML
+                                , this.cells[8].childNodes[0].defaultValue
+                                , this.cells[9].innerHTML
+                                , this.cells[10].innerHTML
+                                , this.cells[11].innerHTML
+                                , this.cells[12].innerHTML
+                                , me.purchaseOrderDetails[dataRow].priceChanged
+                                , this.cells[13].innerHTML
+                                )
+					    }
 						dataRow++;
 						$(this).html(rowHtml);
 					}
@@ -777,12 +871,10 @@ ii.Class({
 			var rowNumber = 1;
 			var quantity = 0;
 			var xml = "";			
-			
+
 			if (me.status == "EditQuantity") {
-				$("#PurchaseOrderGridBody").find('tr').each(function() {
-						
-					if (parseInt(this.cells[1].innerHTML) > 0) {
-						
+			    $("#PurchaseOrderGridBody").find('tr').each(function() {
+			        if (parseInt(this.cells[1].innerHTML) > 0) {
 					    if ($("#quantity" + rowNumber).val() == "")
 							quantity = 0;
 						else
@@ -793,9 +885,18 @@ ii.Class({
 						xml += ' purchaseOrderId="' + me.purchaseOrderId + '"';
 						xml += ' catalogItemId="0"';
 						xml += ' houseCodeJobId="' + parseInt($("#job" + rowNumber).val()) + '"';
-						xml += ' price="' + parseFloat(this.cells[9].innerHTML.substring(1)) + '"';
+						if ($("#unitPrice" + rowNumber).val() != undefined)
+						    xml += ' price="' + parseFloat($("#unitPrice" + rowNumber).val().substring(1)) + '"';						   
+                        else
+						    xml += ' price="' + parseFloat(this.cells[9].innerHTML.substring(1)) + '"';
 						xml += ' quantity="' + quantity + '"';
-						xml += ' quantityReceived="0"';
+						xml += ' quantityReceived="0"';					
+						if (this.cells[13].innerHTML == 0) {
+						    xml += ' accountId="' + parseInt($("#account" + rowNumber).val()) + '"';
+						    xml += ' itemNumber="' + ui.cmn.text.xml.encode($("#itemNumber" + rowNumber).val()) + '"';
+						    xml += ' description="' + ui.cmn.text.xml.encode($("#description" + rowNumber).val()) + '"';
+						    xml += ' uom="' + ui.cmn.text.xml.encode($("#unit" + rowNumber).val()) + '"';
+						}
 						xml += '/>';	
 					}
 					

@@ -71,7 +71,8 @@ ii.init.register( function() {
 		, template: {type: Boolean, required: false, defaultValue: false}
 		, templateTitle: {type: String, required: false, defaultValue: ""}		
 		, reportFooter: {type: String, required: false, defaultValue: ""}
-		, placedBy: {type: String, required: false, defaultValue: ""}		
+		, placedBy: {type: String, required: false, defaultValue: ""}
+        , miscPurchaseOrder: {type: Boolean, defaultValue: false},
 	};
 	
 	fin.pur.master.vendorArgs = {
@@ -80,7 +81,8 @@ ii.init.register( function() {
 	};
 	
 	fin.pur.master.accountArgs = {
-		id: {type: Number}
+	    id: {type: Number}
+        , code: {type: String}
 		, description: {type: String}
 	};
 	

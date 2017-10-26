@@ -183,7 +183,12 @@ ii.Class({
 			var prevCategory = "";
 			var showCategory = true;
 			var rowNumber = 0;
-			
+
+			if (parent.fin.purMasterUi.purchaseOrders[parent.fin.purMasterUi.lastSelectedRowIndex].miscPurchaseOrder)
+			    $('#divPODHeader')[0].innerHTML = 'Miscellaneous Purchase Order Details';			
+			else 
+			    $('#divPODHeader')[0].innerHTML = 'Purchase Order Details';
+						
 			for(index = 0; index < me.purchaseOrderDetails.length; index++) {
 				if (showCategory) {
 					category = me.purchaseOrderDetails[index].category;
