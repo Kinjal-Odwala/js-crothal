@@ -173,6 +173,20 @@ ii.Class({
 
 			return jobTitle == "None - None" ? "&nbsp;" : jobTitle;
 		},
+
+		getAccountCode: function (id) {
+		    var me = this;
+		    var accountCode = "";
+
+		    for (var index = 0; index < parent.fin.purMasterUi.glAccounts.length; index++) {
+		        var item = parent.fin.purMasterUi.glAccounts[index];
+		        if (id == item.id) {
+		            accountCode = item.code;
+		            break;
+		        }
+		    }
+		    return accountCode;
+		},
 				
 		purchaseOrderDetailsLoaded: function(me, activeId) {
 			var index = 0;
@@ -183,7 +197,6 @@ ii.Class({
 			var prevCategory = "";
 			var showCategory = true;
 			var rowNumber = 0;
-
 			if (parent.fin.purMasterUi.purchaseOrders[parent.fin.purMasterUi.lastSelectedRowIndex].miscPurchaseOrder)
 			    $('#divPODHeader')[0].innerHTML = 'Miscellaneous Purchase Order Details';			
 			else 
@@ -209,7 +222,7 @@ ii.Class({
 					, me.getJobTitle(me.purchaseOrderDetails[index].houseCodeJob)
 					, me.purchaseOrderDetails[index].number
 					, me.purchaseOrderDetails[index].description
-                    , me.purchaseOrderDetails[index].accountCode
+                    , me.getAccountCode(me.purchaseOrderDetails[index].accountId)
 					, me.purchaseOrderDetails[index].unit
 					, me.purchaseOrderDetails[index].quantity.toString()
 					, "$" + me.purchaseOrderDetails[index].price
@@ -311,7 +324,7 @@ ii.Class({
 				, job: {type: String}
 				, itemNumber: {type: String}
 				, description: { type: String }
-                , accountCode: { type: String }
+                , account: { type: String }
 				, unit: {type: String}
 				, quantity: {type: String}
 				, unitPrice: {type: String}
@@ -334,7 +347,7 @@ ii.Class({
 			rowHtml += me.getEditableRowColumn(false, 2, "job", args.job, 10, "left");		
 			rowHtml += me.getEditableRowColumn(false, 3, "itemNumber", args.itemNumber, 10, "left");
 			rowHtml += me.getEditableRowColumn(false, 4, "description", args.description, 34, "left");
-			rowHtml += me.getEditableRowColumn(false, 5, "accountCode", args.accountCode.toString(), 10, "left");
+			rowHtml += me.getEditableRowColumn(false, 5, "account", args.account.toString(), 10, "left");
 			rowHtml += me.getEditableRowColumn(false, 6, "unit", args.unit, 5, "left");
 			rowHtml += me.getEditableRowColumn(false, 7, "quantity", args.quantity, 7, "right");
 			rowHtml += me.getEditableRowColumn(false, 8, "unitPrice", args.unitPrice, 7, "right", args.priceChanged);

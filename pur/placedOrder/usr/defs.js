@@ -18,8 +18,8 @@ ii.init.register( function() {
 		, houseCodeJob: {type: Number, required: false, defaultValue: 0}
 		, category: {type: String, required: false, defaultValue: ""}
 		, number: {type: String, required: false, defaultValue: ""}
-		, description: { type: String, required: false, defaultValue: "" }
-        , accountCode: { type: Number, required: false, defaultValue: 0 }
+		, description: {type: String, required: false, defaultValue: ""}
+        , accountId: {type: Number, required: false, defaultValue: 0}
 		, unit: {type: String, required: false, defaultValue: ""}
 		, quantity: {type: Number, required: false, defaultValue: 0}
 		, price: {type: String, required: false, defaultValue: ""}
