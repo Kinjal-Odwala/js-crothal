@@ -2727,7 +2727,7 @@ ii.Class({
 			$("#Customer").html("");
 			
 			for (var index = 0; index < me.customers.length; index++) {
-				$("#Customer").append("<option title='" + me.customers[index].name + "' value='" + me.customers[index].id + "'>" + me.customers[index].name + "</option>");
+				$("#Customer").append("<option title='" + me.customers[index].name + "' value='" + me.customers[index].parameter + "'>" + me.customers[index].name + "</option>");
 			}
 			
 			$("#Customer").multiselect("refresh");			
