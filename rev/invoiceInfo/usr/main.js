@@ -597,17 +597,14 @@ ii.Class({
 			me.state.reset();
 
 			if (index >= 0) {
-				if (parent.parent.fin.appUI.houseCodeTitle == me.billTo.lastBlurValue)
-					alert("Warning: You have selected a House Code as the customer.");
-
-					if (me.invoiceBillTos[index].taxId > 0) {
-						me.taxExempt.select(0, me.taxExempt.focused);
-						me.taxId.setValue(me.invoiceBillTos[index].taxId);
-					}
-					else {
-						me.taxExempt.select(1, me.taxExempt.focused);
-						me.taxId.setValue("");
-					}
+				if (me.invoiceBillTos[index].taxId > 0) {
+					me.taxExempt.select(0, me.taxExempt.focused);
+					me.taxId.setValue(me.invoiceBillTos[index].taxId);
+				}
+				else {
+					me.taxExempt.select(1, me.taxExempt.focused);
+					me.taxId.setValue("");
+				}
 
 				me.company.setValue(me.invoiceBillTos[index].company);
 				me.address1.setValue(me.invoiceBillTos[index].address1);

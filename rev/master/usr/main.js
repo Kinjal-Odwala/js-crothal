@@ -1481,18 +1481,7 @@ ii.Class({
 
         invoiceBillTosLoaded: function(me, activeId) {
 
-			var billTos = me.invoiceBillTos.slice();
-
-			if ($("input[name='InvoiceBy']:checked").val() == 1) {
-				for (var index = 0; index < billTos.length; index++ ) {
-					if(billTos[index].billTo == parent.fin.appUI.houseCodeTitle) {
-						billTos.splice(index, 1);
-						break;
-					}
-				}
-			}
-
-            me.billTo.setData(billTos);
+            me.billTo.setData(me.invoiceBillTos);
 			me.checkLoadCount();
         },
 
@@ -1505,17 +1494,14 @@ ii.Class({
             me.state.reset();
 
             if (index >= 0) {
-                if (parent.fin.appUI.houseCodeTitle == me.billTo.lastBlurValue)
-					alert("Warning: You have selected a House Code as the customer.");
-
-					if (me.billTo.data[index].taxId > 0) {
-						me.taxExempt.select(0, me.taxExempt.focused);
-						me.taxId.setValue(me.billTo.data[index].taxId);
-					}
-					else {
-						me.taxExempt.select(1, me.taxExempt.focused);
-						me.taxId.setValue("");
-					}
+				if (me.billTo.data[index].taxId > 0) {
+					me.taxExempt.select(0, me.taxExempt.focused);
+					me.taxId.setValue(me.billTo.data[index].taxId);
+				}
+				else {
+					me.taxExempt.select(1, me.taxExempt.focused);
+					me.taxId.setValue("");
+				}
 
                 me.company.setValue(me.billTo.data[index].company);
                 me.address1.setValue(me.billTo.data[index].address1);
@@ -1589,6 +1575,7 @@ ii.Class({
 
 			me.billTo.reset();
 			me.state.reset();
+			me.invoiceLogo.reset();
 			me.invoiceAddress.reset();
 			me.serviceLocation.reset();
 
@@ -1612,17 +1599,37 @@ ii.Class({
 					me.taxId.text.readOnly = true;
 				}
 				me.taxId.setValue(searchInvoice.taxNumber);
-				me.billTo.setValue(searchInvoice.billTo);
+
+				for (var index = 0; index < me.billTo.data.length; index++) {
+					if (me.billTo.data[index].billTo == searchInvoice.billTo) {
+						me.billTo.select(index, me.billTo.focused);
+						break;
+					}
+				}
+
 				me.company.setValue(searchInvoice.company);
 				me.address1.setValue(searchInvoice.address1);
 				me.address2.setValue(searchInvoice.address2);
 				me.city.setValue(searchInvoice.city);
-
 				var itemIndex = ii.ajax.util.findIndexById(searchInvoice.stateType.toString(), me.stateTypes);
 				if (itemIndex >= 0 && itemIndex != undefined)
 					me.state.select(itemIndex, me.state.focused);
 				me.zip.setValue(searchInvoice.postalCode);
 				me.poNumber.setValue(searchInvoice.poNumber);
+				itemIndex = ii.ajax.util.findIndexById(searchInvoice.invoiceLogoType.toString(), me.invoiceLogoTypes);
+				if (itemIndex != null)
+					me.invoiceLogo.select(itemIndex, me.invoiceLogo.focused);
+				itemIndex = ii.ajax.util.findIndexById(searchInvoice.invoiceAddressType.toString(), me.invoiceAddressTypes);
+				if (itemIndex != null)
+					me.invoiceAddress.select(itemIndex, me.invoiceAddress.focused);
+
+				for (var index = 0; index < me.serviceLocation.data.length; index++) {
+					if (me.serviceLocation.data[index].jobTitle == searchInvoice.serviceLocation) {
+						me.serviceLocation.select(index, me.serviceLocation.focused);
+						break;
+					}
+				}
+
 				me.notes.value = searchInvoice.notes;
 			}
 			else {				
