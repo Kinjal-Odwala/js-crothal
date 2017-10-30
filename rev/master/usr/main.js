@@ -1946,6 +1946,7 @@ ii.Class({
                 item = new fin.rev.master.Invoice({
                     id: me.invoiceId
 					, houseCode: parent.fin.appUI.houseCodeId
+					, houseCodeJobId: (me.billTo.indexSelected >= 0 ? me.billTo.data[me.billTo.indexSelected].id : 0)
 					, invoiceByHouseCode: invoiceByHouseCode
 					, invoiceNumber: 0
 					, documentNumber: ""
@@ -1988,6 +1989,7 @@ ii.Class({
                     id: me.invoiceId
 					, houseCode: parent.fin.appUI.houseCodeId
 					, invoiceByHouseCode: me.invoices[me.lastSelectedRowIndex].invoiceByHouseCode
+					, houseCodeJobId: (invoiceInfoUIControls.billTo.indexSelected >= 0 ? invoiceInfoUIControls.billTo.data[invoiceInfoUIControls.billTo.indexSelected].id : 0)
 					, invoiceNumber: me.invoices[me.lastSelectedRowIndex].invoiceNumber
 					, documentNumber: me.invoices[me.lastSelectedRowIndex].documentNumber
 					, invoiceDate: invoiceInfoUIControls.invoiceDate.lastBlurValue
@@ -2119,6 +2121,7 @@ ii.Class({
             xml += ' dueDate="' + args.item.dueDate + '"';
             xml += ' periodStartDate="' + args.item.periodStartDate + '"';
             xml += ' periodEndDate="' + args.item.periodEndDate + '"';
+			xml += ' houseCodeJobId="' + args.item.houseCodeJobId + '"';
             xml += ' billTo="' + ui.cmn.text.xml.encode(args.item.billTo) + '"';
             xml += ' company="' + ui.cmn.text.xml.encode(args.item.company) + '"';
             xml += ' address1="' + ui.cmn.text.xml.encode(args.item.address1) + '"';
@@ -2198,6 +2201,7 @@ ii.Class({
                             }
                             else {
                                 me.lastSelectedRowIndex = me.invoiceGrid.activeRowIndex;
+								item.jobBrief = $(this).attr("jobBrief");
                                 item.version = parseInt($(this).attr("version"), 10);
                                 me.invoices[me.lastSelectedRowIndex] = item;
                                 me.invoiceGrid.body.renderRow(me.lastSelectedRowIndex, me.lastSelectedRowIndex);

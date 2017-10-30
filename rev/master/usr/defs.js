@@ -57,6 +57,7 @@ ii.init.register( function() {
 		id: {type: Number}
 		, houseCode: {type: Number, required: false, defaultValue: 0}
 		, houseCodeBrief: {type: String, required: false, defaultValue: ""}
+		, houseCodeJobId: {type: Number, required: false, defaultValue: 0}
 		, jobBrief: {type: String, required: false, defaultValue: ""}
 		, invoiceByHouseCode: {type: Boolean, required: false, defaultValue: false}
 		, invoiceNumber: {type: Number, required: false, defaultValue: 0}
