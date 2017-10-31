@@ -1695,7 +1695,7 @@ ii.Class({
 		    var me = this;
 
 		    $("#ItemNumberText").addClass("Loading");
-		    me.itemStore.fetch("userId:[user],searchValue:" + me.itemNumber.getValue() + ", active:1", me.itemsLoaded, me);
+		    me.itemStore.fetch("userId:[user],itemNumber:" + me.itemNumber.getValue(), me.itemsLoaded, me);
 		},
 
 		itemsLoaded: function (me, activeId) {
