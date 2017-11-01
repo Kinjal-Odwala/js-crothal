@@ -109,14 +109,13 @@ ii.init.register( function() {
 
 	fin.hcm.job.houseCodeJobArgs = {
 		id: {type: Number, defaultValue: 0}
+		, jobId: {type: Number, required: false, defaultValue: 0}
 		, houseCodeId: {type: Number, required: false, defaultValue: 0}
 		, hirNode: {type: Number, required: false, defaultValue: 0}
 		, houseCodeTitle: {type: String, required: false, defaultValue: ""}
-        , active: {type: Boolean, required: false, defaultValue: false}
-        , jobBrief: {type: String, required: false, defaultValue: ""}
-        , jobTitle: {type: String, required: false, defaultValue: ""}
-        , jobDescription: {type: String, required: false, defaultValue: ""}
 		, sapCustomerNumber : {type: String, required: false, defaultValue: ""}
+		, active: {type: Boolean, required: false, defaultValue: false}
+		, modified: {type: Boolean, required: false, defaultValue: false}
 	};
 
 	fin.hcm.job.cityNameArgs = {

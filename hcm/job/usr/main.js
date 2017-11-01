@@ -473,15 +473,6 @@ ii.Class({
 				hasHotState: true
 			});
 
-			me.removeAssociation = new ui.ctl.buttons.Sizeable({
-				id: "AnchorRemove",
-				className: "iiButton",
-				text: "<span>&nbsp;&nbsp;Remove&nbsp;&nbsp;</span>",
-				clickFunction: function() { me.actionRemoveAssociation(); },
-				title: "Click here to remove the HouseCode association with selected Job.",
-				hasHotState: true
-			});
-
 			me.jobTemplate = new ui.ctl.Input.DropDown.Filtered({
 				id: "JobTemplate",
 				formatFunction: function(item) { return item.title; },
@@ -897,14 +888,30 @@ ii.Class({
 			me.houseCodeGrid = new ui.ctl.Grid({
 				id: "HouseCodeGrid",
 				appendToId: "divForm",
-				allowAdds: false
+				allowAdds: false,
+				selectFunction: function(index) { me.houseCodeGridSelect(index); }
 			});
 
-			me.houseCodeGrid.addColumn("houseCodeTitle", "houseCodeTitle", "House Code", "House Code", null);
+			me.houseCodeTitle = new ui.ctl.Input.Text({
+		        id: "HouseCodeTitle" ,
+				appendToId : "HouseCodeGridControlHolder"
+		    });
+
+			me.houseCodeJobActive = new ui.ctl.Input.Check({
+		        id: "HouseCodeJobActive" ,
+		        className: "iiInputCheck",
+				appendToId: "HouseCodeGridControlHolder",
+				changeFunction: function() { me.modified(); }
+		    });
+
+			me.houseCodeGrid.addColumn("houseCodeTitle", "houseCodeTitle", "House Code", "House Code", null, null, me.houseCodeTitle);
 			me.houseCodeGrid.addColumn("sapCustomerNumber", "sapCustomerNumber", "SAP Customer #", "SAP Customer Number", 140);
+			me.houseCodeGrid.addColumn("active", "active", "Active", "Active", 60, null, me.houseCodeJobActive);
 			me.houseCodeGrid.capColumns();
 			me.houseCodeGrid.setHeight(250);
-
+			
+			me.houseCodeTitle.text.readOnly = true;
+			
 			me.houseCodePopupGrid = new ui.ctl.Grid({
 				id: "HouseCodePopupGrid",
 				appendToId: "divForm"
@@ -1166,14 +1173,15 @@ ii.Class({
 
 			if (me.jobsList.length <= 0) {
 				me.jobGrid.setData([]);
+				me.houseCodeGrid.setData([]);
 				me.actionClearItem();
 				me.status = "new";
-				me.checkLoadCount();
-				return;
 			}
-
-			me.jobGrid.setData(me.jobsList);
-			me.jobGrid.body.select(0);
+			else {
+				me.jobGrid.setData(me.jobsList);
+				me.jobGrid.body.select(0);
+			}
+		
 			me.checkLoadCount();
 		},
 
@@ -1469,6 +1477,17 @@ ii.Class({
 			me.county.setValue(countyName);
 		},
 
+		houseCodeGridSelect: function() {
+			var args = ii.args(arguments,{
+				index: {type: Number}
+			});
+			var me = this;
+			var index = args.index;
+
+			if (me.houseCodeJobs[index])
+				me.houseCodeJobs[index].modified = true;
+		},
+
 		loadHouseCodes: function() {
 		    var me = this;
 
@@ -1560,6 +1579,7 @@ ii.Class({
 					xml += ' jobId="' + me.jobId + '"';
 					xml += ' houseCodeId="' + me.units[index].id + '"';
 					xml += ' hirNode="' + me.units[index].hirNode + '"';
+					xml += ' active="' + me.jobGrid.data[me.jobGrid.activeRowIndex].active + '"';
 					xml += '/>';
 				}
 			};
@@ -1696,27 +1716,6 @@ ii.Class({
 			$("#JobTemplateDiv").show();
 		},
 
-		actionRemoveAssociation: function() {
-			var me = this;
-
-			if (me.jobGrid.activeRowIndex < 0) {
-				alert("Please select Job to remove association with House Code.");
-				return;
-			}
-
-			if (me.houseCodeGrid.activeRowIndex < 0) {
-				alert("Please select House Code to remove association with Job.");
-				return;
-			}
-
-			if (!confirm("Do you want remove House Code association with selected Job?")) {
-				return;
-			}
-
-			me.status = "removeAssociation";
-			me.actionSaveItem();
-		},
-
 		actionUndoItem: function() {
 			var me = this;
 
@@ -1739,33 +1738,43 @@ ii.Class({
 		actionSaveItem: function() {
 			var me = this;
 			var item = [];
-			var errorMessage = "";
 			var xml = "";
 
 			if (me.jobsReadOnly)
 				return;
 
 			me.validator.forceBlur();
+			me.houseCodeGrid.body.deselectAll();
 
 			if (me.status === "clone" && me.jobTemplate.indexSelected < 0) {
-				errorMessage += "Please select Job Template to Clone.\n";
+				alert("Please select Job Template to Clone.");
+				return false;
 			}
 
 			// Check to see if the data entered is valid
 			if (!me.validator.queryValidity(true)) {
-				errorMessage += "In order to save, the errors on the page must be corrected.";
-			}
-
-			if (errorMessage !== "") {
-				alert(errorMessage);
+				alert("In order to save, the errors on the page must be corrected.");
 				return false;
 			}
 
-			me.houseCodeJobId = 0;
+			if (me.jobGrid.activeRowIndex >= 0 && (me.jobGrid.data[me.jobGrid.activeRowIndex].active !== me.active.getValue())) {
+				if (me.active.getValue()) {
+					if (!confirm("All asoociated house codes will be active. Are you sure you want to continue?")) {
+						return;
+					}
+				}
+				else {
+					if (!confirm("All asoociated house codes will be inactive. Are you sure you want to continue?")) {
+						return;
+					}
+				}
 
-			if (me.status === "removeAssociation" && me.jobsList[me.jobGrid.activeRowIndex] !== undefined) {
-				me.jobId = me.jobsList[me.jobGrid.activeRowIndex].id;
-				me.houseCodeJobId = me.houseCodeGrid.data[me.houseCodeGrid.activeRowIndex].id;
+				for (var index = 0; index < me.houseCodeJobs.length; index++) {
+					me.houseCodeJobs[index].modified = true;
+					me.houseCodeJobs[index].active = me.active.getValue();
+				}
+
+				me.houseCodeGrid.setData(me.houseCodeJobs);
 			}
 
 			item = new fin.hcm.job.Job({
@@ -1812,60 +1821,64 @@ ii.Class({
 			var item = args.item;
 			var xml = "";
 
-			if (me.status === "removeAssociation") {
-				xml += '<houseCodeJobDelete';
-				xml += ' id="' + me.houseCodeJobId + '"';
+			xml += '<job';
+			xml += ' id="' + item.id + '"';
+			xml += ' brief="' + ui.cmn.text.xml.encode(item.brief) + '"';
+			xml += ' title="' + ui.cmn.text.xml.encode(item.title) + '"';
+			xml += ' contactName="' + ui.cmn.text.xml.encode(item.contactName) + '"';
+			xml += ' contactPhone="' + fin.cmn.text.mask.phone(item.contactPhone, true) + '"';
+			xml += ' address1="' + ui.cmn.text.xml.encode(item.address1) + '"';
+			xml += ' address2="' + ui.cmn.text.xml.encode(item.address2) + '"';
+			xml += ' city="' + ui.cmn.text.xml.encode(item.city) + '"';
+			xml += ' county="' + ui.cmn.text.xml.encode(item.county) + '"';
+			xml += ' appStateTypeId="' + item.appStateTypeId + '"';
+			xml += ' postalCode="' + ui.cmn.text.xml.encode(item.postalCode) + '"';
+			xml += ' geoCode="' + item.geoCode + '"';
+			xml += ' countryType="' + item.countryType + '"';
+			xml += ' industryType="' + item.industryType + '"';
+			xml += ' paymentTerm="' + item.paymentTerm + '"';
+			xml += ' jobType="' + (item.jobType.id ? item.jobType.id : 0) + '"';
+			xml += ' invoiceTemplate="' + item.invoiceTemplate + '"';
+			xml += ' customerName="' + ui.cmn.text.xml.encode(item.customerName) + '"';
+			xml += ' customerPhone="' + fin.cmn.text.mask.phone(item.customerPhone, true) + '"';
+			xml += ' taxId="' + item.taxId + '"';
+			xml += ' overrideSiteTax="' + item.overrideSiteTax + '"';
+			xml += ' serviceContract="' + ui.cmn.text.xml.encode(item.serviceContract) + '"';
+			xml += ' generalLocationCode="' + ui.cmn.text.xml.encode(item.generalLocationCode) + '"';
+			xml += ' bolsReportType="' + item.bolsReportType + '"';	
+			xml += ' cpiPercentage="' + item.cpiPercentage + '"';	
+			xml += ' cpiAmount="' + item.cpiAmount + '"';	
+			xml += ' cpiDate="' + item.cpiDate + '"';	
+			xml += ' cpiECIWaived="' + item.cpiECIWaived + '"';	
+			xml += ' active="' + item.active + '"';
+			xml += ' clone="' + (me.status === "clone" ? true : false) + '"';
+			xml += ' clientId="1">';
+
+			if ($("#SearchByHouseCode")[0].checked && item.id === 0) {
+				xml += '<houseCodeJob';
+				xml += ' id="0"';
+				xml += ' jobId="' + me.jobId + '"';
+				xml += ' houseCodeId="' + parent.fin.appUI.houseCodeId + '"';
+				xml += ' hirNode="' + parent.fin.appUI.hirNode + '"';
+				xml += ' active="' + item.active + '"';
+				xml += ' clientId="2"';
 				xml += '/>';
 			}
 			else {
-				xml += '<job';
-				xml += ' id="' + item.id + '"';
-				xml += ' brief="' + ui.cmn.text.xml.encode(item.brief) + '"';
-				xml += ' title="' + ui.cmn.text.xml.encode(item.title) + '"';
-				xml += ' contactName="' + ui.cmn.text.xml.encode(item.contactName) + '"';
-				xml += ' contactPhone="' + fin.cmn.text.mask.phone(item.contactPhone, true) + '"';
-				xml += ' address1="' + ui.cmn.text.xml.encode(item.address1) + '"';
-				xml += ' address2="' + ui.cmn.text.xml.encode(item.address2) + '"';
-				xml += ' city="' + ui.cmn.text.xml.encode(item.city) + '"';
-				xml += ' county="' + ui.cmn.text.xml.encode(item.county) + '"';
-				xml += ' appStateTypeId="' + item.appStateTypeId + '"';
-				xml += ' postalCode="' + ui.cmn.text.xml.encode(item.postalCode) + '"';
-				xml += ' geoCode="' + item.geoCode + '"';
-				xml += ' countryType="' + item.countryType + '"';
-				xml += ' industryType="' + item.industryType + '"';
-				xml += ' paymentTerm="' + item.paymentTerm + '"';
-				xml += ' jobType="' + (item.jobType.id ? item.jobType.id : 0) + '"';
-				xml += ' invoiceTemplate="' + item.invoiceTemplate + '"';
-				xml += ' customerName="' + ui.cmn.text.xml.encode(item.customerName) + '"';
-				xml += ' customerPhone="' + fin.cmn.text.mask.phone(item.customerPhone, true) + '"';
-				xml += ' taxId="' + item.taxId + '"';
-				xml += ' overrideSiteTax="' + item.overrideSiteTax + '"';
-				xml += ' serviceContract="' + ui.cmn.text.xml.encode(item.serviceContract) + '"';
-				xml += ' generalLocationCode="' + ui.cmn.text.xml.encode(item.generalLocationCode) + '"';
-				xml += ' bolsReportType="' + item.bolsReportType + '"';	
-				xml += ' cpiPercentage="' + item.cpiPercentage + '"';	
-				xml += ' cpiAmount="' + item.cpiAmount + '"';	
-				xml += ' cpiDate="' + item.cpiDate + '"';	
-				xml += ' cpiECIWaived="' + item.cpiECIWaived + '"';	
-				xml += ' active="' + item.active + '"';
-				xml += ' clone="' + (me.status === "clone" ? true : false) + '"';
-				if ($("#SearchByHouseCode")[0].checked)
-					xml += ' houseCodeId="' + parent.fin.appUI.houseCodeId + '"';
-				xml += ' clientId="1">';
-
-				if ($("#SearchByHouseCode")[0].checked) {
-					xml += '<houseCodeJob';
-					xml += ' id="' + me.houseCodeJobId + '"';
-					xml += ' houseCodeId="' + parent.fin.appUI.houseCodeId + '"';
-					xml += ' hirNode="' + parent.fin.appUI.hirNode + '"';
-					xml += ' jobId="' + me.jobId + '"';
-					xml += ' active="' + item.active + '"';
-					xml += ' clientId="2"';
-					xml += '/>';
+				for (var index = 0; index < me.houseCodeJobs.length; index++) {
+					if (me.houseCodeJobs[index].modified) {
+						xml += '<houseCodeJob';
+						xml += ' id="' + me.houseCodeJobs[index].id + '"';
+						xml += ' jobId="' + me.houseCodeJobs[index].jobId + '"';
+						xml += ' houseCodeId="' + me.houseCodeJobs[index].houseCodeId + '"';
+						xml += ' hirNode="' + me.houseCodeJobs[index].hirNode + '"';
+						xml += ' active="' + me.houseCodeJobs[index].active + '"';
+						xml += '/>';
+					}
 				}
-
-				xml += '</job>';
 			}
+
+			xml += '</job>';
 
 			return xml;
 		},
@@ -1937,24 +1950,14 @@ ii.Class({
 								break;
 
 							case "houseCodeJob":
-								if (me.status === "removeAssociation") {
-									me.houseCodeJobs.splice(me.houseCodeGrid.activeRowIndex, 1);
-									me.houseCodeGrid.setData(me.houseCodeJobs);
-									if (me.houseCodeJobs.length > 0)
-										me.houseCodeGrid.body.select(me.houseCodeJobs.length - 1);
-									else
-										me.actionClearItem();
-								}
-								else {
-									var id = parseInt($(this).attr("id"), 10);
+								var id = parseInt($(this).attr("id"), 10);
 
-									for (var index = 0; index < me.houseCodeGrid.data.length; index++) {
-										if (me.houseCodeGrid.data[index].modified) {
-											if (me.houseCodeGrid.data[index].id <= 0)
-												me.houseCodeGrid.data[index].id = id;
-											me.houseCodeGrid.data[index].modified = false;
-											break;
-										}
+								for (var index = 0; index < me.houseCodeGrid.data.length; index++) {
+									if (me.houseCodeGrid.data[index].modified) {
+										if (me.houseCodeGrid.data[index].id <= 0)
+											me.houseCodeGrid.data[index].id = id;
+										me.houseCodeGrid.data[index].modified = false;
+										break;
 									}
 								}
 
