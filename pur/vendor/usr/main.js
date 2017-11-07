@@ -936,7 +936,24 @@ ii.Class({
 		},
 
 		actionSaveItem: function() {
-			var me = this;
+		    var me = this;
+		    var sendMethodType = 0;
+
+		    if (me.sendMethodType.indexSelected !== -1)
+		         sendMethodType = me.sendMethodType.data[me.sendMethodType.indexSelected].id;
+
+		    if (sendMethodType === 1) {
+		        if (!(ui.cmn.text.validate.phone(me.faxNumber.getValue()))) {
+		            alert("You cannot select the Send Method Type as 'Fax'. Fax Number is invalid and Fax Number needs to update in SAP.");
+		            return;
+		        }  
+			}
+		    else if (sendMethodType === 2) {
+		        if (!(ui.cmn.text.validate.emailAddress(me.email.getValue()))) {
+		            alert("You cannot select the Send Method Type as 'Email'. Email Id is invalid and Email Id needs to update in SAP.");
+		            return;
+		        }
+		    }
 
 			if (me.vendorsReadOnly || me.vendorGrid.activeRowIndex === -1)
 				return false;
