@@ -644,6 +644,23 @@ body {
 	text-decoration: underline;
 }
 
+#ToolMenuTeamFinV2 {
+	color: #032D23;
+	cursor: pointer;
+	float: right;
+	font-family: Verdana, Geneva, Arial, Helvetica,sans-serif;
+	font-size: 8pt;
+	height: 24px;
+	margin-top: 6px;
+	margin-right: 10px;
+	text-align: center;
+}
+
+#ToolMenuTeamFinV2.Hot {
+	color: #012C40;
+	text-decoration: underline;
+}
+
 #ToolMenuZoomIn {
 	background-image: url('media/Menu/Zoom in.png');
 	cursor: pointer;
