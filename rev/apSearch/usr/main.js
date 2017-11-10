@@ -343,7 +343,7 @@ Rev.data.systemVariableStore = WebLight.extend(Rev.data.XmlStore, {
 	
 	getCriteria: function() {
         return {
-            name: 'ScerISWebURL',
+            name: 'LaserficheURL',
         };
     },
 	
@@ -423,6 +423,7 @@ Rev.data.apInvoiceStore = WebLight.extend(Rev.data.XmlStore, {
 			 { name: 'houseCodeAmount', mapping: '@houseCodeAmount', type: 'float' },
 			 { name: 'poNumber', mapping: '@poNumber', type: 'string' },
 			 { name: 'purchaseOrderId', mapping: '@purchaseOrderId', type: 'int' },
+			 { name: 'laserficheDocID', mapping: '@laserficheDocID', type: 'string' },
 			 { name: 'groupBy', mapping: '@groupBy', type: 'string' }
             ],
 	groupField: 'groupBy'
@@ -516,9 +517,9 @@ Rev.data.apExportStore = WebLight.extend(Rev.data.XmlStore, {
 	fields: [{ name: 'fileName', mapping: '@fileName' }]
 });
 
-function printInvoice(scerISWebURL) {
+function printInvoice(laserficheURL) {
 	alert("Your invoice will be displayed in a separate window. If no results are returned the window will not appear.");
-	$("#iFrameScerIS").attr("src", scerISWebURL);
+	$("#iFrameLaserfiche").attr("src", laserficheURL);
 }
 
 function printPurchaseOrder(id) {
@@ -554,6 +555,10 @@ Rev.page.apSearch = WebLight.extend(WebLight.Page, {
 			return record.data;
 	    };
 
+		Ext.ux.grid.GroupSummary.Calculations['laserficheDocID'] = function(value, record, field) {
+			return record.data;
+	    };
+		
 		// Utilize custom extension for Group Summary
     	var summary = new Ext.ux.grid.GroupSummary();
 	
@@ -634,15 +639,16 @@ Rev.page.apSearch = WebLight.extend(WebLight.Page, {
 //							else
 //								return value;
 //	              		},
-						summaryType: 'max',
-						summaryRenderer: function(value, params, record) {
-							if (me.systemVariableStore.data.items[0].data.variableValue !== "") {
-								var scerISWebURL = me.systemVariableStore.data.items[0].data.variableValue + "[Invoice%20Number|EQ|" + value + "|AND][Vendor%20Number|EQ|" + record.data.vendorNumber + "|NONE]";
-								return "<a href=\"javascript: void(0);\" onclick=\"printInvoice('" + scerISWebURL + "');\">" + value + "</a>";
-								//return "<a target='_blank' href='" + me.systemVariableStore.data.items[0].data.variableValue + "[Invoice%20Number|EQ|" + value + "|AND][Vendor%20Number|EQ|" + record.data.vendorNumber + "|NONE]'>" + value + "</a>";
+						summaryType: 'max', summaryType: 'laserficheDocID',
+						summaryRenderer: function(data, params, record) {
+							if (me.systemVariableStore.data.items[0].data.variableValue !== "" && data.laserficheDocID !== "") {
+								debugger;
+								var laserficheURL = me.systemVariableStore.data.items[0].data.variableValue + data.laserficheDocID;
+								//return "<a href=\"javascript: void(0);\" onclick=\"printInvoice('" + laserficheURL + "');\">" + value + "</a>";
+								return "<a target='_blank' href='" + laserficheURL + "'>" + data.vendorInvoiceNumber + "</a>";
 							}
 							else
-								return value;
+								return data.vendorInvoiceNumber;
 		                },
 					  },
 					  { dataIndex: 'invoiceDate', header: 'Invoice Date', width: 100, renderer: Ext.util.Format.dateRenderer('m/d/y'), summaryType: 'max',},
