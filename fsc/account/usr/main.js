@@ -498,7 +498,6 @@ ii.Class({
 
 			$("#AccountCodeText").attr("disabled", true);
 			$("#DesciptionText").attr("disabled", true);
-			$("#BudgetCheck").attr("disabled", true);
 			$("#AccountListText").attr("disabled", true);
 			$("#GroupText").attr("disabled", true);
 			$("#MatchCodeText").attr("disabled", true);
@@ -518,6 +517,7 @@ ii.Class({
 				$("#MOPTotalTypeText").attr("disabled", true);
 				$("#MOPTotalTypeAction").removeClass("iiInputAction");
 				$("#NegativeCheck").attr("disabled", true);
+				$("#BudgetCheck").attr("disabled", true);
 				$("#SalariesWagesCheck").attr("disabled", true);
 				$("#FieldTransfersCheck").attr("disabled", true);
 				$("#PayrollWorksheetCheck").attr("disabled", true);
