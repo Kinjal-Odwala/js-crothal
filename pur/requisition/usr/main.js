@@ -481,7 +481,7 @@ ii.Class({
 			me.vendorName = new ui.ctl.Input.DropDown.Filtered({
 		        id: "VendorName",
 				title: "To search a specific Vendor, type-in Vendor Number or Title and press Enter key.",
-				formatFunction: function( type ) { return type.title; },
+				formatFunction: function (type) { return type.vendorNumber + " - " + type.title; },
 				changeFunction: function() { me.vendorChanged(); me.modified();}
 		    });
 			
@@ -1838,8 +1838,8 @@ ii.Class({
 			me.requestorPhone.setValue(item.requestorPhone);
 			me.requestedDate.setValue(item.requestedDate);
 			me.deliveryDate.setValue(item.deliveryDate);
-			me.vendorName.lastBlurValue = item.vendorTitle;
-			$("#VendorNameText").val(item.vendorTitle);
+			me.vendorName.lastBlurValue = item.vendorNumber == "" ? item.vendorTitle : item.vendorNumber + " - " + item.vendorTitle;
+			$("#VendorNameText").val(me.vendorName.lastBlurValue);
 			me.vendorAddress1.setValue(item.vendorAddressLine1);
 			me.vendorAddress2.setValue(item.vendorAddressLine2);
 			me.vendorCity.setValue(item.vendorCity);
@@ -1867,8 +1867,7 @@ ii.Class({
 				$('#UrgencyUrgent').attr('checked', true);
 			else if (item.urgency == "Not Urgent") 
 				$('#UrgencyNotUrgent').attr('checked', true);
-			
-			me.vendor.setValue(item.vendorTitle);
+			me.vendor.setValue(item.vendorNumber == "" ? item.vendorTitle : item.vendorNumber + " - " + item.vendorTitle); 
 			me.vendorNumber = item.vendorNumber;
 			me.company.setValue(item.houseCodeTitle);
 			
@@ -1997,7 +1996,7 @@ ii.Class({
 					me.vendorsLoading = true;
 					me.vendorName.fetchingData();
 					me.vendorStore.reset();
-					me.vendorStore.fetch("searchValue:" + me.vendorName.text.value + ",vendorStatus:-1,userId:[user]", me.vendorsLoaded, me);
+					me.vendorStore.fetch("searchValue:" + me.vendorName.text.value + ",vendorStatus:1,userId:[user]", me.vendorsLoaded, me);
 				}
 				else {
 					me.vendorId = 0;
@@ -2016,12 +2015,11 @@ ii.Class({
 		},
 		
 		vendorsLoaded: function(me, activeId) {
-			
 			me.vendorName.setData(me.vendors);
 			me.vendorsLoading = false;
 
 			if (me.vendors.length > 0) {
-				me.vendorName.reset();
+			    me.vendorName.reset();			  
 				me.vendorName.select(0, me.vendorName.focused);
 			}
 
@@ -2031,7 +2029,6 @@ ii.Class({
 		vendorChanged: function() {
 			var me = this;
 			var index = me.vendorName.indexSelected;		
-
 			if (me.status == "EditPORequisition" && !me.vendorsLoading) {
 				var item = me.requisitionGrid.data[me.requisitionGrid.activeRowIndex];
 				if (me.vendorName.lastBlurValue != "" && item.vendorTitle != me.vendorName.lastBlurValue && item.vendorNumber != "") {
@@ -2081,7 +2078,7 @@ ii.Class({
 			else {
 				me.vendorId = 0;
 				me.vendorNumber = "";
-				me.vendor.setValue(me.vendorName.text.value);
+				me.vendor.setValue(me.vendorNumber);
 				me.vendorAddress1.setValue("");
 				me.vendorAddress2.setValue("");
 				me.vendorCity.setValue("");				
@@ -2414,7 +2411,7 @@ ii.Class({
 			$("#popupMessageToUser").text("Loading");
 			$("#popupLoading").show();
 			me.vendorStore.reset();
-			me.vendorStore.fetch("searchValue:" + me.requisitionGrid.data[me.lastSelectedRowIndex].vendorTitle + ",vendorStatus:-1,userId:[user]", me.vendorsLoad, me);
+			me.vendorStore.fetch("searchValue:" + me.requisitionGrid.data[me.lastSelectedRowIndex].vendorTitle + ",vendorStatus:1,userId:[user]", me.vendorsLoad, me);
 			me.poRequisitionId = me.requisitionGrid.data[me.lastSelectedRowIndex].id;
 			me.itemGrid.setData(me.poRequisitionDetails);
 			me.documentGrid.setData(me.poRequisitionDocuments);
@@ -2784,8 +2781,8 @@ ii.Class({
 				else if (me.status == "EditPORequisition" && me.requisitionGrid.data[index].statusType == 13)
 					statusType = 1;
 				else
-					statusType = (me.status == "NewPORequisition" ? 1 : me.requisitionGrid.data[index].statusType);
-
+				    statusType = (me.status == "NewPORequisition" ? 1 : me.requisitionGrid.data[index].statusType);
+				
 				item = new fin.pur.poRequisition.PORequisition(
 					me.poRequisitionId 
 					, (me.status == "NewPORequisition" ? 0 : me.requisitionGrid.data[index].requisitionNumber)
@@ -2805,7 +2802,7 @@ ii.Class({
 					, me.requestorEmail.getValue()
 					, me.requestedDate.lastBlurValue
 					, me.deliveryDate.lastBlurValue
-					, me.vendorName.lastBlurValue
+                    , (me.vendorName.indexSelected == -1 ? me.vendorName.lastBlurValue : me.vendors[me.vendorName.indexSelected].title)
 					, me.vendorNumber
 					, me.vendorAddress1.getValue()
 					, me.vendorAddress2.getValue()
