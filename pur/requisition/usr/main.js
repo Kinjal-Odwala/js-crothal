@@ -2052,9 +2052,10 @@ ii.Class({
 			}
 
 			if (index >= 0) {
+			   
 				me.vendorId = me.vendors[index].id;
 				me.vendorNumber = me.vendors[index].vendorNumber;
-				me.vendor.setValue(me.vendors[index].title);
+				me.vendor.setValue(me.vendorNumber == "" ? me.vendors[index].title : me.vendorNumber + " - " + me.vendors[index].title);
 				me.vendorAddress1.setValue(me.vendors[index].addressLine1);
 				me.vendorAddress2.setValue(me.vendors[index].addressLine2);
 				me.vendorCity.setValue(me.vendors[index].city);
@@ -2092,18 +2093,24 @@ ii.Class({
 		},
 		
 		vendorsLoad: function(me, activeId) {			
-			
-			if (me.vendors.length > 0) {
-				me.vendorId = me.vendors[0].id;
-				me.category.fetchingData();
-				me.catalog.fetchingData();
-				me.accountStore.reset();
-				me.accountStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",vendorId:" + me.vendorId, me.categoriesLoaded, me);
-				me.catalogStore.reset();
-				me.catalogStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",vendorId:" + me.vendorId, me.catalogsLoaded, me);
-			}
-			else 
-				$("#popupLoading").hide();			
+		    if (me.vendors.length > 0) {
+		        me.vendorName.setData(me.vendors);
+		        me.vendorName.reset();
+		        me.vendorName.select(0, me.vendorName.focused);
+		        me.vendorId = me.vendors[0].id;
+		        me.category.fetchingData();
+		        me.catalog.fetchingData();
+		        me.accountStore.reset();
+		        me.accountStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",vendorId:" + me.vendorId, me.categoriesLoaded, me);
+		        me.catalogStore.reset();
+		        me.catalogStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",vendorId:" + me.vendorId, me.catalogsLoaded, me);
+		    }
+		    else {
+		        $("#popupLoading").hide();
+		        if (me.requisitionGrid.data[me.lastSelectedRowIndex].vendorNumber != "") {
+		            me.vendorName.setInvalid("The existing vendor is not active. Please select active Vendor.");
+		        }
+		    }
 		},
 		
 		categoriesLoaded: function(me, activeId) {
@@ -2160,7 +2167,7 @@ ii.Class({
 				if (me.status == "NewPORequisition" || me.vendorId == 0 || me.deliveryDate.lastBlurValue == ""
 					|| ($("input:radio[name='Urgency']:checked").val() == "Urgent" && (me.urgencyDate.lastBlurValue == "" || !(ui.cmn.text.validate.generic(me.urgencyDate.lastBlurValue, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))))
 					valid = me.validator.queryValidity(true);
-
+				
 				if (!me.requestorEmail.valid
 					|| !me.requestedDate.valid
 					|| !me.deliveryDate.valid
@@ -2184,9 +2191,13 @@ ii.Class({
 					alert("Please select Urgency.");	
 					return false;
 				}
+				else if (me.vendors.length == 0 && me.vendorNumber != "") {
+				    me.vendorName.setInvalid("The existing vendor is not active. Please select active Vendor.");
+				    return false;
+				}
 				else
 					return true;
-			}
+			}			
 			else if (me.wizardCount == 2) {
 				valid = me.validator.queryValidity(true);                
 			
@@ -2403,15 +2414,15 @@ ii.Class({
 
 			if (me.itemGrid.activeRowIndex >= 0)
 				me.itemGrid.body.deselect(me.itemGrid.activeRowIndex, true);
-
+			
 			me.currentVendorTitle = "";
 			me.setDetailInfo();
 			me.resetPORequisitionDetails(false);
 			loadPopup("requisitionPopup");
 			$("#popupMessageToUser").text("Loading");
-			$("#popupLoading").show();
-			me.vendorStore.reset();
-			me.vendorStore.fetch("searchValue:" + me.requisitionGrid.data[me.lastSelectedRowIndex].vendorTitle + ",vendorStatus:1,userId:[user]", me.vendorsLoad, me);
+			$("#popupLoading").show();			
+		    me.vendorStore.reset();
+		    me.vendorStore.fetch("vendorTitle:" + me.requisitionGrid.data[me.lastSelectedRowIndex].vendorTitle + ",vendorNumber:" + me.requisitionGrid.data[me.lastSelectedRowIndex].vendorNumber + ",vendorStatus:1,userId:[user]", me.vendorsLoad, me);
 			me.poRequisitionId = me.requisitionGrid.data[me.lastSelectedRowIndex].id;
 			me.itemGrid.setData(me.poRequisitionDetails);
 			me.documentGrid.setData(me.poRequisitionDocuments);
