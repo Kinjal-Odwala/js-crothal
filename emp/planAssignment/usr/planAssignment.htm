@@ -32,20 +32,20 @@
     </div>
 	<div class="row margin-bottom10" ng-if="showCompanyGrid">
         <div class="col-md-9">
-            <table ng-table="companyTable" class="table-scroll table table-bordered table-condensed table-striped table-hover margin-bottom10" style="width: 1100px;">
-                <thead>
-                    <tr class="subHeader" role="row">
-                        <th style="text-align:center">Company Plan Details</th>
+			<table ng-table="companyTable" class="table-scroll table table-bordered table-striped table-hover margin-bottom10" style="width: 1100px;">
+            	<thead>
+                    <tr class="gridSectionHeader" role="row">
+						<td style="text-align:center;">Company Plan Details</td>
                     </tr>
-                    <tr class="subHeader" role="row">
-                        <th width="397px" style="text-align:center"><label>Plan Name</label></th>
-                        <th width="137px" style="text-align:center"><label>PTO Type</label></th>
-                        <th width="397px" style="text-align:center"><label>Plan Type</label></th>
-                        <th width="60px" style="text-align:center"><label>Active</label></th>
+                    <tr class="heading" role="row">
+                        <th width="400px" style="text-align:center">Plan Name</th>
+                        <th width="140px" style="text-align:center">PTO Type</th>
+                        <th width="400px" style="text-align:center">Plan Type</th>
+                        <th width="60px" style="text-align:center">Active</th>
                         <th width="16px"></th>
                     </tr>
                 </thead>
-                <tbody style="width:100%; max-height:200px;">
+				<tbody style="width:100%; min-height: 300px;" ng-style="{'max-height': stateGridHeight + 'px'}">
 					<tr ng-repeat="item in companyPlans track by $index" ng-click="companyPlanSelected(item)" ng-class="{'warning':selectedCompanyPlan == item};">
 						<td width="400px" align="left">{{item.ptoPlanTitle}}</td>
 						<td width="140px" align="left">{{item.ptoTypeTitle}}</td>
@@ -70,7 +70,7 @@
         <div class="col-md-4">
             <table class="table-scroll table table-striped table-bordered table-hover">
                 <thead>
-                    <tr class="subHeader" role="row">
+                    <tr class="heading" role="row">
                         <th width="2%" style="text-align:center">#</th>
                         <th width="10%" style="text-align:center">Brief</th>
                         <th width="15%" style="text-align:center">Title</th>
@@ -79,35 +79,40 @@
                 </thead>
                 <tbody id="stateGrid" ng-style="{'max-height': stateGridHeight + 'px'}">
                     <tr ng-repeat="item in states" ng-click="stateSelected(item)" ng-class="{'warning':selectedState == item};">
-                        <td width="2%" align ="center">{{$index + 1}}</td>
-                        <td width="10%" align ="center">{{item.brief}}</td>
+                        <td width="2%" align="center">{{$index + 1}}</td>
+                        <td width="10%" align="center">{{item.brief}}</td>
                         <td width="15%">{{item.name}}</td>
                      </tr>
                 </tbody>
             </table>
         </div>
         <div class="col-md-8">
-            <table class="table-scroll table table-bordered table-striped table-hover margin-bottom10 table-condensed" style="width: 1100px;">
-                <thead>
-                    <tr class="gridHeader" role="row">
-                        <th style="text-align:center">
-                            <label>State Plan Details</label>
-                            <button class="btn btn-default btn-xs pull-right" ng-click="showState = !showState; setHeight('state', showState)" title="Hide/Show State Plans">
-									<span class="glyphicon glyphicon-minus" ng-class="{ 'glyphicon-minus': showState, 'glyphicon-plus': !showState }"></span>
-                            </button>
-                            <button class="btn btn-default btn-xs pull-right" ng-click="stateExpanded = !stateExpanded; showState = true; setHeight('state', showState)" title="Expand/Collapse State Plans">
-                                <span class="glyphicon glyphicon-resize-small" ng-class="{ 'glyphicon-resize-small': stateExpanded, 'glyphicon-resize-full': !stateExpanded }"></span>
-                            </button>
-                        </th> 
+			<table class="table-scroll table table-bordered table-striped table-hover margin-bottom10" style="width: 1100px;">
+				<thead>
+					<tr class="gridSectionHeader" role="row">
+	                	<td style="text-align:center;">
+                            <div>
+                                <label>State Plan Details</label>
+                                <div class="pull-right">
+									<button class="btn btn-default btn-xs" ng-click="stateExpanded = !stateExpanded; showState = true; setHeight('state', showState)" title="Expand/Collapse State Plans">
+		                                <span class="glyphicon glyphicon-resize-small" ng-class="{ 'glyphicon-resize-small': stateExpanded, 'glyphicon-resize-full': !stateExpanded }"></span>
+		                            </button>
+									
+									<button class="btn btn-default btn-xs" ng-click="showState = !showState; setHeight('state', showState)" title="Hide/Show State Plans">
+										<span class="glyphicon glyphicon-minus" ng-class="{ 'glyphicon-minus': showState, 'glyphicon-plus': !showState }"></span>
+		                            </button>
+                                </div>
+                             </div>
+                        </td>
                     </tr>
-                    <tr class="gridHeader" role="row">
-                        <th width="397px" style="text-align:center"><label>Plan Name</label></th>
-                        <th width="137px" style="text-align:center"><label>PTO Type</label></th>
-                        <th width="397px" style="text-align:center"><label>Plan Type</label></th>
-                        <th width="60px" style="text-align:center"><label>Active</label></th>
+					<tr class="heading" role="row">
+                        <th width="400px" style="text-align:center">Plan Name</th>
+                        <th width="140px" style="text-align:center">PTO Type</th>
+                        <th width="400px" style="text-align:center">Plan Type</th>
+                        <th width="60px" style="text-align:center">Active</th>
                         <th width="16px"></th>
                     </tr>
-                </thead>
+				</thead>
                 <tbody id="statePlanDetailsGrid" ng-show="showState" ng-style="{'max-height': '200px', 'min-height': statePlanGridMinHeight + 'px'}">
                     <tr ng-show="showStateName">
                         <td colspan="3">
@@ -138,8 +143,8 @@
             <div class="row margin-bottom10"></div>
             <table class="table-scroll table table-bordered table-striped table-hover margin-bottom10" style="width: 1100px;">
                 <thead>
-                    <tr class="gridHeader" role="row">
-                        <td>
+                    <tr class="gridSectionHeader" role="row">
+                        <td style="text-align:center;">
                             <div>
                                <div ng-show="showCounty" class="pull-left">
                                     <a href="#" ng-click="sortType = 'County'; sortCountyReverse = !sortCountyReverse;" style="text-decoration: none; border-bottom: none;" target="_self"><label class="sort">County</label>
@@ -147,7 +152,7 @@
                                         <span class="sort" ng-show="sortType == 'County' && sortCountyReverse">&#9650;</span>
                                     </a>
                                 </div>
-                                <label ng-style="showCounty ? { 'padding-left':'347px' } : { 'padding-left':'395px' }">County Plan Details</label>
+                                <label>County Plan Details</label>
                                 <div class="pull-right">
 									<button class="btn btn-default btn-xs" ng-click="expandCountyAll(expandAllCounty = !expandAllCounty); showCounty = true; setHeight('county', showCounty)" title="Expand/Collapse County Plans">
                                         <span class="glyphicon glyphicon-resize-small" ng-class="{ 'glyphicon-resize-small': expandAllCounty, 'glyphicon-resize-full': !expandAllCounty }"></span>
@@ -162,12 +167,12 @@
                              </div>
                         </td>
                     </tr>
-                    <tr ng-show="showCounty" class="gridHeader" role="row">
-                        <th width="400px" style="text-align:center"><label>Plan Name</label></th>
-                        <th width="140px" style="text-align:center"><label>PTO Type</label></th>
-                        <th width="400px" style="text-align:center"><label>Plan Type</label></th>
-                        <th width="60px" style="text-align:center"><label>Active</label></th>
-                        <th width="10px"></th>
+                    <tr ng-show="showCounty" class="heading" role="row">
+                        <th width="400px" style="text-align:center">Plan Name</th>
+                        <th width="140px" style="text-align:center">PTO Type</th>
+                        <th width="400px" style="text-align:center">Plan Type</th>
+                        <th width="60px" style="text-align:center">Active</th>
+                        <th width="16px"></th>
                     </tr>
                 </thead>
                 <tbody id="countyPlanDetailsGrid" ng-show="showCounty" ng-style="{'max-height': '200px', 'min-height': countyPlanGridMinHeight + 'px'}">
@@ -201,8 +206,8 @@
             <div class="row margin-bottom10"></div>
             <table class="table-scroll table table-bordered table-striped table-hover margin-bottom10" style="width: 1100px;">
                 <thead>
-                    <tr class="gridHeader" role="row">
-                        <td>
+                    <tr class="gridSectionHeader" role="row">
+                         <td style="text-align:center;">
                             <div>
 								<div ng-show="showCity" class="pull-left">
                                     <a href="#" ng-click="sortType = 'City'; sortCityReverse = !sortCityReverse;" target="_self" style="text-decoration: none; border-bottom: none;"><label class="sort">City</label>
@@ -210,7 +215,7 @@
                                         <span class="sort" ng-show="sortType == 'City' && sortCityReverse">&#9650;</span>
                                     </a>
                                 </div>
-                                <label ng-style="showCity ? { 'padding-left':'379px' } : { 'padding-left':'405px' }">City Plan Details</label>
+                                <label>City Plan Details</label>
                                 <div class="pull-right">
 									<button class="btn btn-default btn-xs" ng-click="expandCityAll(expandAllCity = !expandAllCity); showCity = true; setHeight('city', showCity)" title="Expand/Collapse City Plans">
                                         <span class="glyphicon glyphicon-resize-small" ng-class="{ 'glyphicon-resize-small': expandAllCity, 'glyphicon-resize-full': !expandAllCity }"></span>
@@ -226,12 +231,12 @@
                              </div>
                         </td>
                     </tr>
-                    <tr ng-show="showCity" class="gridHeader" role="row">
-                        <th width="400px" style="text-align:center"><label>Plan Name</label></th>
-                        <th width="140px" style="text-align:center"><label>PTO Type</label></th>
-                        <th width="400px" style="text-align:center"><label>Plan Type</label></th>
-                        <th width="60px" style="text-align:center"><label>Active</label></th>
-                        <th width="10px"></th>
+                    <tr ng-show="showCity" class="heading" role="row">
+                        <th width="400px" style="text-align:center">Plan Name</th>
+                        <th width="140px" style="text-align:center">PTO Type</th>
+                        <th width="400px" style="text-align:center">Plan Type</th>
+                        <th width="60px" style="text-align:center">Active</th>
+                        <th width="16px"></th>
                     </tr>
                 </thead>
                 <tbody id="cityPlanDetailsGrid" ng-show="showCity" ng-style="{'max-height': '200px', 'min-height': cityPlanGridMinHeight + 'px'}">
@@ -265,8 +270,8 @@
             <div class="row margin-bottom10"></div>
             <table class="table-scroll table table-bordered table-striped table-hover margin-bottom10" style="width: 1100px;">
                 <thead>
-                    <tr class="gridHeader" role="row">
-                        <td>
+                    <tr class="gridSectionHeader" role="row">
+                         <td style="text-align:center;">
                             <div>
                                  <div ng-show="showHouseCode" class="pull-left">
                                      <a href="#" ng-click="sortType = 'HouseCode'; sortHouseCodeReverse = !sortHouseCodeReverse;" target="_self" style="text-decoration: none; border-bottom: none;"><label class="sort">House Code</label>
@@ -274,7 +279,7 @@
                                         <span class="sort" ng-show="sortType == 'HouseCode' && sortHouseCodeReverse">&#9650;</span>
                                     </a>
                                  </div>
-                                <label ng-style="showHouseCode ? { 'padding-left':'298px' } : { 'padding-left':'380px' }">House Code Plan Details</label>
+                                <label>House Code Plan Details</label>
                                 <div class="pull-right">
 									<button class="btn btn-default btn-xs" ng-click="expandHouseCodeAll(expandAllHouseCode = !expandAllHouseCode); showHouseCode = true; setHeight('houseCode', showHouseCode)" title="Expand/Collapse House Code Plans">
                                         <span class="glyphicon glyphicon-resize-small" ng-class="{ 'glyphicon-resize-small': expandAllHouseCode, 'glyphicon-resize-full': !expandAllHouseCode }"></span>
@@ -290,12 +295,12 @@
                              </div>
                         </td>
                     </tr>
-                    <tr ng-show="showHouseCode" class="gridHeader" role="row">
-                        <th width="400px" style="text-align:center"><label>Plan Name</label></th>
-                        <th width="140px" style="text-align:center"><label>PTO Type</label></th>
-                        <th width="400px" style="text-align:center"><label>Plan Type</label></th>
-                        <th width="60px" style="text-align:center"><label>Active</label></th>
-                        <th width="10px"></th>
+                    <tr ng-show="showHouseCode" class="heading" role="row">
+                       <th width="400px" style="text-align:center">Plan Name</th>
+                        <th width="140px" style="text-align:center">PTO Type</th>
+                        <th width="400px" style="text-align:center">Plan Type</th>
+                        <th width="60px" style="text-align:center">Active</th>
+                        <th width="16px"></th>
                     </tr>
                 </thead>
                 <tbody id="houseCodePlanDetailsGrid" ng-show="showHouseCode" ng-style="{'max-height': '200px', 'min-height': houseCodePlanGridMinHeight + 'px'}">
@@ -343,7 +348,7 @@
 	        <div class="modal-body" id="planTable">
 	        	<table class="table-scroll table table-striped table-bordered table-hover">
 			        <thead>
-			            <tr class="gridHeader" role="row">
+			            <tr class="heading" role="row">
 			                <th width="2%" style="text-align:center">#</th>
 			                <th width="5%" style="text-align:center"></th>
 			                <th width="40%" style="text-align:center">Plan Name</th>
@@ -399,7 +404,7 @@
                 </div>
                      <table class="table-scroll table table-striped table-bordered table-hover">
                         <thead>
-                            <tr class="gridHeader" role="row">
+                            <tr class="heading" role="row">
                                 <th width="2%" style="text-align:center">#</th>
                                 <th width="5%" style="text-align:center"><input type="checkbox" ng-true-value="true" ng-false-value="false" ng-model="allSelected" ng-click="toggleAll(allSelected)" /></th>
                                 <th width="40%" style="text-align:center">Plan Name</th>

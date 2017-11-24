@@ -613,8 +613,8 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
     $scope.onMinHoursChange = function (hours) {
         if (hours === null || hours === "" || hours === "0")
             $scope.ptoForm.planTypeMinHours.$setValidity("required", false);
-        else if ((hours > $scope.ptoPlanType.ptoPlanTypeMaxHours && $scope.ptoPlanType.ptoPlanTypeMaxHours !== null && $scope.ptoPlanType.ptoPlanTypeMaxHours !== undefined)
-            || ($scope.ptoPlanType.FullTime && (parseInt(hours) > 40 || parseInt(hours) < 30)) || ($scope.ptoPlanType.PartTime && (parseInt(hours) > 29 || parseInt(hours) < 1)))
+        else if ((parseInt(hours, 10) > parseInt($scope.ptoPlanType.ptoPlanTypeMaxHours, 10) && $scope.ptoPlanType.ptoPlanTypeMaxHours !== null && $scope.ptoPlanType.ptoPlanTypeMaxHours !== undefined)
+            || ($scope.ptoPlanType.FullTime && (parseInt(hours, 10) > 40 || parseInt(hours, 10) < 30)) || ($scope.ptoPlanType.PartTime && (parseInt(hours, 10) > 29 || parseInt(hours, 10) < 1)))
             $scope.ptoForm.planTypeMinHours.$setValidity("required", false);
         else {
             if ($scope.ptoPlanType.ptoPlanTypeMinHours !== null && $scope.ptoPlanType.ptoPlanTypeMinHours !== undefined && $scope.ptoPlanType.ptoPlanTypeMinHours !== "0")
@@ -628,8 +628,8 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
     $scope.onMaxHoursChange = function (hours) {
         if (hours === null || hours === "" || hours === "0")
             $scope.ptoForm.planTypeMaxHours.$setValidity("required", false);
-        else if ((hours < $scope.ptoPlanType.ptoPlanTypeMinHours && $scope.ptoPlanType.ptoPlanTypeMaxHours !== null && $scope.ptoPlanType.ptoPlanTypeMaxHours !== undefined)
-            || ($scope.ptoPlanType.FullTime && (parseInt(hours) > 40 || parseInt(hours) < 30)) || ($scope.ptoPlanType.PartTime && (parseInt(hours) > 29 || parseInt(hours) < 1)))
+        else if ((parseInt(hours, 10) < parseInt($scope.ptoPlanType.ptoPlanTypeMinHours, 10) && $scope.ptoPlanType.ptoPlanTypeMaxHours !== null && $scope.ptoPlanType.ptoPlanTypeMaxHours !== undefined)
+            || ($scope.ptoPlanType.FullTime && (parseInt(hours, 10) > 40 || parseInt(hours, 10) < 30)) || ($scope.ptoPlanType.PartTime && (parseInt(hours, 10) > 29 || parseInt(hours, 10) < 1)))
             $scope.ptoForm.planTypeMaxHours.$setValidity("required", false);
         else {
             if ($scope.ptoPlanType.ptoPlanTypeMaxHours !== null && $scope.ptoPlanType.ptoPlanTypeMaxHours !== undefined && $scope.ptoPlanType.ptoPlanTypeMaxHours !== "0")
@@ -688,6 +688,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         if (editStatus())
             return;
         $scope.selectedPTOPlanType = null;
+		$scope.ptoPlanType.id = 0;
         $scope.ptoPlanType.ptoPlanTypeTitle = null;
         $scope.ptoPlanType.ptoPlanTypeMinHours = null;
         $scope.ptoPlanType.ptoPlanTypeMaxHours = null;
@@ -746,26 +747,35 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         if ($scope.ptoPlanType.ptoPlanTypeMaxHours === null || $scope.ptoPlanType.ptoPlanTypeMaxHours === undefined || $scope.ptoPlanType.ptoPlanTypeMaxHours === "")
             $scope.ptoForm.planTypeMaxHours.$setValidity("required", false);
 
-        if ($scope.ptoPlanType.FullTime && ($scope.ptoPlanType.ptoPlanTypeMaxHours > 40 || $scope.ptoPlanType.ptoPlanTypeMaxHours == 0))
-            $scope.ptoForm.planTypeMaxHours.$setValidity("required", false);
-        else if ($scope.ptoPlanType.FullTime && $scope.ptoPlanType.ptoPlanTypeMaxHours <= 40 && $scope.ptoPlanType.ptoPlanTypeMaxHours >= 30)
-            $scope.ptoForm.planTypeMaxHours.$setValidity("required", true);
+		if ($scope.ptoPlanType.PartTime) {
+	        if (parseInt($scope.ptoPlanType.ptoPlanTypeMinHours, 10) >= 1 && parseInt($scope.ptoPlanType.ptoPlanTypeMinHours, 10) <= 29)
+	            $scope.ptoForm.planTypeMinHours.$setValidity("required", true);
+			else
+				$scope.ptoForm.planTypeMinHours.$setValidity("required", false);
+            	
+	        if (parseInt($scope.ptoPlanType.ptoPlanTypeMaxHours, 10) >= 1 && parseInt($scope.ptoPlanType.ptoPlanTypeMaxHours, 10) <= 29)
+	            $scope.ptoForm.planTypeMaxHours.$setValidity("required", true);
+			else
+				$scope.ptoForm.planTypeMaxHours.$setValidity("required", false);
+		}
 
-        if ($scope.ptoPlanType.FullTime && ($scope.ptoPlanType.ptoPlanTypeMinHours < 30 || $scope.ptoPlanType.ptoPlanTypeMinHours == 0))
-            $scope.ptoForm.planTypeMinHours.$setValidity("required", false);
-        else if ($scope.ptoPlanType.FullTime && $scope.ptoPlanType.ptoPlanTypeMinHours >= 30 && $scope.ptoPlanType.ptoPlanTypeMinHours <= 40)
-            $scope.ptoForm.planTypeMinHours.$setValidity("required", true);
+		if ($scope.ptoPlanType.FullTime) {
+			if (parseInt($scope.ptoPlanType.ptoPlanTypeMinHours, 10) >= 30 && parseInt($scope.ptoPlanType.ptoPlanTypeMinHours, 10) <= 40)
+            	$scope.ptoForm.planTypeMinHours.$setValidity("required", true);
+			else
+				$scope.ptoForm.planTypeMinHours.$setValidity("required", false);
 
-        if ($scope.ptoPlanType.PartTime && ($scope.ptoPlanType.ptoPlanTypeMaxHours > 29 || $scope.ptoPlanType.ptoPlanTypeMaxHours == 0))
-            $scope.ptoForm.planTypeMaxHours.$setValidity("required", false);
-        else if ($scope.ptoPlanType.PartTime && $scope.ptoPlanType.ptoPlanTypeMaxHours <= 29 && $scope.ptoPlanType.ptoPlanTypeMaxHours >= 1)
-            $scope.ptoForm.planTypeMaxHours.$setValidity("required", true);
+			if (parseInt($scope.ptoPlanType.ptoPlanTypeMaxHours, 10) >= 30 && parseInt($scope.ptoPlanType.ptoPlanTypeMaxHours, 10) <= 40)
+	            $scope.ptoForm.planTypeMaxHours.$setValidity("required", true);
+			else
+				$scope.ptoForm.planTypeMaxHours.$setValidity("required", false);
+		}
 
-        if ($scope.ptoPlanType.PartTime && ($scope.ptoPlanType.ptoPlanTypeMinHours < 1 || $scope.ptoPlanType.ptoPlanTypeMinHours > 29))
-            $scope.ptoForm.planTypeMinHours.$setValidity("required", false);
-        else if ($scope.ptoPlanType.PartTime && $scope.ptoPlanType.ptoPlanTypeMinHours >= 1 && $scope.ptoPlanType.ptoPlanTypeMinHours <= 29)
-            $scope.ptoForm.planTypeMinHours.$setValidity("required", true);
-  
+  		if (parseInt($scope.ptoPlanType.ptoPlanTypeMinHours, 10) > parseInt($scope.ptoPlanType.ptoPlanTypeMaxHours, 10)) {
+			$scope.ptoForm.planTypeMinHours.$setValidity("required", false);
+			$scope.ptoForm.planTypeMaxHours.$setValidity("required", false);
+		}
+
         if ($scope.ptoPlanType.ptoPlanTypeTitle === null || $scope.ptoPlanType.ptoPlanTypeTitle === undefined || $scope.ptoPlanType.ptoPlanTypeTitle === "")
             $scope.ptoForm.planTypeTitle.$setValidity("required", false);
         else
@@ -784,14 +794,12 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
             $scope.ptoForm.planTypeMinHours.$setValidity("required", true);
             $scope.ptoForm.planTypeMaxHours.$setValidity("required", true);
         }
-
     };
 
     $scope.savePTOPlanType = function () {
         $scope.validatePTOPlanType();
 
-        if ($scope.ptoForm.planTypeMinHours.$valid && $scope.ptoForm.planTypeMaxHours.$valid && $scope.ptoForm.planTypeTitle.$valid && $scope.ptoForm.payType.$valid
-            && $scope.ptoForm.status.$valid) {
+        if ($scope.ptoForm.planTypeMinHours.$valid && $scope.ptoForm.planTypeMaxHours.$valid && $scope.ptoForm.planTypeTitle.$valid && $scope.ptoForm.payType.$valid && $scope.ptoForm.status.$valid) {
             var duplicatePlan = false;
             $scope.planTypes = [];
             $scope.planTypes = $scope.ptoPlanTypes;

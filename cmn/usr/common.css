@@ -82,6 +82,16 @@
     text-align: left;
 }
 
+.gridSectionHeader {
+	height: 20px;
+	font-family: Verdana;
+	font-weight: bold;
+	font-size: 14px;
+	vertical-align : middle;
+	color: #FFFFFF;
+	background: #5F86AB;
+}
+
 .gridHeader, .gridFooter {
     height: 20px;
     font-family: Verdana;
@@ -882,3 +892,34 @@ dl.editArea dd {
   line-height: 0.7;
 }
 
+.btn-primary {
+  color: #fff;
+  background-color: #5f86ab;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary.active,
+.open .dropdown-toggle.btn-primary {
+  color: #fff;
+  background-color: #FFDFAF;
+}
+
+.btn-primary.disabled,
+.btn-primary[disabled],
+fieldset[disabled] .btn-primary,
+.btn-primary.disabled:hover,
+.btn-primary[disabled]:hover,
+fieldset[disabled] .btn-primary:hover,
+.btn-primary.disabled:focus,
+.btn-primary[disabled]:focus,
+fieldset[disabled] .btn-primary:focus,
+.btn-primary.disabled:active,
+.btn-primary[disabled]:active,
+fieldset[disabled] .btn-primary:active,
+.btn-primary.disabled.active,
+.btn-primary[disabled].active,
+fieldset[disabled] .btn-primary.active {
+  background-color: #5f86ab;
+}
