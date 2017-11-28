@@ -1,0 +1,31 @@
+﻿.linkLabel {
+	font-family: Verdana;
+	font-size: 10px;
+	color: #032D23;
+	text-decoration: none;
+	padding-top: 5px;
+}
+
+.fragment {
+	border: 0;
+	border: solid #AAAAAA thin;
+	border-width: 1px;
+}
+
+.tabContainer {
+  border: 0; 
+  width: 100%;
+}
+
+#searchLink {
+	float: right;
+	padding-right: 25px;
+	padding-top: 5px;
+}
+
+#container-1 {
+	float: left;
+	width: 100%;
+	border: 0;
+	padding-top: 5px;
+}

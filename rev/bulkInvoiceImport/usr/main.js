@@ -702,7 +702,7 @@ ii.Class({
 						$("#txtSequence" + index).css("background-color", me.cellColorValid);
 					}
 
-					if (!(/^[0-9]+$/.test($("#txtCustomerNumber" + index).val()))) {
+					if (!(/^[F]{1}[0-9]+$/.test($("#txtCustomerNumber" + index).val()))) {
 						rowValid = false;
 						$("#txtCustomerNumber" + index).attr("title", "Invalid Customer Number.");
 						$("#txtCustomerNumber" + index).css("background-color", me.cellColorInvalid);
@@ -890,7 +890,7 @@ ii.Class({
 				jobCodes += $("#txtJobCode" + index).val() + "|";
 				accountCodes += $("#txtAccountCode" + index).val() + "|";
 
-				if (!(/^[0-9]+$/.test($("#txtAccountCode" + index).val()))) {
+				if (!(/^[0-9a-zA-Z]+$/.test($("#txtAccountCode" + index).val()))) {
 					rowValid = false;
 					$("#txtAccountCode" + index).attr("title", "Invalid Account Code.");
 					$("#txtAccountCode" + index).css("background-color", me.cellColorInvalid);

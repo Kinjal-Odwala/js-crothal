@@ -1,0 +1,48 @@
+.labelTextArea {
+	float: left;
+	margin-right: 15px;
+}
+
+.inputTextArea {
+	width: 170px;
+}
+
+.inputTextAreaLarge {
+	float: left;
+	width: 230px;
+}
+
+#searchArea {
+	margin: 5px;
+}
+
+#searchaButtonContainer {
+	float: left;
+	margin-top: 18px;
+	margin-bottom: 10px;
+}
+
+#AnchorSearch {
+	float: left;
+	width: 82px;
+	margin-left: 15px;
+}
+
+#AnchorNew {
+	float: left;
+	width: 74px;
+	margin-left: 15px;
+	padding-top: 0px;
+}
+
+#backgroundPopup {
+	width: 100%; 
+	height: 100%;
+	position: fixed; 
+	top: 0; 
+	left: 0; 
+	z-index: 5000; 
+	border: 1px solid #cecece; 
+	background-color: black;
+	display: none;
+}

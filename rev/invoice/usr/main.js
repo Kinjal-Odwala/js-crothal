@@ -26,6 +26,7 @@ ii.Class({
 			var pos = searchString.indexOf("=");
 
 			me.invoiceId = parseInt(searchString.substring(pos + 1));
+			me.salesTaxAccountId = 0;
 			me.rowBeingEdited = false;
 			me.currentRowSelected = null;
 			me.status = "";
@@ -315,6 +316,10 @@ ii.Class({
 			for (var index = 0; index < parent.fin.revMasterUi.accounts.length; index++) {
 				var account = parent.fin.revMasterUi.accounts[index];
 				me.accounts.push(new fin.rev.invoice.Account(account.id, account.code, account.description));
+				
+				if (me.accounts[index].code == "214300") {
+					me.salesTaxAccountId = me.accounts[index].id;
+				}
 			}
 		},
 		
@@ -399,13 +404,13 @@ ii.Class({
 			
 			if (displayOrderSet) {
 				for (index = 0; index < me.invoiceItems.length; index++) {
-					if (me.invoiceItems[index].account == 120) {
+					if (me.invoiceItems[index].account == me.salesTaxAccountId) {
 						salesTax = parseFloat(me.invoiceItems[index].amount);
 						salesTaxTotal += salesTax;
 					}
 					rowNumber++;
 					rowHtml += me.getItemGridRow(rowNumber, index);
-					if (me.invoiceItems[index].account != me.descriptionAccount && me.invoiceItems[index].account != 120)
+					if (me.invoiceItems[index].account != me.descriptionAccount && me.invoiceItems[index].account != me.salesTaxAccountId)
 						subTotal += parseFloat(me.invoiceItems[index].amount);
 				}
 			}
@@ -431,7 +436,7 @@ ii.Class({
 						}
 					}
 	
-					if (me.invoiceItems[index].account == 120) {
+					if (me.invoiceItems[index].account == me.salesTaxAccountId) {
 						itemIndex = index;
 						salesTax = parseFloat(me.invoiceItems[index].amount);
 						salesTaxTotal += salesTax;
@@ -484,7 +489,7 @@ ii.Class({
 			var quantity = "";
 			var price = "";
 
-			if (me.invoiceItems[index].account == 120) {
+			if (me.invoiceItems[index].account == me.salesTaxAccountId) {
 				accountName = "Sales Tax:";
 				quantity = "&nbsp";
 				price = "&nbsp";

@@ -445,10 +445,7 @@ ii.Class({
 			me.customer = new ui.ctl.Input.DropDown.Filtered({
 				id: "Customer",
 				formatFunction: function(type) {
-					if (type.jobNumber == "")
-						return type.jobTitle; 
-					else
-						return type.jobNumber + " " + type.jobTitle;
+					return type.jobTitle; 
 				},
 				changeFunction: function() { me.modified(); }
 			});
@@ -643,10 +640,7 @@ ii.Class({
 			me.customerPopup = new ui.ctl.Input.DropDown.Filtered({
 				id: "CustomerPopup",
 				formatFunction: function(type) {
-					if (type.jobNumber == "")
-						return type.jobTitle;
-					else
-						return type.jobNumber + " " + type.jobTitle;
+					return type.jobTitle;
 				}
 			});
 			
@@ -1521,7 +1515,6 @@ ii.Class({
 		customersLoaded: function(me, activeId) {			
 		
 			me.customers = me.houseCodeJobs.slice();
-			me.customers.unshift(new fin.wom.workOrder.HouseCodeJob({ id: parent.fin.appUI.houseCodeId, jobNumber: "", jobTitle: parent.fin.appUI.houseCodeTitle }));
 			me.customer.setData(me.customers);
 			me.customerPopup.setData(me.customers);
 		},
