@@ -515,10 +515,23 @@ ii.Class({
 				changeFunction: function() { me.modified(); }
 			});
 
+			me.contactName.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation(function (isFinal, dataMap) {
+
+				    if (me.jobType.indexSelected !== -1 && me.jobType.data[me.jobType.indexSelected].name === "Customer" && me.contactPhone.getValue() !== "") {
+				        if (me.contactName.getValue() === "")
+				            return;
+				    }
+				    else
+				        this.valid = true;
+				});
+
 			me.contactPhone = new ui.ctl.Input.Text({
 				id: "ContactPhone",
 				maxLength: 14,
-				changeFunction: function() { me.modified(); }
+				changeFunction: function() { me.modified(); me.contactPhoneChanged(); }
 			});
 
 			me.contactPhone.makeEnterTab()
@@ -541,6 +554,19 @@ ii.Class({
 				maxLength: 50,
 				changeFunction: function() { me.modified(); }
 			});
+
+			me.address1.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation(function (isFinal, dataMap) {
+
+				    if (me.jobType.indexSelected !== -1 && me.jobType.data[me.jobType.indexSelected].name === "Customer") {
+				        if (me.address1.getValue() === "")
+				            return;
+				    }
+				    else
+				        this.valid = true;
+				});
 
 			me.address2 = new ui.ctl.Input.Text({
 				id: "Address2",
@@ -898,7 +924,7 @@ ii.Class({
 		    });
 
 			me.houseCodeJobActive = new ui.ctl.Input.Check({
-		        id: "HouseCodeJobActive" ,
+		        id: "HouseCodeJobActive",
 		        className: "iiInputCheck",
 				appendToId: "HouseCodeGridControlHolder",
 				changeFunction: function() { me.modified(); }
@@ -1091,6 +1117,15 @@ ii.Class({
 			}
 		},
 
+		contactPhoneChanged: function() {
+			var me = this;
+
+			if (me.jobType.data[me.jobType.indexSelected].name === "Customer" && me.contactPhone.getValue() !== "")
+				$("#LabelContactName").html("<span class='requiredFieldIndicator'>&#149;&nbsp;</span>Contact Name:");
+			else
+				$("#LabelContactName").html("<span class='nonRequiredFieldIndicator'>&#149;&nbsp;</span>Contact Name:");
+		},
+
 		countryTypesLoaded: function(me, activeId) {
 
 			me.country.setData(me.countryTypes);
@@ -1266,6 +1301,7 @@ ii.Class({
 			var item = args.job;
 
 			if (me.jobDetailsTabNeedUpdate) {
+				me.validator.reset();
 				me.jobDetailsTabNeedUpdate = false;
 				me.setLoadCount();
 				me.jobNumber.setValue(item.brief);
@@ -1310,6 +1346,12 @@ ii.Class({
 					if (me.jobType.data[me.jobType.indexSelected].name === "Customer") {
 						$("#TaxIdDiv").show();
 						$("#OverrideSiteTaxDiv").hide();
+						$("#LabelAddress1").html("<span class='requiredFieldIndicator'>&#149;&nbsp;</span>Address 1:");
+						if (me.contactPhone.getValue() !== "")
+							$("#LabelContactName").html("<span class='requiredFieldIndicator'>&#149;&nbsp;</span>Contact Name:");
+						else
+							$("#LabelContactName").html("<span class='nonRequiredFieldIndicator'>&#149;&nbsp;</span>Contact Name:");
+
 						index = ii.ajax.util.findIndexById(item.invoiceTemplate.toString(), me.invoiceTemplates);
 						if (index !== null)
 							me.invoiceTemplate.select(index, me.invoiceTemplate.focused);
@@ -1326,6 +1368,8 @@ ii.Class({
 						me.taxId.setValue("");
 						$("#TaxIdDiv").hide();
 						$("#OverrideSiteTaxDiv").show();
+						$("#LabelContactName").html("<span class='nonRequiredFieldIndicator'>&#149;&nbsp;</span>Contact Name:");
+						$("#LabelAddress1").html("<span class='nonRequiredFieldIndicator'>&#149;&nbsp;</span>Address 1:");
 					}
 
 					if (me.jobType.data[me.jobType.indexSelected].name === "Service Location")
@@ -1484,8 +1528,10 @@ ii.Class({
 			var me = this;
 			var index = args.index;
 
-			if (me.houseCodeJobs[index])
+			if (me.houseCodeJobs[index]) {
 				me.houseCodeJobs[index].modified = true;
+				me.houseCodeJobActive.check.disabled = !me.active.check.checked;
+			}
 		},
 
 		loadHouseCodes: function() {
@@ -1552,12 +1598,22 @@ ii.Class({
 			if (me.jobType.data[me.jobType.indexSelected].name === "Customer") {
 				$("#TaxIdDiv").show();
 				$("#OverrideSiteTaxDiv").hide();
+				$("#LabelAddress1").html("<span class='requiredFieldIndicator'>&#149;&nbsp;</span>Address 1:");
+				if (me.contactPhone.getValue() !== "")
+					$("#LabelContactName").html("<span class='requiredFieldIndicator'>&#149;&nbsp;</span>Contact Name:");
+				else
+					$("#LabelContactName").html("<span class='nonRequiredFieldIndicator'>&#149;&nbsp;</span>Contact Name:");
 			}
 			else {
 				$("#TaxIdDiv").hide();
 				$("#OverrideSiteTaxDiv").show();
+				$("#LabelContactName").html("<span class='nonRequiredFieldIndicator'>&#149;&nbsp;</span>Contact Name:");
+				$("#LabelAddress1").html("<span class='nonRequiredFieldIndicator'>&#149;&nbsp;</span>Address 1:");
 			}
-
+			me.contactName.resetValidation(true);
+			me.address1.resetValidation(true);
+			me.contactName.updateStatus();
+			me.address1.updateStatus();
 			if (me.jobType.data[me.jobType.indexSelected].name === "Service Location")
 				$("#CPIContainer").show();
 			else
