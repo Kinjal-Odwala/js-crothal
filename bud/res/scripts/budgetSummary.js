@@ -1,4 +1,4 @@
-﻿_builtInTemplate_a7063646 = ['<?xml version="1.0" encoding="utf-8" ?><transmission>  <target id="iiAuthorization" requestId="1">    <authorization id="1">      <authorize id="41" path="\\crothall\\chimes\\fin\\Budgeting"></authorize>      <authorize id="42" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualizedBudget"></authorize>      <authorize id="16059" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualizedBudget\\Read"></authorize>      <authorize id="16060" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualizedBudget\\Write"></authorize>      <authorize id="44" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections"></authorize>      <authorize id="16063" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\ByPeriod"></authorize>      <authorize id="16064" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\ByPeriod\\Read"></authorize>      <authorize id="16065" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\ByPeriod\\Write"></authorize>      <authorize id="16066" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\WORForecast"></authorize>      <authorize id="16067" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\WORForecast\\Read"></authorize>      <authorize id="16068" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\WORForecast\\Write"></authorize>      <authorize id="1213" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration"></authorize>      <authorize id="16069" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\AnnualInformation"></authorize>      <authorize id="16070" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\AnnualInformation\\Read"></authorize>      <authorize id="16071" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\AnnualInformation\\Write"></authorize>      <authorize id="16072" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget"></authorize>      <authorize id="16073" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Approve"></authorize>      <authorize id="16074" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Read"></authorize>      <authorize id="16075" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Reject"></authorize>      <authorize id="16076" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Write"></authorize>      <authorize id="16077" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\DeleteBudget"></authorize>      <authorize id="16078" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\DeleteBudget\\Read"></authorize>      <authorize id="16079" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\DeleteBudget\\Write"></authorize>      <authorize id="16080" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ExportBudget"></authorize>      <authorize id="16081" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ExportBudget\\Read"></authorize>      <authorize id="16082" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ExportBudget\\Write"></authorize>      <authorize id="43" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetSummary"></authorize>      <authorize id="16061" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetSummary\\Read"></authorize>      <authorize id="16062" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetSummary\\Write"></authorize>    </authorization>  </target></transmission>','<?xml version="1.0" encoding="utf-8"?><transmission>  <target id="iiCache" requestId="7">    <store id="houseCodeJobs" activeId="20422" criteria="houseCodeId:12180,jobType:0,storeId:houseCodeJobs,userId:[user],">      <item id="20422" houseCodeId="12180" hirNode="14035" houseCodeTitle="" job="1" jobId="1" jobNumber="0000" jobTitle="[None]" jobDescription="[None]" overrideSiteTax="false" stateType="0" language1="" language2="" language3="" defaultHouseCode="false" active="true" />    </store>  </target></transmission>','<div style="color: #FFF; background-color: #659A66; padding: 10px; margin: 0 0 10px;">    <table width="100%" class="ann-proj-table">        <tbody>            <tr>                <td style="width: 35px;" class="label">Site:</td>                <td style="width: 300px"><div id="house-code-holder"></div></td>                <td style="width: 35px;" class="label">Job:</td>                <td style="width: 160px"><div id="job-code-holder"></div></td>                <td style="width: 80px;" class="label">Fiscal Year:</td>                <td style="width: 100px"><div id="fiscal-year-holder"></div></td>                <td style="width: 80px;" class="label">Period:</td>                <td style="width: 100px"><div id="period-start-holder"></div></td>                <td style="width: 10px;" class="label">-</td>                <td style="width: 100px"><div id="period-end-holder"></div></td>                <td>&nbsp;</td>                <td style="width: 120px;"></td>            </tr>        </tbody>    </table></div><div id="page-status"></div><div style="padding: 0 5px">    <p style="float:left">        The current page is READONLY.</p>        <div style="float:right"><span id="load-button-holder"></span></div></div><div style="clear:both;height:1px;"></div><div id="budget-summary-grid" style="padding: 10px 5px;"></div><br /><br />'];/*!
+_builtInTemplate_58ca675d = ['<?xml version="1.0" encoding="utf-8" ?><transmission>  <target id="iiAuthorization" requestId="1">    <authorization id="1">      <authorize id="41" path="\\crothall\\chimes\\fin\\Budgeting"></authorize>      <authorize id="42" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualizedBudget"></authorize>      <authorize id="16059" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualizedBudget\\Read"></authorize>      <authorize id="16060" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualizedBudget\\Write"></authorize>      <authorize id="44" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections"></authorize>      <authorize id="16063" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\ByPeriod"></authorize>      <authorize id="16064" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\ByPeriod\\Read"></authorize>      <authorize id="16065" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\ByPeriod\\Write"></authorize>      <authorize id="16066" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\WORForecast"></authorize>      <authorize id="16067" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\WORForecast\\Read"></authorize>      <authorize id="16068" path="\\crothall\\chimes\\fin\\Budgeting\\AnnualProjections\\WORForecast\\Write"></authorize>      <authorize id="1213" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration"></authorize>      <authorize id="16069" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\AnnualInformation"></authorize>      <authorize id="16070" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\AnnualInformation\\Read"></authorize>      <authorize id="16071" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\AnnualInformation\\Write"></authorize>      <authorize id="16072" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget"></authorize>      <authorize id="16073" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Approve"></authorize>      <authorize id="16074" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Read"></authorize>      <authorize id="16075" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Reject"></authorize>      <authorize id="16076" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ApproveBudget\\Write"></authorize>      <authorize id="16077" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\DeleteBudget"></authorize>      <authorize id="16078" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\DeleteBudget\\Read"></authorize>      <authorize id="16079" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\DeleteBudget\\Write"></authorize>      <authorize id="16080" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ExportBudget"></authorize>      <authorize id="16081" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ExportBudget\\Read"></authorize>      <authorize id="16082" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetAdministration\\ExportBudget\\Write"></authorize>      <authorize id="43" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetSummary"></authorize>      <authorize id="16061" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetSummary\\Read"></authorize>      <authorize id="16062" path="\\crothall\\chimes\\fin\\Budgeting\\BudgetSummary\\Write"></authorize>    </authorization>  </target></transmission>','<div style="color: #FFF; background-color: #6D94BA; padding: 10px; margin: 0 0 10px;">    <table width="100%" class="ann-proj-table">        <tbody>            <tr>                <td style="width: 35px;" class="label">Site:</td>                <td style="width: 300px"><div id="house-code-holder"></div></td>                <td style="width: 35px;" class="label">Job:</td>                <td style="width: 160px"><div id="job-code-holder"></div></td>                <td style="width: 80px;" class="label">Fiscal Year:</td>                <td style="width: 100px"><div id="fiscal-year-holder"></div></td>                <td style="width: 80px;" class="label">Period:</td>                <td style="width: 100px"><div id="period-start-holder"></div></td>                <td style="width: 10px;" class="label">-</td>                <td style="width: 100px"><div id="period-end-holder"></div></td>                <td>&nbsp;</td>                <td style="width: 120px;"></td>            </tr>        </tbody>    </table></div><div id="page-status"></div><div style="padding: 0 5px">    <p style="float:left">        The current page is READONLY.</p>        <div style="float:right"><span id="load-button-holder"></span></div></div><div style="clear:both;height:1px;"></div><div id="budget-summary-grid" style="padding: 10px 5px;"></div><br /><br />'];/*!
  * Ext JS Library 3.2.0
  * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
@@ -1591,30 +1591,6 @@ fin.bud.saved = function () {
     }, 20);
 }
 
-fin.bud.isValidGrid = function (grid) {
-    if (typeof grid == 'string')
-        grid = Ext.getCmp(grid);
-    var rows = grid.store.data.length;
-    var cols = grid.colModel.config.length;
-
-    for (var row = 0; row < rows; row++) {
-        var record = grid.store.getAt(row);
-        for (var col = 0; col < cols; col++) {
-            var cellEditor = grid.colModel.getCellEditor(col, row);
-            if (cellEditor != undefined && grid.colModel.isCellEditable(col,row)) {
-                var columnName = grid.colModel.getDataIndex(col);
-                var columnValue = record.data[columnName];
-                cellEditor.field.setValue(columnValue);
-                if (!cellEditor.field.isValid()) {
-                    grid.startEditing(row, col);
-                    return false;
-                }
-            }
-        }
-    }
-    return true;
-}
-
 fin.bud.normal = function (isModified) {
     $('#itemStatusImage').removeClass('Loading').addClass('Normal');
     $('#itemStatusText').css('color','#032D23').html(window.isSavedSuccessfully && !isModified ? 'Data saved successfully.' : 'Normal');
@@ -2518,7 +2494,7 @@ WebLight.Router.mapRoute('^budget/mgthist$', {
     xtype: 'managementhistory'
 });
 WebLight.Router.mapRoute('^budget/laborcalculate$', {
-    xtype: 'laborcalculations'//, pfcOnly: false
+    xtype: 'laborcalculations'
 });
 WebLight.Router.mapRoute('^budget/fnllaborcalc$', {
     xtype: 'finallaborcalculations'
@@ -2809,10 +2785,6 @@ Bud.data.XmlStore = WebLight.extend(WebLight.data.Store, {
         return changedRecords;
     },
 
-    adjSubmitValue: function(column, value){
-        return value;
-    },
-
     /// submit changes to server
     submitChanges: function (callback) {
         var current = this;
@@ -2839,7 +2811,7 @@ Bud.data.XmlStore = WebLight.extend(WebLight.data.Store, {
             xml.push(current.getStoreId().replace(/s$/, ''));
             current.addAttributes(item.data);
             for (key in item.data) {
-                var value = current.adjSubmitValue(key, item.data[key], item.data);
+                var value = item.data[key];
                 if (Ext.isDate(value))
                     value = Ext.util.Format.date(value, 'm/d/Y');
                 else if (Ext.isString(value))
@@ -2917,7 +2889,7 @@ Bud.data.AuthorizationStore = WebLight.extend(Bud.data.XmlStore, {
     },
 
     loadSampleData: function () {
-        this.loadData(_builtInTemplate_a7063646[0]);
+        this.loadData(_builtInTemplate_58ca675d[0]);
     },
 
     allowBudgetRead: function () {
@@ -3104,8 +3076,6 @@ Bud.data.FiscalPeriodStore = WebLight.extend(Bud.data.XmlStore, {
 
     getTotalDays: function () {
         var me = this;
-        if (me.getCount() == 0)
-            return 0;
         var period1 = me.getByTitle(1);
         var period12 = me.getByTitle(12);
         return calcDaysInDateRange(period1.get('startDate'), period12.get('endDate'));
@@ -3208,13 +3178,6 @@ Bud.data.JobCodeStore = WebLight.extend(Bud.data.XmlStore, {
     getCriteria: function () {
         return { houseCodeId: this.houseCodeId, jobType: 0 };
     },
-
-    loadLocalData: function (houseCode) {
-        this.houseCodeId = houseCode;
-
-        this.loadData(_builtInTemplate_a7063646[1]);
-    },
-
 
     load: function (houseCode) {
         this.houseCodeId = houseCode;
@@ -3348,8 +3311,7 @@ Bud.data.BudDetailsStore = WebLight.extend(Bud.data.XmlStore, {
         { name: 'accountCategoryId', type: 'float' },
         { name: 'accountCategory' },
         { name: 'percentage', type: 'float' },
-        { name: 'isNegative' },
-        { name: 'priority', type: 'float' }
+        { name: 'isNegative' }
     ],
 
     constructor: function (config) {
@@ -3362,29 +3324,10 @@ Bud.data.BudDetailsStore = WebLight.extend(Bud.data.XmlStore, {
 
             remove: { fn: this.updateTotals },
 
-            update: {
-                fn:
-                    function(arg1, record){
-                        //if (record.get('id') > 300)         //account row
-                            this.updateTotals();
-                    }
-                    
-            }
+            update: { fn: this.updateTotals }
 
         });
 
-    },
-
-    getAccountCategory: function (categoryId) {
-        var me = this;
-        return me.queryBy(function (r, id) {
-            return r.get('id') == categoryId;
-        }).items[0];
-
-    },
-
-    getTotalRow: function () {
-        return this.getAt(this.getCount() - 1);
     },
 
     getCriteria: function () {
@@ -3419,8 +3362,6 @@ Bud.data.BudDetailsStore = WebLight.extend(Bud.data.XmlStore, {
 
     currentUpdatingTick: 0,
 
-
-
     innerUpdateTotals: function (updatingTick) {
 
         var me = this;
@@ -3451,7 +3392,7 @@ Bud.data.BudDetailsStore = WebLight.extend(Bud.data.XmlStore, {
 
                         for (var i = 0; i < 16; i++) {
                             var fieldName = 'period' + (i + 1);
-                            var value = (parseFloat(item.get(fieldName)) || 0);
+                            var value = item.get(fieldName);
 
                             periods[i] += isNeg ? -value : value;
 
@@ -3483,7 +3424,7 @@ Bud.data.BudDetailsStore = WebLight.extend(Bud.data.XmlStore, {
                 var total = 0;
                 for (var i = 0; i < 12; i++) {
                     var fieldName = 'period' + (i + 1);
-                    total += (parseFloat(record.get(fieldName)) || 0);
+                    total += record.get(fieldName);
                 }
                 if (record.get('total') != me.round2(total))
                     record.set('total', me.round2(total));
@@ -3554,12 +3495,12 @@ Bud.data.BudDetailsStore = WebLight.extend(Bud.data.XmlStore, {
                     record.set('accountCategoryId', rec.get('accountCategoryId'));
                     record.set('accountCategory', rec.get('accountCategory'));
                     record.set('isNegative', rec.get('isNegative'));
-                    record.set('priority', rec.get('accountCategoryId') == 45 ? 10 : 1);
                 }
             });
 
-            //this.sort('fscAccCode', 'ASC');
-            this.sort([{ field: 'priority', direction: 'DESC' }, { field: 'accountCategoryId', direction: 'ASC' }, { field: 'fscAccCode', direction: 'ASC' }], 'ASC');
+            /// changed at 2011/6/17
+            this.sort('fscAccCode', 'ASC');
+            //this.sort([{ field: 'accountCategoryId', direction: 'ASC' }, { field: 'fscAccCode', direction: 'ASC'}], 'ASC'); 
         }
     },
 
@@ -3574,7 +3515,7 @@ Bud.data.BudDetailsStore = WebLight.extend(Bud.data.XmlStore, {
         }
 
         if (this.getCount() == 0) {
-            this.add(me.newRecord(Ext.apply({ id: 0, description: 'Total'}, periods)));
+            this.add(me.newRecord(Ext.apply({ id: 0, description: 'Total' }, periods)));
             return;
         }
 
@@ -3696,7 +3637,9 @@ Bud.data.BudgetSummaryStore = WebLight.extend(Bud.data.XmlStore, {
             { name: 'isNegative', type: 'bool' },
             { name: 'accountCategoryId', type: 'float' },
             { name: 'accountCategory' },
-            { name: 'priority', type: 'float' }
+            { name: 'orderIndex', type: 'float' },
+            { name: 'priority', type: 'float' },
+            { name: 'displayOrder', type: 'float' }
         ];
 
         for (var i = 1; i <= 13; i++) {
@@ -3930,11 +3873,13 @@ Bud.data.BudgetSummaryStore = WebLight.extend(Bud.data.XmlStore, {
         for (var i = 0; i < this.getCount(); i++) {
             var record = this.getAt(i);
             var fscAccount = me.fscAccountStore.getById(record.get('fscAccount'));
+            record.set('orderIndex', fscAccount.get('categoryDisplayOrder') * 10000 + parseFloat(fscAccount.get('code')));
             record.set('priority', fscAccount.get('accountCategoryId') == 45 ? 10 : 1);
+            record.set('displayOrder', fscAccount.get('displayOrder'));
         };
 
         //this.sort('orderIndex', 'ASC');
-        this.sort([{ field: 'priority', direction: 'DESC' }, { field: 'accountCategoryId', direction: 'ASC' }, { field: 'accCode', direction: 'ASC' }], 'ASC');
+        this.sort([{ field: 'priority', direction: 'DESC' }, { field: 'accountCategoryId', direction: 'ASC' }, { field: 'displayOrder', direction: 'ASC' }], 'ASC');
 
         //me.sort('accCode', 'ASC');
 
@@ -4044,7 +3989,7 @@ Bud.data.BudgetSummaryStore = WebLight.extend(Bud.data.XmlStore, {
 
 Bud.page.BudgetSummaryPage = WebLight.extend(WebLight.Page, {
 
-    html: _builtInTemplate_a7063646[2],
+    html: _builtInTemplate_58ca675d[1],
     title: 'Budget Summary',
 
     _houseCodeStore: null,
