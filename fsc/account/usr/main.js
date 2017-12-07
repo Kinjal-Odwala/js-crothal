@@ -753,6 +753,7 @@ ii.Class({
 			xml += ' glHeader="' + ui.cmn.text.xml.encode(item.glHeader) + '"';
 	        xml += ' negativeValue="' + item.negativeValue + '"';
 	        xml += ' blockImportExport="' + item.blockImportExport + '"';
+			xml += ' budget="' + item.budget + '"';
 	        xml += ' accountsPayable="' + item.accountsPayable + '"';
 	        xml += ' salariesWages="' + item.salariesWages + '"';
 	        xml += ' recurringExpense="' + item.recurringExpenses + '"';
