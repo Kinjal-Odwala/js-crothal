@@ -3500,7 +3500,9 @@ Bud.data.TransactionSummaryStore = WebLight.extend(Bud.data.XmlStore, {
             { name: 'periodProjection1', type: 'float' },
             { name: 'periodProjection2', type: 'float' },
             { name: 'subStore', type: 'auto' },
-            { name: 'noChildren', type: 'bool' }
+            { name: 'noChildren', type: 'bool' },
+            { name: 'priority', type: 'float' },
+            { name: 'displayOrder', type: 'float' }
         ];
 
         config = Ext.apply(config || {}, { record: 'item',
@@ -3615,8 +3617,15 @@ Bud.data.TransactionSummaryStore = WebLight.extend(Bud.data.XmlStore, {
 
     groupStore: function () {
         var me = this;
+        for (var i = 0; i < this.getCount() ; i++) {
+            var record = this.getAt(i);
+            var fscAccount = me.fscAccountStore.getById(record.get('fscAccount'));
+            record.set('priority', fscAccount.get('accountCategoryId') == 45 ? -1 : fscAccount.get('categoryDisplayOrder') || 0);
+            record.set('displayOrder', fscAccount.get('displayOrder'));
+        };
 
-        me.sort('accCode', 'ASC');
+        this.sort([{ field: 'priority', direction: 'ASC' }, { field: 'accountCategoryId', direction: 'ASC' }, { field: 'displayOrder', direction: 'ASC' }], 'ASC');
+        //me.sort('accCode', 'ASC');
 
         for (var i = 0; i < this.getCount(); i++) {
             var record = this.getAt(i);

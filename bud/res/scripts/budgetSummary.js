@@ -3874,12 +3874,12 @@ Bud.data.BudgetSummaryStore = WebLight.extend(Bud.data.XmlStore, {
             var record = this.getAt(i);
             var fscAccount = me.fscAccountStore.getById(record.get('fscAccount'));
             record.set('orderIndex', fscAccount.get('categoryDisplayOrder') * 10000 + parseFloat(fscAccount.get('code')));
-            record.set('priority', fscAccount.get('accountCategoryId') == 45 ? 10 : 1);
+            record.set('priority', fscAccount.get('accountCategoryId') == 45 ? -1 : fscAccount.get('categoryDisplayOrder') || 0);
             record.set('displayOrder', fscAccount.get('displayOrder'));
         };
 
         //this.sort('orderIndex', 'ASC');
-        this.sort([{ field: 'priority', direction: 'DESC' }, { field: 'accountCategoryId', direction: 'ASC' }, { field: 'displayOrder', direction: 'ASC' }], 'ASC');
+        this.sort([{ field: 'priority', direction: 'ASC' }, { field: 'accountCategoryId', direction: 'ASC' }, { field: 'displayOrder', direction: 'ASC' }], 'ASC');
 
         //me.sort('accCode', 'ASC');
 

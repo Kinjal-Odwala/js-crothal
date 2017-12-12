@@ -1486,7 +1486,7 @@ var loadFscAccounts = function (callback) {
                 var FscAccountCategory = {
                     Id: categoryId,
                     Description: $item.attr('accountCategory'),
-                    OrderIndex: categoryId ==45 ?0: categoryId,//parseFloat($item.attr('categoryDisplayOrder')),
+                    OrderIndex: categoryId == 45 ? 0 : (parseFloat($item.attr('categoryDisplayOrder') || 0) + 1),
                     IsNegative: $item.attr('isNegative') == 'true'
                 };
                 FscAccountCategories.push(FscAccountCategory);
