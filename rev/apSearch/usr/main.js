@@ -537,6 +537,8 @@ Rev.page.apSearch = WebLight.extend(WebLight.Page, {
 	
     createAPInvoiceGrid: function() {
         var me = this;
+		me.invoiceNumberTemp = "";
+		me.payStatusPFound = false;
 
 		// Define a custom summary function
 		Ext.ux.grid.GroupSummary.Calculations['totalGrossAmount'] = function(value, record, field) {
@@ -546,8 +548,24 @@ Rev.page.apSearch = WebLight.extend(WebLight.Page, {
 				return value;
 	    };
 	    Ext.ux.grid.GroupSummary.Calculations['totalOpenAmount'] = function(value, record, field) {
-			if (record.data.payStatus === 'P')
-	        	return value + (record.data.openAmount);
+			if (me.invoiceNumberTemp != record.data.vendorInvoiceNumber) {
+				me.invoiceNumberTemp = record.data.vendorInvoiceNumber
+				me.payStatusPFound = false;
+			}
+
+			if (record.data.payStatus === 'P') {
+				me.payStatusPFound = true;
+				if (record.data.openAmount < value)
+					return record.data.openAmount;
+				else
+					return value;
+			}
+			else if (!me.payStatusPFound) {
+				if (record.data.openAmount > value)
+					return record.data.openAmount;
+				else
+					return value;
+			}
 			else
 				return value;
 	    };
@@ -656,7 +674,8 @@ Rev.page.apSearch = WebLight.extend(WebLight.Page, {
 //					  { dataIndex: 'grossAmount', header: 'Gross Amount', width: 110, align: 'right', summaryType: 'sum', summaryRenderer: function(v, params, data){
 //			                    return Ext.util.Format.number(v, '0,000.00');
 //			                }, renderer: displayRenderer },
- 					  { dataIndex: 'grossAmount', header: 'Gross Amount', width: 110, align: 'right', renderer: displayRenderer, summaryType: 'totalGrossAmount', summaryRenderer: summaryRenderer },
+// 					  { dataIndex: 'grossAmount', header: 'Gross Amount', width: 110, align: 'right', renderer: displayRenderer, summaryType: 'totalGrossAmount', summaryRenderer: summaryRenderer },
+					  { dataIndex: 'grossAmount', header: 'Gross Amount', width: 110, align: 'right', renderer: displayRenderer, summaryType: 'max', summaryRenderer: summaryRenderer },
 					  { dataIndex: 'openAmount', header: 'Open Amount', width: 110, align: 'right', renderer: displayRenderer, summaryType: 'totalOpenAmount', summaryRenderer: summaryRenderer },
 					  { dataIndex: 'houseCode', header: 'House Code', width: 100, renderer: displayRenderer },
 					  { dataIndex: 'subLedger', header: 'Sub Ledger', width: 100, renderer: displayRenderer },
