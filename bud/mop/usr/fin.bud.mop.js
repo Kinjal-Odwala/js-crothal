@@ -1736,7 +1736,7 @@ var createFscAccountDataItem = function (fscAccount) {
     var dataItem = { FscAccount: fscAccount, FscAccountDescription: FscAccount.Description, IsAccount: true };
 
     dataItem.CategoryId = FscAccountCategory.Id;
-    dataItem.SortIndex = FscAccountCategory.OrderIndex.toString().padLeft('0', 4) + '_' + FscAccount.DisplayOrder;
+    dataItem.SortIndex = FscAccountCategory.OrderIndex.toString().padLeft('0', 4) + '_' + FscAccountCategory.Id.toString().padLeft('0', 4) + '_' + FscAccount.DisplayOrder;
 
     initMopDataItem(dataItem);
 
@@ -1750,7 +1750,7 @@ var createFscAccountCategoryDataItem = function (fscAccountCategory) {
 
     var dataItem = { FscAccount: FscAccountCategory.Id, FscAccountDescription: FscAccountCategory.Description, IsCategory: true };
 
-    dataItem.SortIndex = FscAccountCategory.OrderIndex.toString().padLeft('0', 4) + '_9999';
+    dataItem.SortIndex = FscAccountCategory.OrderIndex.toString().padLeft('0', 4) + '_' + FscAccountCategory.Id.toString().padLeft('0', 4)  + '_9999';
 
     initMopDataItem(dataItem);
 
