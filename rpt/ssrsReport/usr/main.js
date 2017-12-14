@@ -2655,9 +2655,9 @@ ii.Class({
                 }
                 else  if (args.referenceTableName == "FscAccountCategories") {
                     if (typeTableData[index].code == undefined)
-                        $("#" + args.name).append("<option title='" + title + "' value='" + value + "'>" + title + "</option>");
+                        $("#" + args.name).append("<option title='" + ui.cmn.text.xml.encode(title) + "' value='" + value + "'>" + title + "</option>");
                     else
-                        $("#" + args.name).append("<option title='" + title + "' value='" + value + "'>" + typeTableData[index].code + ' - ' + typeTableData[index].description + "</option>");                       
+                        $("#" + args.name).append("<option title='" + ui.cmn.text.xml.encode(title) + "' value='" + value + "'>" + typeTableData[index].code + ' - ' + typeTableData[index].description + "</option>");                       
                 }
 				else if (args.referenceTableName == "EmpStatusTypes")
 					$("#" + args.name).append("<option title='" + (brief == undefined ? title : brief) + "' value='" + brief + "'>" + (brief == undefined ? title : brief) + "</option>");
