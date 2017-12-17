@@ -210,7 +210,7 @@ ii.Class({
 		resize: function() {
 			var me = this;
 
-			fin.wom.workOrderUI.workOrderGrid.setHeight($(window).height() - 430);
+			fin.wom.workOrderUI.workOrderGrid.setHeight($(window).height() - 460);
 		},
 		
 		defineFormControls: function() {
@@ -854,8 +854,8 @@ ii.Class({
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)	
 				.addValidation( function( isFinal, dataMap ) {
-					
-					if ((this.focused || this.touched) && me.workOrderTask.indexSelected == -1)
+
+					if (me.workOrderTask.indexSelected == -1)
 						this.setInvalid("Please select the correct Work Order Task.");
 				});
 			
@@ -1156,7 +1156,7 @@ ii.Class({
 				else if (statusType == 6) return "Canceled";
 			});
 			me.workOrderGrid.capColumns();
-			me.workOrderGrid.setHeight($(window).height() - 450);
+			me.workOrderGrid.setHeight($(window).height() - 460);
 		},
 
 		configureCommunications: function() {
@@ -1359,26 +1359,25 @@ ii.Class({
 			me.phoneNumber.resizeText();
 			me.poNumber.resizeText();
 			me.startDate.resizeText();
-			me.OvertimeAuthorizedYes.resizeText();
 			me.serviceContract.resizeText();
 			me.generalLocationCode.resizeText();
 			me.customerWorkOrderNumber.resizeText();
 			me.squareFeet.resizeText();
 			me.areaManagerEmail.resizeText();
 			me.regionalManagerEmail.resizeText();
+			me.serviceLocationPopup.resizeText();
+			me.customerPopup.resizeText();
+			me.requestedByPopup.resizeText();
 			me.tennantPopup.resizeText();
 			me.phoneNumberPopup.resizeText();
 			me.poNumberPopup.resizeText();
 			me.startDatePopup.resizeText();
-			me.OvertimeAuthorizedPopupYes.resizeText();
 			me.serviceContractPopup.resizeText();
 			me.generalLocationCodePopup.resizeText();
 			me.customerWorkOrderNumberPopup.resizeText();
 			me.squareFeetPopup.resizeText();
 			me.areaManagerEmailPopup.resizeText();
 			me.regionalManagerEmailPopup.resizeText();
-			me.SubcontractedPopupYes.resizeText();
-			me.CommissionablePopupYes.resizeText();
 			me.resize();
 		},
 		
@@ -2066,6 +2065,7 @@ ii.Class({
 
 			if (me.workOrders[me.lastSelectedRowIndex].statusType == 7 || me.workOrders[me.lastSelectedRowIndex].statusType == 8) {
 				me.workOrderItemGrid.resize();
+				me.workOrderItemGrid.body.deselectAll(true);
 				me.workOrderItemGrid.setData(me.workOrderItems);
 				me.action = "EditItems";
 			}
@@ -2088,22 +2088,19 @@ ii.Class({
 		},
 		
 		actionNewItem: function() {
-			var args = ii.args(arguments,{});
 			var me = this;
-			
+
 			if (!parent.fin.cmn.status.itemValid())
 				return;
-				
-			if (me.workOrdersReadOnly) return;
-			
-			if (me.action != "")
+
+			if (me.workOrdersReadOnly || me.action != "")
 				return;
-			
+
 			if (me.job.indexSelected < 0) {
 				alert("In order to create new work order please select correct job.");
 				return;
 			}
-			
+
 			$("#popupHeader").text("Work Order Setup");
 			$("#popupWorkOrder").show();
 			$("#workOrderContentAreaPopup").show();
@@ -2116,14 +2113,16 @@ ii.Class({
 			$("#AnchorNextPopup").show();
 			$("#Daily")[0].checked = true;
 			$("#WOMTime")[0].checked = true;
-            			
+ 
 			me.workOrderItemsCountOnLoad = 0;
 			me.nextCount = 1;
 			me.workOrderType = 0;
 			me.recurringType = 0;
 			me.action = "New";
-						
+
 			loadPopup();
+			me.resetControls();
+			me.resizeControls();
 			me.setStatus("Loaded");
 		},			
 		
@@ -2163,6 +2162,7 @@ ii.Class({
 					$("#RecurringPopup").hide();
 	
 					me.workOrderItemGrid.resize();
+					me.workOrderItemGrid.body.deselectAll(true);
 					me.workOrderItemGrid.setData([]);
 					
 					if (me.workOrderType == 0) {
