@@ -593,7 +593,7 @@ ii.Class({
 					if (enteredText === "")
 						return;
 
-					if (!(ui.cmn.text.validate.postalCode(enteredText)))
+					if (enteredText === "00000" || enteredText === "00000-0000" || !(ui.cmn.text.validate.postalCode(enteredText)))
 						this.setInvalid("Please enter valid Postal Code. Example: 99999 or 99999-9999");
 				});
 
