@@ -1183,15 +1183,16 @@ ii.Class({
 
 			if (action == "Prepare") {
 				$("#AnchorImport").show();
+				$("#header").html("Process Payroll - Import");
 				$("#DetailInfo").html("Epay Calculated Detail Info");
 				me.anchorImport.display(ui.cmn.behaviorStates.disabled);
 			}
 			else {
 				$("#AnchorImport").hide();
+				$("#header").html("Process Payroll - " + action);
 			}
 
 			$("#ReconcileInfo").hide();
-			$("#header").html("Process Payroll - " + action);
 			me.ePayBatchGrid.setData([]);
 			me.action = action;
 			me.setLoadCount();
