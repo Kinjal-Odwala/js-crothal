@@ -1325,12 +1325,6 @@ ii.Class({
 				else
 					me.industry.reset();
 
-				index = ii.ajax.util.findIndexById(item.paymentTerm.toString(), me.paymentTerms);
-				if (index !== null)
-					me.paymentTerm.select(index, me.paymentTerm.focused);
-				else
-					me.paymentTerm.reset();
-
 				if (me.country.indexSelected !== -1)
 					me.countryTypeChanged();
 				else
@@ -1344,6 +1338,8 @@ ii.Class({
 						me.jobType.reset();
 
 					if (me.jobType.data[me.jobType.indexSelected].name === "Customer") {
+						me.paymentTerm.text.disabled = true;
+						$("#PaymentTermAction").removeClass("iiInputAction");
 						$("#TaxIdDiv").show();
 						$("#OverrideSiteTaxDiv").hide();
 						$("#LabelAddress1").html("<span class='requiredFieldIndicator'>&#149;&nbsp;</span>Address 1:");
@@ -1366,6 +1362,8 @@ ii.Class({
 					else {
 						me.invoiceTemplate.reset();
 						me.taxId.setValue("");
+						me.paymentTerm.text.disabled = false;
+						$("#PaymentTermAction").addClass("iiInputAction");
 						$("#TaxIdDiv").hide();
 						$("#OverrideSiteTaxDiv").show();
 						$("#LabelContactName").html("<span class='nonRequiredFieldIndicator'>&#149;&nbsp;</span>Contact Name:");
@@ -1379,6 +1377,12 @@ ii.Class({
 				}
 				else
 					me.jobType.reset();
+
+				index = ii.ajax.util.findIndexById(item.paymentTerm.toString(), me.paymentTerms);
+				if (index !== null)
+					me.paymentTerm.select(index, me.paymentTerm.focused);
+				else
+					me.paymentTerm.reset();
 
 				me.customerName.setValue(item.customerName);
 				me.customerPhone.setValue(item.customerPhone);
@@ -1741,6 +1745,8 @@ ii.Class({
 			$("#TaxIdDiv").hide();
 			$("#OverrideSiteTaxDiv").hide();
 			$("#CPIContainer").hide();
+			$("#PaymentTermAction").addClass("iiInputAction");
+			me.paymentTerm.text.disabled = false;
 			me.jobId = 0;
 			me.actionClearItem();
 			me.resetGrids();
