@@ -1406,6 +1406,10 @@ ii.Class({
 				if (!parent.fin.cmn.status.itemValid())
 					return;
 
+				if (new Date(me.invoices[me.lastSelectedRowIndex].invoiceDate) > new Date(parent.fin.appUI.glbCurrentDate)) {
+					alert("You cannot print the future dated invoices.")
+					return;
+				}
 				if (confirm("The selected invoice will become READONLY.\n\nOnce selecting OK you will be able to print the selected invoice and no future modifications or deletions will be accepted. If more modifications are necessary please select the Cancel button and finish making your changes - Thank you!")) {
                     me.status = "Printed";
                     me.actionSaveItem();
