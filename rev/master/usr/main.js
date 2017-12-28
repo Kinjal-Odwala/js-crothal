@@ -52,6 +52,7 @@ ii.Class({
 			me.invoiceType = invoiceTypes.edit;
 			me.houseCodeBrief = "";
 			me.descriptionAccount = 0;
+			me.salesTaxAccountId = 0;
 			me.status = "";
 			me.loadCount = 1;
 
@@ -119,7 +120,7 @@ ii.Class({
 			
 			me.yearStore.fetch("userId:[user]", me.yearsLoaded, me);
 			me.weekPeriodYearStore.fetch("userId:[user],", me.weekPeriodYearsLoaded, me);
-			me.accountStore.fetch("userId:[user],moduleId:invoice", me.accountsLoaded, me);
+			me.accountStore.fetch("userId:[user],accountCode:214300", me.salesTaxAccountLoaded, me);
 			me.invoiceLogoTypeStore.fetch("userId:[user]", me.invoiceLogoTypesLoaded, me);
 			me.invoiceAddressTypeStore.fetch("userId:[user]", me.invoiceAddressTypesLoaded, me);
 			me.taxableServiceStore.fetch("userId:[user]", me.taxableServicesLoaded, me);
@@ -1686,6 +1687,18 @@ ii.Class({
  			me.taxableServices.unshift(new fin.rev.master.TaxableService({ id: 0, title: "" }));
         },
 		
+		salesTaxAccountLoaded: function(me, activeId) {
+
+			for (var index = 0; index < me.accounts.length; index++) {
+				if (me.accounts[index].code == "214300") {
+					me.salesTaxAccountId = me.accounts[index].id;
+					break;
+				}
+			}
+
+			me.accountStore.fetch("userId:[user],moduleId:invoice", me.accountsLoaded, me);
+		},
+
 		accountsLoaded: function(me, activeId) {
 
 			for (var index = 0; index < me.accounts.length; index++) {
