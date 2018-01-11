@@ -132,7 +132,7 @@ ii.Class({
 				}
 
 				me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);
-				me.accountStore.fetch("userId:[user]", me.accountsLoaded, me);
+				me.accountStore.fetch("userId:[user],moduleId:poRequisition", me.accountsLoaded, me);
 				me.personStore.fetch("userId:[user],id:" + me.session.propertyGet("personId"), me.personsLoaded, me);				
 			}				
 			else
@@ -1652,7 +1652,7 @@ ii.Class({
 			if (me.itemGrid.activeRowIndex >= 0)
 				me.itemGrid.body.deselect(me.itemGrid.activeRowIndex, true);
 			me.purchaseOrderItemStore.reset();
-			me.purchaseOrderItemStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",vendorId:" + me.vendorId + ",catalogId:" + me.catalogId + ",orderId:0,accountId:" + me.accountId + ",searchValue:" + me.searchItem.getValue(), me.poItemsLoaded, me);
+			me.purchaseOrderItemStore.fetch("userId:[user],poRequisition:1,houseCode:" + parent.fin.appUI.houseCodeId + ",vendorId:" + me.vendorId + ",catalogId:" + me.catalogId + ",orderId:0,accountId:" + me.accountId + ",searchValue:" + me.searchItem.getValue(), me.poItemsLoaded, me);
 			me.searchItem.setValue("");
 		},
 		

@@ -28,14 +28,12 @@ ii.Class({
     Definition: {
 
 		init: function() {
-			var args = ii.args(arguments, {});
 			var me = this;
 
 			me.batchId = 0;
 			me.action = "";
 			me.status = "";
 			me.loadCount = 0;
-			me.validateExport = false;
 			me.showDetailReport = false;
 			me.detailRecordCountFinalize = 0;
 			me.detailTotalHoursFinalize = 0;
@@ -94,8 +92,7 @@ ii.Class({
 			}
 		},
 		
-		authorizationProcess: function fin_pay_processPayroll_UserInterface_authorizationProcess() {
-			var args = ii.args(arguments,{});
+		authorizationProcess: function() {
 			var me = this;
 
 			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
@@ -113,61 +110,35 @@ ii.Class({
 			else
 				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
 
-			me.prepareBatchShow =  me.authorizer.isAuthorized(me.authorizePath + "\\PrepareBatch");
 			me.importBatchShow = me.authorizer.isAuthorized(me.authorizePath + "\\ImportBatch");
-			me.reconcileBatchShow = me.authorizer.isAuthorized(me.authorizePath + "\\ReconcileBatch");
-			me.finalizeBatchShow = me.authorizer.isAuthorized(me.authorizePath + "\\FinalizeBatch");
-			me.exportBatchShow = me.authorizer.isAuthorized(me.authorizePath + "\\ExportBatch");
-			me.exportedBatchShow = me.authorizer.isAuthorized(me.authorizePath + "\\ExportedBatch");
+			me.importedBatchShow = me.authorizer.isAuthorized(me.authorizePath + "\\ImportedBatch");
 
-			if (!me.prepareBatchShow)
-				$("#prepareBatchAction").hide();
 			if (!me.importBatchShow)
 				$("#importBatchAction").hide();
-			if (!me.reconcileBatchShow)
-				$("#reconcileBatchAction").hide();
-			if (!me.finalizeBatchShow)
-				$("#finalizeBatchAction").hide();
-			if (!me.exportBatchShow)
-				$("#exportBatchAction").hide();
-			if (!me.exportedBatchShow)
-				$("#exportedBatchAction").hide();
+			if (!me.importedBatchShow)
+				$("#importedBatchAction").hide();
 
-			if (me.prepareBatchShow)
+			if (me.importBatchShow)
 				me.actionShowItem("Prepare");
-			else if (me.importBatchShow)
-				me.actionShowItem("Import");
-			else if (me.reconcileBatchShow)
-				me.actionShowItem("Reconcile");
-			else if (me.finalizeBatchShow)
-				me.actionShowItem("Finalize");
-			else if (me.exportBatchShow)
-				me.actionShowItem("Export");
-			else if (me.exportedBatchShow)
-				me.actionShowItem("Exported");
+			else if (me.importedBatchShow)
+				me.actionShowItem("Imported");
 
 			me.personStore.fetch("userId:[user],id:" + me.session.propertyGet("personId"), me.personsLoaded, me);
 			me.payCodeTypeStore.fetch("userId:[user],payCodeType:ePayBatch", me.payCodeTypesLoaded, me);
 		},
 
-		sessionLoaded: function fin_pay_processPayroll_UserInterface_sessionLoaded() {
-			var args = ii.args(arguments, {
-				me: {type: Object}
-			});
+		sessionLoaded: function() {
 
 			ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
 		},
 
 		resize: function() {
-			var args = ii.args(arguments,{});
 			var me = fin.processPayrollUi;
 
-			if (!me) return;
+			if (!me)
+				return;
 
-			if ((me.action == "Finalize" || me.action == "Export") && me.ePayBatchGrid.activeRowIndex != -1)
-				me.ePayBatchGrid.setHeight($(window).height() - 330);
-			else
-				me.ePayBatchGrid.setHeight($(window).height() - 130);
+			me.ePayBatchGrid.setHeight($(window).height() - 130);
 			$("#DetailInfo").width(240 + $("#detailTotalAmountBodyColumn").width() + 19);
 
 			var popupHeight = $(window).height() - 100;
@@ -184,40 +155,16 @@ ii.Class({
 
 			me.actionMenu
 				.addAction({
-					id: "prepareBatchAction",
-					brief: "Prepare Batch",
-					title: "Prepare the Epay batch.",
-					actionFunction: function() { me.actionShowItem("Prepare"); }
-				})
-				.addAction({
 					id: "importBatchAction",
 					brief: "Import Batch",
 					title: "Import the Epay batch.",
-					actionFunction: function() { me.actionShowItem("Import"); }
+					actionFunction: function() { me.actionShowItem("Prepare"); }
 				})
 				.addAction({
-					id: "reconcileBatchAction",
-					brief: "Reconcile Batch",
-					title: "Reconcile the Epay batch.",
-					actionFunction: function() { me.actionShowItem("Reconcile"); }
-				})
-				.addAction({
-					id: "finalizeBatchAction",
-					brief: "Finalize Batch",
-					title: "Finalize the Epay batch.",
-					actionFunction: function() { me.actionShowItem("Finalize"); }
-				})
-				.addAction({
-					id: "exportBatchAction",
-					brief: "Export Batch",
-					title: "Export the payroll header and hours.",
-					actionFunction: function() { me.actionShowItem("Export"); }
-				})
-				.addAction({
-					id: "exportedBatchAction",
-					brief: "Exported Batches List",
-					title: "View the exported list of Epay batches.",
-					actionFunction: function() { me.actionShowItem("Exported"); }
+					id: "importedBatchAction",
+					brief: "Imported Batches List",
+					title: "View the imported list of Epay batches.",
+					actionFunction: function() { me.actionShowItem("Imported"); }
 				})
 
 			me.ePayBatchGrid = new ui.ctl.Grid({
@@ -266,59 +213,11 @@ ii.Class({
 				hasHotState: true
 			});
 
-			me.anchorPrepare = new ui.ctl.buttons.Sizeable({
-				id: "AnchorPrepare",
-				className: "iiButton",
-				text: "<span>&nbsp;&nbsp;Prepare&nbsp;&nbsp;</span>",
-				clickFunction: function() { me.actionPrepareItem(); },
-				hasHotState: true
-			});
-
 			me.anchorImport = new ui.ctl.buttons.Sizeable({
 				id: "AnchorImport",
 				className: "iiButton",
 				text: "<span>&nbsp;&nbsp;Import&nbsp;&nbsp;</span>",
 				clickFunction: function() { me.actionImportItem(); },
-				hasHotState: true
-			});
-			
-			me.anchorReconcile = new ui.ctl.buttons.Sizeable({
-				id: "AnchorReconcile",
-				className: "iiButton",
-				text: "<span>&nbsp;&nbsp;Reconcile&nbsp;&nbsp;</span>",
-				clickFunction: function() { me.actionReconcileItem(); },
-				hasHotState: true
-			});
-
-			me.anchorFinalize = new ui.ctl.buttons.Sizeable({
-				id: "AnchorFinalize",
-				className: "iiButton",
-				text: "<span>&nbsp;&nbsp;Finalize&nbsp;&nbsp;</span>",
-				clickFunction: function() { me.actionFinalizeItem(); },
-				hasHotState: true
-			});
-
-			me.anchorView = new ui.ctl.buttons.Sizeable({
-				id: "AnchorView",
-				className: "iiButton",
-				text: "<span>&nbsp;&nbsp;&nbsp;View&nbsp;&nbsp;&nbsp;</span>",
-				clickFunction: function() { me.actionViewItem(); },
-				hasHotState: true
-			});
-
-			me.anchorExport = new ui.ctl.buttons.Sizeable({
-				id: "AnchorExport",
-				className: "iiButton",
-				text: "<span>&nbsp;&nbsp;Export&nbsp;&nbsp;</span>",
-				clickFunction: function() { me.actionExportItem(); },
-				hasHotState: true
-			});
-
-			me.anchorCancel = new ui.ctl.buttons.Sizeable({
-				id: "AnchorCancel",
-				className: "iiButton",
-				text: "<span>&nbsp;&nbsp;Cancel&nbsp;&nbsp;</span>",
-				clickFunction: function() { me.actionCancelItem(); },
 				hasHotState: true
 			});
 
@@ -347,8 +246,7 @@ ii.Class({
 			});
 		},
 
-		configureCommunications: function fin_pay_processPayroll_configureCommunications() {
-			var args = ii.args(arguments, {});
+		configureCommunications: function() {
 			var me = this;
 
 			me.persons = [];
@@ -406,7 +304,7 @@ ii.Class({
 				me.setStatus("Edit");
 		},
 
-		setLoadCount: function(me, activeId) {
+		setLoadCount: function() {
 			var me = this;
 
 			me.loadCount++;
@@ -456,7 +354,7 @@ ii.Class({
 
 		ePayBatchesLoaded: function(me, activeId) {
 
-			if (me.showDetailReport && (me.action == "Finalize" || me.action == "Export" || me.action == "Exported") && me.ePayBatchGrid.activeRowIndex != -1) {
+			if (me.showDetailReport && me.action == "Imported" && me.ePayBatchGrid.activeRowIndex != -1) {
 				var index = me.ePayBatchGrid.activeRowIndex;
 				var varianceTotalCount = parseInt(me.ePayBatchGrid.data[index].detailRecordCount, 10) - parseInt(me.ePayBatches[0].batchRecordCount, 10);
 				var varianceTotalHours = parseFloat((parseFloat(me.ePayBatchGrid.data[index].detailTotalHours) - parseFloat(me.ePayBatches[0].batchTotalHours)).toFixed(2)) - parseFloat(me.ePayBatches[0].totalHours);
@@ -485,25 +383,11 @@ ii.Class({
 					&& parseFloat(me.ePayBatches[0].detailTotalAmount) == 0) {
 						me.ePayBatchGrid.data[index].valid = true;
 						me.ePayBatchGrid.body.renderRow(index, index);
-						me.anchorFinalize.display(ui.cmn.behaviorStates.enabled);
 				}
 				else {
 					me.ePayBatchGrid.body.renderRow(index, index);
-					me.anchorFinalize.display(ui.cmn.behaviorStates.disabled);
 				}
 				me.showDetailReport = false;
-			}
-			else if (me.action == "Export" && me.validateExport) {
-				me.validateExport = false;
-
-				if (me.ePayBatches.length == 0)
-					me.anchorExport.display(ui.cmn.behaviorStates.enabled);
-				else
-					me.anchorExport.display(ui.cmn.behaviorStates.disabled);
-
-				me.setLoadCount();
-				me.ePayBatchStore.reset();
-				me.ePayBatchStore.fetch("userId:[user],status:Export", me.ePayBatchesLoaded, me);
 			}
 			else {
 				me.ePayBatchList = me.ePayBatches.slice();
@@ -523,23 +407,13 @@ ii.Class({
 			me.batchId = me.ePayBatchGrid.data[index].batchId;
 			
 			if (me.ePayBatchGrid.data[index].valid) {
-				me.anchorPrepare.display(ui.cmn.behaviorStates.enabled);
 				me.anchorImport.display(ui.cmn.behaviorStates.enabled);
-				me.anchorReconcile.display(ui.cmn.behaviorStates.enabled);
-				me.anchorFinalize.display(ui.cmn.behaviorStates.enabled);
-				me.anchorExport.display(ui.cmn.behaviorStates.enabled);
 			}
 			else {
-				me.anchorPrepare.display(ui.cmn.behaviorStates.disabled);
 				me.anchorImport.display(ui.cmn.behaviorStates.disabled);
-				me.anchorReconcile.display(ui.cmn.behaviorStates.disabled);
-				me.anchorFinalize.display(ui.cmn.behaviorStates.disabled);
-				me.anchorExport.display(ui.cmn.behaviorStates.disabled);
 			}
 
-			if (me.action == "Finalize" || me.action == "Export" || me.action == "Exported") {
-				if (me.action == "Finalize")
-					$("#AnchorView").show();
+			if (me.action == "Imported") {
 				$("#ReconcileInfo").show();
 				me.setLoadCount();
 				me.showDetailReport = true;
@@ -1307,111 +1181,30 @@ ii.Class({
 		actionShowItem: function(action) {
 			var me = this;
 
-			$("#AnchorCancel").show();
-			$("#AnchorPrepare").hide();
-			$("#AnchorImport").hide();
-			$("#AnchorReconcile").hide();
-			$("#AnchorFinalize").hide();
-			$("#AnchorView").hide();
-			$("#AnchorExport").hide();
-			$("#ReconcileInfo").hide();
-
 			if (action == "Prepare") {
-				$("#AnchorCancel").hide();
-				$("#AnchorPrepare").show();
-				$("#DetailInfo").html("Epay Calculated Detail Info");
-			}
-			else if (action == "Import") {
 				$("#AnchorImport").show();
+				$("#header").html("Process Payroll - Import");
 				$("#DetailInfo").html("Epay Calculated Detail Info");
+				me.anchorImport.display(ui.cmn.behaviorStates.disabled);
 			}
-			else if (action == "Reconcile") {
-				$("#AnchorReconcile").show();
-				$("#DetailInfo").html("TeamFin Calculated Detail Info");
-			}
-			else if (action == "Finalize") {
-				$("#AnchorFinalize").show();
-				$("#DetailInfo").html("TeamFin Processed Detail Info");
-			}
-			else if (action == "Export") {
-				$("#AnchorExport").show();
-			}
-			else if (action == "Exported") {
-				$("#AnchorCancel").hide();
+			else {
+				$("#AnchorImport").hide();
+				$("#header").html("Process Payroll - " + action);
 			}
 
-			$("#header").html("Process Payroll - " + action);
+			$("#ReconcileInfo").hide();
 			me.ePayBatchGrid.setData([]);
 			me.action = action;
 			me.setLoadCount();
 			me.ePayBatchStore.reset();
-			
-			if (me.action == "Export") {
-				me.validateExport = true;
-				me.ePayBatchStore.fetch("userId:[user],status:Finalize", me.ePayBatchesLoaded, me);
-			}
-			else
-				me.ePayBatchStore.fetch("userId:[user],status:" + action, me.ePayBatchesLoaded, me);
+			me.ePayBatchStore.fetch("userId:[user],status:" + action, me.ePayBatchesLoaded, me);
 			me.resize();
 		},
 
-		actionPrepareItem: function() {
-			var args = ii.args(arguments,{});
-			var me = this;
-
-			me.actionSaveItem("Prepare");
-		},
-		
 		actionImportItem: function() {
-			var args = ii.args(arguments,{});
 			var me = this;
 
 			me.actionSaveItem("Import");
-		},
-		
-		actionReconcileItem: function() {
-			var args = ii.args(arguments,{});
-			var me = this;
-
-			me.actionSaveItem("Reconcile");
-		},
-
-		actionFinalizeItem: function() {
-			var args = ii.args(arguments,{});
-			var me = this;
-
-			me.actionSaveItem("Finalize");
-		},
-
-		actionViewItem: function() {
-			var args = ii.args(arguments,{});
-			var me = this;
-
-			if (me.ePayBatchGrid.activeRowIndex == -1)
-				return;
-
-			$("#popupMessageToUser").text("Loading");
-			$("#popupLoading").fadeIn("slow");
-
-			me.loadPopup();
-			me.batchStatus.select(0, me.batchStatus.focused);
-			me.batchStatus.resizeText();
-			me.ePayBatchDetailStore.reset();
-			me.ePayBatchDetailStore.fetch("userId:[user],status:1,batchId:" + me.batchId, me.ePayBatchDetailsLoaded, me);
-		},
-
-		actionExportItem: function() {
-			var args = ii.args(arguments,{});
-			var me = this;
-
-			me.actionSaveItem("Export");
-		},
-
-		actionCancelItem: function() {
-			var args = ii.args(arguments,{});
-			var me = this;
-
-			me.actionSaveItem("Cancel");
 		},
 		
 		actionSaveItem: function(status) {
@@ -1497,18 +1290,8 @@ ii.Class({
 				$("#popupLoading").fadeIn("slow");
 			}
 			else {
-				if (me.status == "Prepare")
-					$("#messageToUser").text("Preparing");
-				else if (me.status == "Import")
-					$("#messageToUser").text("Import/Reconcile/Finalize process will take few minutes, please wait...");
-				else if (me.status == "Reconcile")
-					$("#messageToUser").text("Reconcile process will take few minutes, please wait...");
-				else if (me.status == "Finalize")
-					$("#messageToUser").text("Finalizing");
-				else if (me.status == "Export")
-					$("#messageToUser").text("Export process will take few minutes, please wait...");
-				else if (me.status == "Cancel")
-					$("#messageToUser").text("Cancelling");
+				if (me.status == "Import")
+					$("#messageToUser").text("Import process will take few minutes, please wait...");
 				else
 					$("#messageToUser").text("Saving");
 				$("#pageLoading").fadeIn("slow");
@@ -1540,21 +1323,9 @@ ii.Class({
 					me.setBatchInfo();
 				}
 				else {
-					if (me.action == "Export") {
-						me.ePayBatchList = [];
-						me.ePayBatchGrid.setData(me.ePayBatchList);
-						me.anchorExport.display(ui.cmn.behaviorStates.disabled);
-					}
-					else {
-						var index = me.ePayBatchGrid.activeRowIndex;
-						me.ePayBatchList.splice(index, 1);
-						me.ePayBatchGrid.setData(me.ePayBatchList);
-					}
-
-					if (me.action == "Finalize" || me.action == "Export") {
-						$("#ReconcileInfo").hide();
-						me.ePayBatchGrid.setHeight($(window).height() - 130);
-					}
+					var index = me.ePayBatchGrid.activeRowIndex;
+					me.ePayBatchList.splice(index, 1);
+					me.ePayBatchGrid.setData(me.ePayBatchList);
 				}
 
 				me.modified(false);

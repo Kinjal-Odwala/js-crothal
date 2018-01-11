@@ -26,7 +26,6 @@ ii.Class({
 			var pos = searchString.indexOf("=");
 
 			me.invoiceId = parseInt(searchString.substring(pos + 1));
-			me.salesTaxAccountId = 0;
 			me.rowBeingEdited = false;
 			me.currentRowSelected = null;
 			me.status = "";
@@ -35,6 +34,7 @@ ii.Class({
 			me.invoiceByCustomer = false;
 			me.editSalesTax = false;
 			me.invalidHouseCode = "";
+			me.salesTaxAccountId = parent.fin.revMasterUi.salesTaxAccountId;
 			me.descriptionAccount = parent.fin.revMasterUi.descriptionAccount;
 			me.houseCodeCache = parent.fin.revMasterUi.houseCodeCache;
 			me.houseCodeBrief = parent.fin.revMasterUi.houseCodeBrief;			
@@ -316,10 +316,6 @@ ii.Class({
 			for (var index = 0; index < parent.fin.revMasterUi.accounts.length; index++) {
 				var account = parent.fin.revMasterUi.accounts[index];
 				me.accounts.push(new fin.rev.invoice.Account(account.id, account.code, account.description));
-				
-				if (me.accounts[index].code == "214300") {
-					me.salesTaxAccountId = me.accounts[index].id;
-				}
 			}
 		},
 		

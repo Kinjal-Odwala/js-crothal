@@ -518,8 +518,7 @@ Rev.data.apExportStore = WebLight.extend(Rev.data.XmlStore, {
 });
 
 function printInvoice(laserficheURL) {
-	alert("Your invoice will be displayed in a separate window. If no results are returned the window will not appear.");
-	$("#iFrameLaserfiche").attr("src", laserficheURL);
+	window.open("laserfiche.htm?" + laserficheURL, "ModalPopUp", "toolbar=no,scrollbars=yes,location=no,statusbar=no,menubar=no,resizable=yes,"); 
 }
 
 function printPurchaseOrder(id) {
@@ -661,8 +660,7 @@ Rev.page.apSearch = WebLight.extend(WebLight.Page, {
 						summaryRenderer: function(data, params, record) {
 							if (me.systemVariableStore.data.items[0].data.variableValue !== "" && data.laserficheDocID !== "") {
 								var laserficheURL = me.systemVariableStore.data.items[0].data.variableValue + data.laserficheDocID;
-								//return "<a href=\"javascript: void(0);\" onclick=\"printInvoice('" + laserficheURL + "');\">" + value + "</a>";
-								return "<a target='_blank' href='" + laserficheURL + "'>" + data.vendorInvoiceNumber + "</a>";
+								return "<a href=\"javascript: void(0);\" onclick=\"printInvoice('" + laserficheURL + "');\">" + data.vendorInvoiceNumber + "</a>";
 							}
 							else
 								return data.vendorInvoiceNumber;

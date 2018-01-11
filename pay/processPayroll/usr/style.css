@@ -70,45 +70,9 @@
 	margin: 5px 0px 0px 10px;
 }
 
-#AnchorPrepare {
-	float: left;
-	width: 88px;
-	margin-left: 10px;
-}
-
 #AnchorImport {
 	float: left;
 	width: 82px;
-	margin-left: 10px;
-}
-
-#AnchorReconcile {
-	float: left;
-	width: 100px;
-	margin-left: 10px;
-}
-
-#AnchorFinalize {
-	float: left;
-	width: 88px;
-	margin-left: 10px;
-}
-
-#AnchorExport {
-	float: left;
-	width: 80px;
-	margin-left: 10px;
-}
-
-#AnchorView {
-	float: left;
-	width: 76px;
-	margin-left: 10px;
-}
-
-#AnchorCancel {
-	float: left;
-	width: 80px;
 	margin-left: 10px;
 }
 
