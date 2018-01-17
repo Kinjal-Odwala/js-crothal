@@ -659,7 +659,7 @@ Rev.page.apSearch = WebLight.extend(WebLight.Page, {
 						summaryType: 'max', summaryType: 'laserficheDocID',
 						summaryRenderer: function(data, params, record) {
 							if (me.systemVariableStore.data.items[0].data.variableValue !== "" && data.laserficheDocID !== "") {
-								var laserficheURL = me.systemVariableStore.data.items[0].data.variableValue + data.laserficheDocID;
+								var laserficheURL = me.systemVariableStore.data.items[0].data.variableValue + data.laserficheDocID + "&dbid=0";
 								return "<a href=\"javascript: void(0);\" onclick=\"printInvoice('" + laserficheURL + "');\">" + data.vendorInvoiceNumber + "</a>";
 							}
 							else
