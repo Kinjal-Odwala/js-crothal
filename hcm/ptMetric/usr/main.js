@@ -3370,7 +3370,7 @@ ii.Class({
 						$("#tdTitleTotalPaid" + index).html("Paid Total Dollars");
 					}
 					$("#tdTitleTotal" + index).addClass("totalGridRow");
-					$("#tdTitleTotalPaid" + index).addClass("totalGridRow");
+					$("#tdTitleTotalPaid" + index).addClass("grandTotalGridRow");
 				}
 				
 				$("#trLaborControl" + index + " input[id^=txtPeriod]").keypress(function (e) {
