@@ -524,14 +524,7 @@
 				<td>NA</td>
 				<td>End user input</td>				
                 <td>Generates Purchase Order of selected PO Requisition</td>
-			</tr>
-			<tr>
-				<td>JDE Entry</td>
-				<td>Button</td>
-				<td>NA</td>
-				<td>End user input</td>				
-                <td>Creates JDE Entry</td>
-			</tr>
+			</tr>			
             <tr>
 				<td class="uiHeader" colspan="5"></td>
 			</tr>
@@ -592,7 +585,7 @@
 				<td>Menu item field</td>
 				<td>NA</td>
 				<td>End user input</td>
-				<td>To Generate PO & JDE Entry.</td>
+				<td>To Generate PO</td>
 			</tr>
 		</table>
 		<h2>UI Layouts</h2>
@@ -601,32 +594,50 @@
 				<td class="uiHeader">PO Requisitions</td>
 			</tr>
 			<tr>
-				<td><img src="images/PORequisitions.png" alt="PO Requisitions"/></td>
+				<td><img src="images/poRequisition.png" alt="PO Requisitions"/></td>
 			</tr>
 			<tr>
-				<td class="uiHeader">General Information</td>
+				<td class="uiHeader">General Information for Valid Vendor</td>
 			</tr>
 			<tr>
-				<td><img src="images/GeneralInformationOfPORequisition.png" alt="General Information"/></td>
+				<td><img src="images/poRequisitionValidVendorGeneralInfo.png" alt="General Information"/></td>
+			</tr>
+            <tr>
+				<td class="uiHeader">General Information for Non Vendor</td>
+			</tr>
+            <tr>
+				<td><img src="images/poRequisitionNonVendorGeneralInfo.png" alt="Non Vendor General Information"/></td>
 			</tr>
             <tr>
 				<td class="uiHeader">Item Information</td>
 			</tr>
 			<tr>
-				<td><img src="images/ItemInformationOfPORequisition.png" alt="Item Information"/></td>
+				<td><img src="images/poRequisitionNormalItemInfo.png" alt="Item Information"/></td>
+			</tr>
+            <tr>
+				<td class="uiHeader">Miscellaneous Item Information</td>
+			</tr>
+            <tr>
+				<td><img src="images/poRequisitionMiscellaneousItemInfo.png" alt="Miscellaneous Item Information"/></td>
 			</tr>
 			<tr>
 				<td class="uiHeader">Shipping Information</td>
 			</tr>
 			<tr>
-				<td><img src="images/ShippingInformationOfPORequisition.png" alt="Shipping Information"/></td>
+				<td><img src="images/poRequisitionShippingInfo.png" alt="Shipping Information"/></td>
 			</tr>
 			<tr>
 				<td class="uiHeader">Generate Purchase Order</td>
 			</tr>
 			<tr>
-				<td><img src="images/GeneratePurchaseOrderOfPORequisition.png" alt="Generate Purchase Order"/></td>
-			</tr>						
+				<td><img src="images/poRequisitionGeneratePurchaseOrder.png" alt="Generate Purchase Order"/></td>
+			</tr>	
+            <tr>
+				<td class="uiHeader">Templates</td>
+			</tr>	
+            <tr>
+				<td><img src="images/poRequisitionTemplate.png" alt="Templates"/></td>
+			</tr>				
 		</table>
 		<h2>Error Messages and Notifications</h2>
 		<table class="elementTable">
@@ -675,8 +686,8 @@
 				<td>Stored Procedures</td>
 				<td>
                     HirNodeSelectByLevel, AppUserHouseCodesSelect, HcmJobByHouseCode, PurFscAccountsSelect, PurPORequisitionsSelect,
-                    PurPORequisitionStatusUpdate, PurPORequisitionUpdate, PurPORequisitionValidate,
-                    PurPurchaseOrderItemsSelect, PurPORequisitionDetailsSelect, PurPORequisitionDetailUpdate.
+                    PurPORequisitionStatusUpdate, PurPORequisitionUpdate, PurPurchaseOrderUpdate
+                    PurPurchaseOrderItemsSelect, PurPORequisitionDetailsSelect, PurPORequisitionDetailUpdate,PurPurchaseOrderUpdateFromPORequisition
 				</td>
 			</tr>
 		</table>		
