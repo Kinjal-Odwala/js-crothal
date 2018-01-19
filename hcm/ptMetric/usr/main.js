@@ -1,4 +1,4 @@
-ii.Import( "ii.krn.sys.ajax" );
+﻿ii.Import( "ii.krn.sys.ajax" );
 ii.Import( "ii.krn.sys.session" );
 ii.Import( "ui.ctl.usr.input" );
 ii.Import( "ui.ctl.usr.grid" );
@@ -209,17 +209,21 @@ ii.Class({
 			me.inHouseStandardMetricGrid.setHeight(200);
 			me.thirdPartyStandardMetricGrid.setHeight(200);
 
-			var divPFCGridWidth = $(window).width() - 45;
+		    var divPFCGridWidth = $(window).width() - 258;
 			var divPFCGridHeight = 190;
 			$("#divPFCGrid").css({"width" : divPFCGridWidth + "px", "height" : divPFCGridHeight + "px"});
-
-			var divNonPFCGridWidth = $(window).width() - 45;
+			
+			var divNonPFCGridWidth = $(window).width() - 258;
 			var divNonPFCGridHeight = 400;
 			$("#divNonPFCGrid").css({"width" : divNonPFCGridWidth + "px", "height" : divNonPFCGridHeight + "px"});
 
-			var divCommentsGridWidth = $(window).width() - 45;
+			var divCommentsGridWidth = $(window).width() - 258;
 			var divCommentsGridHeight = 50;
 			$("#divCommentsGrid").css({"width" : divCommentsGridWidth + "px", "height" : divCommentsGridHeight + "px"});
+
+			if (ii.browser.chrome) {
+			    $("#tblPFCGridHeader").css({"width":"3215px"});
+			}
 		},
 
 		controlKeyProcessor: function() {
@@ -3323,11 +3327,13 @@ ii.Class({
 					else
 						$("#NonPFCGridBody").append(laborControlRow);
 					$("#tdTitle" + index).html(me.laborControls[index].ptMetricTypeTitle);
+					$("#tdTitle" + index).addClass((rowIndex % 2) ? "gridRow" : "alternateGridRow");
 					rowIndex++;
 				}
 				else if (me.laborControls[index].ptMetricType.brief === "Comments") {
 					$("#CommentsGridBody").append(commentsRowTemplate);
 					$("#trComments input[id^=txtPeriod]").bind("blur", function() { me.commentsBlur(this); });
+					$("#tdComments").addClass("gridRow");
 				}
 				
 				if (index == 3 || index == 7 || index == 11 || index == 15 || index == 19 || index == 23) {
@@ -3363,6 +3369,8 @@ ii.Class({
 						$("#NonPFCGridBody").append(laborControlRow);
 						$("#tdTitleTotalPaid" + index).html("Paid Total Dollars");
 					}
+					$("#tdTitleTotal" + index).addClass("totalGridRow");
+					$("#tdTitleTotalPaid" + index).addClass("totalGridRow");
 				}
 				
 				$("#trLaborControl" + index + " input[id^=txtPeriod]").keypress(function (e) {
