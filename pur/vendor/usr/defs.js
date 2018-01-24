@@ -23,6 +23,12 @@ ii.init.register( function() {
 		, name: {type: String}
 	};
 
+	fin.pur.vendor.selectVendorTypeArgs = {
+		id: {type: Number}
+		, name: {type: String}
+		, value: {type: String}
+	};
+
 	fin.pur.vendor.vendorArgs = {
 		id: {type: Number, defaultValue: 0}
 		, statusType: {type: Number, defaultValue: 0}
@@ -58,6 +64,7 @@ ii.init.register( function() {
 		, blockPostingCompanyCode: {type: Boolean, required: false}
 		, sendMethodType: {type: Number, required: false}
 		, autoEmail: {type: Boolean, required: false}
+		, nameSelectBy: {type: String, required: false, defaultValue: ""}
 		, active: {type: Boolean}
 	};
 
@@ -88,6 +95,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.pur.vendor.poSendMethodTypeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.pur.vendor.SelectVendorType",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.pur.vendor.selectVendorTypeArgs);
 			$.extend(this, args);
 		}
 	}
