@@ -1731,6 +1731,8 @@ var copyMopDataItem = function (from, to) {
 
 var createFscAccountDataItem = function (fscAccount) {
     var FscAccount = FscAccountLookup[fscAccount];           // bine.query(FscAccounts).where(function (f) { return f.Id == fscAccount; }).first();
+    if (!FscAccount)
+        return null;
     var FscAccountCategory = FscAccountCategoryLookup[FscAccount.CategoryId];          // bine.query(FscAccountCategories).where(function (f) { return f.Id == FscAccount.CategoryId; }).first();
 
     var dataItem = { FscAccount: fscAccount, FscAccountDescription: FscAccount.Description, IsAccount: true };
@@ -1787,6 +1789,8 @@ var populateMopDetails = function () {
     $.each(fscAccounts, function (index, fscAccount) {
 
         var dataItem = createFscAccountDataItem(fscAccount);
+        if (!dataItem)
+            return;
 
         var categoryItem = null;
 
@@ -1958,6 +1962,8 @@ var loadMopPeriodItems = function (hcmHouseCode, hcmJob, fscYear, callback) {
             var mopAccountItem = mopItemIndex[dataItem.fscAccount];
             if (!mopAccountItem) {
                 mopAccountItem = createFscAccountDataItem(dataItem.fscAccount);
+                if (!mopAccountItem)
+                    return;
                 MopDetails.push(mopAccountItem);
                 mopItemIndex[dataItem.fscAccount] = mopAccountItem;
             }
@@ -4893,6 +4899,8 @@ var submitWorItems = function (changes, commentXml, callback) {
             };
 
             var dataItem = createFscAccountDataItem(fscAccount);
+            if (!dataItem)
+                return;
 
             var dataItemIndex = getPriorIndex(dataItem.SortIndex);
 
