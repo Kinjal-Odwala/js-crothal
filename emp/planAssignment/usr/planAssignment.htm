@@ -10,13 +10,13 @@
         </div>
         <div class="col-md-12">
             <div class="form-group">
-                <label class="col-md-1 control-label">PTO Year</label>
+                <label class="col-md-1 control-label" style="padding-left:20px;width:6%">PTO Year</label>
                 <div class="col-md-1">
                      <select class="form-control input-sm" ng-model="ptoYear" ng-options="item.id as item.name for item in ptoYears" ng-change="onYearChange()"></select>  
                 </div>
                 <div class="col-md-2"></div>
                 <label class="col-md-1 control-label">Level</label>
-                <div class="col-md-3">
+                <div class="col-md-3" style="width:22%">
                     <label class="radio-inline">
                         <input name="level" ng-model="companyLevel" type="radio" ng-value="companyLevel" ng-click="onLevelChange('company')"/>&nbsp;Company
                     </label>
@@ -32,7 +32,7 @@
     </div>
 	<div class="row margin-bottom10" ng-if="showCompanyGrid">
         <div class="col-md-9">
-			<table ng-table="companyTable" class="table-scroll table table-bordered table-striped table-hover margin-bottom10" style="width: 1100px;">
+			<table ng-table="companyTable" class="table-scroll table table-bordered table-striped table-hover margin-bottom10" style="font-size:12px;width: 1100px;">
             	<thead>
                     <tr class="gridSectionHeader" role="row">
 						<td style="text-align:center;">Company Plan Details</td>
@@ -47,10 +47,10 @@
                 </thead>
 				<tbody style="width:100%; min-height: 300px;" ng-style="{'max-height': stateGridHeight + 'px'}">
 					<tr ng-repeat="item in companyPlans track by $index" ng-click="companyPlanSelected(item)" ng-class="{'warning':selectedCompanyPlan == item};">
-						<td width="400px" align="left">{{item.ptoPlanTitle}}</td>
-						<td width="140px" align="left">{{item.ptoTypeTitle}}</td>
-						<td width="400px" align="left">{{item.ptoPlanTypeTitle}}</td>
-						<td width="60px" align="center"><input type="checkbox" ng-model="item.active" ng-click="onCompanyPlanChanged($event, item)"/></td>
+						<td width="400px" align="left" style="line-height:normal">{{item.ptoPlanTitle}}</td>
+						<td width="140px" align="left" style="line-height:normal">{{item.ptoTypeTitle}}</td>
+						<td width="400px" align="left" style="line-height:normal">{{item.ptoPlanTypeTitle}}</td>
+						<td width="60px" align="center" style="line-height:normal"><input type="checkbox" ng-model="item.active" ng-click="onCompanyPlanChanged($event, item)"/></td>
 					</tr>
                 </tbody>
                 <tfoot>
@@ -68,26 +68,26 @@
 	</div>
     <div class="row margin-bottom10" ng-if="showStateGrid">
         <div class="col-md-4">
-            <table class="table-scroll table table-striped table-bordered table-hover">
+            <table class="table-scroll table table-striped table-bordered table-hover" style="font-size:12px;width:100%">
                 <thead>
                     <tr class="heading" role="row">
-                        <th width="2%" style="text-align:center">#</th>
-                        <th width="10%" style="text-align:center">Brief</th>
-                        <th width="15%" style="text-align:center">Title</th>
+                        <th width="8%" style="text-align:center">#</th>
+                        <th width="40%" style="text-align:center">Brief</th>
+                        <th width="50%" style="text-align:center">Title</th>
                         <th width="1%"></th>
                     </tr>
                 </thead>
                 <tbody id="stateGrid" ng-style="{'max-height': stateGridHeight + 'px'}">
                     <tr ng-repeat="item in states" ng-click="stateSelected(item)" ng-class="{'warning':selectedState == item};">
-                        <td width="2%" align="center">{{$index + 1}}</td>
-                        <td width="10%" align="center">{{item.brief}}</td>
-                        <td width="15%">{{item.name}}</td>
+                        <td width="7.6%" align="center" style="line-height:normal">{{$index + 1}}</td>
+                        <td width="39.8%" align="center" style="line-height:normal">{{item.brief}}</td>
+                        <td width="50%" style="line-height:normal">{{item.name}}</td>
                      </tr>
                 </tbody>
             </table>
         </div>
         <div class="col-md-8">
-			<table class="table-scroll table table-bordered table-striped table-hover margin-bottom10" style="width: 1100px;">
+			<table class="table-scroll table table-bordered table-striped table-hover margin-bottom10" style="width: 1100px;font-size:12px">
 				<thead>
 					<tr class="gridSectionHeader" role="row">
 	                	<td style="text-align:center;">
@@ -123,10 +123,10 @@
                         </td>
                     </tr>
                     <tr ng-hide="!stateExpanded" ng-repeat="item in statePlans track by $index" ng-click="statePlanSelected(item)" ng-class="{'warning':selectedStatePlan == item};">
-                        <td width="400px" align="left">{{item.ptoPlanTitle}}</td>
-						<td width="140px" align="left">{{item.ptoTypeTitle}}</td>
-						<td width="400px" align="left">{{item.ptoPlanTypeTitle}}</td>
-                        <td width="60px" align="center"><input type="checkbox" ng-model="item.active" ng-click="onStatePlanChanged($event, item)" /></td>
+                        <td width="400px" align="left" style="line-height:normal">{{item.ptoPlanTitle}}</td>
+						<td width="140px" align="left" style="line-height:normal">{{item.ptoTypeTitle}}</td>
+						<td width="400px" align="left" style="line-height:normal">{{item.ptoPlanTypeTitle}}</td>
+                        <td width="60px" align="center" style="line-height:normal"><input type="checkbox" ng-model="item.active" ng-click="onStatePlanChanged($event, item)" /></td>
                     </tr>
                 </tbody>
                 <tfoot ng-show="showState">
@@ -141,7 +141,7 @@
                 </tfoot>
             </table>
             <div class="row margin-bottom10"></div>
-            <table class="table-scroll table table-bordered table-striped table-hover margin-bottom10" style="width: 1100px;">
+            <table class="table-scroll table table-bordered table-striped table-hover margin-bottom10" style="width: 1100px;font-size:12px;">
                 <thead>
                     <tr class="gridSectionHeader" role="row">
                         <td style="text-align:center;">
@@ -168,7 +168,7 @@
                         </td>
                     </tr>
                     <tr ng-show="showCounty" class="heading" role="row">
-                        <th width="400px" style="text-align:center">Plan Name</th>
+                        <th width="400px" style="text-align:center;">Plan Name</th>
                         <th width="140px" style="text-align:center">PTO Type</th>
                         <th width="400px" style="text-align:center">Plan Type</th>
                         <th width="60px" style="text-align:center">Active</th>
@@ -176,7 +176,7 @@
                     </tr>
                 </thead>
                 <tbody id="countyPlanDetailsGrid" ng-show="showCounty" ng-style="{'max-height': '200px', 'min-height': countyPlanGridMinHeight + 'px'}">
-                    <tr ng-repeat-start="county in countys | orderBy:sortCountyBy:sortCountyReverse" ng-click="countySelected(county)" ng-class="{'warning':selectedCounty == county};" expandcounty>
+                    <tr ng-repeat-start="county in countys | orderBy:sortCountyBy:sortCountyReverse" ng-click="countySelected(county)" ng-class="{'warning':selectedCounty == county};" expandcounty style=" border:1px solid #ADA8A3;">
                         <td colspan="4">
                             <a href="" ng-click="countyExpanded = !countyExpanded" style="text-decoration: none; border-bottom: none;">
                                 <span class="glyphicon tableData" ng-class="{ 'glyphicon-chevron-right': !countyExpanded, 'glyphicon-chevron-down': countyExpanded }"></span>
@@ -185,10 +185,10 @@
                         </td>
                     </tr>
                     <tr ng-hide="!countyExpanded" ng-repeat="countyPlan in county.countyPlans track by $index" ng-click="countyPlanSelected(countyPlan)" ng-class="{'warning':selectedCountyPlan == countyPlan};">
-                        <td width="400px" align="left">{{countyPlan.ptoPlanTitle}}</td>
-						<td width="140px" align="left">{{countyPlan.ptoTypeTitle}}</td>
-						<td width="400px" align="left">{{countyPlan.ptoPlanTypeTitle}}</td>
-                        <td width="60px" align="center"><input type="checkbox" ng-model="countyPlan.active" ng-click="onCountyPlanChanged($event, countyPlan)" /></td>
+                        <td width="400px" align="left" style="line-height:normal">{{countyPlan.ptoPlanTitle}}</td>
+						<td width="140px" align="left" style="line-height:normal">{{countyPlan.ptoTypeTitle}}</td>
+						<td width="400px" align="left" style="line-height:normal">{{countyPlan.ptoPlanTypeTitle}}</td>
+                        <td width="60px" align="center" style="line-height:normal"><input type="checkbox" ng-model="countyPlan.active" ng-click="onCountyPlanChanged($event, countyPlan)" /></td>
                     </tr>
                     <tr ng-repeat-end ng-show="countyExpanded"></tr>
                 </tbody>
@@ -204,7 +204,7 @@
                 </tfoot>
             </table>
             <div class="row margin-bottom10"></div>
-            <table class="table-scroll table table-bordered table-striped table-hover margin-bottom10" style="width: 1100px;">
+            <table class="table-scroll table table-bordered table-striped table-hover margin-bottom10" style="width: 1100px;font-size:12px;" >
                 <thead>
                     <tr class="gridSectionHeader" role="row">
                          <td style="text-align:center;">
@@ -239,8 +239,8 @@
                         <th width="16px"></th>
                     </tr>
                 </thead>
-                <tbody id="cityPlanDetailsGrid" ng-show="showCity" ng-style="{'max-height': '200px', 'min-height': cityPlanGridMinHeight + 'px'}">
-                    <tr ng-repeat-start="city in cities track by $index | orderBy:sortCityBy:sortCityReverse" ng-click="citySelected(city)" ng-class="{'warning':selectedCity == city};" expandcity>
+                <tbody id="cityPlanDetailsGrid" ng-if="showCity" ng-style="{'max-height': '200px', 'min-height': cityPlanGridMinHeight + 'px'}">
+                    <tr ng-repeat-start="city in cities|orderBy:sortCityBy:sortCityReverse" ng-click="citySelected(city)" ng-class="{'warning':selectedCity == city};" expandcity="true" style=" border:1px solid #ADA8A3;">
                         <td colspan="4">
                             <a href="" ng-click="cityExpanded = !cityExpanded" data-placement="bottom" title="{{ city.tooltipText }}" style="text-decoration: none; border-bottom: none;" tooltip>
                                 <span class="glyphicon tableData" ng-class="{ 'glyphicon-chevron-right': !cityExpanded, 'glyphicon-chevron-down': cityExpanded }"></span>
@@ -248,11 +248,11 @@
                             </a>
                         </td>
                     </tr>
-                    <tr ng-hide="!cityExpanded" ng-repeat="cityPlan in city.cityPlans track by $index" ng-click="cityPlanSelected(cityPlan)" ng-class="{'warning':selectedCityPlan == cityPlan};">
-                        <td width="400px" align="left">{{cityPlan.ptoPlanTitle}}</td>
-						<td width="140px" align="left">{{cityPlan.ptoTypeTitle}}</td>
-						<td width="400px" align="left">{{cityPlan.ptoPlanTypeTitle}}</td>
-                        <td width="60px" align="center"><input type="checkbox" ng-model="cityPlan.active" ng-click="onCityPlanChanged($event, cityPlan)" /></td>
+                    <tr ng-hide="!cityExpanded" ng-repeat="cityPlan in city.cityPlans" ng-click="cityPlanSelected(cityPlan)" ng-class="{'warning':selectedCityPlan == cityPlan};">
+                        <td width="400px" align="left" style="line-height:normal">{{cityPlan.ptoPlanTitle}}</td>
+						<td width="140px" align="left" style="line-height:normal">{{cityPlan.ptoTypeTitle}}</td>
+						<td width="400px" align="left" style="line-height:normal">{{cityPlan.ptoPlanTypeTitle}}</td>
+                        <td width="60px" align="center" style="line-height:normal"><input type="checkbox" ng-model="cityPlan.active" ng-click="onCityPlanChanged($event, cityPlan)" /></td>
                     </tr>
                     <tr ng-repeat-end ng-show="cityExpanded"></tr>
                 </tbody>
@@ -268,7 +268,7 @@
                 </tfoot>
             </table>
             <div class="row margin-bottom10"></div>
-            <table class="table-scroll table table-bordered table-striped table-hover margin-bottom10" style="width: 1100px;">
+            <table class="table-scroll table table-bordered table-striped table-hover margin-bottom10" style="width: 1100px;font-size:12px;">
                 <thead>
                     <tr class="gridSectionHeader" role="row">
                          <td style="text-align:center;">
@@ -304,7 +304,7 @@
                     </tr>
                 </thead>
                 <tbody id="houseCodePlanDetailsGrid" ng-show="showHouseCode" ng-style="{'max-height': '200px', 'min-height': houseCodePlanGridMinHeight + 'px'}">
-                    <tr ng-repeat-start="houseCode in houseCodes | orderBy:sortHouseCodeBy:sortHouseCodeReverse" ng-click="houseCodeSelected(houseCode)" ng-class="{'warning':selectedHouseCode == houseCode};" expandhousecode="">
+                    <tr ng-repeat-start="houseCode in houseCodes|orderBy:sortHouseCodeBy:sortHouseCodeReverse" ng-click="houseCodeSelected(houseCode)" ng-class="{'warning':selectedHouseCode == houseCode};" expandhousecode="" style=" border:1px solid #ADA8A3;">
                         <td colspan="4">
                             <a href="" ng-click="houseCodeExpanded = !houseCodeExpanded" data-placement="right" title="{{ houseCode.tooltipText.join('\u000A') }}" style="text-decoration: none; border-bottom: none;" tooltip>
                                 <span class="glyphicon tableData" ng-class="{ 'glyphicon-chevron-right': !houseCodeExpanded, 'glyphicon-chevron-down': houseCodeExpanded }"></span>
@@ -313,10 +313,10 @@
                         </td>
                     </tr>
                     <tr ng-show="showHouseCode" ng-hide="!houseCodeExpanded" ng-repeat="houseCodePlan in houseCode.houseCodePlans track by $index" ng-click="houseCodePlanSelected(houseCodePlan)" ng-class="{'warning':selectedHouseCodePlan == houseCodePlan};">
-                        <td width="400px" align="left">{{houseCodePlan.ptoPlanTitle}}</td>
-						<td width="140px" align="left">{{houseCodePlan.ptoTypeTitle}}</td>
-						<td width="400px" align="left">{{houseCodePlan.ptoPlanTypeTitle}}</td>
-                        <td width="60px" align="center"><input type="checkbox" ng-model="houseCodePlan.active" ng-click="onHouseCodePlanChanged($event, houseCodePlan)" /></td>
+                        <td width="400px" align="left" style="line-height:normal">{{houseCodePlan.ptoPlanTitle}}</td>
+						<td width="140px" align="left" style="line-height:normal">{{houseCodePlan.ptoTypeTitle}}</td>
+						<td width="400px" align="left" style="line-height:normal">{{houseCodePlan.ptoPlanTypeTitle}}</td>
+                        <td width="60px" align="center" style="line-height:normal"><input type="checkbox" ng-model="houseCodePlan.active" ng-click="onHouseCodePlanChanged($event, houseCodePlan)" /></td>
                     </tr>
                     <tr ng-repeat-end ng-show="houseCodeExpanded"></tr>
                 </tbody>
@@ -345,25 +345,25 @@
     <form name="planInfoForm">
 	    <div id="planModal" class="modal-content" style="width:1200px;">
 	        <div style="font-weight:bold;font-size: 18px;text-align: center;font-family: Verdana;">Select Plan</div>
-	        <div class="modal-body" id="planTable">
+	        <div class="modal-body" id="planTable" style="padding-bottom:0px">
 	        	<table class="table-scroll table table-striped table-bordered table-hover">
 			        <thead>
 			            <tr class="heading" role="row">
-			                <th width="2%" style="text-align:center">#</th>
+			                <th width="5%" style="text-align:center">#</th>
 			                <th width="5%" style="text-align:center"></th>
-			                <th width="40%" style="text-align:center">Plan Name</th>
+			                <th width="50%" style="text-align:center">Plan Name</th>
 			                <th width="10%" style="text-align:center">PTO Type</th>
-			                <th width="40%" style="text-align:center">Plan Type</th>
+			                <th width="30%" style="text-align:center">Plan Type</th>
 			                <th width="1%"></th>
 			            </tr>
 			        </thead>
-			        <tbody style="max-height:200px;">
+			        <tbody style="max-height:200px;min-height:300px">
 			            <tr ng-repeat="item in plans track by $index" ng-click="planSelected(item)" ng-class="{'warning':selectedPlan == item};">
-			                <td width="2%" align ="center">{{$index + 1}}</td>
-			                <td width="5%" align="center"><input type="checkbox" ng-true-value="true" ng-false-value="false" ng-model="item.isChecked" /></td>
-			                <td width="40%">{{item.title}}</td>
-			                <td width="10%">{{item.ptoTypeTitle}}</td>
-			                <td width="40%">{{item.ptoPlanTypeTitle}}</td>
+			                <td width="5%" align ="center" style="line-height:normal">{{$index + 1}}</td>
+			                <td width="5%" align="center" style="padding-top:3px;line-height:normal"><input type="checkbox" ng-true-value="true" ng-false-value="false" ng-model="item.isChecked" /></td>
+			                <td width="50%" style="line-height:normal">{{item.title}}</td>
+			                <td width="10%" style="line-height:normal">{{item.ptoTypeTitle}}</td>
+			                <td width="30%" style="line-height:normal">{{item.ptoPlanTypeTitle}}</td>
 			             </tr>
 			        </tbody>
 	    		</table>
@@ -379,7 +379,7 @@
     <form name="cloneInfoForm">
            <div id="cloneModal" class="modal-content" ng-style="{'max-height': cloneGridMaxHeight + 'px', 'width': '1200px'}">
                <div style="font-weight:bold;font-size: 18px;text-align: center;font-family: Verdana;">Clone Plan</div>
-               <div class="modal-body" id="cloneTable">
+               <div class="modal-body" id="cloneTable" style="padding-bottom:0px">
                 <div>
                     <div class="row">
                         <div class="col-md-2">
@@ -423,11 +423,11 @@
                                 </td>
                             </tr>
                             <tr ng-show="showGroup" ng-hide="!groupExpanded" ng-repeat="item in group.clonePlans" ng-click="clonePlanSelected(item)" ng-class="{'warning':selectedClonePlan == item};">
-                                <td width="2%" align ="center">{{$index + 1}}</td>
-                                <td width="5%" align="center"><input type="checkbox" ng-true-value="true" ng-false-value="false" ng-model="check" ng-click="onClonePlanChecked(item, check)" /></td>
-                                <td width="40%">{{item.ptoPlanTitle}}</td>
-                                <td width="10%">{{item.ptoTypeTitle}}</td>
-                                <td width="40%">{{item.ptoPlanTypeTitle}}</td>
+                                <td width="2%" align ="center" style="line-height:normal">{{$index + 1}}</td>
+                                <td width="5%" align="center" style="line-height:normal"><input type="checkbox" ng-true-value="true" ng-false-value="false" ng-model="check" ng-click="onClonePlanChecked(item, check)" /></td>
+                                <td width="40%" style="line-height:normal">{{item.ptoPlanTitle}}</td>
+                                <td width="10%" style="line-height:normal">{{item.ptoTypeTitle}}</td>
+                                <td width="40%" style="line-height:normal">{{item.ptoPlanTypeTitle}}</td>
                             </tr>
                             <tr ng-repeat-end ng-show="groupExpanded"></tr>
                             <tr ng-show="!showGroup" ng-repeat="item in clonePlans track by $index" ng-click="clonePlanSelected(item)" ng-class="{'warning':selectedClonePlan == item};">

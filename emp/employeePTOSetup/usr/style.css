@@ -194,7 +194,7 @@
 }
 
 #planModal {
-    left: 25%;
+    left: 12%;
     position: fixed;
     top: 25%;
     height: auto;
@@ -202,7 +202,7 @@
 }
 
 #cloneModal {
-    left: 20%;
+    left: 12%;
     position: fixed;
     top: 5%;
     height: auto;
@@ -216,8 +216,8 @@ ul {
 li {
     float: left;
     border-bottom-width: 0px;
-    margin: 1px 1px 0px 1px;
-    padding: 2px 2px 0px 2px;
+    margin: 1px 1px 1px 0px;
+    padding: 2px 2px 0px 0px;
     height: 33px;
 }
 #mainView {
@@ -226,6 +226,7 @@ li {
     padding: 0 1em;
     padding-top: 15px;
     padding-bottom: 15px;
+    margin-top:1px;
 }
 
 .control-label {
@@ -241,20 +242,41 @@ li {
 }
 
 #dateModal {
-    left: 35%;
+    left: 28%;
     position: fixed;
-    top: 25%;
+    top: 12%;
     height: auto;
     max-height: 500px;
 }
 
 #employeeModal {
-    left: 20%;
+    left: 12%;
     position: fixed;
     top: 5%;
-    height: auto;
+    min-height:100px;
 }
 
 #multiselectBtn {
     width: 240px;
 }
+
+.table-bordered > tbody > tr > td {
+    border:1px solid #ADA8A3;
+    border-top:0px solid #ADA8A3;
+}
+
+.nav-tabs > li > a {
+    padding-bottom:3px;
+}
+
+.nav-tabs > li {
+    margin-bottom:-3px;
+}
+.table-bordered > thead > tr > th {
+     border:1px solid #ADA8A3;
+}
+
+.modal-body {
+    padding:20px 20px 0px 20px;
+}
+

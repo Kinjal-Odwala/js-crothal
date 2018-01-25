@@ -23,7 +23,7 @@ h2 {
 }
 
 .header {
-	background-color: #c2e4c1;
+	background-color: #C5D7EC;
 	border: 1px solid #c0c0c0;
 	padding: 10px 10px 10px 10px;
 	margin-top: 20px;
@@ -54,7 +54,7 @@ table.elementTable {
 }
 
 .elementTable th {
-	background-color: #c2e4c1;
+	background-color: #C5D7EC;
 	padding: 5px;
 	line-height: 1.7em;
 }

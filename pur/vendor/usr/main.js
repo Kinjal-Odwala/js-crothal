@@ -189,8 +189,9 @@ ii.Class({
 				validationFunction: function() {return parent.fin.cmn.status.itemValid(); }
 			});
 
-			me.vendorGrid.addColumn("vendorNumber", "vendorNumber", "Vendor #", "Vendor Number", 120);
+			me.vendorGrid.addColumn("vendorNumber", "vendorNumber", "Vendor #", "Vendor Number", 100);
 			me.vendorGrid.addColumn("title", "title", "Title", "Title", null);
+			me.vendorGrid.addColumn("name", "name", "Name", "Name", 250);
 			me.vendorGrid.capColumns();
 
 			me.anchorSave = new ui.ctl.buttons.Sizeable({
@@ -474,6 +475,21 @@ ii.Class({
 						this.setInvalid("Please select the correct Send Method Type.");
 				});
 
+			me.selectVendorBy = new ui.ctl.Input.DropDown.Filtered({
+		        id: "SelectVendorBy",
+				formatFunction: function( type ) { return type.name; },
+				changeFunction: function() { me.modified(); }
+		    });
+
+			me.selectVendorBy.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( ui.ctl.Input.Validation.required )
+				.addValidation( function( isFinal, dataMap ) {
+
+					if ((this.focused || this.touched) && me.selectVendorBy.indexSelected === -1)
+						this.setInvalid("Please select the correct Select Vendor By.");
+				});
+
 			me.autoEmail = new ui.ctl.Input.Check({
 		        id: "AutoEmail",
 				changeFunction: function() { me.modified(); }
@@ -578,8 +594,9 @@ ii.Class({
 			me.blockPayment.check.tabIndex = 29;
 			me.blockPostingCompanyCode.check.tabIndex = 30;
 			me.sendMethodType.text.tabIndex = 31;
-			me.autoEmail.check.tabIndex = 32;
-			me.active.check.tabIndex = 33;
+			me.selectVendorBy.text.tabIndex = 32;
+			me.autoEmail.check.tabIndex = 33;
+			me.active.check.tabIndex = 34;
 		},
 
 		resizeControls: function() {
@@ -613,6 +630,7 @@ ii.Class({
 			me.businessType.resizeText();
 			me.country.resizeText();
 			me.sendMethodType.resizeText();
+			me.selectVendorBy.resizeText();
 			me.resize();
 		},
 
@@ -652,6 +670,7 @@ ii.Class({
 			me.blockPayment.setValue("false");
 			me.blockPostingCompanyCode.setValue("false");
 			me.sendMethodType.reset();
+			me.selectVendorBy.reset();
 			me.autoEmail.setValue("false");
 			me.active.setValue("false");
 			me.vendorNumber.text.focus();
@@ -749,9 +768,13 @@ ii.Class({
 			me.vendorStatuses.push(new fin.pur.vendor.VendorStatus(1, -1, "All"));
 			me.vendorStatuses.push(new fin.pur.vendor.VendorStatus(2, 1, "Active"));
 			me.vendorStatuses.push(new fin.pur.vendor.VendorStatus(3, 0, "In Active"));
-
 			me.vendorStatus.setData(me.vendorStatuses);
 			me.vendorStatus.select(0, me.vendorStatus.focused);
+			
+			me.selectVendorTypes = [];
+			me.selectVendorTypes.push(new fin.pur.vendor.SelectVendorType(1, "Title", "PurVenTitle"));
+			me.selectVendorTypes.push(new fin.pur.vendor.SelectVendorType(2, "Name", "PurVenName"));
+			me.selectVendorBy.setData(me.selectVendorTypes);
 		},
 
 		stateTypesLoaded: function(me, activeId) {
@@ -828,9 +851,9 @@ ii.Class({
 			}
 
 			me.setLoadCount();
- 			me.vendorStore.fetch("searchValue:" + me.searchInput.getValue()
+ 			me.vendorStore.fetch("userId:[user],searchValue:" + me.searchInput.getValue()
 				+ ",vendorStatus:" + (me.vendorStatus.indexSelected === -1 ? -1 : me.vendorStatuses[me.vendorStatus.indexSelected].number)
-				+ ",userId:[user]", me.vendorsLoaded, me);
+				+ ",selectBy:Both", me.vendorsLoaded, me);
 		},
 
 		vendorsLoaded: function(me, activeId) {
@@ -898,6 +921,13 @@ ii.Class({
 				me.sendMethodType.select(itemIndex, me.sendMethodType.focused);
 			else
 				me.sendMethodType.select(-1, me.sendMethodType.focused);
+
+			for (var iIndex = 0; iIndex < me.selectVendorTypes.length; iIndex++) {
+				if (me.selectVendorTypes[iIndex].value === item.nameSelectBy) {
+					me.selectVendorBy.select(iIndex, me.selectVendorBy.focused);
+					break;
+				}
+			}
 
 			me.autoEmail.setValue(item.autoEmail.toString());
 			me.active.setValue(item.active.toString());
@@ -1005,6 +1035,7 @@ ii.Class({
 				, me.blockPostingCompanyCode.check.checked
 				, me.sendMethodType.data[me.sendMethodType.indexSelected].id
 				, me.autoEmail.check.checked
+				, me.selectVendorBy.data[me.selectVendorBy.indexSelected].value
 				, me.active.check.checked
 				);
 
@@ -1032,6 +1063,7 @@ ii.Class({
 			xml += ' id="' + item.id + '"';
 			xml += ' vendorNumber="' + ui.cmn.text.xml.encode(item.vendorNumber) + '"';
 			xml += ' sendMethodType="' + item.sendMethodType + '"';
+			xml += ' nameSelectBy="' + item.nameSelectBy + '"';
 			xml += ' autoEmail="' + item.autoEmail + '"';
 			xml += '/>';
 

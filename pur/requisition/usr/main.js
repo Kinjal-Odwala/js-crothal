@@ -1221,7 +1221,6 @@ ii.Class({
 			var me = this;
 			
 			$("input[name='Urgency']").change(function() { me.modified(); });
-			$("#VendorName").bind("keydown", me, me.actionVendorSearch);
 			$("#imgAdd").bind("click", function() { me.actionAttachItem(); });
 			$("#imgEdit").bind("click", function() { me.actionEditDocumentItem(); });
 			$("#imgRemove").bind("click", function() { me.actionRemoveItem(); });
@@ -1985,32 +1984,26 @@ ii.Class({
 		},
 		
 		actionVendorSearch: function() {
-			var args = ii.args(arguments, {
-				event: {type: Object} // The (key) event object
-			});			
-			var event = args.event;
-			var me = event.data;
-				
-			if (event.keyCode == 13) {
-				if (me.vendorName.text.value != "") {
-					me.vendorsLoading = true;
-					me.vendorName.fetchingData();
-					me.vendorStore.reset();
-					me.vendorStore.fetch("searchValue:" + me.vendorName.text.value + ",vendorStatus:1,userId:[user]", me.vendorsLoaded, me);
-				}
-				else {
-					me.vendorId = 0;
-					me.vendorNumber = "";
-					me.vendor.setValue("");
-					me.vendorAddress1.setValue("");
-					me.vendorAddress2.setValue("");
-					me.vendorCity.setValue("");				
-					me.vendorState.select(-1, me.vendorState.focused);				
-					me.vendorZip.setValue("");
-					me.vendorContactName.setValue("");
-					me.vendorPhone.setValue("");
-					me.vendorEmail.setValue("");
-				}
+			var me = this;
+
+			if (me.vendorName.text.value != "") {
+				me.vendorsLoading = true;
+				me.vendorName.fetchingData();
+				me.vendorStore.reset();
+				me.vendorStore.fetch("searchValue:" + me.vendorName.text.value + ",vendorStatus:1,userId:[user]", me.vendorsLoaded, me);
+			}
+			else {
+				me.vendorId = 0;
+				me.vendorNumber = "";
+				me.vendor.setValue("");
+				me.vendorAddress1.setValue("");
+				me.vendorAddress2.setValue("");
+				me.vendorCity.setValue("");				
+				me.vendorState.select(-1, me.vendorState.focused);				
+				me.vendorZip.setValue("");
+				me.vendorContactName.setValue("");
+				me.vendorPhone.setValue("");
+				me.vendorEmail.setValue("");
 			}
 		},
 		
@@ -2021,14 +2014,14 @@ ii.Class({
 			if (me.vendors.length > 0) {
 			    me.vendorName.reset();			  
 				me.vendorName.select(0, me.vendorName.focused);
+				me.vendorChanged();
 			}
-
-			me.vendorChanged();
 		},
 		
 		vendorChanged: function() {
 			var me = this;
-			var index = me.vendorName.indexSelected;		
+			var index = me.vendorName.indexSelected;
+
 			if (me.status == "EditPORequisition" && !me.vendorsLoading) {
 				var item = me.requisitionGrid.data[me.requisitionGrid.activeRowIndex];
 				if (me.vendorName.lastBlurValue != "" && item.vendorTitle != me.vendorName.lastBlurValue && item.vendorNumber != "") {
@@ -2052,7 +2045,6 @@ ii.Class({
 			}
 
 			if (index >= 0) {
-			   
 				me.vendorId = me.vendors[index].id;
 				me.vendorNumber = me.vendors[index].vendorNumber;
 				me.vendor.setValue(me.vendorNumber == "" ? me.vendors[index].title : me.vendorNumber + " - " + me.vendors[index].title);
@@ -2079,7 +2071,7 @@ ii.Class({
 			else {
 				me.vendorId = 0;
 				me.vendorNumber = "";
-				me.vendor.setValue(me.vendorNumber);
+				me.vendor.setValue("");
 				me.vendorAddress1.setValue("");
 				me.vendorAddress2.setValue("");
 				me.vendorCity.setValue("");				
@@ -2088,6 +2080,7 @@ ii.Class({
 				me.vendorContactName.setValue("");
 				me.vendorPhone.setValue("");
 				me.vendorEmail.setValue("");				
+				me.actionVendorSearch();
 				$("#popupLoading").hide();
 			}
 		},
