@@ -584,14 +584,34 @@ ii.Class({
 
             var selectedNodes = [];
             var selectedNames = [];
+			var selectedNodesTemp = [];
 
-            $.each(me.orgHierarchy.selectedNodes, function (index, item) {
-				var ctrl = $("input:checkbox[name='" + item.id + "']");
-				if (!ctrl[0].disabled) {
-					selectedNodes.push(item.id);
-                	selectedNames.push(item.fullPath.substr(item.fullPath.lastIndexOf('\\') + 1));
-				}
+//            $.each(me.orgHierarchy.selectedNodes, function (index, item) {
+//				var ctrl = $("input:checkbox[name='" + item.id + "']");
+//				if (!ctrl[0].disabled) {
+//					selectedNodes.push(item.id);
+//                	selectedNames.push(item.fullPath.substr(item.fullPath.lastIndexOf('\\') + 1));
+//				}
+//            });
+
+			$.each(me.orgHierarchy.selectedNodes, function(index, item) {
+				selectedNodesTemp.push({ id: item.id, fullPath: item.fullPath, parentFound: false });
             });
+
+			for (var index = selectedNodesTemp.length - 1; index >= 0; index--) {
+				if (!selectedNodesTemp[index].parentFound) {
+					selectedNodes.push(selectedNodesTemp[index].id);
+					selectedNames.push(selectedNodesTemp[index].fullPath.substr(selectedNodesTemp[index].fullPath.lastIndexOf('\\') + 1));
+					var parentPath = selectedNodesTemp[index].fullPath;
+
+					for (var iIndex = index - 1; iIndex >= 0; iIndex--) {
+						if (!selectedNodesTemp[iIndex].parentFound) {
+							if (selectedNodesTemp[iIndex].fullPath.indexOf(parentPath) == 0)
+								selectedNodesTemp[iIndex].parentFound = true;
+						}
+					}
+				}
+			}
 
             if (selectedNodes.length == 0) {
                 errorMessage += "Please select a node on the left panel.\n";
