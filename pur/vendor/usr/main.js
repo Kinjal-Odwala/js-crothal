@@ -25,6 +25,7 @@ ii.Class({
 			var me = this;
 
 			me.vendorId = 0;
+			me.statusType = 0;
 			me.lastSelectedRowIndex = -1;
 			me.loadCount = 0;
 
@@ -86,10 +87,8 @@ ii.Class({
 				me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);
 				if (me.setupVendors) {
 					me.loadCount = 3;
-					me.vendorStore.fetch("userId:[user],statusType:2", me.newVendorsLoaded, me);
+					me.recordCountStore.fetch("userId:[user],type:vendors", me.newVendorsCountLoaded, me);
 				}
-				else
-					$("#SearchArea").show();
 				me.itemStatusesLoaded();
 				me.controlVisible();
 			}
@@ -530,6 +529,14 @@ ii.Class({
 				itemConstructorArgs: fin.pur.vendor.poSendMethodTypeArgs,
 				injectionArray: me.poSendMethodTypes
 			});
+
+			me.recordCounts = [];
+			me.recordCountStore = me.cache.register({
+				storeId: "purRecordCounts",
+				itemConstructor: fin.pur.vendor.RecordCount,
+				itemConstructorArgs: fin.pur.vendor.recordCountArgs,
+				injectionArray: me.recordCounts
+			});
 		},
 
 		controlKeyProcessor: function() {
@@ -790,13 +797,10 @@ ii.Class({
 			me.resizeControls();
 		},
 
-		newVendorsLoaded: function(me, activeId) {
+		newVendorsCountLoaded: function(me, activeId) {
 
-			if (me.vendors.length > 0)
+			if (me.recordCounts[0].recordCount > 0)
 				$("#Notification").show();
-			else
-				$("#SearchArea").show();
-
 			me.checkLoadCount();
 		},
 
@@ -818,21 +822,19 @@ ii.Class({
 			if (!parent.fin.cmn.status.itemValid())
 				return;
 
-			if (statusType === 0) {
-				me.lastSelectedRowIndex = -1;
-				me.resetControls();
-				me.searchInput.setValue("");
-				me.searchInput.valid = true;
-				me.searchInput.updateStatus();
-				me.vendorGrid.setData([]);
-				me.setStatus("Normal");
-				$("#SearchArea").show();
-			}
-			else if (statusType === 2) {
-				$("#SearchArea").hide();
-				me.setLoadCount();
-				me.vendorStore.fetch("userId:[user],statusType:2", me.vendorsLoaded, me);
-			}
+			me.statusType = statusType;
+			me.lastSelectedRowIndex = -1;
+			me.resetControls();
+			me.searchInput.setValue("");
+			me.searchInput.valid = true;
+			me.searchInput.updateStatus();
+			me.vendorGrid.setData([]);
+			me.setStatus("Normal");
+
+			if (me.statusType === 0)
+				$("#StatusContainer").show();
+			else if (me.statusType === 2)
+				$("#StatusContainer").hide();
 		},
 
 		loadSearchResults: function() {
@@ -852,6 +854,7 @@ ii.Class({
 
 			me.setLoadCount();
  			me.vendorStore.fetch("userId:[user],searchValue:" + me.searchInput.getValue()
+				+ ",statusType:" + me.statusType
 				+ ",vendorStatus:" + (me.vendorStatus.indexSelected === -1 ? -1 : me.vendorStatuses[me.vendorStatus.indexSelected].number)
 				+ ",selectBy:Both", me.vendorsLoaded, me);
 		},

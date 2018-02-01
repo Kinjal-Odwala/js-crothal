@@ -29,6 +29,11 @@ ii.init.register( function() {
 		, value: {type: String}
 	};
 
+	fin.pur.vendor.recordCountArgs = {
+	    id: {type: Number}
+	    , recordCount: {type: Number}
+	};
+
 	fin.pur.vendor.vendorArgs = {
 		id: {type: Number, defaultValue: 0}
 		, statusType: {type: Number, defaultValue: 0}
@@ -105,6 +110,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.pur.vendor.selectVendorTypeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.pur.vendor.RecordCount",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.pur.vendor.recordCountArgs);
 			$.extend(this, args);
 		}
 	}
