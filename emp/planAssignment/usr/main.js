@@ -403,6 +403,11 @@ pto.controller('planAssignmentCtrl', ['$scope', 'EmpActions', '$filter', '$sce',
 		$scope.getCityPlanAssignments();
 		$scope.getHouseCodePlanAssignments();
 		$scope.resetSelection();
+		$scope.totalCityDisplayed = 50;
+    };
+
+    $scope.viewMoreItems = function () {
+        $scope.totalCityDisplayed += 50;
     };
 
 	$scope.getCompanyPlanAssignments = function() {
@@ -1957,6 +1962,18 @@ pto.directive('expandhousecode', function() {
         }]
     };
 })
+
+pto.directive('whenScrolled', function () {
+    return function (scope, elm, attr) {
+        var raw = elm[0];
+
+        elm.bind('scroll', function () {
+            if (raw.scrollTop + raw.offsetHeight >= raw.scrollHeight) {
+                scope.$apply(attr.whenScrolled);
+            }
+        });
+    };
+});
 
 pto.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $filter, $rootScope) {
     var cache = {};

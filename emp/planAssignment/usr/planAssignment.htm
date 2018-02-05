@@ -239,8 +239,8 @@
                         <th width="16px"></th>
                     </tr>
                 </thead>
-                <tbody id="cityPlanDetailsGrid" ng-if="showCity" ng-style="{'max-height': '200px', 'min-height': cityPlanGridMinHeight + 'px'}">
-                    <tr ng-repeat-start="city in cities|orderBy:sortCityBy:sortCityReverse" ng-click="citySelected(city)" ng-class="{'warning':selectedCity == city};" expandcity="true" style=" border:1px solid #ADA8A3;">
+                <tbody id="cityPlanDetailsGrid" ng-if="showCity" ng-style="{'max-height': '200px', 'min-height': cityPlanGridMinHeight + 'px'}" when-scrolled='viewMoreItems()'>
+                    <tr ng-repeat-start="city in cities|orderBy:sortCityBy:sortCityReverse | limitTo:totalCityDisplayed" ng-click="citySelected(city)" ng-class="{'warning':selectedCity == city};" expandcity="true" style=" border:1px solid #ADA8A3;">
                         <td colspan="4">
                             <a href="" ng-click="cityExpanded = !cityExpanded" data-placement="bottom" title="{{ city.tooltipText }}" style="text-decoration: none; border-bottom: none;" tooltip>
                                 <span class="glyphicon tableData" ng-class="{ 'glyphicon-chevron-right': !cityExpanded, 'glyphicon-chevron-down': cityExpanded }"></span>
