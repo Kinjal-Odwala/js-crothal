@@ -9,9 +9,9 @@ function ($filter, $document, $compile, $parse) {
             options: '=',
             extraSettings: '=',
             events: '=',
-            assigned: '=',
+		    assigned: '=',
             searchFilter: '=?',
-            disabled: '=ngDisabled',
+			disabled: '=ngDisabled',
             translationTexts: '=',
             groupBy: '@'
         },
@@ -146,7 +146,7 @@ function ($filter, $document, $compile, $parse) {
                     var parentFound = false;
 
                     while (angular.isDefined(target) && target !== null && !parentFound) {
-                        if (target.className.split(' ').indexOf('multiselect-parent') >= 0 && !parentFound) {
+						if (target.className.split(' ').indexOf('multiselect-parent') >= 0 && !parentFound) {
                             if (target === $dropdownTrigger) {
                                 parentFound = true;
                             }
@@ -171,23 +171,7 @@ function ($filter, $document, $compile, $parse) {
             };
 
             $scope.getButtonText = function () {
-
-                if ($scope.settings.dynamicTitle && angular.isDefined($scope.selectedModel) && ($scope.selectedModel.length > 0 || (angular.isObject($scope.selectedModel) && Object.keys($scope.selectedModel).length > 0))) {
-
-                    if ($scope.selectedModel.length == 1) {
-                        var itemsText = [];
-                        var displayText = '';
-                        angular.forEach($scope.options, function (optionItem) {
-                            if ($scope.isChecked($scope.getPropertyForObject(optionItem, $scope.settings.idProp))) {
-                                displayText = $scope.getPropertyForObject(optionItem, $scope.settings.displayProp);
-                                var converterResponse = $scope.settings.smartButtonTextConverter(displayText, optionItem);
-
-                                itemsText.push(converterResponse ? converterResponse : displayText);
-                            }
-                        });
-                        return displayText;
-                    }
-
+				if ($scope.settings.dynamicTitle && angular.isDefined($scope.selectedModel) && ($scope.selectedModel.length > 0 || (angular.isObject($scope.selectedModel) && Object.keys($scope.selectedModel).length > 0))) {
                     if ($scope.settings.smartButtonMaxItems > 0) {
                         var itemsText = [];
 
@@ -217,7 +201,17 @@ function ($filter, $document, $compile, $parse) {
 
                         if (totalSelected === 0) {
                             return $scope.texts.buttonDefaultText;
-                        } else {
+                        }
+						else if (totalSelected === 1) {
+	                        var displayText = "";
+	                        angular.forEach($scope.options, function (optionItem) {
+	                            if ($scope.isChecked($scope.getPropertyForObject(optionItem, $scope.settings.idProp))) {
+	                                displayText = $scope.getPropertyForObject(optionItem, $scope.settings.displayProp);
+	                            }
+	                        });
+	                        return displayText;
+	                    }
+						else {
                             return totalSelected + ' ' + $scope.texts.dynamicButtonTextSuffix;
                         }
                     }
@@ -262,7 +256,7 @@ function ($filter, $document, $compile, $parse) {
                 var finalObj = null;
 
                 if ($scope.settings.externalIdProp === '') {
-                    finalObj = $scope.options.find(findObj);
+                    finalObj = _.find($scope.options, findObj);
                 } else {
                     finalObj = findObj;
                 }
@@ -271,26 +265,23 @@ function ($filter, $document, $compile, $parse) {
                     clearObject($scope.selectedModel);
                     angular.extend($scope.selectedModel, finalObj);
                     $scope.externalEvents.onItemSelect(finalObj);
+                    if ($scope.settings.closeOnSelect) $scope.open = false;
 
                     return;
                 }
 
                 dontRemove = dontRemove || false;
 
-                var exists = false;
-
-                angular.forEach($scope.selectedModel, function (model) {
-                    if (model.id == findObj.id)
-                        exists = true;
-                });
+                var exists = $scope.findIndex($scope.selectedModel, findObj) !== -1;
 
                 if (!dontRemove && exists) {
-                    $scope.selectedModel.splice($scope.selectedModel.indexOf(findObj), 1);
+                    $scope.selectedModel.splice($scope.findIndex($scope.selectedModel, findObj), 1);
                     $scope.externalEvents.onItemDeselect(findObj);
                 } else if (!exists && ($scope.settings.selectionLimit === 0 || $scope.selectedModel.length < $scope.settings.selectionLimit)) {
                     $scope.selectedModel.push(finalObj);
                     $scope.externalEvents.onItemSelect(finalObj);
                 }
+                if ($scope.settings.closeOnSelect) $scope.open = false;
             };
 
             $scope.isChecked = function (id) {
@@ -298,16 +289,22 @@ function ($filter, $document, $compile, $parse) {
                     return $scope.selectedModel !== null && angular.isDefined($scope.selectedModel[$scope.settings.idProp]) && $scope.selectedModel[$scope.settings.idProp] === getFindObj(id)[$scope.settings.idProp];
                 }
 
-                var check = false;
-                angular.forEach($scope.selectedModel, function (model) {
-                    if (model.id == id)
-                        check = true;
-                });
-
-                return check;
+                return $scope.findIndex($scope.selectedModel, getFindObj(id)) !== -1;
             };
+
+			$scope.findIndex = function(objs, findObj){
+				 var itemIndex = -1;
+
+				 for (var index = 0; index < objs.length; index++) {
+					if (objs[index].id === findObj.id) {
+						itemIndex = index;
+						break;
+					}
+				}
+				return itemIndex;
+			};
 
             $scope.externalEvents.onInitDone();
         }
     };
-}]);
+}]);       
