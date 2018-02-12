@@ -1879,13 +1879,14 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
 			$scope.ptoDays = result;
 			angular.forEach($scope.ptoDays, function (ptoDay) {
 			    if (ptoDay.ptoType == ptoTypeId)
-			        $scope.ptoDates.push($scope.getPTODate(ptoDay.ptoDate));
+			        ptoDay.ptoDate = $scope.getPTODate(ptoDay.ptoDate);
+			    $scope.ptoDates.push(ptoDay);
 			});
 
             var ptoModalInstance = $modal.open({
                 templateUrl: 'ptoDates.html',
                 controller: 'modalInstanceCtrl',
-                title: "PTO Taken",
+                title: "PTO hours",
                 size: 'sm',
                 backdrop: 'static',
                 keyboard: false,

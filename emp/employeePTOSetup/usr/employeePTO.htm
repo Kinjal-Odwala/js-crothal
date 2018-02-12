@@ -473,7 +473,7 @@
                             <tr class="heading" role="row">
                                 <th style="text-align:center;width:5%">#</th>
                                 <th style="text-align:center;width:30%">PTO Type</th>
-                                <th style="text-align:center;width:20%">PTO Taken</th>
+                                <th style="text-align:center;width:20%">PTO hours</th>
                                 <th style="text-align:center;width:20%">Balance Hours</th>
                                 <th style="text-align:center;width:30%">Status</th>
                                 <th style="width:1%"></th>
@@ -483,12 +483,12 @@
                             <tr ng-repeat="item in empPTOBalanceHours">
                                 <td style="text-align:center;width:5%;line-height:normal">{{$index + 1}}</td>
                                 <td style="text-align:left;width:30%;line-height:normal">{{item.ptoTypeTitle}}</td>
-                                <td style="text-align:left;width:20%;line-height:normal">
-                                    <a ng-show="item.ptoTaken != '0'" class="ptoDays" href="" ng-click="showPTODates(item.ptoType)">{{item.ptoTaken}}</a>
-                                    <span ng-show="item.ptoTaken == '0'">{{item.ptoTaken}}</span>
+                                <td style="text-align:right;width:20%;line-height:normal">
+                                    <a ng-show="item.ptoTaken != '0.00'" class="ptoDays" href="" ng-click="showPTODates(item.ptoType)">{{item.ptoTaken}}</a>
+                                    <span ng-show="item.ptoTaken == '0.00'">{{item.ptoTaken}}</span>
                                 </td>
                                 <td style="text-align:left;width:20%;line-height:normal">{{item.balanceHours}}</td>
-                                <td style="text-align:left;width:30%;line-height:normal">{{item.ptoStatus}}</td>
+                                <td style="text-align:right;width:30%;line-height:normal">{{item.ptoStatus}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -515,14 +515,16 @@
 			        <thead>
 			            <tr class="gridHeader" role="row">
 			                <th width="70px" style="text-align:center">#</th>
-			                <th width="520px" style="text-align:center">Date</th>
+			                <th width="300" style="text-align:center">Date</th>
+                            <th width="220px" style="text-align:center">Hours</th>
 			                <th width="10px"></th>
 			            </tr>
 			        </thead>
 			        <tbody style="max-height:400px;min-height:400px">
 			            <tr ng-repeat="item in ptoDates track by $index">
 			                <td width="70px" align ="center">{{$index + 1}}</td>
-			                <td width="530px">{{item}}</td>
+			                <td style="width:300px">{{item.ptoDate}}</td>
+                            <td style="text-align:right;width:220px">{{item.hours}}</td>
 			             </tr>
 			        </tbody>
 	    		</table>
