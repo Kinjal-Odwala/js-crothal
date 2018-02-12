@@ -184,6 +184,10 @@ var deserializeXml = function(xml, nodeName, options) {
 
 pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$modal', function ($scope, EmpActions, $filter, $sce, $modal) {
     $scope.ptoYears = [];
+    $scope.ptoTypes = [];
+    $scope.ptoPlanTypes = [];
+    $scope.ptoPlans = [];
+    $scope.selectedPTOPlanAssignment = "";
     $scope.selectedYear = null;
     $scope.ptoTypePayCodes = null;
     modified(false);
@@ -229,7 +233,6 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
     $scope.lastSelectedPlanType = null;
     $scope.lastSelectedPlan = null;
     $scope.ptoDay = {};
-
     $scope.dateOptions = {
         formatYear: 'yy',
         startingDay: 1,
@@ -418,7 +421,6 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
     $scope.onPtoTypesTabClick = function (ptoType) {
         if (editStatus())
             return;
-        
         $scope.loadingTitle = " Loading...";
         $scope.pageStatus = 'Loading, Please Wait...';
         setStatus("Loading");
@@ -426,38 +428,25 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.ptoType.payCode = null;
         $scope.selectedptoTypePayCode = null;
         $scope.selectedptoTypePayCodeId = null;
+        if ($scope.ptoTypes.length <= 0) {          
+            getPTOTypesList();
+            $scope.pageStatus = 'Normal';
+            setStatus('Normal');
+            modified(false);
+        }
+        else {
+            $scope.pageStatus = 'Normal';
+            setStatus('Normal');
+            modified(false);
+        }
 
-        EmpActions.getPTOTypes(function (result) {
-            $scope.ptoTypes = result;
-            EmpActions.getPayCodes(function (result) {
-                $scope.payCodes = result;
-                angular.forEach($scope.ptoTypes, function (ptoType) {
-                    EmpActions.getPTOTypePayCodes(ptoType.id, function (result) {
-                        $scope.ptoTypePayCodes = result;
-                        ptoType.payCodeId = $scope.ptoTypePayCodes[0].payCodeId;
-                        for (var index = 0; index < $scope.payCodes.length; index++) {
-                            if (ptoType.payCodeId == $scope.payCodes[index].id) {
-                                ptoType.payCode = $scope.payCodes[index].brief + ' - ' + $scope.payCodes[index].name;
-                                break;
-                            }
-                        }
-                    });
-                });
-                $scope.pageStatus = 'Normal';
-                setStatus('Normal');
-                modified(false);
-            });
-        });
-
-        EmpActions.getPayCodes(function (result) {
-            $scope.payCodes = result;
-        });
         $scope.ptoForm.payCode.$setValidity("required", true);
     };
 
     $scope.onPTOtypeSelected = function (item) {
         if (editStatus())
             return;
+
         $scope.selectedPTOtype = item;
         $scope.loadingTitle = " Loading...";
         $scope.pageStatus = 'Loading, Please Wait...';
@@ -502,21 +491,16 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
 
     $scope.savePTOType = function () {
         if ($scope.ptoForm.payCode.$valid && $scope.selectedPTOtype !== null && $scope.selectedPTOtype !== undefined) {
+            $scope.pageLoading = true;
             EmpActions.actionSaveItem($scope, "PTO Types", function (data, status) {
-                EmpActions.getPTOTypes(function (result) {
-                    $scope.ptoTypes = result;
-                    EmpActions.getPTOTypePayCodes($scope.selectedPTOtype.id, function (result) {
-                        $scope.ptoTypePayCodes = result;
-                        $scope.ptoType.payCode = $scope.ptoTypePayCodes[0].payCodeId;
-                        $scope.selectedptoTypePayCode = $scope.ptoTypePayCodes[0].payCodeId;
-                        $scope.selectedptoTypePayCodeId = $scope.ptoTypePayCodes[0].id;
-                    });
-                    $scope.$apply(function () {
-                        $scope.pageLoading = false;
-                    });
-                    setStatus("Saved");
-                    modified(false);
+
+                getPTOTypesList();
+                $scope.$apply(function () {
+                    $scope.pageLoading = false;
                 });
+                setStatus("Saved");
+                modified(false);
+
             });
         }
         else {
@@ -527,11 +511,36 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
                 alert("Please select a PTO Type to save the changes.");
         }
     };
+    var getPTOTypesList = function() {
+       
+        EmpActions.getPTOTypes(function (result) {
+            $scope.ptoTypes = result;
+            EmpActions.getPayCodes(function (result) {
+                $scope.payCodes = result;
+              
+                EmpActions.getPTOTypePayCodes(0, function (result) {
+                    $scope.ptoTypePayCodes = result;
+                    angular.forEach($scope.ptoTypes, function (ptoType) {
+                      ptoType.payCodes = $filter('filter')($scope.ptoTypePayCodes, function(item){return (item.ptoTypeId==ptoType.id)}, true);
+                        if (ptoType.payCodes.length>0) {
+                            for (var index = 0; index < $scope.payCodes.length; index++) {
+                                if (ptoType.payCodes[0].payCodeId == $scope.payCodes[index].id) {
+                                    ptoType.payCode = $scope.payCodes[index].brief + ' - ' + $scope.payCodes[index].name;
+                                    break;
+                                }
+                            }
+                        }
+                    });
+                });
+
+            });
+        });
+    }
 
     $scope.onPlanTypeTabClick = function (planType) {
         if (editStatus())
             return;
-     
+
         $scope.loadingTitle = " Loading...";
         $scope.pageStatus = 'Loading, Please Wait...';
         setStatus("Loading");
@@ -552,32 +561,45 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.ptoForm.status.$setValidity("required", true);
         $scope.lastSelectedPlanType = null;
         $scope.assignedPlanType = false;
-
-        EmpActions.getPTOPlanTypes(function (result) {
-            $scope.ptoPlanTypes = result;
-            angular.forEach($scope.ptoPlanTypes, function (planType, index) {
-                if (planType.fullTime === true) {
-                    planType.statusCategory = "Full Time";
-                    if (planType.partTime === true)
-                        planType.statusCategory = "Full Time, Part Time";
-                }
-                else if (planType.partTime === true) {
-                    planType.statusCategory = "Part Time";
-                }       
-
-                if (planType.payStatusSalary === true) {
-                    planType.payStatus = "Salary";
-                    if (planType.payStatusHourly === true)
-                        planType.payStatus = "Salary, Hourly";
-                }
-                else if (planType.payStatusHourly === true) {
-                    planType.payStatus = "Hourly";
-                }
-            })
+        
+        if ($scope.ptoPlanTypes.length <= 0) {
+            EmpActions.getPTOPlanTypes(function (result) {               
+                $scope.ptoPlanTypes = result;
+                ptoPlanTypesAssigment();
+                setStatus("Normal");
+                $scope.pageStatus = 'Normal';
+                $scope.pageLoading = false;
+            });
+        }
+        else {
+           ptoPlanTypesAssigment();
             setStatus("Normal");
             $scope.pageStatus = 'Normal';
             $scope.pageLoading = false;
-        });
+        }
+    };
+
+   var ptoPlanTypesAssigment = function() {
+
+       angular.forEach($scope.ptoPlanTypes, function (planType, index) {
+           if (planType.fullTime === true) {
+               planType.statusCategory = "Full Time";
+               if (planType.partTime === true)
+                   planType.statusCategory = "Full Time, Part Time";
+           }
+           else if (planType.partTime === true) {
+               planType.statusCategory = "Part Time";
+           }
+
+           if (planType.payStatusSalary === true) {
+               planType.payStatus = "Salary";
+               if (planType.payStatusHourly === true)
+                   planType.payStatus = "Salary, Hourly";
+           }
+           else if (planType.payStatusHourly === true) {
+               planType.payStatus = "Hourly";
+           }
+       });
     };
 
     $scope.onPTOPlanTypeSelected = function (item) {
@@ -993,25 +1015,32 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.planYears = [];
         $scope.assigned = false;
         $scope.selectedWageTypes = [];
-
         $scope.loadingTitle = " Loading...";
         $scope.pageStatus = 'Loading, Please Wait...';
         setStatus("Loading");
-        EmpActions.getPTOPlans($scope.ptoPlan.ptoYear, function (result) {
-            $scope.ptoPlans = result;
-        });
-        EmpActions.getPTOPlanTypes(function (result) {
-            $scope.ptoPlanTypes = result;
-        });
-        EmpActions.getPTOTypes(function (result) {
-            $scope.ptoTypes = result;
-        });
+
+        if ($scope.ptoPlans.length <=0 ) {
+            EmpActions.getPTOPlans($scope.ptoPlan.ptoYear, function (result) {
+                $scope.ptoPlans = result;
+            });
+        }
+        if ($scope.ptoPlanTypes.length <=0 ) {
+            EmpActions.getPTOPlanTypes(function (result) {
+                $scope.ptoPlanTypes = result;
+            });         
+        }
+        if ($scope.ptoTypes.length <=0 ) {
+            EmpActions.getPTOTypes(function (result) {
+                $scope.ptoTypes = result;
+            });
+        }
+        
         EmpActions.getWageTypes(function (result) {
             $scope.planWageTypes = result;
             $scope.pageStatus = 'Normal';
             setStatus('Normal');
             modified(false);
-        });
+        });         
        
         for (var year = 0; year < $scope.ptoYears.length; year++) {
             if ($scope.ptoYears[year].active) {
@@ -1026,7 +1055,6 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         setStatus("Loading");
         $scope.assignment.ptoAssignYear = $scope.ptoPlan.ptoYear;
         $scope.ptoDay.ptoYear = $scope.ptoPlan.ptoYear;
-        $scope.ptoPlans = [];
         EmpActions.getPTOPlans($scope.ptoPlan.ptoYear, function (result) {
             $scope.ptoPlans = result;
             $scope.pageLoading = false;
@@ -1729,28 +1757,36 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
     };
 
     $scope.showEmployees = function () {
-		$scope.unAssignedEmployees = [];
+        $scope.unAssignedEmployees = [];       
         $scope.loadingTitle = " Loading...";
         $scope.pageStatus = "Loading, Please Wait...";
         setStatus("Loading");
-    
-        EmpActions.getEmployees($scope.assignment.hcmHouseCode, $scope.assignment.ptoAssignYear, $scope.selectedPTOPlanAssignment.ptoPlanId, $scope.selectedPTOPlanAssignment.groupType, 0, function (employees) {
-			$scope.unAssignedEmployees = employees;
+       
+        if ($scope.selectedPTOPlanAssignment != "") {
+            EmpActions.getEmployees($scope.assignment.hcmHouseCode, $scope.assignment.ptoAssignYear, $scope.selectedPTOPlanAssignment.ptoPlanId, $scope.selectedPTOPlanAssignment.groupType, 0, function (employees) {
+                $scope.unAssignedEmployees = employees;
 
-            var ptoModalInstance = $modal.open({
-                templateUrl: 'unAssignedEmployee.html',
-                controller: 'modalInstanceCtrl',
-                title: "Unassigned Employees",
-                size: 'sm',
-                backdrop: 'static',
-                keyboard: false,
-                scope: $scope
+                var ptoModalInstance = $modal.open({
+                    templateUrl: 'unAssignedEmployee.html',
+                    controller: 'modalInstanceCtrl',
+                    title: "Unassigned Employees",
+                    size: 'sm',
+                    backdrop: 'static',
+                    keyboard: false,
+                    scope: $scope
+                });
+
+                $scope.pageLoading = false;
+                $scope.pageStatus = "Normal";
+                setStatus("Normal");
             });
-
+            $scope.selectedPTOPlanAssignment = "";
+        }
+        else {
             $scope.pageLoading = false;
             $scope.pageStatus = "Normal";
             setStatus("Normal");
-        });
+        }
     };
 
     $scope.daysTabClick = function () {
@@ -1791,7 +1827,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
     $scope.ptoDaySearch = function () {
         $scope.dayEmployees = [];
         $scope.employeePTOs = [];
-		$scope.empPTOBalanceHours = [];
+        $scope.empPTOBalanceHours = [];
         $scope.loadingTitle = " Loading...";
         $scope.pageStatus = "Loading, Please Wait...";
         setStatus("Loading");
@@ -1834,17 +1870,17 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
 
     $scope.showPTODates = function(ptoTypeId) {
 		$scope.ptoDays = [];
-        $scope.ptoDates = [];
+		$scope.ptoDates = [];
         $scope.loadingTitle = " Loading...";
         $scope.pageStatus = "Loading, Please Wait...";
-        setStatus("Loading");
+        setStatus("Loading");       
 
 		EmpActions.getPTODays($scope.selectedEmployee.id, $scope.ptoDay.ptoYear, ptoTypeId, function(result) {
 			$scope.ptoDays = result;
 			angular.forEach($scope.ptoDays, function (ptoDay) {
-                if (ptoDay.ptoType == ptoTypeId)
-                    $scope.ptoDates.push($scope.getPTODate(ptoDay.ptoDate));
-            });
+			    if (ptoDay.ptoType == ptoTypeId)
+			        $scope.ptoDates.push($scope.getPTODate(ptoDay.ptoDate));
+			});
 
             var ptoModalInstance = $modal.open({
                 templateUrl: 'ptoDates.html',
@@ -2255,7 +2291,6 @@ pto.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
 		var intItems = ['id', 'ptoYearId', 'stateType', 'houseCodeId', 'ptoPlanId', 'ptoPlanType', 'ptoType', 'minHours', 'maxHours', 'groupType', 'appZipCodeType'];
 		var boolItems = ['active', 'hourly', 'salary', 'excludeUnion', 'ptoPlanTypeFullTime', 'ptoPlanTypePartTime'];
         var dateItems = ["startDate", "endDate"];
-
         apiRequest('emp', 'iiCache', '<criteria>storeId:ptoPlanAssignments,userId:[user]'
            + ',ptoYearId:' + ptoYearId
            + ',stateType:' + 0
