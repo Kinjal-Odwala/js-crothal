@@ -93,9 +93,7 @@
                         <div class="row" ng-class="{'has-error':ptoForm.payCode.$invalid}">
                              <label class="col-md-2 control-label">Pay Code:</label>
                             <div class="col-md-4">
-                                <select name="payCode" class="form-control input-sm" ng-model="ptoType.payCode" ng-options="item.id as item.brief + ' - ' + item.name for item in payCodes" ng-blur="onPayCodeChange(ptoType.payCode)">
-                                     <option value=""></option>
-                                </select>  
+                               <div ng-dropdown-multiselect="" options="payCodesList" selected-model="selectedptoTypePayCodes" checkBoxes="true" extra-settings="payCodeSettings"></div>
                             </div>
                         </div>
                         <div class="row" ng-style="{'min-height': payCodeDetailHeight + 'px'}"></div>

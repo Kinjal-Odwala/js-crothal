@@ -190,6 +190,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
     $scope.selectedPTOPlanAssignment = "";
     $scope.selectedYear = null;
     $scope.ptoTypePayCodes = null;
+    $scope.ptoTypePayCodesSelected = null;
     modified(false);
     checkStatus();
     setStatus("Loading");
@@ -428,6 +429,13 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.ptoType.payCode = null;
         $scope.selectedptoTypePayCode = null;
         $scope.selectedptoTypePayCodeId = null;
+        $scope.ptoTypePayCodesSelected = [];
+
+        $scope.payCodeSettings = {
+            scrollableHeight: '300px',
+            scrollable: true,
+            idProperty: 'id'
+        };
         if ($scope.ptoTypes.length <= 0) {          
             getPTOTypesList();
             $scope.pageStatus = 'Normal';
@@ -452,11 +460,15 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.pageStatus = 'Loading, Please Wait...';
         setStatus("Loading");
         EmpActions.getPTOTypePayCodes(item.id, function (result) {
-            $scope.ptoTypePayCodes = result;
-            $scope.ptoType.payCode = $scope.ptoTypePayCodes[0].payCodeId;
-            $scope.selectedptoTypePayCode = $scope.ptoTypePayCodes[0].payCodeId;
-            $scope.selectedptoTypePayCodeId = $scope.ptoTypePayCodes[0].id;
-            $scope.ptoForm.payCode.$setValidity("required", true);
+            $scope.ptoTypePayCodesSelected = result;
+            $scope.ptoTypePayCodeRows = result;
+            $scope.selectedptoTypePayCodes = [];
+            angular.forEach($scope.ptoTypePayCodesSelected, function (payCodeType) {
+                angular.forEach($scope.payCodesList, function (payCode) {
+                    if (payCode.id === payCodeType.payCodeId && payCodeType.active != "false")
+                        $scope.selectedptoTypePayCodes.push(payCode);
+                });
+            });
             $scope.pageStatus = 'Normal';
             setStatus("Normal");
             modified(false);
@@ -478,61 +490,85 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         if (editStatus())
             return;
 
-        if ($scope.selectedPTOtype !== null && $scope.selectedPTOtype !== undefined)
-                $scope.ptoType.payCode = $scope.selectedptoTypePayCode;
-        else
-            $scope.ptoType.payCode = "";
-
-        $scope.ptoForm.payCode.$setValidity("required", true);
+        if ($scope.selectedptoTypePayCodes.length > 0) {
+            $scope.selectedptoTypePayCodes = [];
+            angular.forEach($scope.ptoTypePayCodesSelected, function (payCodeType) {
+                angular.forEach($scope.payCodesList, function (payCode) {
+                    if (payCode.id === payCodeType.payCodeId && payCodeType.active == "true")
+                        $scope.selectedptoTypePayCodes.push(payCode);
+                });
+            });
+        }
         $scope.pageStatus = 'Normal';
         setStatus('Normal');
         modified(false);
     };
 
     $scope.savePTOType = function () {
-        if ($scope.ptoForm.payCode.$valid && $scope.selectedPTOtype !== null && $scope.selectedPTOtype !== undefined) {
-            $scope.pageLoading = true;
-            EmpActions.actionSaveItem($scope, "PTO Types", function (data, status) {
+        if ($scope.selectedptoTypePayCodes.length > 0) {
+            $scope.pageLoading = true;           
 
-                getPTOTypesList();
-                $scope.$apply(function () {
-                    $scope.pageLoading = false;
+            EmpActions.getPTOTypePayCodes($scope.selectedPTOtype.id, function (result) {
+                $scope.ptoTypePayCodeRows = result;
+                EmpActions.actionSaveItem($scope, "PTO Types", function (data, status) {
+                    $scope.ptoTypes = [];
+                    $scope.ptoTypePayCodes = [];
+                    $scope.payCodes = [];
+                    getPTOTypesList();
+                    $scope.$apply(function () {
+                        $scope.pageLoading = false;
+
+                    });
+                    setStatus("Saved");
+                    modified(false);
+
                 });
-                setStatus("Saved");
-                modified(false);
-
             });
         }
-        else {
-            $scope.ptoForm.payCode.$setValidity("required", false);
-            if ($scope.selectedPTOtype !== null && $scope.selectedPTOtype !== undefined)
-                showToaster();
-            else
-                alert("Please select a PTO Type to save the changes.");
+        else {           
+            alert("Please select a PTO Type to save the changes.");
         }
     };
     var getPTOTypesList = function() {
        
+        $scope.payCodesList = [];
         EmpActions.getPTOTypes(function (result) {
             $scope.ptoTypes = result;
             EmpActions.getPayCodes(function (result) {
                 $scope.payCodes = result;
-              
+
+                $scope.payCodesList = result;
+
+                //to display in drop down control
+                var regularExpression = new RegExp("^([0-9].*?)-");
+                angular.forEach($scope.payCodesList, function (payCodeItem) {
+                    if (!regularExpression.test(payCodeItem.name)) {
+                        payCodeItem.name = payCodeItem.brief + ' - ' + payCodeItem.name;
+                    }
+                });
+
                 EmpActions.getPTOTypePayCodes(0, function (result) {
                     $scope.ptoTypePayCodes = result;
                     angular.forEach($scope.ptoTypes, function (ptoType) {
-                      ptoType.payCodes = $filter('filter')($scope.ptoTypePayCodes, function(item){return (item.ptoTypeId==ptoType.id)}, true);
-                        if (ptoType.payCodes.length>0) {
-                            for (var index = 0; index < $scope.payCodes.length; index++) {
-                                if (ptoType.payCodes[0].payCodeId == $scope.payCodes[index].id) {
-                                    ptoType.payCode = $scope.payCodes[index].brief + ' - ' + $scope.payCodes[index].name;
-                                    break;
+                    var payCodeValue = "";
+                        angular.forEach($scope.ptoTypePayCodes, function (ptoTypePayCode) {
+                            ptoType.payCodeId = ptoTypePayCode.payCodeId;
+                            ptoType.payCode = "";
+                            for (var index = 0; index < $scope.payCodes.length - 1; index++) {
+
+                                if (ptoType.id == ptoTypePayCode.ptoTypeId && ptoType.payCodeId == $scope.payCodes[index].id && ptoTypePayCode.active != "false") {
+                                    if (payCodeValue === "") {
+                                        payCodeValue = $scope.payCodes[index].name;
+                                    }
+                                    else if ($scope.ptoTypePayCodes.length > 1) {
+                                        payCodeValue = payCodeValue + "," + $scope.payCodes[index].name;
+                                    }
                                 }
                             }
-                        }
+                            ptoType.payCode = payCodeValue;
+                        });
                     });
                 });
-
             });
         });
     }
@@ -2400,12 +2436,53 @@ pto.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
             xml += '/>';
         }
         else if (action === "PTO Types") {
-            xml += '<ptoTypePayCode';
-            xml += ' id="' + $scope.selectedptoTypePayCodeId + '"';
-            xml += ' ptoTypeId="' + $scope.selectedPTOtype.id + '"';
-            xml += ' payCodeId="' + $scope.ptoType.payCode + '"';
-            xml += ' add="true"';
-            xml += '/>';
+            var insertedId = "";
+            //update the row as active true/false
+            for (var index = 0; index <= $scope.ptoTypePayCodeRows.length - 1; index++) {
+                var active = "false";
+                var update = false;
+                var ptoTypePayCodeSelectedItem = $filter('filter')($scope.selectedptoTypePayCodes, { id: $scope.ptoTypePayCodeRows[index].payCodeId }, true);
+
+                if (ptoTypePayCodeSelectedItem.length == 0 && $scope.ptoTypePayCodeRows[index].active == "true") {
+                    update = true;
+                    active = "false";
+                }
+                else if (ptoTypePayCodeSelectedItem.length == 0 && $scope.ptoTypePayCodeRows[index].active == "false") {
+                    update = false;
+                    active = "false";
+                }
+                else if (ptoTypePayCodeSelectedItem.length > 0 && $scope.ptoTypePayCodeRows[index].active == "true") {
+                    update = false;
+                }
+                else if (ptoTypePayCodeSelectedItem.length > 0 && $scope.ptoTypePayCodeRows[index].active == "false") {
+                    update = true;
+                    active = "true";
+                }
+
+                if (active && update) {
+                    xml += '<ptoTypePayCode';
+                    xml += ' id="' + $scope.ptoTypePayCodeRows[index].id + '"';
+                    xml += ' ptoTypeId="' + $scope.selectedPTOtype.id + '"';
+                    xml += ' payCodeId="' + $scope.ptoTypePayCodeRows[index].payCodeId + '"';
+                    xml += ' active="' + active + '"';
+                    xml += ' add="true"';
+
+                    xml += '/>';
+                }
+            }
+            //to insert the row
+            for (var index = 0; index <= $scope.selectedptoTypePayCodes.length - 1; index++) {
+                ptoTypePayCodeRow = $filter('filter')($scope.ptoTypePayCodeRows, { payCodeId: $scope.selectedptoTypePayCodes[index].id }, true);
+                if (ptoTypePayCodeRow.length == 0) {
+                    xml += '<ptoTypePayCode';
+                    xml += ' id="' + 0 + '"';
+                    xml += ' ptoTypeId="' + $scope.selectedPTOtype.id + '"';
+                    xml += ' payCodeId="' + $scope.selectedptoTypePayCodes[index].id + '"';
+                    xml += ' active="true"';
+                    xml += ' add="true"';
+                    xml += '/>';
+                }
+            }
         }
         else if (action === "PTO Plan Types") {
             xml += '<ptoPlanType';

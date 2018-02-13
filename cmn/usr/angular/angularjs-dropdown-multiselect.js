@@ -74,7 +74,7 @@ function ($filter, $document, $compile, $parse) {
                 scrollable: false,
                 scrollableHeight: '300px',
                 closeOnBlur: true,
-                displayProp: 'label',
+                displayProp: 'name',
                 idProp: 'id',
                 externalIdProp: 'id',
                 enableSearch: false,
