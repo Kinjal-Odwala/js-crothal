@@ -1036,6 +1036,8 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.ptoPlan.excludeUnion = false;
         $scope.ptoPlan.startDate = null;
         $scope.ptoPlan.endDate = null;
+        $scope.ptoPlan.balanceCarryOver = true;
+        $scope.ptoPlan.carryOverLimit = null;
         $scope.isClone = false;
         $scope.ptoForm.planForm.planName.$setValidity("required", true);
         $scope.ptoForm.planForm.planType.$setValidity("required", true);
@@ -1114,7 +1116,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
     $scope.onPTOPlanSelected = function (item) {
         if (editStatus())
             return;
-
+        
         $scope.loadingTitle = " Loading...";
         $scope.pageStatus = 'Loading, Please Wait...';
         setStatus("Loading");
@@ -1131,6 +1133,8 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.ptoPlan.startDate = item.startDate;
         $scope.ptoPlan.endDate = item.endDate;
         $scope.ptoPlan.excludeUnion = item.excludeUnion;
+        $scope.ptoPlan.balanceCarryOver = item.balanceCarryOver;
+        $scope.ptoPlan.carryOverLimit = item.carryOverLimit;
         $scope.isClone = false;
         $scope.ptoForm.planForm.planName.$setValidity("required", true);
         $scope.ptoForm.planForm.planType.$setValidity("required", true);
@@ -1140,6 +1144,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.ptoForm.planForm.endDate.$setValidity("required", true);
         $scope.ptoForm.planForm.planDays.$setValidity("required", true);
         $scope.ptoForm.planForm.accrualInterval.$setValidity("required", true);
+        $scope.ptoForm.planForm.carryoverLimit.$setValidity("required", true);
         $scope.ptoPlanAssignments = [];
         $scope.assigned = false;
         $scope.activeYears = [];
@@ -1234,6 +1239,8 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.cloneToYear = "";
         $scope.ptoPlan.cloneFromYear = null;
         $scope.ptoPlan.excludeUnion = false;
+        $scope.ptoPlan.balanceCarryOver = true;
+        $scope.ptoPlan.carryOverLimit = null;
         $scope.isClone = false;
         $scope.ptoForm.planForm.planName.$setValidity("required", true);
         $scope.ptoForm.planForm.planType.$setValidity("required", true);
@@ -1243,6 +1250,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.ptoForm.planForm.endDate.$setValidity("required", true);
         $scope.ptoForm.planForm.planDays.$setValidity("required", true);
         $scope.ptoForm.planForm.accrualInterval.$setValidity("required", true);
+        $scope.ptoForm.planForm.carryoverLimit.$invalid("required", true);
         $scope.planYears = [];
         $scope.assigned = false;
         $scope.selectedWageTypes = [];
@@ -1280,6 +1288,8 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
             $scope.ptoPlan.startDate = $scope.selectedPTOPlan.startDate;
             $scope.ptoPlan.endDate = $scope.selectedPTOPlan.endDate;
             $scope.ptoPlan.excludeUnion = $scope.selectedPTOPlan.excludeUnion;
+            $scope.ptoPlan.balanceCarryOver = $scope.selectedPTOPlan.balanceCarryOver;
+            $scope.ptoPlan.carryOverLimit = $scope.selectedPTOPlan.carryOverLimit;
             $scope.isClone = false;
         }
         else if ($scope.lastSelectedPlan !== null && $scope.isClone == false) {
@@ -1296,6 +1306,14 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
     };
 
     $scope.savePTOPlan = function () {
+        var isCarryOver =false;
+        if ($scope.ptoPlan.balanceCarryOver && $scope.ptoPlan.carryOverLimit != 0 && $scope.ptoPlan.carryOverLimit != null)
+            isCarryOver = true;
+        else if ($scope.ptoPlan.balanceCarryOver && $scope.ptoPlan.carryOverLimit == 0)
+            isCarryOver = false;
+        else if (!$scope.ptoPlan.balanceCarryOver && $scope.ptoPlan.carryOverLimit == 0)
+            isCarryOver = true;
+
         if ($scope.isClone === true && $scope.ptoForm.planForm.fromYear.$valid && $scope.ptoPlan.cloneFromYear !== null && $scope.ptoPlan.cloneFromYear !== "" && $scope.ptoPlan.cloneFromYear !== undefined) {
             angular.forEach($scope.ptoYears, function (item) {
                 if (item.name == $scope.ptoPlan.cloneFromYear.name)
@@ -1322,7 +1340,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         }
         else if ($scope.ptoForm.planForm.$valid && $scope.ptoPlan.ptoPlanName !== null && $scope.ptoPlan.ptoPlanType !== null && $scope.ptoPlan.ptoType !== null
                  && $scope.ptoPlan.planPtoYear !== null && $scope.ptoPlan.ptoPlanDays !== null && $scope.ptoPlan.ptoPlanAccrualInterval !== null
-                 && $scope.ptoPlan.startDate !== null && $scope.ptoPlan.endDate !== null) {
+                 && $scope.ptoPlan.startDate !== null && $scope.ptoPlan.endDate !== null && isCarryOver) {
             EmpActions.getPTOPlans($scope.ptoPlan.planPtoYear, function (result) {
                 $scope.plans = [];
                 $scope.plans = result;
@@ -1417,6 +1435,12 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         
         if ($scope.ptoPlan.endDate === null || $scope.ptoPlan.endDate === undefined || $scope.ptoPlan.endDate === "")
             $scope.ptoForm.planForm.endDate.$setValidity("required", false);
+
+        if ($scope.ptoPlan.carryOverLimit === null || $scope.ptoPlan.carryOverLimit === "")
+            $scope.ptoForm.planForm.carryoverLimit.$setValidity("required", false);
+        else
+            $scope.ptoForm.planForm.carryoverLimit.$setValidity("required", true);
+       
     };
 
     $scope.onPTOPlanChange = function (detail) {
@@ -1568,7 +1592,15 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
                 setStatus('Edit');
                 modified(true);
             }
-        }
+        } else if (detail === 'carryOver') {
+            if ($scope.ptoPlan.carryOverLimit === null || $scope.ptoPlan.carryOverLimit === "")
+                $scope.ptoForm.planForm.carryoverLimit.$setValidity("required", false);
+                else {
+                $scope.ptoForm.planForm.carryoverLimit.$setValidity("required", true);
+                    setStatus('Edit');
+                    modified(true);
+                }
+            } 
     };
 
     $scope.onAccrualChange = function (selected) {
@@ -1579,6 +1611,15 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
             $scope.ptoForm.planForm.accrualInterval.$setValidity("required", true);
         }
     };
+
+    $scope.onbalanceCarryOverChange = function (selected) {
+        setStatus('Edit');
+        modified(true);
+        if (!selected) {
+            $scope.ptoPlan.carryOverLimit = 0;
+            $scope.ptoForm.planForm.carryoverLimit.$setValidity("required", true);
+        }
+    };    
 
     $scope.getDate = function (date) {
         if (!angular.isDefined(date))
@@ -2302,7 +2343,7 @@ pto.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
 			+ ',active:' + -1
 			+ ',</criteria>', function (xml) {
 			    if (callback) {
-			        cache.ptoPlans = deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id', 'houseCodeId', 'ptoYear', 'ptoType', 'ptoPlanType', 'wageType'], boolItems: ['accrual', 'active', 'excludeUnion'] });
+			        cache.ptoPlans = deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id', 'houseCodeId', 'ptoYear', 'ptoType', 'ptoPlanType', 'wageType'], boolItems: ['accrual', 'active', 'excludeUnion','balanceCarryOver'] });
 			        callback(cache.ptoPlans);
 			    }
 			});
@@ -2512,6 +2553,8 @@ pto.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
             xml += ' accrualInterval="' + $scope.ptoPlan.ptoPlanAccrualInterval + '"';
             xml += ' active="' + $scope.ptoPlan.ptoPlanActive + '"';
             xml += ' excludeUnion="' + $scope.ptoPlan.excludeUnion + '"';
+            xml += ' balanceCarryOver="' + $scope.ptoPlan.balanceCarryOver + '"';
+            xml += ' carryOverLimit="' + $scope.ptoPlan.carryOverLimit + '"';
             xml += '/>';
 
             for (var index = 0; index < $scope.selectedWageTypes.length; index++) {

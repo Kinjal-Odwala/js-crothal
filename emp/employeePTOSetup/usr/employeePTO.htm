@@ -236,7 +236,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="col-md-6"  style="padding-top: 13px; padding-right:15px; padding-left:15px;">
+                    <div class="col-md-6"  style="padding-top: 10px; padding-right:15px; padding-left:15px;">
                      <div class="col-md-12" ng-style="{'border':'1px solid rgba(0,0,0,.175)', 'min-height': ptoPlanDetailHeight + 'px'}">
                         <div class="row margin-bottom10" style="padding-bottom: 15px;"></div>
                         <div ng-show="!isClone">
@@ -246,35 +246,35 @@
                                 <input name="planName" class="form-control input-sm" ng-model="ptoPlan.ptoPlanName" ng-blur="onPTOPlanChange('name')" ng-disabled="assigned" maxlength="64"/>
                             </div>
                         </div>
-                        <div class="row" style="padding-top:5px;"></div>
+                        <div class="row" style="padding-top:4px;"></div>
                         <div class="row" ng-class="{'has-error':ptoForm.planForm.planType.$invalid}">
                              <label class="col-md-3 control-label">Plan Type:</label>
                              <div class="col-md-4">
                             <select name="planType" class="form-control input-sm" ng-model="ptoPlan.ptoPlanType" ng-disabled="assigned" ng-options="item.id as item.title for item in ptoPlanTypes" ng-blur="onPTOPlanChange('planType')"></select>  
                             </div>
                         </div>
-                        <div class="row" style="padding-top:5px;"></div>
+                        <div class="row" style="padding-top:4px;"></div>
                         <div class="row" ng-class="{'has-error':ptoForm.planForm.planPTOType.$invalid}">
                              <label class="col-md-3 control-label">PTO Type:</label>
                              <div class="col-md-4">
                             <select name="planPTOType" class="form-control input-sm" ng-model="ptoPlan.ptoType" ng-disabled="assigned" ng-options="item.id as item.brief for item in ptoTypes" ng-blur="onPTOPlanChange('ptoType')"></select>  
                             </div>
                         </div>
-                        <div class="row" style="padding-top:5px;"></div>
+                        <div class="row" style="padding-top:4px;"></div>
                         <div class="row" ng-class="{'has-error':ptoForm.planForm.planWageType.$invalid}">
                              <label class="col-md-3 control-label">Wage Type:</label>
                             <div class="col-md-4">
                                 <div ng-disabled="assigned" ng-class="{'disabled': assigned}" ng-dropdown-multiselect="" options="wageTypes" selected-model="selectedWageTypes" checkboxes="true" extra-settings="wageTypeSettings" assigned="assigned" ng-disabled="assigned"></div>
                             </div>
                         </div>
-                        <div class="row" style="padding-top:5px;"></div>
+                        <div class="row" style="padding-top:4px;"></div>
                         <div class="row" ng-class="{'has-error':ptoForm.planForm.planPtoYear.$invalid}">
                             <label class="col-md-3 control-label">PTO Year:</label>
                              <div class="col-md-4">
                             <select class="form-control input-sm" name="planPtoYear" ng-model="ptoPlan.planPtoYear" ng-disabled="assigned" ng-options="item.id as item.name for item in planYears" ng-blur="onPTOPlanChange('year')"></select>  
                             </div>
                         </div>
-                        <div class="row" style="padding-top:5px;"></div>
+                        <div class="row" style="padding-top:4px;"></div>
                         <div class="row" ng-class="{'has-error':ptoForm.planForm.startDate.$invalid}">
                             <div class="form-group">
                                  <label class="col-md-3 control-label">Start Date:</label>
@@ -283,21 +283,21 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row" style="padding-top:5px;"></div>
+                        <div class="row" style="padding-top:4px;"></div>
                         <div class="row" ng-class="{'has-error':ptoForm.planForm.endDate.$invalid}">
                              <label class="col-md-3 control-label">End Date:</label>
                             <div class="col-md-4">
                                 <pto-datepicker ng-class="{'disabled': assigned}" dt-option="dateOptions" dt-name="endDate" dt-popup="MM/dd/yyyy" ng-disabled="assigned" dt-model="ptoPlan.endDate" dt-blur="onEndDateChange()"></pto-datepicker>
                             </div>
                         </div>
-                        <div class="row" style="padding-top:5px;"></div>
+                        <div class="row" style="padding-top:4px;"></div>
                         <div class="row" ng-class="{'has-error':ptoForm.planForm.planDays.$invalid}">
                              <label class="col-md-3 control-label">Plan Days:</label>
                             <div class="col-md-4">
                                 <input name="planDays" class="form-control input-sm" ng-model="ptoPlan.ptoPlanDays" ng-disabled="assigned" maxlength="2" ng-blur="onPTOPlanChange('days')" pto-integer/>
                             </div>
                         </div>
-                        <div class="row" style="padding-top:5px;"></div>
+                        <div class="row" style="padding-top:4px;"></div>
                         <div class="row">
                             <label class="col-md-3 control-label">Accrual:</label>
                             <div class="col-md-4">
@@ -306,14 +306,14 @@
                                 </label>
                             </div>
                         </div>
-                        <div class="row" style="padding-top:5px;"></div>
+                        <div class="row" style="padding-top:4px;"></div>
                         <div class="row" ng-class="{'has-error':ptoForm.planForm.accrualInterval.$invalid}">
                              <label class="col-md-3 control-label">Accrual Interval:</label>
                             <div class="col-md-4">
                                 <input class="form-control input-sm" name="accrualInterval" maxlength="3" ng-disabled="!ptoPlan.ptoPlanAccrual || assigned" ng-model="ptoPlan.ptoPlanAccrualInterval" ng-blur="onPTOPlanChange('interval')" pto-integer/>
                             </div>
                         </div>
-                        <div class="row" style="padding-top:5px;"></div>
+                        <div class="row" style="padding-top:4px;"></div>
                         <div class="row">
                             <label class="col-md-3 control-label">Active:</label>
                             <div class="col-md-4">
@@ -322,7 +322,7 @@
                                 </label>
                             </div>
                         </div>
-                        <div class="row" style="padding-top:5px;"></div>
+                        <div class="row" style="padding-top:4px;"></div>
                         <div class="row">
                             <label class="col-md-3 control-label">Exclude Union:</label>
                             <div class="col-md-4">
@@ -331,6 +331,22 @@
                                 </label>
                             </div>
                         </div>
+                        <div class="row" style="padding-top:4px;"></div>
+                        <div class="row">
+                             <label class="col-md-3 control-label">Balance Carryover:</label>
+                             <div class="col-md-4">
+                                <label>
+                                    <input type="checkbox" name="balanceCarryover" ng-model="ptoPlan.balanceCarryOver" ng-disabled="assigned" ng-value="balanceCarryOver" ng-click="onbalanceCarryOverChange(ptoPlan.balanceCarryOver)"/>
+                                </label>
+                            </div>
+                        </div> 
+                        <div class="row" style="padding-top:4px;"></div>
+                        <div class="row"  ng-class="{'has-error':ptoForm.planForm.carryoverLimit.$invalid}">
+                            <label class="col-md-3 control-label">Carryover Limit:</label>
+                            <div class="col-md-4">
+                                <input class="form-control input-sm" name="carryoverLimit" maxlength="3" ng-disabled="!ptoPlan.balanceCarryOver || assigned"" ng-model="ptoPlan.carryOverLimit" ng-blur="onPTOPlanChange('carryOver')" pto-integer/>
+                            </div>
+                        </div>                                                                   
                     </div>
                     <div ng-show="isClone" style="padding-top:15px;">
                             <div class="row" ng-class="{'has-error':ptoForm.planForm.fromYear.$invalid}">
