@@ -27,10 +27,16 @@ ii.init.register( function() {
 		, hirNode: {type: Number}
 	};
 
+	fin.rev.invoiceSearch.jdeCompanyArgs = {
+		id: {type: Number}
+		, name: {type: String}
+	};
+
 	fin.rev.invoiceSearch.invoiceArgs = {
 		id: {type: Number}
 		, houseCode: {type: Number, required: false, defaultValue: 0}
 		, houseCodeBrief: {type: String, required: false, defaultValue: "0"}
+		, companyCode: {type: String, required: false, defaultValue: ""}
 		, invoiceNumber: {type: Number, required: false, defaultValue: 0}
 		, documentNumber: {type: String, required: false, defaultValue: ""}
 		, invoiceDate: {type: String, required: false, defaultValue: ""}
@@ -60,7 +66,7 @@ ii.init.register( function() {
 		, serviceLocation: {type: String, required: false, defaultValue: ""}
 		, poNumber: {type: String, required: false, defaultValue: ""}
 		, version: {type: Number, required: false, defaultValue: 0}
-		, active: {type: Boolean, required: false, defaultValue: true}		
+		, active: {type: Boolean, required: false, defaultValue: true}
 	};
 
 }, 2);
@@ -80,6 +86,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.rev.invoiceSearch.houseCodeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.rev.invoiceSearch.JdeCompany",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.rev.invoiceSearch.jdeCompanyArgs);
 			$.extend(this, args);
 		}
 	}

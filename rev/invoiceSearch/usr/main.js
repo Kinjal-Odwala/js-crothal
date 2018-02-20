@@ -33,7 +33,7 @@ ii.Class({
 			me.ajaxValidator = new ii.ajax.Validator(me.gateway);
 
 			if (!parent.fin.appUI.houseCodeId)
-				parent.fin.appUI.houseCodeId = 0;	
+				parent.fin.appUI.houseCodeId = 0;
 
 			me.validator = new ui.ctl.Input.Validation.Master();
 			me.session = new ii.Session(me.cache);
@@ -153,6 +153,23 @@ ii.Class({
 				required: false
 		    });
 
+			me.jdeCompany = new ui.ctl.Input.DropDown.Filtered({
+		        id: "JDECompany",
+				formatFunction: function( type ) { return type.name; },
+		        required: false
+		    });
+
+			me.jdeCompany.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation( function( isFinal, dataMap ) {
+
+					if (me.jdeCompany.lastBlurValue === "")
+						return;
+
+					if ((this.focused || this.touched) && me.jdeCompany.indexSelected === -1)
+						this.setInvalid("Please select the correct Company Code.");
+				});
+
 			me.anchorSearch = new ui.ctl.buttons.Sizeable({
 				id: "AnchorSearch",
 				className: "iiButton",
@@ -173,6 +190,7 @@ ii.Class({
 			me.invoiceGrid.addColumn("amount", "amount", "Amount", "Amount", 110);
 			me.invoiceGrid.addColumn("billTo", "billTo", "Customer", "Customer", null);
 			me.invoiceGrid.addColumn("houseCodeBrief", "houseCodeBrief", "House Code", "House Code", 110);
+			me.invoiceGrid.addColumn("companyCode", "companyCode", "Company Code", "Company Code", 120);
 			me.invoiceGrid.addColumn("invoiceDate", "invoiceDate", "Invoice Date", "Invoice Date", 110);
 			me.invoiceGrid.addColumn("collected", "collected", "Collected", "Collected", 110);
 			me.invoiceGrid.addColumn("credited", "credited", "Credited", "Credited", 110);
@@ -187,6 +205,7 @@ ii.Class({
 			$("#CustomerText").bind("keydown", me, me.actionSearchItem);
 			$("#ServiceLocationText").bind("keydown", me, me.actionSearchItem);
 			$("#PONumberText").bind("keydown", me, me.actionSearchItem);
+			$("#JDECompanyText").bind("keydown", me, me.actionSearchItem);
 
 			$("#pageLoading").css({
 				"opacity": "0.5",
@@ -205,6 +224,7 @@ ii.Class({
 			me.customer.resizeText();
 			me.serviceLocation.resizeText();
 			me.poNumber.resizeText();
+			me.jdeCompany.resizeText();
 			me.resize();
 		},
 
@@ -227,13 +247,21 @@ ii.Class({
 				injectionArray: me.houseCodes
 			});
 
+			me.jdeCompanys = [];
+			me.jdeCompanysStore = me.cache.register({
+				storeId: "fiscalJDECompanys",
+				itemConstructor: fin.rev.invoiceSearch.JdeCompany,
+				itemConstructorArgs: fin.rev.invoiceSearch.jdeCompanyArgs,
+				injectionArray: me.jdeCompanys
+			});
+
 			me.invoices = [];
 			me.invoiceStore = me.cache.register({
 				storeId: "revInvoices",
 				itemConstructor: fin.rev.invoiceSearch.Invoice,
 				itemConstructorArgs: fin.rev.invoiceSearch.invoiceArgs,
 				injectionArray: me.invoices
-			});			
+			});
 		},
 
 		setStatus: function(status) {
@@ -280,9 +308,9 @@ ii.Class({
 				me.houseCodeGlobalParametersUpdate(false);
 			}
 
-			me.resizeControls();	
-			me.setStatus("Loaded");
-			$("#pageLoading").fadeOut("slow");
+			me.resizeControls();
+			me.jdeCompany.fetchingData();
+			me.jdeCompanysStore.fetch("userId:[user],", me.jdeCompanysLoaded, me);
 		},
 
 		houseCodeChanged: function() {
@@ -290,6 +318,13 @@ ii.Class({
 
 			$("#pageLoading").fadeIn("slow");
 			me.actionLoadInvoices();
+		},
+
+		jdeCompanysLoaded: function(me, activeId) {
+
+			me.jdeCompany.setData(me.jdeCompanys);
+			me.setStatus("Loaded");
+			$("#pageLoading").fadeOut("slow");
 		},
 
 		actionSearchItem: function() {
@@ -315,8 +350,8 @@ ii.Class({
 			}
 
 			if (me.invoiceNumber.getValue() === "" && me.documentNumber.getValue() === "" && me.invoiceDate.text.value === "" && me.customer.getValue() === "" 
-				&& me.serviceLocation.getValue() === "" && me.poNumber.getValue() === "" && $("#houseCodeText").val() === "") {
-				alert("Please enter search criteria: Invoice #, Document #, Invoice Date, Customer, Service Location, PO Number or House Code.")
+				&& me.serviceLocation.getValue() === "" && me.poNumber.getValue() === "" && me.jdeCompany.lastBlurValue === "" && $("#houseCodeText").val() === "") {
+				alert("Please enter search criteria: Invoice #, Document #, Invoice Date, Customer, Service Location, PO Number, Company Code or House Code.")
 				return false;
 			}
 
@@ -328,6 +363,7 @@ ii.Class({
 			var customer = me.customer.getValue();
 			var serviceLocation = me.serviceLocation.getValue();
 			var poNumber = me.poNumber.getValue();
+			var jdeCompany = (me.jdeCompany.indexSelected >= 0 ? me.jdeCompany.data[me.jdeCompany.indexSelected].id : 0)
 
 			if (invoiceDate === undefined || invoiceDate === "")
 				invoiceDate = "1/1/1900";
@@ -337,7 +373,12 @@ ii.Class({
 				+ ($("#houseCodeText").val() !== "" ? + parent.fin.appUI.houseCodeId : "0")
 				+ ",status:-1,year:-1,invoiceByHouseCode:-1,invoiceNumber:" + invoiceNumber
 				+ ",documentNumber:" + documentNumber
-				+ ",invoiceDate:" + invoiceDate + ",customer:" + customer + ",serviceLocation:" + serviceLocation + ",poNumber:" + poNumber, me.invoiceLoaded, me);
+				+ ",invoiceDate:" + invoiceDate 
+				+ ",customer:" + customer 
+				+ ",serviceLocation:" + serviceLocation 
+				+ ",poNumber:" + poNumber 
+				+ ",jdeCompany:" + jdeCompany
+				, me.invoiceLoaded, me);
 		},
 
 		invoiceLoaded: function(me, activeId) {
