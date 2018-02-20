@@ -288,19 +288,22 @@ function ($filter, $document, $compile, $parse) {
                 if ($scope.singleSelection) {
                     return $scope.selectedModel !== null && angular.isDefined($scope.selectedModel[$scope.settings.idProp]) && $scope.selectedModel[$scope.settings.idProp] === getFindObj(id)[$scope.settings.idProp];
                 }
-
-                return $scope.findIndex($scope.selectedModel, getFindObj(id)) !== -1;
+				else
+                	return $scope.findIndex($scope.selectedModel, getFindObj(id)) !== -1;
             };
 
-			$scope.findIndex = function(objs, findObj){
-				 var itemIndex = -1;
+			$scope.findIndex = function(objs, findObj) {
+				var itemIndex = -1;
 
-				 for (var index = 0; index < objs.length; index++) {
-					if (objs[index].id === findObj.id) {
-						itemIndex = index;
-						break;
+				if (objs !== null && objs !== undefined) {
+					for (var index = 0; index < objs.length; index++) {
+						if (objs[index].id === findObj.id) {
+							itemIndex = index;
+							break;
+						}
 					}
 				}
+
 				return itemIndex;
 			};
 
