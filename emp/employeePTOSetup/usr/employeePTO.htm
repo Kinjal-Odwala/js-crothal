@@ -11,7 +11,7 @@
     </div>
     <div id="empPTOView">
     <tabset class="margin-bottom10">
-        <tab heading="PTO Years" ng-show="showPTOYears" ng-click="onPTOYearsTabClick('ptoYear');">
+        <tab heading="PTO Years" ng-show="showPTOYears" ng-click="tabClick(this);">
            <div id="mainView" ng-style="{'max-height': mainViewHeight + 'px'}">
             <div class="row sectionHeader">PTO Years</div>
             <div class="row margin-bottom10" style="padding-top:15px;">
@@ -48,7 +48,7 @@
                             <label class="col-md-2 control-label">Active:</label>
                             <div class="col-md-4">
                                 <label>
-                                    <input name="ptoYearActive" type="checkbox" ng-model="empPTOYear.ptoYearActive" ng-value="empPTOYear.ptoYearActive"/>
+                                    <input name="ptoYearActive" type="checkbox" ng-model="empPTOYear.ptoYearActive" ng-blur="onPTOYearActiveChanged(empPTOYear.ptoYearActive)" ng-value="empPTOYear.ptoYearActive"/>
                                 </label>
                             </div>
                         </div>
@@ -64,7 +64,7 @@
             </div>
            </div> 
         </tab>
-        <tab heading="PTO Types" ng-click="onPtoTypesTabClick('ptoTypes')" ng-show="showPTOTypes">
+        <tab heading="PTO Types" ng-click="tabClick(this)" ng-show="showPTOTypes">
             <div id="mainView" ng-style="{'max-height': mainViewHeight + 'px'}">
               <div class="row sectionHeader">PTO Types</div>     
             <div class="row margin-bottom10" style="padding-top:15px;">
@@ -73,16 +73,16 @@
                         <thead>
                             <tr class="heading" role="row">
                                 <th style="text-align:center;width:6% !important">#</th>
-                                <th style="text-align:center;width:68% !important">PTO Type</th>
-                                <th style="text-align:center;width:25% !important">Pay Code</th>
+                                <th style="text-align:center;width:25% !important">PTO Type</th>
+                                <th style="text-align:center;width:68% !important">Pay Code</th>
                                 <th style="width:1%"></th>
                             </tr>
                         </thead>
                         <tbody ng-style="{'min-height': gridHeight + 'px'}">
                             <tr ng-repeat="item in ptoTypes" ng-click="onPTOtypeSelected(item)" ng-class="{'warning':selectedPTOtype == item};">
-                                <td style="text-align:center;width:5.9% !important;line-height:normal">{{$index + 1}}</td>
-                                <td style="text-align:left;width:68.9% !important;line-height:normal">{{item.brief}}</td>
-                                <td style="text-align:left;width:25.5% !important;line-height:normal">{{item.payCode}}</td>
+                                <td style="text-align:center;width:5.6% !important;line-height:normal">{{$index + 1}}</td>
+                                <td style="text-align:left;width:25% !important;line-height:normal">{{item.brief}}</td>
+                                <td style="text-align:left;width:68.5% !important;line-height:normal">{{item.payCode}}</td>
                              </tr>
                         </tbody>
                     </table>
@@ -107,7 +107,7 @@
             </div>
            </div> 
         </tab>
-        <tab heading="PTO Plan Types" ng-click="onPlanTypeTabClick('ptoPlanType')" ng-show="showPTOPlanTypes">
+        <tab heading="PTO Plan Types" ng-click="tabClick(this)" ng-show="showPTOPlanTypes">
             <div id="mainView" ng-style="{'max-height': mainViewHeight + 'px'}">
                 <div class="row sectionHeader">PTO Plan Types</div>
                 <div class="row margin-bottom10">
@@ -204,7 +204,7 @@
                 </div>
                </div>     
         </tab>
-        <tab heading="PTO Plans" ng-show="showPTOPlans" ng-click="onPTOPlanTabClick('ptoPlan')">
+        <tab heading="PTO Plans" ng-show="showPTOPlans" ng-click="tabClick(this)">
              <div id="mainView" ng-style="{'max-height': mainViewHeight + 'px'}" ng-form="planForm">
                 <div class="row sectionHeader">PTO Plans</div>
                 <div class="row margin-bottom10" style="padding-top:10px;">
@@ -376,7 +376,7 @@
                  </div>
             </div>
         </tab>
-        <tab heading="PTO Assignments" ng-show="showPTOAssignments" ng-click="assignmentsTabClick('ptoAssignments')">
+        <tab heading="PTO Assignments" ng-show="showPTOAssignments" ng-click="tabClick(this)">
             <div id="mainView" ng-style="{'max-height': mainViewHeight + 'px'}">
             <div class="row sectionHeader">PTO Assignments</div>
             <div class="row margin-bottom10" style="padding-top:10px;">
@@ -443,7 +443,7 @@
                 </div>
             </div>
         </tab>
-        <tab heading="PTO Days" ng-show="showPTODays" ng-click="daysTabClick('ptoDays')">
+        <tab heading="PTO Days" ng-show="showPTODays" ng-click="tabClick(this)">
             <div id="mainView" ng-style="{'max-height': mainViewHeight + 'px'}">
             <div class="row sectionHeader">PTO Days</div>
             <div class="row margin-bottom10" style="padding-top:10px;">
@@ -487,7 +487,7 @@
                             <tr class="heading" role="row">
                                 <th style="text-align:center;width:5%">#</th>
                                 <th style="text-align:center;width:30%">PTO Type</th>
-                                <th style="text-align:center;width:20%">PTO hours</th>
+                                <th style="text-align:center;width:20%">PTO Hours</th>
                                 <th style="text-align:center;width:20%">Balance Hours</th>
                                 <th style="text-align:center;width:30%">Status</th>
                                 <th style="width:1%"></th>

@@ -234,6 +234,8 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
     $scope.lastSelectedPlanType = null;
     $scope.lastSelectedPlan = null;
     $scope.ptoDay = {};
+    $scope.previousTabSelected = "PTO Years";
+    $scope.currentTabSelected = "";
     $scope.dateOptions = {
         formatYear: 'yy',
         startingDay: 1,
@@ -293,9 +295,40 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         }
     });
 
-    $scope.onPTOYearsTabClick = function (ptoYear) {
-        if (editStatus())
+    $scope.tabClick = function (selectedTab) {
+       
+        for (var index = 0; index < selectedTab.$parent.tabs.length ; index++) {
+            if (selectedTab.$parent.tabs[index].heading === $scope.previousTabSelected) {
+                $scope.previousTabSelected = selectedTab.$parent.tabs[index];
+            }
+            else if (selectedTab.$parent.tabs[index].active === true)
+                $scope.currentTabSelected = selectedTab.$parent.tabs[index].heading;
+        }
+
+        if (editStatus()) {
+            $scope.previousTabSelected.active = true;
+            $scope.previousTabSelected = previousTabSelected.heading;
             return;
+        }
+        else {
+            if ($scope.currentTabSelected === "PTO Years")
+                $scope.onPTOYearsTabClick();
+            else if ($scope.currentTabSelected === "PTO Types")
+                $scope.onPtoTypesTabClick();
+            else if ($scope.currentTabSelected === "PTO Plan Types")
+                $scope.onPlanTypeTabClick();
+            else if ($scope.currentTabSelected === "PTO Plans")
+                $scope.onPTOPlanTabClick();
+            else if ($scope.currentTabSelected === "PTO Assignments")
+                $scope.assignmentsTabClick();
+            else if ($scope.currentTabSelected === "PTO Days")
+                $scope.daysTabClick();
+
+            $scope.previousTabSelected = $scope.currentTabSelected;
+        }
+    };
+
+    $scope.onPTOYearsTabClick = function (ptoYear) {
         $scope.pageStatus = 'Normal';
         setStatus('Normal');
         modified(false);
@@ -331,6 +364,11 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         modified(false);
     };
 
+    $scope.onPTOYearActiveChanged = function (active) {
+        setStatus('Edit');
+        modified(true);
+    };
+
     $scope.onPTOYearChanged = function (year) {
         if ($scope.empPTOYear.ptoYearSelected === null || $scope.empPTOYear.ptoYearSelected === "")
             $scope.ptoForm.selectedPTOYear.$setValidity("required", false);
@@ -344,14 +382,18 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
     $scope.undoPTOYear = function () {
         if (editStatus())
             return;
-        if ($scope.selectedYear !== null && $scope.selectedYear !== undefined)
+        if ($scope.selectedYear !== null && $scope.selectedYear !== undefined) {
             $scope.empPTOYear.ptoYearSelected = $scope.selectedYear.brief;
+            $scope.empPTOYear.ptoYearActive = $scope.selectedYear.active;
+        }
         else if ($scope.lastSelectedYear !== null) {
             $scope.selectedYear = $scope.lastSelectedYear;
             $scope.onYearSelected($scope.selectedYear);
         }
-        else
+        else {
             $scope.empPTOYear.ptoYearSelected = "";
+            $scope.empPTOYear.ptoYearActive = true;
+        }
 
         $scope.ptoForm.selectedPTOYear.$setValidity("required", true);
         $scope.pageStatus = 'Normal';
@@ -363,12 +405,11 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         if ($scope.ptoForm.selectedPTOYear.$valid && $scope.empPTOYear.ptoYearSelected !== null && $scope.empPTOYear.ptoYearSelected !== "") {
             $scope.years = $scope.ptoYears;
             var duplicate = false;
-            if ($scope.selectedYear === null || $scope.selectedYear === "" || $scope.selectedYear === undefined) {
-                for (var index = 0; index < $scope.ptoYears.length; index++) {
-                    if ($scope.empPTOYear.ptoYearSelected == $scope.ptoYears[index].brief) {
-                        duplicate = true;
-                        break;
-                    }
+           
+            for (var index = 0; index < $scope.ptoYears.length; index++) {
+                if ($scope.empPTOYear.ptoYearSelected == $scope.ptoYears[index].brief) {
+                    duplicate = true;
+                    break;
                 }
             }
             
@@ -420,8 +461,6 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
     };
 
     $scope.onPtoTypesTabClick = function (ptoType) {
-        if (editStatus())
-            return;
         $scope.loadingTitle = " Loading...";
         $scope.pageStatus = 'Loading, Please Wait...';
         setStatus("Loading");
@@ -446,9 +485,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
             $scope.pageStatus = 'Normal';
             setStatus('Normal');
             modified(false);
-        }
-
-        $scope.ptoForm.payCode.$setValidity("required", true);
+        }       
     };
 
     $scope.onPTOtypeSelected = function (item) {
@@ -470,23 +507,15 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
                 });
             });
             $scope.pageStatus = 'Normal';
-            setStatus("Normal");
-            modified(false);
+            setStatus("Edit");
+            modified(true);
         });
     };
 
-    $scope.onPayCodeChange = function (payCode) {
-        if (payCode === null || payCode === "")
-            $scope.ptoForm.payCode.$setValidity("required", false);
-        else {
-            $scope.ptoForm.payCode.$setValidity("required", true);
-            $scope.ptoType.payCode = payCode;
-            setStatus('Edit');
-            modified(true);
-        }
-    }
-
     $scope.undoPTOType = function () {
+        setStatus("Edit");
+        modified(true);
+
         if (editStatus())
             return;
 
@@ -505,7 +534,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
     };
 
     $scope.savePTOType = function () {
-        if ($scope.selectedptoTypePayCodes.length > 0) {
+        if ($scope.selectedptoTypePayCodes.length > 0 && $scope.selectedPTOtype != null) {
             $scope.pageLoading = true;           
 
             EmpActions.getPTOTypePayCodes($scope.selectedPTOtype.id, function (result) {
@@ -574,9 +603,6 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
     }
 
     $scope.onPlanTypeTabClick = function (planType) {
-        if (editStatus())
-            return;
-
         $scope.loadingTitle = " Loading...";
         $scope.pageStatus = 'Loading, Please Wait...';
         setStatus("Loading");
@@ -1012,9 +1038,6 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
     };
 
     $scope.onPTOPlanTabClick = function () {
-        if (editStatus()) 
-            return;
-
         $scope.wageTypeSettings = {
             scrollableHeight: '200px',
             scrollable: true,
@@ -1250,7 +1273,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.ptoForm.planForm.endDate.$setValidity("required", true);
         $scope.ptoForm.planForm.planDays.$setValidity("required", true);
         $scope.ptoForm.planForm.accrualInterval.$setValidity("required", true);
-        $scope.ptoForm.planForm.carryoverLimit.$invalid("required", true);
+        $scope.ptoForm.planForm.carryoverLimit.$setValidity("required", true);
         $scope.planYears = [];
         $scope.assigned = false;
         $scope.selectedWageTypes = [];
@@ -1757,9 +1780,6 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
     };
 
     $scope.assignmentsTabClick = function () {
-        if (editStatus())
-            return;
-
         if ($scope.assignment.ptoAssignYear === null || $scope.assignment.ptoAssignYear === undefined || $scope.assignment.ptoAssignYear === "")
             $scope.assignment.ptoAssignYear = $scope.ptoYears[0].id;
         $scope.ptoPlanAssignments = [];
@@ -1867,9 +1887,6 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
     };
 
     $scope.daysTabClick = function () {
-        if (editStatus())
-            return;
-
         if ($scope.ptoDay.ptoYear === null || $scope.ptoDay.ptoYear === undefined || $scope.ptoDay.ptoYear === "")
             $scope.ptoDay.ptoYear = $scope.ptoYears[0].id;
         $scope.dayEmployees = [];
@@ -2309,6 +2326,7 @@ pto.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
             return;
         }
         apiRequest('emp', 'iiCache', '<criteria>storeId:payCodes,userId:[user]'
+            + ',ptoType: ptoType,'
 			+ ',</criteria>', function (xml) {
 			    if (callback) {
 			        cache.payCodes = deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id'] });
