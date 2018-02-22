@@ -488,6 +488,11 @@ ii.Class({
 			me.vendorName.makeEnterTab()
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)
+                .addValidation(function (isFinal, dataMap) {
+
+                    if ((this.focused || this.touched) && me.vendorName.indexSelected == -1)
+                        this.setInvalid("Please select the valid Vendor.");
+                });
 				
 			me.vendorAddress1 = new ui.ctl.Input.Text({
 		        id: "VendorAddress1",
@@ -2072,7 +2077,7 @@ ii.Class({
 			}
 		},
 		
-		vendorsLoad: function(me, activeId) {			
+		vendorsLoad: function(me, activeId) {
 		    if (me.vendors.length > 0) {
 		        me.vendorName.setData(me.vendors);
 		        me.vendorName.reset();
@@ -2400,7 +2405,7 @@ ii.Class({
 			loadPopup("requisitionPopup");
 			$("#popupMessageToUser").text("Loading");
 			$("#popupLoading").show();			
-		    me.vendorStore.reset();
+			me.vendorStore.reset();
 		    me.vendorStore.fetch("vendorTitle:" + me.requisitionGrid.data[me.lastSelectedRowIndex].vendorTitle + ",vendorNumber:" + me.requisitionGrid.data[me.lastSelectedRowIndex].vendorNumber + ",vendorStatus:1,userId:[user]", me.vendorsLoad, me);
 			me.poRequisitionId = me.requisitionGrid.data[me.lastSelectedRowIndex].id;
 			me.itemGrid.setData(me.poRequisitionDetails);
