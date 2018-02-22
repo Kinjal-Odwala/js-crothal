@@ -2326,7 +2326,7 @@ pto.factory('EmpActions', ["$http", "$filter", '$rootScope', function ($http, $f
             return;
         }
         apiRequest('emp', 'iiCache', '<criteria>storeId:payCodes,userId:[user]'
-            + ',ptoType: ptoType,'
+            + ',payCodeType:ptoType'
 			+ ',</criteria>', function (xml) {
 			    if (callback) {
 			        cache.payCodes = deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id'] });
