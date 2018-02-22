@@ -696,13 +696,6 @@ ii.Class({
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)
 			
-			me.alternateDescription = new ui.ctl.Input.Text({
-                id: "AlternateDescription",
-                maxLength: 256,
-                appendToId: "ItemGridControlHolder",
-                changeFunction: function() { me.modified(); }
-            });
-			
 			me.account = new ui.ctl.Input.DropDown.Filtered({
 		        id: "Account",
 				appendToId: "ItemGridControlHolder",
@@ -796,7 +789,6 @@ ii.Class({
             });
 			me.itemGrid.addColumn("number", "number", "Item Number", "Item Number", 120, null, me.itemNumber);
 			me.itemGrid.addColumn("description", "description", "Item Description", "Item Description", null, null, me.itemDescription);
-			me.itemGrid.addColumn("alternateDescription", "alternateDescription", "Alternate Description", "Alternate Description", 180, null, me.alternateDescription);
 			me.itemGrid.addColumn("account", "account", "Gl Account No", "Gl Account No", 140, function( account ) { return account.code + " - " + account.name; }, me.account);
 			me.itemGrid.addColumn("unit", "unit", "UOM", "UOM", 50, null, me.uom);
 			me.itemGrid.addColumn("manufactured", "manufactured", "Mfg", "Mfg", 120, null, me.manufactured);
@@ -817,7 +809,6 @@ ii.Class({
 			
 			me.itemReadOnlyGrid.addColumn("number", "number", "Item Number", "Item Number", 120);
 			me.itemReadOnlyGrid.addColumn("description", "description", "Item Description", "Item Description", null);
-			me.itemReadOnlyGrid.addColumn("alternateDescription", "alternateDescription", "Alternate Description", "Alternate Description", 180);
 			me.itemReadOnlyGrid.addColumn("account", "account", "Gl Account No", "Gl Account No", 140, function(account) { return account.code + " - " + account.name;	});
 			me.itemReadOnlyGrid.addColumn("unit", "unit", "UOM", "UOM", 50);
 			me.itemReadOnlyGrid.addColumn("manufactured", "manufactured", "Mfg", "Mfg", 120);
@@ -1031,7 +1022,6 @@ ii.Class({
 			me.vendor.text.readOnly = true;
 			me.itemNumber.active = false;
 			me.itemDescription.active = false;
-			me.alternateDescription.active = false;
 			me.account.active = false;
 			me.uom.active = false;
 			me.manufactured.active = false;
@@ -1673,7 +1663,6 @@ ii.Class({
 						, me.purchaseOrderItems[index].itemSelect
 						, me.purchaseOrderItems[index].number
 						, me.purchaseOrderItems[index].description
-						, me.purchaseOrderItems[index].alternateDescription
 						, me.purchaseOrderItems[index].unit
 						, me.purchaseOrderItems[index].manufactured
 						, me.purchaseOrderItems[index].price
@@ -1925,7 +1914,6 @@ ii.Class({
 						, me.poRequisitionDetails[index].itemSelect
 						, me.poRequisitionDetails[index].number
 						, me.poRequisitionDetails[index].description
-						, me.poRequisitionDetails[index].alternateDescription
 						, me.poRequisitionDetails[index].unit
 						, me.poRequisitionDetails[index].manufactured
 						, me.poRequisitionDetails[index].price
@@ -1948,7 +1936,6 @@ ii.Class({
 						, me.poRequisitionDetailsTemp[index].itemSelect
 						, me.poRequisitionDetailsTemp[index].number
 						, me.poRequisitionDetailsTemp[index].description
-						, me.poRequisitionDetailsTemp[index].alternateDescription
 						, me.poRequisitionDetailsTemp[index].unit
 						, me.poRequisitionDetailsTemp[index].manufactured
 						, me.poRequisitionDetailsTemp[index].price
@@ -2160,7 +2147,6 @@ ii.Class({
 				if (me.status == "NewPORequisition" || me.vendorId == 0 || me.deliveryDate.lastBlurValue == ""
 					|| ($("input:radio[name='Urgency']:checked").val() == "Urgent" && (me.urgencyDate.lastBlurValue == "" || !(ui.cmn.text.validate.generic(me.urgencyDate.lastBlurValue, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))))
 					valid = me.validator.queryValidity(true);
-				
 				if (!me.requestorEmail.valid
 					|| !me.requestedDate.valid
 					|| !me.deliveryDate.valid
@@ -2947,7 +2933,6 @@ ii.Class({
 					xml += ' poRequisitionId="' + me.poRequisitionId + '"';
 					xml += ' number="' + ui.cmn.text.xml.encode(me.itemGrid.data[index].number) + '"';
 					xml += ' description="' + ui.cmn.text.xml.encode(me.itemGrid.data[index].description) + '"';
-					xml += ' alternateDescription="' + ui.cmn.text.xml.encode(me.itemGrid.data[index].alternateDescription) + '"';
 					xml += ' account="' + me.itemGrid.data[index].account.id + '"';
 					xml += ' uom="' + ui.cmn.text.xml.encode(me.itemGrid.data[index].unit) + '"';
 					xml += ' manufactured="' + ui.cmn.text.xml.encode(me.itemGrid.data[index].manufactured) + '"';
