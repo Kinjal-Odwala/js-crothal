@@ -26,6 +26,8 @@ ii.Class({
 			me.currentRowSelected = null;
 			me.status = "";
 			me.bindRow = false;
+			me.cellColorValid = "";
+			me.cellColorInvalid = "pink";
 						
 			me.replaceContext = false;        // replace the system context menu?
 			me.mouseOverContext = false;      // is the mouse over the context menu?
@@ -365,7 +367,7 @@ ii.Class({
                     , accountCode
 					, me.purchaseOrderDetails[index].unit
 					, me.purchaseOrderDetails[index].quantity.toString()
-					, "$" + me.purchaseOrderDetails[index].price
+					, me.purchaseOrderDetails[index].price
 					, "$" + cost.toFixed(2)
 					, jobPeriodBudget
 					, jobBudgetRemaining
@@ -453,12 +455,12 @@ ii.Class({
 				, "&nbsp;"
 				, "&nbsp;"
 				, "&nbsp;"
-				, "&nbsp;"
                 , "&nbsp;"
 				, "$" + args.totalAmount.toFixed(2)
 				, args.periodBudget
 				, args.budgetRemaining
 				, false
+				, 0
 				);
 							
 			rowHtml += "</tr>";
@@ -550,55 +552,53 @@ ii.Class({
 					
 			if (args.rowEditable) {
 			    // Row Editable
-			    
-			    rowHtml += me.getEditableRowColumn(false, false, 0, "rowNumber", args.rowNumber.toString(), 4, "right");
+			    rowHtml += me.getEditableRowColumn(false, false, 0, "rowNumber", args.rowNumber.toString(), 2, "right");
 			    rowHtml += me.getEditableRowColumn(false, false, 1, "id", args.id.toString(), 0, "left");
-			    rowHtml += me.getEditableRowColumn(false, true, 2, "vendor", args.vendor, 17, categoryAlign);
+			    rowHtml += me.getEditableRowColumn(false, true, 2, "vendor", args.vendor, 12, categoryAlign);
 			    if (args.catalogItemId != 0) {
-			        rowHtml += me.getEditableRowColumn(true, false, 3, "job" + args.rowNumber, args.job, 20, "left");
+			        rowHtml += me.getEditableRowColumn(true, false, 3, "job" + args.rowNumber, args.job, 12, "left");
 			        rowHtml += me.getEditableRowColumn(false, false, 4, "itemNumber", args.itemNumber, 8, "left");
-			        rowHtml += me.getEditableRowColumn(false, false, 5, "description", args.description.toString(), 35, "left");
+			        rowHtml += me.getEditableRowColumn(false, false, 5, "description", args.description.toString(), 24, "left");
 			        rowHtml += me.getEditableRowColumn(false, false, 6, "account", args.account.toString(), 10, "left");
-			        rowHtml += me.getEditableRowColumn(false, false, 7, "unit", args.unit, 6, "left");
-			        rowHtml += me.getEditableRowColumn(true, false, 8, "quantity" + args.rowNumber, args.quantity, 7, "right");
-			        rowHtml += me.getEditableRowColumn(false, false, 9, "unitPrice", args.unitPrice, 7, "right", args.priceChanged);
+			        rowHtml += me.getEditableRowColumn(false, false, 7, "unit", args.unit, 4, "left");
+			        rowHtml += me.getEditableRowColumn(true, false, 8, "quantity" + args.rowNumber, args.quantity, 5, "right", 8);
+			        rowHtml += me.getEditableRowColumn(false, false, 9, "unitPrice", args.unitPrice, 5, "right", 10, args.priceChanged);
 			    }
 			    else {
-			        rowHtml += me.getEditableRowColumn(true, false, 3, "job" + args.rowNumber, args.job, 20, "left");
-			        rowHtml += me.getEditableRowColumn(true, false, 4, "itemNumber" + args.rowNumber, args.itemNumber, 8, "left");
-			        rowHtml += me.getEditableRowColumn(true, false, 5, "description" + args.rowNumber, args.description.toString(), 35, "left");
+			        rowHtml += me.getEditableRowColumn(true, false, 3, "job" + args.rowNumber, args.job, 12, "left");
+			        rowHtml += me.getEditableRowColumn(true, false, 4, "itemNumber" + args.rowNumber, args.itemNumber, 8, "left", 256);
+			        rowHtml += me.getEditableRowColumn(true, false, 5, "description" + args.rowNumber, args.description.toString(), 24, "left", 256);
 			        rowHtml += me.getEditableRowColumn(true, false, 6, "account" + args.rowNumber, args.account.toString(), 10, "left");
-			        rowHtml += me.getEditableRowColumn(true, false, 7, "unit" + args.rowNumber, args.unit, 6, "left");
-			        rowHtml += me.getEditableRowColumn(true, false, 8, "quantity" + args.rowNumber, args.quantity, 7, "right");
-			        rowHtml += me.getEditableRowColumn(true, false, 9, "unitPrice" + args.rowNumber , args.unitPrice, 7, "right", args.priceChanged);
+			        rowHtml += me.getEditableRowColumn(true, false, 7, "unit" + args.rowNumber, args.unit, 4, "left", 256);
+			        rowHtml += me.getEditableRowColumn(true, false, 8, "quantity" + args.rowNumber, args.quantity, 5, "right", 8);
+			        rowHtml += me.getEditableRowColumn(true, false, 9, "unitPrice" + args.rowNumber , args.unitPrice, 5, "right", 10, args.priceChanged);
 			    }
-			    rowHtml += me.getEditableRowColumn(false, false, 10, "cost", args.cost, 7, "right");
-			    rowHtml += me.getEditableRowColumn(false, true, 11, "periodBudget", args.periodBudget, 7, "right");
-			    rowHtml += me.getEditableRowColumn(false, true, 12, "budgetRemaining", args.budgetRemaining, 10, "right");
-			    rowHtml += me.getEditableRowColumn(false, true, 13, "catalogItemId", args.catalogItemId, 3, "right;display:none");
+			    rowHtml += me.getEditableRowColumn(false, false, 10, "cost", args.cost, 6, "right");
+			    rowHtml += me.getEditableRowColumn(false, true, 11, "periodBudget", args.periodBudget, 6, "right");
+			    rowHtml += me.getEditableRowColumn(false, true, 12, "budgetRemaining", args.budgetRemaining, 6, "right");
+			    rowHtml += me.getEditableRowColumn(false, true, 13, "catalogItemId", args.catalogItemId, 0, "right");
 			}
 			else {
-			    rowHtml += me.getEditableRowColumn(false, false, 0, "rowNumber", args.rowNumber.toString(), 4, "right");
+			    rowHtml += me.getEditableRowColumn(false, false, 0, "rowNumber", args.rowNumber.toString(), 2, "right");
 			    rowHtml += me.getEditableRowColumn(false, false, 1, "id", args.id.toString(), 0, "left");
-			    rowHtml += me.getEditableRowColumn(false, true, 2, "vendor", args.vendor, 17, categoryAlign);
-			    rowHtml += me.getEditableRowColumn(false, false, 3, "job", args.job, 20, "left");
+			    rowHtml += me.getEditableRowColumn(false, true, 2, "vendor", args.vendor, 12, categoryAlign);
+			    rowHtml += me.getEditableRowColumn(false, false, 3, "job", args.job, 12, "left");
 			    rowHtml += me.getEditableRowColumn(false, false, 4, "itemNumber", args.itemNumber, 8, "left");
-			    rowHtml += me.getEditableRowColumn(false, false, 5, "description", args.description, 35, "left");
+			    rowHtml += me.getEditableRowColumn(false, false, 5, "description", args.description, 24, "left");
 			    rowHtml += me.getEditableRowColumn(false, false, 6, "account", args.account.toString(), 10, "left");
-			    rowHtml += me.getEditableRowColumn(false, false, 7, "unit", args.unit, 6, "left");
-			    rowHtml += me.getEditableRowColumn(false, false, 8, "quantity", args.quantity, 7, "right");
-			    rowHtml += me.getEditableRowColumn(false, false, 9, "unitPrice", args.unitPrice, 7, "right", args.priceChanged);
-			    rowHtml += me.getEditableRowColumn(false, columnBold, 10, "cost", args.cost, 7, "right");
-			    rowHtml += me.getEditableRowColumn(false, true, 11, "periodBudget", args.periodBudget, 7, "right");
-			    rowHtml += me.getEditableRowColumn(false, true, 12, "budgetRemaining", args.budgetRemaining, 10, "right");
-			    rowHtml += me.getEditableRowColumn(false, false, 13, "catalogItemId", args.catalogItemId, 3, "right;display:none");
+			    rowHtml += me.getEditableRowColumn(false, false, 7, "unit", args.unit, 4, "left");
+			    rowHtml += me.getEditableRowColumn(false, false, 8, "quantity", args.quantity, 5, "right");
+			    rowHtml += me.getEditableRowColumn(false, false, 9, "unitPrice", args.unitPrice, 5, "right", 10, args.priceChanged);
+			    rowHtml += me.getEditableRowColumn(false, columnBold, 10, "cost", args.cost, 6, "right");
+			    rowHtml += me.getEditableRowColumn(false, true, 11, "periodBudget", args.periodBudget, 6, "right");
+			    rowHtml += me.getEditableRowColumn(false, true, 12, "budgetRemaining", args.budgetRemaining, 6, "right");
+			    rowHtml += me.getEditableRowColumn(false, false, 13, "catalogItemId", args.catalogItemId, 0, "right");
 			}
 	
 			return rowHtml;
 		},
 																		
 		getEditableRowColumn: function() {
-		   
 			var args = ii.args(arguments, {
 				editable: {type: Boolean}
 				, bold: {type: Boolean}
@@ -607,6 +607,7 @@ ii.Class({
 				, columnValue: {type: String}
 				, columnWidth: {type: Number}
 				, columnAlign: {type: String}
+				, maxLength: {type: Number, required: false, defaultValue: 0}
 				, priceChanged: {type: Boolean, required: false, defaultValue: false}
 				});
 			var me = this;
@@ -624,9 +625,8 @@ ii.Class({
 			        return "<td class='gridColumn'>" + me.populateAccountDropDown(args.columnName, args.columnValue) + "</td>";
 			    }
 				else
-			        return "<td class='gridColumn' align='center'><input type=text style='width:90%; text-align:" + args.columnAlign + ";' id='" + args.columnName + "' value='" + args.columnValue + "'></input></td>";
-                
-			}			
+					return "<td class='gridColumn' align='center'><input type=text maxlength='" + args.maxLength + "' style='width:99%; text-align:" + args.columnAlign + ";' id='" + args.columnName + "' value='" + args.columnValue.replace("'", "&apos;") + "'></input></td>";
+ 			}			
 			else if (args.columnWidth == 0)
 			    return "<td class='gridColumnHidden'>" + args.columnValue + "</td>";
 			else
@@ -841,17 +841,19 @@ ii.Class({
 		},		
 		
 		actionSaveItem: function() {
-			var args = ii.args(arguments,{});
 			var me = this;
 			var item = [];
-			
+
 			if (me.status == "")
 				return true;
-							
-			parent.fin.purMasterUi.showPageLoading("Saving");
 
 			var xml = me.saveXmlBuildPurchaseOrder(item);
-	
+
+			if (xml === "")
+				return true;
+
+			parent.fin.purMasterUi.showPageLoading("Saving");
+
 			// Send the object back to the server as a transaction
 			me.transactionMonitor.commit({
 				transactionType: "itemUpdate",
@@ -869,30 +871,47 @@ ii.Class({
 			});			
 			var me = this;
 			var rowNumber = 1;
-			var quantity = 0;
-			var xml = "";			
+			var rowValid = true;
+			var xml = "";
 
 			if (me.status == "EditQuantity") {
 			    $("#PurchaseOrderGridBody").find('tr').each(function() {
 			        if (parseInt(this.cells[1].innerHTML) > 0) {
-					    if ($("#quantity" + rowNumber).val() == "")
-							quantity = 0;
-						else
-					        quantity = parseInt($("#quantity" + rowNumber).val());
-									
+						if (!(/^[0-9]+$/.test($("#quantity" + rowNumber).val()))) {
+							rowValid = false;
+							$("#quantity" + rowNumber).attr("title", "Invalid Quantity.");
+							$("#quantity" + rowNumber).css("background-color", me.cellColorInvalid);
+						}
+						else {
+							$("#quantity" + rowNumber).attr("title", "");
+							$("#quantity" + rowNumber).css("background-color", me.cellColorValid);
+						}
+
+						if ($("#unitPrice" + rowNumber).val() !== undefined) {
+							if (!(/^[-]?[0-9]+(\.[0-9]+)?$/.test($("#unitPrice" + rowNumber).val()))) {
+								rowValid = false;
+								$("#unitPrice" + rowNumber).attr("title", "Invalid Unit Price.");
+								$("#unitPrice" + rowNumber).css("background-color", me.cellColorInvalid);
+							}
+							else {
+								$("#unitPrice" + rowNumber).attr("title", "");
+								$("#unitPrice" + rowNumber).css("background-color", me.cellColorValid);
+							}
+						}
+
 						xml += '<purPurchaseOrderDetail';
-						xml += ' id="' + parseInt(this.cells[1].innerHTML) + '"';
+						xml += ' id="' + this.cells[1].innerHTML + '"';
 						xml += ' purchaseOrderId="' + me.purchaseOrderId + '"';
 						xml += ' catalogItemId="0"';
-						xml += ' houseCodeJobId="' + parseInt($("#job" + rowNumber).val()) + '"';
+						xml += ' houseCodeJobId="' + $("#job" + rowNumber).val() + '"';
 						if ($("#unitPrice" + rowNumber).val() != undefined)
-						    xml += ' price="' + parseFloat($("#unitPrice" + rowNumber).val().substring(1)) + '"';						   
+						    xml += ' price="' + parseFloat($("#unitPrice" + rowNumber).val()) + '"';
                         else
-						    xml += ' price="' + parseFloat(this.cells[9].innerHTML.substring(1)) + '"';
-						xml += ' quantity="' + quantity + '"';
-						xml += ' quantityReceived="0"';					
+						    xml += ' price="' + parseFloat(this.cells[9].innerHTML) + '"';
+						xml += ' quantity="' + $("#quantity" + rowNumber).val() + '"';
+						xml += ' quantityReceived="0"';
 						if (this.cells[13].innerHTML == 0) {
-						    xml += ' accountId="' + parseInt($("#account" + rowNumber).val()) + '"';
+						    xml += ' accountId="' + $("#account" + rowNumber).val() + '"';
 						    xml += ' itemNumber="' + ui.cmn.text.xml.encode($("#itemNumber" + rowNumber).val()) + '"';
 						    xml += ' description="' + ui.cmn.text.xml.encode($("#description" + rowNumber).val()) + '"';
 						    xml += ' uom="' + ui.cmn.text.xml.encode($("#unit" + rowNumber).val()) + '"';
@@ -902,6 +921,11 @@ ii.Class({
 					
 					rowNumber++;
 				});
+
+				if (!rowValid) {
+					xml = "";
+					alert("In order to save, the errors on the page must be corrected.")
+				}
 			}
 			else if (me.status == "Delete") {
 				xml += '<purPurchaseOrderDetailDelete';
