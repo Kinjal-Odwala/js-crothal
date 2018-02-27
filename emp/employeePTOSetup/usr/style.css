@@ -284,3 +284,8 @@ li {
     width:260px;
     height:300px !important;
 }
+
+#ptoAssignmentDropdown .dropdown-menu {
+     width:auto;
+     height:auto !important;
+}

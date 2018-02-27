@@ -40,7 +40,7 @@
                         <div class="row" ng-class="{'has-error':ptoForm.selectedPTOYear.$invalid}">
                              <label class="col-md-2 control-label">PTO Year:</label>
                             <div class="col-md-2">
-                                <input class="form-control input-sm" name="selectedPTOYear" ng-blur="onPTOYearChanged(empPTOYear.ptoYearSelected)" maxlength="4" minLength="4" ng-model="empPTOYear.ptoYearSelected" pto-integer/>
+                                <input class="form-control input-sm" ng-disabled="disablePTOYear" name="selectedPTOYear" ng-blur="onPTOYearChanged(empPTOYear.ptoYearSelected)" maxlength="4" minLength="4" ng-model="empPTOYear.ptoYearSelected" pto-integer/>
                             </div>
                         </div>
                         <div class="row margin-bottom10" style="padding-bottom: 15px;"></div>
@@ -93,7 +93,7 @@
                         <div class="row" ng-class="{'has-error':ptoForm.payCode.$invalid}">
                              <label class="col-md-2 control-label">Pay Code:</label>
                             <div class="col-md-4">
-                               <div ng-dropdown-multiselect="" options="payCodesList" selected-model="selectedptoTypePayCodes" checkBoxes="true" extra-settings="payCodeSettings"></div>
+                               <div ng-dropdown-multiselect="" options="payCodesList" selected-model="selectedptoTypePayCodes"  checkBoxes="true" extra-settings="payCodeSettings"></div>
                             </div>
                         </div>
                         <div class="row" ng-style="{'min-height': payCodeDetailHeight + 'px'}"></div>
@@ -381,7 +381,7 @@
             <div class="row sectionHeader">PTO Assignments</div>
             <div class="row margin-bottom10" style="padding-top:10px;">
                 <label class="col-md-1 control-label" style="line-height:2;width:8%">House Code:</label>
-                <div class="col-md-2" style="padding-left:0px">
+                <div class="col-md-2" style="padding-left:0px" id="ptoAssignmentDropdown">
                     <pto-typeahead ng-model="assignment.hcmHouseCode" source="hcmHouseCodes" typeahead-option="{displayField:'name',valueField:'id',name:'HcmHouseCode'}"></pto-typeahead>
                 </div>
                 <label class="col-md-1 control-label" style="line-height:2;width:7%">PTO Year:</label>
@@ -498,11 +498,11 @@
                                 <td style="text-align:center;width:5%;line-height:normal">{{$index + 1}}</td>
                                 <td style="text-align:left;width:30%;line-height:normal">{{item.ptoTypeTitle}}</td>
                                 <td style="text-align:right;width:20%;line-height:normal">
-                                    <a ng-show="item.ptoTaken != '0.00'" class="ptoDays" href="" ng-click="showPTODates(item.ptoType)">{{item.ptoTaken}}</a>
-                                    <span ng-show="item.ptoTaken == '0.00'">{{item.ptoTaken}}</span>
+                                    <a ng-show="item.ptoHours!='0.00' && item.ptoHours !='0'" class="ptoDays" href="" ng-click="showPTODates(item.ptoType)">{{item.ptoHours}}</a>
+                                    <span ng-show="item.ptoHours == '0.00' || item.ptoHours=='0'">{{item.ptoHours}}</span>
                                 </td>
-                                <td style="text-align:left;width:20%;line-height:normal">{{item.balanceHours}}</td>
-                                <td style="text-align:right;width:30%;line-height:normal">{{item.ptoStatus}}</td>
+                                <td style="text-align:right;width:20%;line-height:normal">{{item.balanceHours}}</td>
+                                <td style="text-align:left;width:30%;line-height:normal">{{item.ptoStatus}}</td>
                             </tr>
                         </tbody>
                     </table>

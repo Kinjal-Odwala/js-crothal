@@ -201,6 +201,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
     $scope.isClone = false;
     $scope.empPTOYear = {};
     $scope.empPTOYear.ptoYearSelected = "";
+    $scope.disablePTOYear = false;
     $scope.empPTOYear.ptoYearActive = true;
     $scope.ptoType = {};
     $scope.ptoType.payCode = "";
@@ -296,7 +297,6 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
     });
 
     $scope.tabClick = function (selectedTab) {
-       
         for (var index = 0; index < selectedTab.$parent.tabs.length ; index++) {
             if (selectedTab.$parent.tabs[index].heading === $scope.previousTabSelected) {
                 $scope.previousTabSelected = selectedTab.$parent.tabs[index];
@@ -346,6 +346,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.lastSelectedYear = item;
         $scope.empPTOYear.ptoYearSelected = $scope.selectedYear.brief;
         $scope.empPTOYear.ptoYearActive = $scope.selectedYear.active;
+        $scope.disablePTOYear = true;
         $scope.pageStatus = 'Normal';
         setStatus('Normal');
         modified(false);
@@ -358,6 +359,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.selectedYear = null;
         $scope.empPTOYear.ptoYearSelected = "";
         $scope.empPTOYear.ptoYearActive = true;
+        $scope.disablePTOYear = false;
         $scope.ptoForm.selectedPTOYear.$setValidity("required", true);
         $scope.pageStatus = 'Normal';
         setStatus('Normal');
@@ -405,54 +407,71 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         if ($scope.ptoForm.selectedPTOYear.$valid && $scope.empPTOYear.ptoYearSelected !== null && $scope.empPTOYear.ptoYearSelected !== "") {
             $scope.years = $scope.ptoYears;
             var duplicate = false;
-           
-            for (var index = 0; index < $scope.ptoYears.length; index++) {
-                if ($scope.empPTOYear.ptoYearSelected == $scope.ptoYears[index].brief) {
-                    duplicate = true;
-                    break;
+            var highestPTOYear = 0;
+
+            if ($scope.disablePTOYear === false) {
+                for (var index = 0; index < $scope.ptoYears.length; index++) {
+                    if ($scope.empPTOYear.ptoYearSelected == $scope.ptoYears[index].brief) {
+                        duplicate = true;
+                        break;
+                    }
                 }
-            }
-            
-            if (!duplicate) {
-                EmpActions.actionSaveItem($scope, "PTO Years", function (data, status) {
-                    EmpActions.getPTOYears(function (result) {
-                        $scope.ptoYears = result;
-                        if (angular.isDefined(result)) {
-                            $scope.ptoYear = result[0].id;
-                            if ($scope.selectedYear === null || $scope.selectedYear === undefined) {
-                                for (var year = 0; year < $scope.ptoYears.length; year++) {
-                                    var found = false;
-                                    for (var oldYear = 0; oldYear < $scope.years.length; oldYear++) {
-                                        if ($scope.years[oldYear].id == $scope.ptoYears[year].id) {
-                                            found = true;
-                                            break;
-                                        }
-                                    }
-                                    if (!found) {
-                                        $scope.selectedYear = $scope.ptoYears[year];
-                                        $scope.lastSelectedYear = $scope.selectedYear;
+
+                $scope.ptoYears.forEach(function (item, index) {
+                    if (item.brief > highestPTOYear)
+                        highestPTOYear = item.brief;
+                });
+
+                var nextPTOYearFromNow = new Date(highestPTOYear);
+                nextPTOYearFromNow.setFullYear(nextPTOYearFromNow.getFullYear() + 1);
+                var newPTOYear = nextPTOYearFromNow.getFullYear();
+                if (duplicate) {
+                    alert("PTO Year [" + $scope.empPTOYear.ptoYearSelected + "] already exists. Please add unique PTO Year.");
+                    return;
+                }
+                else if (newPTOYear.toString() != $scope.empPTOYear.ptoYearSelected) {
+                    alert("One year to the highest year in the list is allowed to save.");
+                    return;
+                }   
+            } 
+
+            EmpActions.actionSaveItem($scope, "PTO Years", function (data, status) {
+                EmpActions.getPTOYears(function (result) {
+                    $scope.ptoYears = result;
+                    if (angular.isDefined(result)) {
+                        $scope.ptoYear = result[0].id;
+                        if ($scope.selectedYear === null || $scope.selectedYear === undefined) {
+                            for (var year = 0; year < $scope.ptoYears.length; year++) {
+                                var found = false;
+                                for (var oldYear = 0; oldYear < $scope.years.length; oldYear++) {
+                                    if ($scope.years[oldYear].id == $scope.ptoYears[year].id) {
+                                        found = true;
                                         break;
                                     }
                                 }
-                            }
-                            else {
-                                for (var year = 0; year < $scope.ptoYears.length; year++) {
-                                    if ($scope.selectedYear.id === $scope.ptoYears[year].id) {
-                                        $scope.selectedYear = $scope.ptoYears[year];
-                                        $scope.lastSelectedYear = $scope.selectedYear;
-                                        break;
-                                    }
+                                if (!found) {
+                                    $scope.selectedYear = $scope.ptoYears[year];
+                                    $scope.lastSelectedYear = $scope.selectedYear;
+                                    break;
                                 }
                             }
                         }
-                        $scope.pageLoading = false;
-                        setStatus("Saved");
-                        modified(false);
-                    });
+                        else {
+                            for (var year = 0; year < $scope.ptoYears.length; year++) {
+                                if ($scope.selectedYear.id === $scope.ptoYears[year].id) {
+                                    $scope.selectedYear = $scope.ptoYears[year];
+                                    $scope.lastSelectedYear = $scope.selectedYear;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    $scope.pageLoading = false;
+                    setStatus("Saved");
+                    modified(false);
+                    $scope.disablePTOYear = true;
                 });
-            }
-            else
-                alert("PTO Year [" + $scope.empPTOYear.ptoYearSelected + "] already exists. Please add unique PTO Year.");
+            });                
         }
         else {
             $scope.ptoForm.selectedPTOYear.$setValidity("required", false);
@@ -473,7 +492,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.payCodeSettings = {
             scrollableHeight: '300px',
             scrollable: true,
-            idProperty: 'id'
+            idProperty: 'id',           
         };
         if ($scope.ptoTypes.length <= 0) {          
             getPTOTypesList();
@@ -507,8 +526,8 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
                 });
             });
             $scope.pageStatus = 'Normal';
-            setStatus("Edit");
-            modified(true);
+            setStatus("Normal");
+            modified(false);
         });
     };
 
@@ -1940,7 +1959,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.pageStatus = "Loading, Please Wait...";
         setStatus("Loading");
 
-		EmpActions.getPTOBalanceHours($scope.ptoDay.ptoYear, $scope.selectedEmployee.id, function (result) {
+        EmpActions.getPTOBalanceHours($scope.ptoDay.ptoYear, $scope.selectedEmployee.id, function (result) {
         	$scope.empPTOBalanceHours = result;
 			setStatus("Normal");
 		});
