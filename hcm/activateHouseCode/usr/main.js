@@ -466,6 +466,44 @@ ii.Class({
 			me.specifyGPO.makeEnterTab()
 				.setValidationMaster(me.validator);
 
+			me.startDate = new ui.ctl.Input.Date({
+		        id: "StartDate",
+				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); },
+				changeFunction: function() { me.modified(); }
+		    });
+
+			me.startDate.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation( function( isFinal, dataMap ) {
+					var enteredText = me.startDate.text.value;
+
+					if (enteredText === "")
+						return;
+
+					if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
+						this.setInvalid("Please enter valid date.");
+				});
+
+			me.closedDate = new ui.ctl.Input.Date({
+		        id: "ClosedDate",
+				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); },
+				changeFunction: function() { me.modified(); }
+		    });
+
+			me.closedDate.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation( function( isFinal, dataMap ) {
+					var enteredText = me.closedDate.text.value;
+
+					if (enteredText !== "") {
+						if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
+							this.setInvalid("Please enter valid date.");
+						else if (new Date(enteredText) < new Date(me.startDate.text.value))
+							this.setInvalid("The Closed Date should not be less than Start Date.");
+					}
+				});
+
 			me.jdeCompany = new ui.ctl.Input.DropDown.Filtered({
 				id : "JDECompany",
 				formatFunction: function( type ) { return type.name; },
@@ -1482,6 +1520,8 @@ ii.Class({
 				, (me.primaryBusiness.indexSelected >= 0 ? me.primaryBusiness.data[me.primaryBusiness.indexSelected].id : 0)
 				, (me.gpo.indexSelected >= 0 ? me.gpo.data[me.gpo.indexSelected].id : 0)
 				, me.specifyGPO.getValue()
+				, me.startDate.lastBlurValue
+				, me.closedDate.lastBlurValue
 				, (me.jdeCompany.indexSelected >= 0 ? me.jdeCompany.data[me.jdeCompany.indexSelected].id : 0)
 				, (me.primaryServiceProvided.indexSelected >= 0 ? me.primaryServiceProvided.data[me.primaryServiceProvided.indexSelected].id : 0)
 				, otherServicesProvided.toString()
@@ -1546,6 +1586,8 @@ ii.Class({
 			xml += ' primaryBusiness="' + item.primaryBusiness + '"';
 			xml += ' gpoType="' + item.gpo + '"';
 			xml += ' specifyGPO="' + ui.cmn.text.xml.encode(item.specifyGPO) + '"';
+			xml += ' startDate="' + item.startDate + '"';
+			xml += ' closedDate="' + item.closedDate + '"';
 			xml += ' jdeCompany="' + item.jdeCompany + '"';
 			xml += ' primaryServiceProvided="' + item.primaryServiceProvided + '"';
 			xml += ' otherServicesProvided="' + item.otherServicesProvided + '"';
