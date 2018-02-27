@@ -447,6 +447,16 @@ ii.Class({
 				maxLength: 3
 		    });
 
+			me.name3 = new ui.ctl.Input.Text({
+		        id: "Name3",
+				maxLength: 35
+		    });
+
+			me.name4 = new ui.ctl.Input.Text({
+		        id: "Name4",
+				maxLength: 35
+		    });
+
 			me.blockCentralPosting = new ui.ctl.Input.Check({
 		        id: "BlockCentralPosting"
 		    });
@@ -597,13 +607,15 @@ ii.Class({
 			me.paymentKeyTerms.text.tabIndex = 25;
 			me.businessType.text.tabIndex = 26;
 			me.country.text.tabIndex = 27;
-			me.blockCentralPosting.check.tabIndex = 28;
-			me.blockPayment.check.tabIndex = 29;
-			me.blockPostingCompanyCode.check.tabIndex = 30;
-			me.sendMethodType.text.tabIndex = 31;
-			me.selectVendorBy.text.tabIndex = 32;
-			me.autoEmail.check.tabIndex = 33;
-			me.active.check.tabIndex = 34;
+			me.name3.text.tabIndex = 28;
+			me.name4.text.tabIndex = 29;
+			me.blockCentralPosting.check.tabIndex = 30;
+			me.blockPayment.check.tabIndex = 31;
+			me.blockPostingCompanyCode.check.tabIndex = 32;
+			me.sendMethodType.text.tabIndex = 33;
+			me.selectVendorBy.text.tabIndex = 34;
+			me.autoEmail.check.tabIndex = 35;
+			me.active.check.tabIndex = 36;
 		},
 
 		resizeControls: function() {
@@ -636,6 +648,8 @@ ii.Class({
 			me.paymentKeyTerms.resizeText();
 			me.businessType.resizeText();
 			me.country.resizeText();
+			me.name3.resizeText();
+			me.name4.resizeText();
 			me.sendMethodType.resizeText();
 			me.selectVendorBy.resizeText();
 			me.resize();
@@ -673,6 +687,8 @@ ii.Class({
 			me.paymentKeyTerms.setValue("");
 			me.businessType.setValue("");
 			me.country.setValue("");
+			me.name3.setValue("");
+			me.name4.setValue("");
 			me.blockCentralPosting.setValue("false");
 			me.blockPayment.setValue("false");
 			me.blockPostingCompanyCode.setValue("false");
@@ -754,6 +770,8 @@ ii.Class({
 			$("#PaymentKeyTermsText").attr("disabled", true);
 			$("#BusinessTypeText").attr("disabled", true);
 			$("#CountryText").attr("disabled", true);
+			$("#Name3Text").attr("disabled", true);
+			$("#Name4Text").attr("disabled", true);
 			$("#BlockCentralPostingCheck").attr("disabled", true);
 			$("#BlockPaymentCheck").attr("disabled", true);
 			$("#BlockPostingCompanyCodeCheck").attr("disabled", true);
@@ -915,6 +933,8 @@ ii.Class({
 			me.paymentKeyTerms.setValue(item.paymentKeyTerms);
 			me.businessType.setValue(item.businessType);
 			me.country.setValue(item.country);
+			me.name3.setValue(item.name3);
+			me.name4.setValue(item.name4);
 			me.blockCentralPosting.setValue(item.blockCentralPosting.toString());
 			me.blockPayment.setValue(item.blockPayment.toString());
 			me.blockPostingCompanyCode.setValue(item.blockPostingCompanyCode.toString());
@@ -1033,6 +1053,8 @@ ii.Class({
 				, me.paymentKeyTerms.getValue()
 				, me.businessType.getValue()
 				, me.country.getValue()
+				, me.name3.getValue()
+				, me.name4.getValue()
 				, me.blockCentralPosting.check.checked
 				, me.blockPayment.check.checked
 				, me.blockPostingCompanyCode.check.checked

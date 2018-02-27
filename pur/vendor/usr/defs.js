@@ -64,6 +64,8 @@ ii.init.register( function() {
 		, paymentKeyTerms: {type: String, required: false, defaultValue: ""}
 		, businessType: {type: String, required: false, defaultValue: ""}
 		, country: {type: String, required: false, defaultValue: ""}
+		, name3: {type: String, required: false, defaultValue: ""}
+		, name4: {type: String, required: false, defaultValue: ""}
 		, blockCentralPosting: {type: Boolean, required: false}
 		, blockPayment: {type: Boolean, required: false}
 		, blockPostingCompanyCode: {type: Boolean, required: false}
