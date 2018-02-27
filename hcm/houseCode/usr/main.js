@@ -136,8 +136,8 @@ ii.Class({
 			me.shJDECompanyReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabHouseCode\\SectionHouseCode\\JDECompany\\Read", me.sectionHouseCodeWrite, me.sectionHouseCodeReadOnly);
 			me.shSiteReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabHouseCode\\SectionHouseCode\\Site\\Read", me.sectionHouseCodeWrite, me.sectionHouseCodeReadOnly);
 			me.shHouseCodeReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabHouseCode\\SectionHouseCode\\HouseCode\\Read", me.sectionHouseCodeWrite, me.sectionHouseCodeReadOnly);
-			me.shStartDateReadOnly = true; //me.isCtrlReadOnly(me.authorizePath + "\\TabHouseCode\\SectionHouseCode\\StartDate\\Read", me.sectionHouseCodeWrite, me.sectionHouseCodeReadOnly);
-			me.shClosedDateReadOnly = true; //me.isCtrlReadOnly(me.authorizePath + "\\TabHouseCode\\SectionHouseCode\\ClosedDate\\Read", me.sectionHouseCodeWrite, me.sectionHouseCodeReadOnly);
+			me.shStartDateReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabHouseCode\\SectionHouseCode\\StartDate\\Read", me.sectionHouseCodeWrite, me.sectionHouseCodeReadOnly);
+			me.shClosedDateReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabHouseCode\\SectionHouseCode\\ClosedDate\\Read", me.sectionHouseCodeWrite, me.sectionHouseCodeReadOnly);
 			me.shClosedReasonReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabHouseCode\\SectionHouseCode\\ClosedReason\\Read", me.sectionHouseCodeWrite, me.sectionHouseCodeReadOnly);
 
 			//ss=sectionServices

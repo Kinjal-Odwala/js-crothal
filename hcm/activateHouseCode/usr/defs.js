@@ -135,6 +135,8 @@ ii.init.register( function() {
 		, primaryBusiness: {type: String, required: false, defaultValue: ""}
 		, gpo: {type: String, required: false, defaultValue: ""}
 		, specifyGPO: {type: String, required: false, defaultValue: ""}
+		, startDate: {type: String, required: false, defaultValue: ""}
+		, closedDate: {type: String, required: false, defaultValue: ""}
 		, jdeCompany: {type: String, required: false, defaultValue: ""}
 		, primaryServiceProvided: {type: String, required: false, defaultValue: ""}
 		, otherServicesProvided: {type: String, required: false, defaultValue: ""}
