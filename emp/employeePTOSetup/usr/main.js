@@ -569,8 +569,8 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
                     });
                     setStatus("Saved");
                     modified(false);
-
                 });
+                $scope.pageLoading = false;
             });
         }
         else {           
@@ -1988,7 +1988,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.pageStatus = "Loading, Please Wait...";
         setStatus("Loading");       
 
-		EmpActions.getPTODays($scope.selectedEmployee.id, $scope.ptoDay.ptoYear, ptoTypeId, function(result) {
+        EmpActions.getPTODays($scope.selectedEmployee.id, $scope.ptoDay.ptoYear, ptoTypeId, function (result) {
 			$scope.ptoDays = result;
 			angular.forEach($scope.ptoDays, function (ptoDay) {
 			    if (ptoDay.ptoType == ptoTypeId)

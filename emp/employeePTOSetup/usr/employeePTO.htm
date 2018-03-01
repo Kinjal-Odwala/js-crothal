@@ -448,7 +448,7 @@
             <div class="row sectionHeader">PTO Days</div>
             <div class="row margin-bottom10" style="padding-top:10px;">
                 <label class="col-md-1 control-label" style="line-height:2;width:8%">House Code:</label>
-                <div class="col-md-2" style="padding-left:0px">
+                <div class="col-md-2" style="padding-left:0px" id="ptoDaysDropdown">
                     <pto-typeahead ng-model="ptoDay.hcmHouseCode" source="hcmHouseCodes" typeahead-option="{displayField:'name',valueField:'id',name:'HcmHouseCode'}"></pto-typeahead>
                 </div>
                 <label class="col-md-1 control-label" style="line-height:2;width:7%">PTO Year:</label>
@@ -498,8 +498,8 @@
                                 <td style="text-align:center;width:5%;line-height:normal">{{$index + 1}}</td>
                                 <td style="text-align:left;width:30%;line-height:normal">{{item.ptoTypeTitle}}</td>
                                 <td style="text-align:right;width:20%;line-height:normal">
-                                    <a ng-show="item.ptoHours!='0.00' && item.ptoHours !='0'" class="ptoDays" href="" ng-click="showPTODates(item.ptoType)">{{item.ptoHours}}</a>
-                                    <span ng-show="item.ptoHours == '0.00' || item.ptoHours=='0'">{{item.ptoHours}}</span>
+                                    <a ng-show="item.ptoHours != '0.00' && item.ptoHours != '0'" class="ptoDays" href="" ng-click="showPTODates(item.ptoType)">{{item.ptoHours}}</a>
+                                    <span ng-show="item.ptoHours == '0.00' || item.ptoHours == '0'">0.00</span>
                                 </td>
                                 <td style="text-align:right;width:20%;line-height:normal">{{item.balanceHours}}</td>
                                 <td style="text-align:left;width:30%;line-height:normal">{{item.ptoStatus}}</td>

@@ -285,7 +285,7 @@ li {
     height:300px !important;
 }
 
-#ptoAssignmentDropdown .dropdown-menu {
+#ptoAssignmentDropdown .dropdown-menu , #ptoDaysDropdown .dropdown-menu{
      width:auto;
      height:auto !important;
 }
