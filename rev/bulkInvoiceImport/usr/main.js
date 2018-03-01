@@ -708,8 +708,15 @@ ii.Class({
 						$("#txtCustomerNumber" + index).css("background-color", me.cellColorInvalid);
 					}
 					else {
-						$("#txtCustomerNumber" + index).attr("title", "");
-						$("#txtCustomerNumber" + index).css("background-color", me.cellColorValid);
+						if (customerNumber.substr(1, 5) !== houseCode) {
+							rowValid = false;
+							$("#txtCustomerNumber" + index).attr("title", "Customer Number is not matching with the primary House Code [" + houseCode + "].");
+							$("#txtCustomerNumber" + index).css("background-color", me.cellColorInvalid);
+						}
+						else {
+							$("#txtCustomerNumber" + index).attr("title", "");
+							$("#txtCustomerNumber" + index).css("background-color", me.cellColorValid);
+						}
 					}
 
 					if ($("#chkTaxExempt" + index)[0].checked) {
