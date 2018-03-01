@@ -40,6 +40,7 @@ ii.init.register( function() {
 		, stateType: {type: Number, required: false, defaultValue: 0}
 		, postalCode: {type: String, required: false, defaultValue: ""}
 		, taxId: {type: String, required: false, defaultValue: "0"}
+		, sapCustomerNumber: {type: String, required: false, defaultValue: ""}
 	};
 	
 }, 1);

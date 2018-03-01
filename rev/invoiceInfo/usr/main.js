@@ -606,6 +606,7 @@ ii.Class({
 					me.taxId.setValue("");
 				}
 
+				$("#SAPCustomerNumber").html(me.invoiceBillTos[index].sapCustomerNumber);
 				me.company.setValue(me.invoiceBillTos[index].company);
 				me.address1.setValue(me.invoiceBillTos[index].address1);
 				me.address2.setValue(me.invoiceBillTos[index].address2);
@@ -617,6 +618,7 @@ ii.Class({
 					me.state.select(itemIndex, me.state.focused);
 			}
 			else {
+				$("#SAPCustomerNumber").html("");
 				me.company.setValue("");
 				me.address1.setValue("");
 				me.address2.setValue("");
@@ -687,9 +689,10 @@ ii.Class({
 					}
 				}
 			}
-			
+
 			me.notes.value = me.invoice.notes;
-									
+			$("#SAPCustomerNumber").html(me.invoiceBillTos[me.billTo.indexSelected].sapCustomerNumber);
+
 			if (me.invoice.printed) {
 				me.taxExempt.text.readOnly = true;			
 				$("#TaxExemptAction").removeClass("iiInputAction");		
@@ -745,6 +748,7 @@ ii.Class({
 			me.invoiceAddress.reset();
 			me.serviceLocation.reset();
 			me.notes.value = "";
+			$("#SAPCustomerNumber").html("");
 		},
 		
 		actionUndoItem: function() {

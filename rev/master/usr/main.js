@@ -1537,6 +1537,7 @@ ii.Class({
 					me.taxId.setValue("");
 				}
 
+				$("#SAPCustomerNumber").html(me.billTo.data[index].sapCustomerNumber);
                 me.company.setValue(me.billTo.data[index].company);
                 me.address1.setValue(me.billTo.data[index].address1);
                 me.address2.setValue(me.billTo.data[index].address2);
@@ -1548,6 +1549,7 @@ ii.Class({
                     me.state.select(itemIndex, me.state.focused);
             }
             else {
+				$("#SAPCustomerNumber").html("");
 				me.taxId.setValue("");
                 me.company.setValue("");
                 me.address1.setValue("");
@@ -1641,6 +1643,7 @@ ii.Class({
 					}
 				}
 
+				$("#SAPCustomerNumber").html(me.billTo.data[me.billTo.indexSelected].sapCustomerNumber);
 				me.company.setValue(searchInvoice.company);
 				me.address1.setValue(searchInvoice.address1);
 				me.address2.setValue(searchInvoice.address2);
@@ -1666,7 +1669,8 @@ ii.Class({
 
 				me.notes.value = searchInvoice.notes;
 			}
-			else {				
+			else {
+				$("#SAPCustomerNumber").html("");
 				me.taxExempt.reset();
 				me.taxId.setValue("");
 				me.company.setValue("");
