@@ -38,6 +38,7 @@ ii.init.register( function() {
 		, recurringFixedCost: {type: Boolean, required: false, defaultValue: false}
 		, version: {type: Number, required: false, defaultValue: 0}
 		, displayOrder: {type: Number, required: false, defaultValue: 0}
+		, exportedDate: {type: String, required: false, defaultValue: ""}
 	};
 
 	fin.rev.invoice.accountArgs = {

@@ -211,6 +211,7 @@ ii.Class({
 
 			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\Invoicing/AR");
             me.invoicingReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Invoicing/AR\\Read");
+			me.reExport = me.authorizer.isAuthorized(me.authorizePath + "\\Invoicing/AR\\ReExport");
 
 			if (me.isAuthorized) {
 				$("#pageLoading").hide();
@@ -648,8 +649,18 @@ ii.Class({
                 clickFunction: function () { me.actionPrintMemo(); },
                 hasHotState: true
             });
-            
-        	$('#' + me.printMemo.id).hide();
+
+			me.anchorReExport = new ui.ctl.buttons.Sizeable({
+                id: "AnchorReExport",
+                className: "iiButton",
+                text: "<span>&nbsp;Re-Export&nbsp;</span>",
+                title: "Reexport selected Invoice",
+                clickFunction: function () { me.actionReExport(); },
+                hasHotState: true
+            });
+
+			$("#PrintMemo").hide();
+			$("#AnchorReExport").hide();
 			
 			me.anchorNewNext = new ui.ctl.buttons.Sizeable({
                 id: "AnchorNewNext",
@@ -1367,6 +1378,15 @@ ii.Class({
                 $("#" + me.printMemo.id).show();
         },
 
+		showHideReExportButton: function(statusType, exportedDate) {
+			var me = this;
+			
+			if (me.reExport && statusType === 1 && exportedDate !== "")
+				$("#AnchorReExport").show();
+			else
+				$("#AnchorReExport").hide();
+		},
+
         currentDate: function fin_rev_master_UserInterface_currentDate() {
             var today = new Date();
             var month = today.getMonth() + 1;
@@ -1447,6 +1467,15 @@ ii.Class({
             var me = this;
 
             window.open(location.protocol + '//' + location.hostname + '/reports/creditmemo.aspx?invoicenumber=' + me.invoiceId, 'PrintInvoiceMemo', 'type=fullWindow,status=yes,toolbar=no,menubar=no,location=no,resizable=yes');
+        },
+
+        actionReExport: function () {
+            var me = this;
+
+            if (confirm("The selected invoice line items and credit memo will be exported again. Are you sure you want to continue?")) {
+                me.status = "ReExport";
+                me.actionSaveItem();
+            }
         },
 
         createNewInvoice: function() {
@@ -1913,7 +1942,7 @@ ii.Class({
             var args = ii.args(arguments, {});
             var me = this;
 
-            if (me.status == "Printed" || me.status == "CreditMemoPrinted" || me.status == "Cancel") {
+            if (me.status == "Printed" || me.status == "CreditMemoPrinted" || me.status == "Cancel" || me.status == "ReExport") {
                 me.saveInvoice();
             }
             else if (me.activeFrameId == 0) {
@@ -2051,6 +2080,11 @@ ii.Class({
                     , printed: true
                 });
             }
+            else if (me.status == "ReExport") {
+                item = new fin.rev.master.Invoice({
+                    id: me.invoiceId
+                });
+            }
 
 			if ((me.status == "Add" || me.status == "Edit") && me.validate == 1) {
 			
@@ -2124,6 +2158,14 @@ ii.Class({
                 return xml;
             }
 			
+			if (me.status == "ReExport") {
+			    xml += '<revInvoiceReExport';
+			    xml += ' id="' + args.item.id + '"';
+			    xml += '/>';
+
+			    return xml;
+            }
+
 			var cloneInvoiceId = 0;
 			
 			if (me.invoiceType == invoiceTypes.houseCodeCloneYes || me.invoiceType == invoiceTypes.customerCloneYes)
@@ -2215,6 +2257,9 @@ ii.Class({
                                 me.invoices[me.lastSelectedRowIndex].creditMemoPrinted = true;
                                 me.invoiceGrid.body.renderRow(me.lastSelectedRowIndex, me.lastSelectedRowIndex);
                                 me.invoiceGrid.body.select(me.lastSelectedRowIndex);
+                            }
+                            else if (me.status == "ReExport") {
+								$("#AnchorReExport").hide();
                             }
                             else {
                                 me.lastSelectedRowIndex = me.invoiceGrid.activeRowIndex;

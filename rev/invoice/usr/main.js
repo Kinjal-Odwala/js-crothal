@@ -37,7 +37,7 @@ ii.Class({
 			me.salesTaxAccountId = parent.fin.revMasterUi.salesTaxAccountId;
 			me.descriptionAccount = parent.fin.revMasterUi.descriptionAccount;
 			me.houseCodeCache = parent.fin.revMasterUi.houseCodeCache;
-			me.houseCodeBrief = parent.fin.revMasterUi.houseCodeBrief;			
+			me.houseCodeBrief = parent.fin.revMasterUi.houseCodeBrief;
 
 			var index = parent.fin.revMasterUi.lastSelectedRowIndex;
 			if (index >= 0) {
@@ -392,12 +392,17 @@ ii.Class({
 			var houseCodeJob = 0;
 			var itemIndex = -1;
 			var displayOrderSet = false;
+			var statusType = 0;
+			var exportedDate = "";
 
 			if (me.invoiceItems.length > 0) {
 				if (me.invoiceItems[0].displayOrder > 0)
 					displayOrderSet = true;
+
+				statusType = me.invoiceItems[0].statusType;
+				exportedDate = me.invoiceItems[0].exportedDate;
 			}
-			
+
 			if (displayOrderSet) {
 				for (index = 0; index < me.invoiceItems.length; index++) {
 					if (me.invoiceItems[index].account == me.salesTaxAccountId) {
@@ -470,6 +475,7 @@ ii.Class({
 			}
 	
 			me.resize();
+			parent.fin.revMasterUi.showHideReExportButton(statusType, exportedDate);
 			parent.fin.revMasterUi.hidePageLoading("");
 		},
 		
@@ -1565,6 +1571,7 @@ ii.Class({
 					, recurringFixedCost
 					, version
 					, 0
+					, ""
 				    );
 			}
 			else if (me.status == "Delete") {
