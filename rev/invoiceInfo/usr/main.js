@@ -691,7 +691,8 @@ ii.Class({
 			}
 
 			me.notes.value = me.invoice.notes;
-			$("#SAPCustomerNumber").html(me.invoiceBillTos[me.billTo.indexSelected].sapCustomerNumber);
+			if (me.billTo.indexSelected !== -1)
+				$("#SAPCustomerNumber").html(me.invoiceBillTos[me.billTo.indexSelected].sapCustomerNumber);
 
 			if (me.invoice.printed) {
 				me.taxExempt.text.readOnly = true;			
