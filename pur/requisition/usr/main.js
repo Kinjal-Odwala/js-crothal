@@ -44,6 +44,7 @@ ii.Class({
 			me.action = "PORequisition";
 			me.currentVendorTitle = "";
 			me.vendorsLoading = false;
+			me.saveSendRequisition = false;
 			me.poRequisitionDetailsTemp = [];
 
 			me.gateway = ii.ajax.addGateway("pur", ii.config.xmlProvider); 
@@ -287,7 +288,7 @@ ii.Class({
 				clickFunction: function() { me.actionBackItem(); },
 				hasHotState: true
 			});
-			
+
 			me.anchorSave = new ui.ctl.buttons.Sizeable({
 				id: "AnchorSave",
 				className: "iiButton",
@@ -295,7 +296,15 @@ ii.Class({
 				clickFunction: function() { me.actionSaveItem(); },
 				hasHotState: true
 			});
-			
+
+			me.anchorSaveSendRequisition = new ui.ctl.buttons.Sizeable({
+			    id: "AnchorSaveSendRequisition",
+			    className: "iiButton",
+			    text: "<span>&nbsp;&nbsp;Save & Send Requisition&nbsp;&nbsp;</span>",
+			    clickFunction: function () { me.actionSaveSendRequisitionItem(); },
+			    hasHotState: true
+			});
+
 			me.anchorCancel = new ui.ctl.buttons.Sizeable({
 				id: "AnchorCancel",
 				className: "iiButton",
@@ -1768,6 +1777,7 @@ ii.Class({
 					$("#imgEdit").show();
 					$("#imgRemove").show();
 					me.anchorSave.display(ui.cmn.behaviorStates.enabled);
+					me.anchorSaveSendRequisition.display(ui.cmn.behaviorStates.enabled);
 					me.setReadOnly(false);
 				}
 				else {
@@ -1793,6 +1803,7 @@ ii.Class({
 						$("#imgEdit").show();
 						$("#imgRemove").show();				
 						me.anchorSave.display(ui.cmn.behaviorStates.enabled);
+						me.anchorSaveSendRequisition.display(ui.cmn.behaviorStates.enabled);
 						me.setReadOnly(false);
 					}
 					else {
@@ -1804,6 +1815,7 @@ ii.Class({
 						$("#imgEdit").hide();
 						$("#imgRemove").hide();
 						me.anchorSave.display(ui.cmn.behaviorStates.disabled);
+						me.anchorSaveSendRequisition.display(ui.cmn.behaviorStates.disabled);
 						me.setReadOnly(true);
 					}
 				}
@@ -2307,6 +2319,7 @@ ii.Class({
 
 			me.houseCodeJobStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId, me.houseCodeJobsLoaded, me);
 			me.anchorSave.display(ui.cmn.behaviorStates.enabled);
+			me.anchorSaveSendRequisition.display(ui.cmn.behaviorStates.enabled);
 			me.setReadOnly(false);
 			me.requisitionGrid.body.deselectAll();
 			var index = me.itemGrid.activeRowIndex;
@@ -2384,6 +2397,7 @@ ii.Class({
 			me.total = 0;
 			me.currentVendorTitle = "";
 			me.status = "NewPORequisition";
+			me.saveSendRequisition = false;
 			me.wizardCount = 1;
 			me.modified(false);
 			me.setStatus("Loaded");
@@ -2411,7 +2425,8 @@ ii.Class({
 			me.itemGrid.setData(me.poRequisitionDetails);
 			me.documentGrid.setData(me.poRequisitionDocuments);
 			me.setTotal();
-			me.status = "EditPORequisition";			
+			me.status = "EditPORequisition";
+			me.saveSendRequisition = false;
 			me.wizardCount = 1;
 			me.actionShowWizard();
 			me.modified(false);
@@ -2437,7 +2452,14 @@ ii.Class({
 			me.actionShowWizard();
 			me.validator.reset();			
 		},
-		
+
+		actionSaveSendRequisitionItem: function() {
+		    var me = this;
+
+		    me.saveSendRequisition = true;
+		    me.actionSaveItem();
+		},
+
 		actionShowWizard: function() {
 			var me = this;
 
@@ -2449,6 +2471,7 @@ ii.Class({
 					me.anchorNext.display(ui.cmn.behaviorStates.enabled);
 					me.anchorBack.display(ui.cmn.behaviorStates.disabled);
 					me.anchorSave.display(ui.cmn.behaviorStates.disabled);
+					me.anchorSaveSendRequisition.display(ui.cmn.behaviorStates.disabled);
 					$("#Header").text("General Information");					
 					break;
 					
@@ -2459,6 +2482,7 @@ ii.Class({
 					me.anchorNext.display(ui.cmn.behaviorStates.enabled);
 					me.anchorBack.display(ui.cmn.behaviorStates.enabled);
 					me.anchorSave.display(ui.cmn.behaviorStates.disabled);
+					me.anchorSaveSendRequisition.display(ui.cmn.behaviorStates.disabled);
 					$("#Header").text("Item Information");
 					
 					if (me.vendorNumber == "") {
@@ -2488,14 +2512,18 @@ ii.Class({
 					me.anchorBack.display(ui.cmn.behaviorStates.enabled);
 					
 					if (me.status == "NewPORequisition" 
-						|| me.requisitionGrid.data[me.lastSelectedRowIndex].statusType == 10 
+						|| me.requisitionGrid.data[me.lastSelectedRowIndex].statusType == 10
 						|| me.requisitionGrid.data[me.lastSelectedRowIndex].statusType == 1
 						|| me.requisitionGrid.data[me.lastSelectedRowIndex].statusType == 13
-						|| (me.writeInProcess && me.requisitionGrid.data[me.lastSelectedRowIndex].statusType == 2))
+						|| (me.writeInProcess && me.requisitionGrid.data[me.lastSelectedRowIndex].statusType == 2)) {
 						me.anchorSave.display(ui.cmn.behaviorStates.enabled);
-					else
+						me.anchorSaveSendRequisition.display(ui.cmn.behaviorStates.enabled);
+					}
+					else {
 						me.anchorSave.display(ui.cmn.behaviorStates.disabled);
-						
+						me.anchorSaveSendRequisition.display(ui.cmn.behaviorStates.disabled);
+					}
+
 					$("#Header").text("Shipping Information");
 					break;
 			}
@@ -3078,7 +3106,7 @@ ii.Class({
 									me.poRequisitions[me.lastSelectedRowIndex] = item;
 									me.requisitionGrid.body.renderRow(me.lastSelectedRowIndex, me.lastSelectedRowIndex);									
 									me.itemReadOnlyGrid.setData(me.poRequisitionDetails);
-									
+
 									if (me.status == "SendRequisition" || me.status == "ResendRequisition")
 										$("#AnchorResendRequisition").show();
 									else if (me.status == "CancelRequisition" || me.status == "ApproveRequisition") {
@@ -3086,18 +3114,21 @@ ii.Class({
 										$("#AnchorCancelRequisition").hide();
 										$("#AnchorApprove").hide();
 									}
-																		
+
 									$("#AnchorSendRequisition").hide();
-									$("#AnchorEdit").hide();
-									$("#AnchorView").show();
-									$("#VendorInfo").hide();
-									$("#CategoryInfo").hide();
-									$("#imgAdd").hide();
-									$("#imgEdit").hide();
-									$("#imgRemove").hide();
-									
-									me.anchorSave.display(ui.cmn.behaviorStates.disabled);
-									me.setReadOnly(true);
+									if (!me.writeInProcess || me.requisitionGrid.data[me.lastSelectedRowIndex].statusType !== 2) {
+										$("#AnchorEdit").hide();
+										$("#AnchorView").show();
+										$("#VendorInfo").hide();
+										$("#CategoryInfo").hide();
+										$("#imgAdd").hide();
+										$("#imgEdit").hide();
+										$("#imgRemove").hide();
+										
+										me.anchorSave.display(ui.cmn.behaviorStates.disabled);
+										me.anchorSaveSendRequisition.display(ui.cmn.behaviorStates.disabled);
+										me.setReadOnly(true);
+									}
 								}
 								else if (me.status == "GeneratePurchaseOrder") {
 									me.poRequisitions.splice(me.requisitionGrid.activeRowIndex, 1);
@@ -3139,13 +3170,20 @@ ii.Class({
 					if (me.status == "EditPORequisition")
 						me.resetPORequisitionDetails(true);
 
-					if (me.status == "PrintRequisition")
-						me.setStatus("Normal");
-					else
-						me.setStatus("Saved");
+					if (me.saveSendRequisition) {
+						me.saveSendRequisition = false;
+					    me.status = "SendRequisition";
+					    me.actionSaveItem();
+					}
+					else {
+						if (me.status == "PrintRequisition")
+							me.setStatus("Normal");
+						else
+							me.setStatus("Saved");
 
-					me.status = "";
-					me.modified(false);
+						me.status = "";
+						me.modified(false);
+					}
 				}
 			}
 			else if (status == "invalid") {

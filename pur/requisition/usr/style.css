@@ -269,6 +269,14 @@
 	padding-top: 5px;
 }
 
+#AnchorSaveSendRequisition {
+	float: left;
+	width: 250px;
+	margin-right: 5px;
+	padding-left: 0px;
+	padding-top: 5px;
+}
+
 #AnchorCancel {
 	float: left;
 	width: 80px;
