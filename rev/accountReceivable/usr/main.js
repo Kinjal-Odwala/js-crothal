@@ -73,7 +73,7 @@ ii.Class({
 
 			if (parent.fin.revMasterUi.invoicingReadOnly || (me.getStatusTitle(me.invoice.statusType) == "Closed")) {
 				//|| (((parseFloat(me.invoice.amount) - parseFloat(me.invoice.credited)) == 0) && me.invoice.creditMemoPrinted)) {
-				$("#anchorAlign").hide();
+				$("#CreditMemoButtons").hide();
 				me.rowBeingEdited = true;
 			}
 			else {
@@ -217,7 +217,15 @@ ii.Class({
 				clickFunction: function() { me.actionUndoItem(); },
 				hasHotState: true
 			});
-			
+
+			me.anchorReExport = new ui.ctl.buttons.Sizeable({
+                id: "AnchorReExport",
+                className: "iiButton",
+                text: "<span>&nbsp;&nbsp;Re-Export&nbsp;&nbsp;</span>",
+                clickFunction: function () { me.actionReExport(); },
+                hasHotState: true
+            });
+
 			me.anchorOk = new ui.ctl.buttons.Sizeable({
 				id: "AnchorOk",
 				className: "iiButton",
@@ -428,7 +436,17 @@ ii.Class({
 			var total = 0;
 			var creditAmount = 0;
 			var status = "";
-			
+
+			for (index = 0; index < me.accountReceivables.length; index++) {
+				if (me.accountReceivables[index].exportedDate !== "") {
+					if (parent.fin.revMasterUi.reExport && me.accountReceivables[index].statusType === 1)
+						$("#AnchorReExport").show();
+					else
+						$("#AnchorReExport").hide();
+					break;
+				}
+			}
+
 			for (index = 0; index < me.accountReceivables.length; index++) {
 				status = me.getStatusTitle(me.accountReceivables[index].statusType);
 				rowHtml += "<tr>";
@@ -472,7 +490,7 @@ ii.Class({
 			}
 
 			if (status == "Closed") {
-				$("#anchorAlign").hide();
+				$("#CreditMemoButtons").hide();
 				me.rowBeingEdited = true;
 			}
 
@@ -1233,7 +1251,16 @@ ii.Class({
 			me.rowBeingEdited = false;
 			me.currentRowSelected = null;
 		},
-				
+
+		actionReExport: function () {
+            var me = this;
+
+            if (confirm("The selected credit memo items will be exported again. Are you sure you want to continue?")) {
+                me.status = "ReExport";
+                me.actionSaveItem();
+            }
+        },
+
 		actionSaveItem: function() {
 			var args = ii.args(arguments,{});
 			var me = this;
@@ -1288,6 +1315,7 @@ ii.Class({
 							, 1
 							, $("#notes" + rowNumber).val()
 							, 1
+							, ""
 						));
 					}
 				});
@@ -1332,7 +1360,8 @@ ii.Class({
 
 			parent.fin.revMasterUi.showPageLoading("Saving");
 			
-			id = parseInt(me.currentRowSelected.cells[1].innerHTML);
+			if (me.status !== "ReExport")
+				id = parseInt(me.currentRowSelected.cells[1].innerHTML);
 			if (id > 0) {
 				index = parseInt(me.currentRowSelected.cells[0].innerHTML) - 1;
 				version = me.accountReceivables[index].version;
@@ -1356,11 +1385,15 @@ ii.Class({
 					, 1
 					, $("#notes" + rowNumber).val()
 					, version
+					, ""
 				));
 			}
 			else if (me.status == "Delete") {
 				item.push(new fin.rev.accountReceivable.AccountReceivable({ id: id }));
-			}			
+			}
+			else if (me.status == "ReExport") {
+                item.push(new fin.rev.accountReceivable.AccountReceivable({ id: 0 }));
+            }
 
 			var xml = me.saveXmlBuildAccountReceivable(item);
 	
@@ -1406,6 +1439,12 @@ ii.Class({
 				xml += ' id="' + items[0].id + '"';
 				xml += '/>';
 			}
+			else if (me.status == "ReExport") {
+			    xml += '<revInvoiceReExport';
+			    xml += ' id="' + me.invoiceId + '"';
+				xml += ' type="CreditMemo"';
+			    xml += '/>';
+            }
 
 			return xml;
 		},
@@ -1424,6 +1463,9 @@ ii.Class({
 			var errorMessage = "";
 
 			if (status == "success") {
+				if (me.status === "ReExport") {
+					$("#AnchorReExport").hide();
+				}
 				me.modified(false);
 				me.status = "";
 				me.rowBeingEdited = false;

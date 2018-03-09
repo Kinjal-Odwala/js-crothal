@@ -4,16 +4,9 @@
 	width: 98%;
 }
 
-#AnchorInvoiceLabelLeft {
-	left: 0;
-	bottom: 0;
-	position: absolute;
-	padding: 10px 10px 10px 10px;
-}
-
 #anchorAlign {
-	padding-bottom: 5px;
-	clear: both;
+	float: left;
+	padding-left: 10px;
 }
 
 #buttonAlign {
@@ -33,6 +26,13 @@
 	float: left;
 	width: 152px;
 	padding-top: 5px;
+}
+
+#AnchorReExport {
+	float: left;
+	width: 102px;
+	margin-left: 8px;
+	padding-top: 5px;	
 }
 
 #AnchorOk {
