@@ -289,6 +289,14 @@ ii.Class({
 				hasHotState: true
 			});
 
+			me.anchorDelete = new ui.ctl.buttons.Sizeable({
+			    id: "AnchorDelete",
+			    className: "iiButton",
+			    text: "<span>&nbsp;&nbsp;Delete&nbsp;&nbsp;</span>",
+			    clickFunction: function () { me.actionDeleteItem(); },
+			    hasHotState: true
+			});
+
 			me.anchorSave = new ui.ctl.buttons.Sizeable({
 				id: "AnchorSave",
 				className: "iiButton",
@@ -683,9 +691,16 @@ ii.Class({
 				allowAdds: true,
 				createNewFunction: fin.pur.poRequisition.PORequisitionDetail,
 				selectFunction: function(index) {
-					if (me.itemGrid.rows[index].getElement("rowNumber").innerHTML == "Add") 
+					if (me.itemGrid.rows[index].getElement("rowNumber").innerHTML == "Add")
 						me.itemGrid.rows[index].getElement("itemSelect").innerHTML = "<input type=\"checkbox\" id=\"selectInputCheck" + index + "\" class=\"iiInputCheck\" onchange=\"parent.fin.appUI.modified = true; fin.pur.poRequisitionUi.calculateTotal(this);\"  checked=\"true\" />";
-				}			
+					else {
+						if (me.itemGrid.data[me.itemGrid.activeRowIndex].id > 0
+							&& ((me.writeInProcess && me.requisitionGrid.data[me.requisitionGrid.activeRowIndex].statusType == 2) || me.requisitionGrid.data[me.requisitionGrid.activeRowIndex].statusType == 1))
+					    	me.anchorDelete.display(ui.cmn.behaviorStates.enabled);
+						else
+							me.anchorDelete.display(ui.cmn.behaviorStates.disabled);
+					}
+				}
 			});
 			
 			me.itemNumber = new ui.ctl.Input.Text({
@@ -1390,11 +1405,13 @@ ii.Class({
 			if (me.template.check.checked) {
 				$("#TemplateContainer").show();
 				me.templateTitle.resizeText();
+				me.anchorSaveSendRequisition.display(ui.cmn.behaviorStates.disabled);
 			}
 				
 			else {
 				$("#TemplateContainer").hide();
 				me.templateTitle.setValue("");
+				me.anchorSaveSendRequisition.display(ui.cmn.behaviorStates.enabled);
 			}	
 		},
 
@@ -2284,6 +2301,7 @@ ii.Class({
 			$("#AnchorCancelRequisition").hide();
 			$("#AnchorPrint").hide();
 			$("#AnchorApprove").hide();
+			$("#popupMessageToUser").text("Loading");
 			$("#popupLoading").show();
 			loadPopup("templatePopup");
 			me.templateGrid.setHeight(320);
@@ -2524,10 +2542,14 @@ ii.Class({
 						me.anchorSaveSendRequisition.display(ui.cmn.behaviorStates.disabled);
 					}
 
+					if (me.writeInProcess && me.requisitionGrid.data[me.lastSelectedRowIndex].statusType == 13)
+					    me.anchorSaveSendRequisition.display(ui.cmn.behaviorStates.disabled);
+
 					$("#Header").text("Shipping Information");
 					break;
 			}
-			
+
+			me.anchorDelete.display(ui.cmn.behaviorStates.disabled);
 			me.resizeControls();
 		},
 				
@@ -2734,6 +2756,12 @@ ii.Class({
 			if (me.requisitionGrid.activeRowIndex == -1)
 				return true;
 
+			me.validator.forceBlur();
+			if (!me.validator.queryValidity(true) || me.itemGrid.data.length == 0) {
+				alert("There are few mandatory fields which are not entered. Please enter values for all mandatory fields and try again.");
+				return;
+			}
+
 			$("#messageToUser").text("Resending Requisition");
 			me.status = "ResendRequisition";
 			me.actionSaveItem();
@@ -2775,9 +2803,33 @@ ii.Class({
 		actionApproveItem: function() {
 			var me = this;		
 
+			if (me.requisitionGrid.activeRowIndex == -1)
+				return true;
+
+			me.validator.forceBlur();
+			if (!me.validator.queryValidity(true) || me.itemGrid.data.length == 0) {
+				alert("There are few mandatory fields which are not entered. Please enter values for all mandatory fields and try again.");
+				return;
+			}
+
 			$("#messageToUser").text("Approving Requisition");
 			me.status = "ApproveRequisition";
 			me.actionSaveItem();
+		},
+
+		actionDeleteItem: function() {
+		    var me = this;
+		    var index = me.itemGrid.activeRowIndex;
+
+		    if (index !== -1 && me.itemGrid.data[index].id > 0) {
+		        if (confirm("Are you sure you would like to delete the selected item?")) {
+		            me.status = "DeletePORequisitionItem";
+					$("#popupMessageToUser").text("Deleting");
+		            me.actionSaveItem();
+		        }
+		        else
+		            return false;
+		    }
 		},
 
 		actionSaveItem: function() {
@@ -2882,7 +2934,7 @@ ii.Class({
 			else
 				me.setStatus("Saving");
 			
-			if (me.status == "DeleteDocument")
+			if (me.status == "DeleteDocument" || me.status == "DeletePORequisitionItem")
 				$("#popupLoading").fadeIn("slow");
 			else
 				$("#pageLoading").fadeIn("slow");
@@ -3055,6 +3107,11 @@ ii.Class({
 				xml += ' id="' + item.id + '"';
 				xml += '/>';
 			}
+			else if (me.status == "DeletePORequisitionItem") {
+			    xml += '<purPORequisitionDetailDelete';
+			    xml += ' id="' + me.itemGrid.data[me.itemGrid.activeRowIndex].id + '"';
+			    xml += '/>';		  
+			}
 
 			return xml;
 		},
@@ -3073,7 +3130,16 @@ ii.Class({
 			var status = $(args.xmlNode).attr("status");
 
 			if (status == "success") {
-				if (me.status == "DeleteDocument") {
+				if (me.status == "DeletePORequisitionItem") {
+					me.anchorDelete.display(ui.cmn.behaviorStates.disabled);
+			        var index = me.itemGrid.activeRowIndex;
+			        if (index >= 0) {
+			            me.itemGrid.body.deselect(index, true);
+			            me.poRequisitionDetails.splice(index, 1);
+			            me.resetGridData();
+			        }
+			    }
+				if (me.status == "DeleteDocument" || me.status == "DeletePORequisitionItem") {
 					me.status = "EditPORequisition";
 					me.setStatus("Edit");
 					$("#popupLoading").fadeOut("slow");
@@ -3194,8 +3260,8 @@ ii.Class({
 				me.setStatus("Error");			
 				alert("[SAVE FAILURE] Error while updating PO Requisition details: " + $(args.xmlNode).attr("message"));				
 			}
-			
-			if (me.status != "DeleteDocument")
+
+			if (me.status != "DeleteDocument" && me.status != "DeletePORequisitionItem")
 				$("#pageLoading").fadeOut("slow");
 		},	
 	} 

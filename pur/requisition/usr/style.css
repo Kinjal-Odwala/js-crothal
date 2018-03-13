@@ -261,6 +261,14 @@
 	padding-top: 5px;
 }
 
+#AnchorDelete {
+	float: left;
+	width: 78px;
+	margin-right: 5px;
+	padding-left: 0px;
+	padding-top: 5px;
+}
+
 #AnchorSave {
 	float: left;
 	width: 68px;
@@ -271,7 +279,7 @@
 
 #AnchorSaveSendRequisition {
 	float: left;
-	width: 250px;
+	width: 200px;
 	margin-right: 5px;
 	padding-left: 0px;
 	padding-top: 5px;
