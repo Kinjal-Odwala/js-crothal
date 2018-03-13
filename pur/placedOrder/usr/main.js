@@ -43,6 +43,10 @@ ii.Class({
 			$().bind("keydown", me, me.controlKeyProcessor);
 			
 			me.houseCodeJobsLoaded();
+			
+			if (parent.fin.purMasterUi.openPurchaseOrders) {
+				$("#AnchorOpen").show();
+			}
 		},
 		
 		authorizationProcess: function fin_pur_placedOrder_UserInterface_authorizationProcess(){
@@ -81,7 +85,7 @@ ii.Class({
 		        id: "AnchorPrint",
 			    className: "iiButton",
 			    text: "<span>&nbsp;&nbsp;Print&nbsp;&nbsp;</span>",
-			    title: "Print selected Purchase Order",
+			    title: "Print the selected Purchase Order",
 			    clickFunction: function () { me.actionPrintOrder(); },
 			    hasHotState: true
 			});
@@ -89,8 +93,8 @@ ii.Class({
 		    me.anchorOpen = new ui.ctl.buttons.Sizeable({
 		        id: "AnchorOpen",
 			    className: "iiButton",
-			    text: "<span>Open&nbsp;&nbsp;</span>",
-			    title: "Purchase Order back to Open",
+			    text: "<span>&nbsp;&nbsp;Open&nbsp;&nbsp;</span>",
+			    title: "Re-Open the selected Purchase Order",
 			    clickFunction: function () { me.actionOpenItem(); },
 			    hasHotState: true
 			});

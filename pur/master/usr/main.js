@@ -174,6 +174,7 @@ ii.Class({
 					
 			me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
 			me.purchaseOrdersReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
+			me.openPurchaseOrders = me.authorizer.isAuthorized(me.authorizePath + "\\OpenPO");
 
 			if (me.isAuthorized) {
 				$("#pageLoading").hide();
