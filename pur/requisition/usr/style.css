@@ -239,6 +239,13 @@
 	margin: 5px 0px 10px 10px;
 }
 
+#AnchorOpen {
+	float: left;
+	width: 94px;
+	margin: 5px 0px 10px 10px;
+	display: none;
+}
+
 #anchorAlign {
 	clear: both;
 	bottom: 15px;
