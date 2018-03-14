@@ -601,10 +601,10 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
                     var payCodeValue = "";
                         angular.forEach($scope.ptoTypePayCodes, function (ptoTypePayCode) {
                             ptoType.payCodeId = ptoTypePayCode.payCodeId;
-                            ptoType.payCode = "";
-                            for (var index = 0; index < $scope.payCodes.length - 1; index++) {
-
-                                if (ptoType.id == ptoTypePayCode.ptoTypeId && ptoType.payCodeId == $scope.payCodes[index].id && ptoTypePayCode.active != "false") {
+                            ptoType.payCode = ""; 
+                            for (var index = 0; index <= $scope.payCodes.length - 1; index++) {
+                               
+                                if (ptoType.id == ptoTypePayCode.ptoTypeId && ptoType.payCodeId == $scope.payCodes[index].id && (ptoTypePayCode.active!=undefined && ptoTypePayCode.active != "false")) {
                                     if (payCodeValue === "") {
                                         payCodeValue = $scope.payCodes[index].name;
                                     }
