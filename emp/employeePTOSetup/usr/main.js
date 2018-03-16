@@ -552,7 +552,12 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         modified(false);
     };
 
-    $scope.savePTOType = function () {
+    $scope.savePTOType = function () {       
+        if ($scope.selectedptoTypePayCodes.length == 0) {
+            alert("Please select Pay Code to save the changes.");
+            return;
+        }
+
         if ($scope.selectedptoTypePayCodes.length > 0 && $scope.selectedPTOtype != null) {
             $scope.pageLoading = true;           
 
@@ -574,7 +579,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
             });
         }
         else {           
-            alert("Please select a PTO Type to save the changes.");
+            alert("Please select PTO Type to save the changes.");
         }
     };
     var getPTOTypesList = function() {
