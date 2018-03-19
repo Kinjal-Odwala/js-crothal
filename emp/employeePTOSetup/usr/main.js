@@ -552,7 +552,12 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         modified(false);
     };
 
-    $scope.savePTOType = function () {
+    $scope.savePTOType = function () {       
+        if ($scope.selectedptoTypePayCodes.length == 0) {
+            alert("Please select Pay Code to save the changes.");
+            return;
+        }
+
         if ($scope.selectedptoTypePayCodes.length > 0 && $scope.selectedPTOtype != null) {
             $scope.pageLoading = true;           
 
@@ -574,7 +579,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
             });
         }
         else {           
-            alert("Please select a PTO Type to save the changes.");
+            alert("Please select PTO Type to save the changes.");
         }
     };
     var getPTOTypesList = function() {
@@ -601,10 +606,10 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
                     var payCodeValue = "";
                         angular.forEach($scope.ptoTypePayCodes, function (ptoTypePayCode) {
                             ptoType.payCodeId = ptoTypePayCode.payCodeId;
-                            ptoType.payCode = "";
-                            for (var index = 0; index < $scope.payCodes.length - 1; index++) {
-
-                                if (ptoType.id == ptoTypePayCode.ptoTypeId && ptoType.payCodeId == $scope.payCodes[index].id && ptoTypePayCode.active != "false") {
+                            ptoType.payCode = ""; 
+                            for (var index = 0; index <= $scope.payCodes.length - 1; index++) {
+                               
+                                if (ptoType.id == ptoTypePayCode.ptoTypeId && ptoType.payCodeId == $scope.payCodes[index].id && (ptoTypePayCode.active!=undefined && ptoTypePayCode.active != "false")) {
                                     if (payCodeValue === "") {
                                         payCodeValue = $scope.payCodes[index].name;
                                     }

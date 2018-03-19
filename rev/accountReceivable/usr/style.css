@@ -19,16 +19,9 @@
 	padding: 5px 1% 5px 1%;
 }
 
-#AnchorAccountReceivableLabelLeft {	
-	left: 0;
-	bottom: 0;
-	position: absolute;
-	padding: 10px 10px 10px 10px;
-}
-
 #anchorAlign {
-	padding-bottom: 5px;
-	clear: both;
+	float: left;
+	padding-left: 10px;
 }
 
 #buttonAlign {
@@ -43,6 +36,12 @@
 	padding-left: 5px;
 	margin-right: 5px;
 	padding-top: 5px;
+}
+
+#AnchorReExport {
+	float: left;
+	width: 102px;
+	padding-top: 5px;	
 }
 
 #AnchorOk {

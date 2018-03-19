@@ -40,6 +40,7 @@ ii.init.register( function() {
 		, notes: {type: String, required: false, defaultValue: ""}
 		, version: {type: Number, required: false, defaultValue: 0}
 		, creditMemoPrintedDate: {type: String, required: false, defaultValue: ""}
+		, exportedDate: {type: String, required: false, defaultValue: ""}
 	};
 
 	fin.rev.accountReceivable.invoiceItemArgs = {

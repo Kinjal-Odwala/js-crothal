@@ -82,7 +82,7 @@ ii.Class({
 
 			if (!me.invoice.printed) {
 				$(document).bind("contextmenu", me, me.contextMenuProcessor);
-				$("#anchorAlign").show();
+				$("#InvoiceButtons").show();
 			}
 
 			if (parent.fin.revMasterUi.invoicingReadOnly) {				
@@ -222,7 +222,15 @@ ii.Class({
 				clickFunction: function() { me.actionUpdateSalesTaxItem(); },
 				hasHotState: true
 			});
-			
+
+			me.anchorReExport = new ui.ctl.buttons.Sizeable({
+                id: "AnchorReExport",
+                className: "iiButton",
+                text: "<span>&nbsp;&nbsp;Re-Export&nbsp;&nbsp;</span>",
+                clickFunction: function () { me.actionReExport(); },
+                hasHotState: true
+            });
+
 			me.anchorOk = new ui.ctl.buttons.Sizeable({
 				id: "AnchorOk",
 				className: "iiButton",
@@ -392,15 +400,20 @@ ii.Class({
 			var houseCodeJob = 0;
 			var itemIndex = -1;
 			var displayOrderSet = false;
-			var statusType = 0;
-			var exportedDate = "";
 
 			if (me.invoiceItems.length > 0) {
 				if (me.invoiceItems[0].displayOrder > 0)
 					displayOrderSet = true;
+			}
 
-				statusType = me.invoiceItems[0].statusType;
-				exportedDate = me.invoiceItems[0].exportedDate;
+			for (index = 0; index < me.invoiceItems.length; index++) {
+				if (me.invoiceItems[index].exportedDate !== "") {
+					if (parent.fin.revMasterUi.reExport && me.invoiceItems[index].statusType === 1)
+						$("#AnchorReExport").show();
+					else
+						$("#AnchorReExport").hide();
+					break;
+				}
 			}
 
 			if (displayOrderSet) {
@@ -475,7 +488,6 @@ ii.Class({
 			}
 	
 			me.resize();
-			parent.fin.revMasterUi.showHideReExportButton(statusType, exportedDate);
 			parent.fin.revMasterUi.hidePageLoading("");
 		},
 		
@@ -1027,7 +1039,16 @@ ii.Class({
 				return;
 			}
 		},
-		
+
+		actionReExport: function () {
+            var me = this;
+
+            if (confirm("The selected invoice line items will be exported again. Are you sure you want to continue?")) {
+                me.status = "ReExport";
+                me.actionSaveItem();
+            }
+        },
+
 		searchHouseCode: function() {
 			var args = ii.args(arguments, {
 				event: {type: Object} // The (key) event object
@@ -1454,7 +1475,7 @@ ii.Class({
 					return true;
 				}
 			}
-			else if (me.status != "UpdateSalesTax") {
+			else if (me.status != "UpdateSalesTax" && me.status != "ReExport") {
 				if (!me.editSalesTax) {
 					if (me.invoiceByCustomer && (me.status == "Add" || me.status == "Edit")) {
 						houseCode = $("#houseCode").val();
@@ -1583,6 +1604,9 @@ ii.Class({
 			else if (me.status == "UpdateSalesTax") {
 				item = new fin.rev.invoice.InvoiceItem({ id: 0 });
 			}
+			else if (me.status == "ReExport") {
+                item = new fin.rev.invoice.InvoiceItem({ id: 0 });
+            }
 
 			var xml = me.saveXmlBuildInvoiceItem(item);
 	
@@ -1649,6 +1673,12 @@ ii.Class({
 				xml += ' id="' + me.invoiceId + '"';
 				xml += '/>';
 			}
+			else if (me.status == "ReExport") {
+			    xml += '<revInvoiceReExport';
+			    xml += ' id="' + me.invoiceId + '"';
+				xml += ' type="Invoice"';
+			    xml += '/>';
+            }
 
 			return xml;
 		},
@@ -1665,16 +1695,23 @@ ii.Class({
 			var me = transaction.referenceData.me;
 			var errorMessage = "";
 			var status = $(args.xmlNode).attr("status");
-						
+
 			if (status == "success") {
-				me.modified(false);
-				me.status = "";
-				me.rowBeingEdited = false;
-				me.currentRowSelected = null;
-				me.bindRow = true;
-				parent.fin.revMasterUi.accountReceivableNeedUpdate = true;
-				me.invoiceItemStore.reset();
-				me.invoiceItemStore.fetch("userId:[user],invoiceId:" + me.invoiceId, me.invoiceItemsLoaded, me);
+				if (me.status === "ReExport") {
+					$("#AnchorReExport").hide();
+					me.status = "";
+					parent.fin.revMasterUi.hidePageLoading("");
+				}
+				else {
+					me.modified(false);
+					me.status = "";
+					me.rowBeingEdited = false;
+					me.currentRowSelected = null;
+					me.bindRow = true;
+					parent.fin.revMasterUi.accountReceivableNeedUpdate = true;
+					me.invoiceItemStore.reset();
+					me.invoiceItemStore.fetch("userId:[user],invoiceId:" + me.invoiceId, me.invoiceItemsLoaded, me);
+				}
 			}
 			else if (status == "invalid") {
 					
