@@ -46,6 +46,7 @@ ii.Class({
 			me.vendorsLoading = false;
 			me.saveSendRequisition = false;
 			me.poRequisitionDetailsTemp = [];
+			me.requisitionNumber = location.href.split("requisitionNumber=")[1];
 
 			me.gateway = ii.ajax.addGateway("pur", ii.config.xmlProvider); 
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -1636,7 +1637,7 @@ ii.Class({
 
 			if (!me.statusType.validate(true) || !me.searchType.validate(true) || !me.searchRequestedDate.valid || !me.searchInput.valid)
 				return;
-			
+
 			if (me.action == "PORequisition")
 				statusType = me.statusType.indexSelected == -1 ? 0 : me.statuses[me.statusType.indexSelected].id;
 			else if (me.action == "GeneratePurchaseOrder")
@@ -1644,13 +1645,19 @@ ii.Class({
 			else
 				return;
 
+  			if (me.requisitionNumber != undefined && me.requisitionNumber !== 0) {
+				houseCodeId = 0;
+			    searchValue = me.requisitionNumber;
+			    statusType = "11";
+			}
+
 			me.lastSelectedRowIndex = -1;
 			me.setLoadCount();
 			me.poRequisitionStore.reset();
 			me.poRequisitionStore.fetch("userId:[user],poRequisitionId:0"
 				+ ",houseCodeId:" + houseCodeId
 				+ ",statusType:" + statusType
-				+ ",searchType:" + me.searchType.text.value
+				+ ",searchType:" +  (me.requisitionNumber != undefined && me.requisitionNumber !== 0 ? "Requisition #" : me.searchType.text.value)
 				+ ",searchValue:" + (me.searchType.indexSelected == 1 ? me.searchRequestedDate.text.value : searchValue)
 				+ ",template:-1"
 				, me.poRequisitionsLoaded
@@ -1671,6 +1678,7 @@ ii.Class({
 				
 			me.requisitionGrid.setData(me.poRequisitions);			
 			me.checkLoadCount();
+			me.requisitionNumber = 0;
 		},
 		
 		loadPOItems: function() {
@@ -2559,8 +2567,8 @@ ii.Class({
 						me.anchorSaveSendRequisition.display(ui.cmn.behaviorStates.disabled);
 					}
 
-					if (me.requisitionGrid.data[me.lastSelectedRowIndex].statusType == 13)
-					    me.anchorSaveSendRequisition.display(ui.cmn.behaviorStates.disabled);
+					if (me.status === "EditPORequisition" && me.requisitionGrid.data[me.lastSelectedRowIndex].statusType === 13)
+				        me.anchorSaveSendRequisition.display(ui.cmn.behaviorStates.disabled);
 
 					$("#Header").text("Shipping Information");
 					break;
