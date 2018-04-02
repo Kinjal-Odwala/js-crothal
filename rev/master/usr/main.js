@@ -1299,11 +1299,6 @@ ii.Class({
 			$("#TabCreateInvoices").parent().addClass("tabs-selected");
 
 			me.resize();
-
-            if (me.invoiceSearch == "true" && parseInt(me.invoiceId) > 0 && me.invoices.length > 0) {
-                me.invoiceGrid.body.select(0);
-                $("#backLabel").show();
-            }
         },
 
         invoiceDetailsLoaded: function() {
@@ -1714,6 +1709,10 @@ ii.Class({
 					break;
 				}
 			}
+
+			if (me.invoiceSearch === "true" && parseInt(me.invoiceId, 10) > 0 && me.invoices.length === 1) {
+                me.invoiceGrid.body.select(0);
+            }
 		},
 				
 		actionSearchItem: function() {
