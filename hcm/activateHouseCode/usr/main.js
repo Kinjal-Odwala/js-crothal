@@ -4,6 +4,7 @@ ii.Import( "ui.ctl.usr.toolbar" );
 ii.Import( "ui.ctl.usr.input" );
 ii.Import( "ui.ctl.usr.buttons" );
 ii.Import( "ui.ctl.usr.grid" );
+ii.Import( "ui.ctl.usr.hierarchy" );
 ii.Import( "fin.cmn.usr.util" );
 ii.Import( "fin.hcm.activateHouseCode.usr.defs" );
 
@@ -16,9 +17,10 @@ ii.Style( "fin.cmn.usr.button", 6 );
 ii.Style( "fin.cmn.usr.dropDown", 7 );
 ii.Style( "fin.cmn.usr.dateDropDown", 8 );
 ii.Style( "fin.cmn.usr.grid", 9 );
-ii.Style( "fin.cmn.usr.theme", 10 );
-ii.Style( "fin.cmn.usr.core", 11 );
-ii.Style( "fin.cmn.usr.multiselect", 12 );
+ii.Style( "fin.cmn.usr.hierarchy", 10 );
+ii.Style( "fin.cmn.usr.theme", 11 );
+ii.Style( "fin.cmn.usr.core", 12 );
+ii.Style( "fin.cmn.usr.multiselect", 13 );
 
 var importCompleted = false;
 var iiScript = new ii.Script( "fin.cmn.usr.ui.core", function() { coreLoaded(); });
@@ -38,15 +40,18 @@ ii.Class({
 			var me = this;
 
 			me.level = "";
+			me.searchLevel = "";
 			me.status = "";
 			me.lastSelectedRowIndex = -1;
 			me.loadCount = 0;
 			me.validSite = true;
 			me.searchZipCode = false;
 			me.searchZipCodeType = "";
+			me.showNodePopup = false;
 
 			me.gateway = ii.ajax.addGateway("hcm", ii.config.xmlProvider);
 			me.cache = new ii.ajax.Cache(me.gateway);
+			me.hierarchy = new ii.ajax.Hierarchy( me.gateway );
 			me.transactionMonitor = new ii.ajax.TransactionMonitor(
 				me.gateway
 				, function(status, errorMessage) { me.nonPendingError(status, errorMessage); }
@@ -689,6 +694,19 @@ ii.Class({
 						this.setInvalid("Please enter valid number.");
 				});
 
+			me.nodeGrid = new ui.ctl.Grid({
+                id: "NodeGrid",
+                allowAdds: false
+            });
+
+            me.nodeGrid.addColumn("level2", "level2", "SVP", "SVP", 250);
+            me.nodeGrid.addColumn("level3", "level3", "DVP", "DVP", 250);
+			me.nodeGrid.addColumn("level4", "level4", "RVP", "RVP", 250);
+			me.nodeGrid.addColumn("level5", "level5", "SRM", "SRM", 250);
+			me.nodeGrid.addColumn("level6", "level6", "RM", "RM", 250);
+			me.nodeGrid.addColumn("level7", "level7", "AM", "AM", null);
+            me.nodeGrid.capColumns();
+
 			me.anchorSave = new ui.ctl.buttons.Sizeable({
 				id: "AnchorSave",
 				className: "iiButton",
@@ -704,10 +722,39 @@ ii.Class({
 				clickFunction: function() { me.actionUndoItem(); },
 				hasHotState: true
 			});
+
+			me.anchorOK = new ui.ctl.buttons.Sizeable({
+                id: "AnchorOK",
+                className: "iiButton",
+                text: "<span>&nbsp;&nbsp;&nbsp;&nbsp;OK&nbsp;&nbsp;&nbsp;&nbsp;</span>",
+                clickFunction: function() { me.actionOKtem(); },
+                hasHotState: true
+            });
+
+            me.anchorCancel = new ui.ctl.buttons.Sizeable({
+                id: "AnchorCancel",
+                className: "iiButton",
+                text: "<span>&nbsp;&nbsp;Cancel&nbsp;&nbsp;</span>",
+                clickFunction: function() { me.actionCancelItem(); },
+                hasHotState: true
+            });
 		},
 
 		configureCommunications: function() {
 			var me = this;
+
+			me.hirOrgs = [];
+			me.hirOrgStore = me.hierarchy.register({
+				storeId: "hirOrgs",
+				itemConstructor: ui.ctl.Hierarchy.Node,
+				itemConstructorArgs: ui.ctl.Hierarchy.nodeArgs,
+				isRecursive: true,
+				addToParentItem: true,
+				parentPropertyName: "nodes",
+				parentField: "parent",
+				multipleFetchesAllowed: true,
+				injectionArray: me.hirOrgs
+			});
 
 			me.hirNodes = [];
 			me.hirNodeStore = me.cache.register({
@@ -965,6 +1012,11 @@ ii.Class({
 			me.srm.reset();
 			me.rm.reset();
 			me.am.reset();
+			me.dvp.setData([]);
+			me.rvp.setData([]);
+			me.srm.setData([]);
+			me.rm.setData([]);
+			me.am.setData([]);
 			me.svpBrief.setValue("");
 			me.dvpBrief.setValue("");
 			me.rvpBrief.setValue("");
@@ -994,6 +1046,11 @@ ii.Class({
 			me.hourlyEmployees.setValue("");
 			$("#OtherServicesProvided").html("");
 			$("#OtherServicesProvided").multiselect("refresh");
+			me.dvp.valid = true;
+			me.rvp.valid = true;
+			me.srm.valid = true;
+			me.rm.valid = true;
+			me.am.valid = true;
 			me.svp.updateStatus();
 			me.dvp.updateStatus();
 			me.rvp.updateStatus();
@@ -1118,7 +1175,7 @@ ii.Class({
 			$("#OtherServicesProvided").multiselect("refresh");
 		},
 
-		hirNodesLoaded: function (me, activeId) {
+		hirNodesLoaded: function(me, activeId) {
 
 			var divisions = [];
 			var svps = [];
@@ -1128,6 +1185,14 @@ ii.Class({
 			var rms = [];
 			var ams = [];
 			var index = 0;
+
+			if (me.showNodePopup && me.hirNodes.length > 0) {
+				me.showNodePopup = false;
+                me.loadPopup("NodePopup");
+				me.nodeGrid.setData(me.hirNodes);
+                me.nodeGrid.setHeight($(window).height() - 180);
+				return;
+            }
 
 			for (index = 0; index < me.hirNodes.length; index++) {
 				if (me.hirNodes[index].hirLevelTitle === "Enterprise")
@@ -1146,63 +1211,18 @@ ii.Class({
 					ams.push(new fin.hcm.activateHouseCode.Division(me.hirNodes[index].id, me.hirNodes[index].brief, me.hirNodes[index].title));
 			}
 
-			if (me.level === "") {
+			if (me.level === "")
 				me.svp.setData(svps);
-			}
-			else if (me.level === "Divisonal Vice President") {
+			else if (me.level === "Divisonal Vice President")
 				me.dvp.setData(dvps);
-				if (me.status === "Edit") {
-					index = me.findIndexByTitle(me.houseCodeGrid.data[me.lastSelectedRowIndex].dvp, me.dvp.data);
-					if (index !== null) {
-						me.dvp.select(index, me.dvp.focused);
-						me.dvpBrief.setValue(me.dvp.data[index].brief);
-						me.dvpChanged();
-					}
-				}
-			}
-			else if (me.level === "Regional Vice President") {
+			else if (me.level === "Regional Vice President")
 				me.rvp.setData(rvps);
-				if (me.status === "Edit") {
-					index = me.findIndexByTitle(me.houseCodeGrid.data[me.lastSelectedRowIndex].rvp, me.rvp.data);
-					if (index !== null) {
-						me.rvp.select(index, me.rvp.focused);
-						me.rvpBrief.setValue(me.rvp.data[index].brief);
-						me.rvpChanged();
-					}
-				}
-			}
-			else if (me.level === "Senior Regional Manager") {
+			else if (me.level === "Senior Regional Manager")
 				me.srm.setData(srms);
-				if (me.status === "Edit") {
-					index = me.findIndexByTitle(me.houseCodeGrid.data[me.lastSelectedRowIndex].srm, me.srm.data);
-					if (index !== null) {
-						me.srm.select(index, me.srm.focused);
-						me.srmBrief.setValue(me.srm.data[index].brief);
-						me.srmChanged();
-					}
-				}
-			}
-			else if (me.level === "Regional Manager") {
+			else if (me.level === "Regional Manager")
 				me.rm.setData(rms);
-				if (me.status === "Edit") {
-					index = me.findIndexByTitle(me.houseCodeGrid.data[me.lastSelectedRowIndex].rm, me.rm.data);
-					if (index !== null) {
-						me.rm.select(index, me.rm.focused);
-						me.rmBrief.setValue(me.rm.data[index].brief);
-						me.rmChanged();
-					}
-				}
-			}
-			else if (me.level === "Area Manager") {
+			else if (me.level === "Area Manager")
 				me.am.setData(ams);
-				if (me.status === "Edit") {
-					index = me.findIndexByTitle(me.houseCodeGrid.data[me.lastSelectedRowIndex].am, me.am.data);
-					if (index !== null) {
-						me.am.select(index, me.am.focused);
-						me.amBrief.setValue(me.am.data[index].brief);
-					}
-				}
-			}
         },
 
 		svpChanged: function() {
@@ -1260,7 +1280,10 @@ ii.Class({
 				me.hirNodeStore.fetch("userId:[user],hirNodeParent:" + me.dvp.data[me.dvp.indexSelected].id + ",", me.hirNodesLoaded, me);
 			}
 			else {
+				me.searchLevel = "DVP";
+				me.showNodePopup = true;
 				me.dvpBrief.setValue(me.dvp.lastBlurValue.substring(0, 3).toUpperCase());
+				me.hirNodeStore.fetch("userId:[user],levelBrief:DVP,title:" + me.dvp.lastBlurValue + ",", me.hirNodesLoaded, me);
 			}
 		},
 
@@ -1285,7 +1308,10 @@ ii.Class({
 				me.hirNodeStore.fetch("userId:[user],hirNodeParent:" + me.rvp.data[me.rvp.indexSelected].id + ",", me.hirNodesLoaded, me);
 			}
 			else {
+				me.searchLevel = "RVP";
+				me.showNodePopup = true;
 				me.rvpBrief.setValue(me.rvp.lastBlurValue.substring(0, 3).toUpperCase());
+				me.hirNodeStore.fetch("userId:[user],levelBrief:RVP,title:" + me.rvp.lastBlurValue + ",", me.hirNodesLoaded, me);
 			}
 		},
 
@@ -1307,7 +1333,10 @@ ii.Class({
 				me.hirNodeStore.fetch("userId:[user],hirNodeParent:" + me.srm.data[me.srm.indexSelected].id + ",", me.hirNodesLoaded, me);
 			}
 			else {
+				me.searchLevel = "SRM";
+				me.showNodePopup = true;
 				me.srmBrief.setValue(me.srm.lastBlurValue.substring(0, 3).toUpperCase());
+				me.hirNodeStore.fetch("userId:[user],levelBrief:SRM,title:" + me.srm.lastBlurValue + ",", me.hirNodesLoaded, me);
 			}
 		},
 
@@ -1326,17 +1355,25 @@ ii.Class({
 				me.hirNodeStore.fetch("userId:[user],hirNodeParent:" + me.rm.data[me.rm.indexSelected].id + ",", me.hirNodesLoaded, me);
 			}
 			else {
+				me.searchLevel = "RM";
+				me.showNodePopup = true;
 				me.rmBrief.setValue(me.rm.lastBlurValue.substring(0, 3).toUpperCase());
+				me.hirNodeStore.fetch("userId:[user],levelBrief:RM,title:" + me.rm.lastBlurValue + ",", me.hirNodesLoaded, me);
 			}
 		},
 
 		amChanged: function() {
 			var me = this;
 
+			me.level = "";
 			if (me.am.indexSelected >= 0)
 				me.amBrief.setValue(me.am.data[me.am.indexSelected].brief);
-			else
+			else {
+				me.searchLevel = "AM";
+				me.showNodePopup = true;
 				me.amBrief.setValue(me.am.lastBlurValue.substring(0, 3).toUpperCase());
+				me.hirNodeStore.fetch("userId:[user],levelBrief:AM,title:" + me.am.lastBlurValue + ",", me.hirNodesLoaded, me);
+			}
 		},
 
 		loadZipCodeTypes: function(type) {
@@ -1437,7 +1474,6 @@ ii.Class({
 			}
 
 			me.lastSelectedRowIndex = index;
-			me.status = "";
 			me.resetControls();
 			me.setLoadCount();
 			me.houseCodeDetailStore.fetch("userId:[user],unitId:" + item.id, me.houseCodeDetailsLoaded, me);
@@ -1474,6 +1510,138 @@ ii.Class({
 			me.resetControls();
 			me.setSiteInfo();
 		},
+
+		actionOKtem: function() {
+            var me = this;
+
+            if (me.nodeGrid.activeRowIndex >= 0) {
+				$("#popupLoading").fadeIn("slow");
+                me.hirNodeSelectedId = me.hirNodes[me.nodeGrid.activeRowIndex].id;
+				me.hirOrgStore.reset();
+				me.hirOrgStore.fetch("userId:[user],hirOrgId:" + me.hirNodeSelectedId + ",hirNodeSearchId:" + me.hirNodeSelectedId + ",ancestors:true", me.hirOrgsLoaded, me);
+            }
+        },
+
+		hirOrgsLoaded: function(me, activeId) {
+			var dvps = [];
+			var rvps = [];
+			var srms = [];
+			var rms = [];
+			var ams = [];
+			var index = 0;
+
+			for (index = 0; index < me.hirOrgs.length; index++) {
+				if (me.hirOrgs[index].hirLevelTitle === "Divisonal Vice President")
+					dvps.push(new fin.hcm.activateHouseCode.Division(me.hirOrgs[index].id, me.hirOrgs[index].brief, me.hirOrgs[index].title, me.hirOrgs[index].parent.id));
+				else if (me.hirOrgs[index].hirLevelTitle === "Regional Vice President")
+					rvps.push(new fin.hcm.activateHouseCode.Division(me.hirOrgs[index].id, me.hirOrgs[index].brief, me.hirOrgs[index].title, me.hirOrgs[index].parent.id));
+				else if (me.hirOrgs[index].hirLevelTitle === "Senior Regional Manager")
+					srms.push(new fin.hcm.activateHouseCode.Division(me.hirOrgs[index].id, me.hirOrgs[index].brief, me.hirOrgs[index].title, me.hirOrgs[index].parent.id));
+				else if (me.hirOrgs[index].hirLevelTitle === "Regional Manager")
+					rms.push(new fin.hcm.activateHouseCode.Division(me.hirOrgs[index].id, me.hirOrgs[index].brief, me.hirOrgs[index].title, me.hirOrgs[index].parent.id));
+				else if (me.hirOrgs[index].hirLevelTitle === "Area Manager")
+					ams.push(new fin.hcm.activateHouseCode.Division(me.hirOrgs[index].id, me.hirOrgs[index].brief, me.hirOrgs[index].title, me.hirOrgs[index].parent.id));
+			}
+
+			me.dvp.setData(dvps);
+			me.rvp.setData(rvps);
+			me.srm.setData(srms);
+			me.rm.setData(rms);
+			me.am.setData(ams);
+			
+			if (me.searchLevel === "AM") {
+				index = ii.ajax.util.findIndexById(me.hirNodeSelectedId.toString(), me.am.data);
+				if (index !== null)
+					me.am.select(index, me.am.focused);
+				index = ii.ajax.util.findIndexById(me.am.data[index].parentId.toString(), me.rm.data);
+				if (index !== null)
+					me.rm.select(index, me.rm.focused);
+				index = ii.ajax.util.findIndexById(me.rm.data[index].parentId.toString(), me.srm.data);
+				if (index !== null)
+					me.srm.select(index, me.srm.focused);
+				index = ii.ajax.util.findIndexById(me.srm.data[index].parentId.toString(), me.rvp.data);
+				if (index !== null)
+					me.rvp.select(index, me.rvp.focused);
+				index = ii.ajax.util.findIndexById(me.rvp.data[index].parentId.toString(), me.dvp.data);
+				if (index !== null)
+					me.dvp.select(index, me.dvp.focused);
+				index = ii.ajax.util.findIndexById(me.dvp.data[index].parentId.toString(), me.svp.data);
+				if (index !== null)
+					me.svp.select(index, me.svp.focused);
+			}
+			else if (me.searchLevel === "RM") {
+				index = ii.ajax.util.findIndexById(me.hirNodeSelectedId.toString(), me.rm.data);
+				if (index !== null)
+					me.rm.select(index, me.rm.focused);
+				index = ii.ajax.util.findIndexById(me.rm.data[index].parentId.toString(), me.srm.data);
+				if (index !== null)
+					me.srm.select(index, me.srm.focused);
+				index = ii.ajax.util.findIndexById(me.srm.data[index].parentId.toString(), me.rvp.data);
+				if (index !== null)
+					me.rvp.select(index, me.rvp.focused);
+				index = ii.ajax.util.findIndexById(me.rvp.data[index].parentId.toString(), me.dvp.data);
+				if (index !== null)
+					me.dvp.select(index, me.dvp.focused);
+				index = ii.ajax.util.findIndexById(me.dvp.data[index].parentId.toString(), me.svp.data);
+				if (index !== null)
+					me.svp.select(index, me.svp.focused);
+			}
+			else if (me.searchLevel === "SRM") {
+				index = ii.ajax.util.findIndexById(me.hirNodeSelectedId.toString(), me.srm.data);
+				if (index !== null)
+					me.srm.select(index, me.srm.focused);
+				index = ii.ajax.util.findIndexById(me.srm.data[index].parentId.toString(), me.rvp.data);
+				if (index !== null)
+					me.rvp.select(index, me.rvp.focused);
+				index = ii.ajax.util.findIndexById(me.rvp.data[index].parentId.toString(), me.dvp.data);
+				if (index !== null)
+					me.dvp.select(index, me.dvp.focused);
+				index = ii.ajax.util.findIndexById(me.dvp.data[index].parentId.toString(), me.svp.data);
+				if (index !== null)
+					me.svp.select(index, me.svp.focused);
+			}
+			else if (me.searchLevel === "RVP") {
+				index = ii.ajax.util.findIndexById(me.hirNodeSelectedId.toString(), me.rvp.data);
+				if (index !== null)
+					me.rvp.select(index, me.rvp.focused);
+				index = ii.ajax.util.findIndexById(me.rvp.data[index].parentId.toString(), me.dvp.data);
+				if (index !== null)
+					me.dvp.select(index, me.dvp.focused);
+				index = ii.ajax.util.findIndexById(me.dvp.data[index].parentId.toString(), me.svp.data);
+				if (index !== null)
+					me.svp.select(index, me.svp.focused);
+			}
+			else if (me.searchLevel === "DVP") {
+				index = ii.ajax.util.findIndexById(me.hirNodeSelectedId.toString(), me.dvp.data);
+				if (index !== null)
+					me.dvp.select(index, me.dvp.focused);
+				index = ii.ajax.util.findIndexById(me.dvp.data[index].parentId.toString(), me.svp.data);
+				if (index !== null)
+					me.svp.select(index, me.svp.focused);
+			}
+
+			if (me.svp.indexSelected >= 0)
+				me.svpBrief.setValue(me.svp.data[me.svp.indexSelected].brief);
+			if (me.dvp.indexSelected >= 0)
+				me.dvpBrief.setValue(me.dvp.data[me.dvp.indexSelected].brief);
+			if (me.rvp.indexSelected >= 0)
+				me.rvpBrief.setValue(me.rvp.data[me.rvp.indexSelected].brief);
+			if (me.srm.indexSelected >= 0)
+				me.srmBrief.setValue(me.srm.data[me.srm.indexSelected].brief);
+			if (me.rm.indexSelected >= 0)
+				me.rmBrief.setValue(me.rm.data[me.rm.indexSelected].brief);
+			if (me.am.indexSelected >= 0)
+				me.amBrief.setValue(me.am.data[me.am.indexSelected].brief);
+
+			$("#popupLoading").hide();
+			me.hidePopup("NodePopup");
+		},
+
+        actionCancelItem: function() {
+            var me = this;
+
+            me.hidePopup("NodePopup");
+        },
 
 		actionSaveItem: function() {
 			var me = this;
@@ -1634,7 +1802,40 @@ ii.Class({
 			}
 
 			$("#pageLoading").fadeOut("slow");
-		}
+		},
+
+		loadPopup: function(id) {
+            var me = this;
+
+            me.centerPopup(id);
+
+            $("#backgroundPopup").css({
+                "opacity": "0.5"
+            });
+            $("#backgroundPopup").fadeIn("slow");
+            $("#" + id).fadeIn("slow");
+        },
+
+        hidePopup: function(id) {
+
+            $("#backgroundPopup").fadeOut("slow");
+            $("#" + id).fadeOut("slow");
+        },
+
+        centerPopup: function(id) {
+            var me = this;
+            var windowWidth = document.documentElement.clientWidth;
+            var windowHeight = document.documentElement.clientHeight;
+            var popupWidth = windowWidth - 100;
+            var popupHeight = windowHeight - 100;
+
+            $("#" + id + ", #popupLoading").css({
+                "width": popupWidth,
+                "height": popupHeight,
+                "top": windowHeight / 2 - popupHeight / 2,
+                "left": windowWidth / 2 - popupWidth / 2
+            });
+        }
 	}
 });
 

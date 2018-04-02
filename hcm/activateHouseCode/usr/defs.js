@@ -15,6 +15,14 @@ ii.init.register( function() {
 		, hirLevelTitle: {type: String, required: false, defaultValue: ""}
 		, brief: {type: String, required: false, defaultValue: ""}
 		, title: {type: String, required: false, defaultValue: ""}
+		, level1: {type: String, required: false, defaultValue: ""}
+		, level2: {type: String, required: false, defaultValue: ""}
+		, level3: {type: String, required: false, defaultValue: ""}
+		, level4: {type: String, required: false, defaultValue: ""}
+		, level5: {type: String, required: false, defaultValue: ""}
+		, level6: {type: String, required: false, defaultValue: ""}
+		, level7: {type: String, required: false, defaultValue: ""}
+		, level8: {type: String, required: false, defaultValue: ""}
 		, childNodeCount: {type: Number, required: false, defaultValue: 0}
 		, active: {type: Boolean, required: false, defaultValue: true}
 	};
@@ -49,6 +57,7 @@ ii.init.register( function() {
 		id: {type: Number}
 		, brief: {type: String}
 		, name: {type: String}
+		, parentId: {type: Number, required: false, defaultValue: 0}
 	};
 
 	fin.hcm.activateHouseCode.jdeCompanyArgs = {		
