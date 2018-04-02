@@ -402,6 +402,12 @@ ii.Class({
 				return fin.cmn.sort.dateSort(me, displayProperty, a, b);
 			});
 			me.requisitionGrid.addColumn("vendorTitle", "vendorTitle", "Vendor Title", "Vendor Title", null);
+			me.requisitionGrid.addColumn("purchaseOrderNumber", "purchaseOrderNumber", "Purchase Order #", "Purchase Order #", 150, function (purchaseOrderNumber) {
+			    if (purchaseOrderNumber != 0)
+			        return "<div class='viewPurchaseOrder' onclick='fin.pur.poRequisitionUi.actionViewPurchaseOrder(" + purchaseOrderNumber + ");'>" + purchaseOrderNumber + "</div>";
+			    else
+			        return "";
+			});
 			me.requisitionGrid.addColumn("statusType", "statusType", "Status", "Status", 120, function(statusType) {
 				if (statusType == 1)
 					return "Open";
@@ -1513,6 +1519,7 @@ ii.Class({
 			me.searchTypes.push(new fin.pur.poRequisition.SearchType(2, "Requested Date"));
 			me.searchTypes.push(new fin.pur.poRequisition.SearchType(3, "Vendor #"));
 			me.searchTypes.push(new fin.pur.poRequisition.SearchType(4, "Vendor Title"));
+			me.searchTypes.push(new fin.pur.poRequisition.SearchType(5, "Purchase Order #"));
 			me.searchType.setData(me.searchTypes);
 		},
 		
@@ -1613,7 +1620,15 @@ ii.Class({
 			if (event.keyCode == 13) {
 				me.loadPORequisitions();
 			}
-		},		
+		},
+
+		actionViewPurchaseOrder: function (purchaseOrderNumber) {
+
+		    var node = top.ui.ctl.menu.Dom.me.items["pur"].items["ord"].xmlNode;
+
+		    top.ui.ctl.menu.Dom.me.items["pur"].items["ord"].select();
+		    window.location = $(node).attr("actionData") + "?purchaseOrderNumber=" + purchaseOrderNumber;
+		},
 
 		loadPORequisitions: function() {
 			var me = this;
@@ -1674,8 +1689,13 @@ ii.Class({
 			$("#AnchorOpen").hide();
 		},
 		
-		poRequisitionsLoaded: function(me, activeId) {
-				
+		poRequisitionsLoaded: function (me, activeId) {
+
+		    if (me.poRequisitions.length === 0) {
+		        if (me.searchType.indexSelected === 4)
+		            alert("Purchase Order # does not exists.");			      
+		    }
+
 			me.requisitionGrid.setData(me.poRequisitions);			
 			me.checkLoadCount();
 			me.requisitionNumber = 0;
@@ -2830,7 +2850,6 @@ ii.Class({
 
 			if (me.requisitionGrid.activeRowIndex == -1)
 				return true;
-
 			me.validator.forceBlur();
 			if (!me.validator.queryValidity(true) || me.itemGrid.data.length == 0) {
 				alert("There are few mandatory fields which are not entered. Please enter values for all mandatory fields and try again.");

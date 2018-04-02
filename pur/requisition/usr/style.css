@@ -126,6 +126,20 @@
 	padding: 3px 2px 2px 0px;
 }
 
+.viewPurchaseOrder {
+	color: blue;
+	cursor: pointer; 
+	font-family: Verdana;
+	font-size: 8pt;
+	text-align: center;
+	text-decoration: underline;
+}
+
+.viewPurchaseOrder:hover {	
+	color: red;
+	text-decoration: underline;
+}
+
 #ShippingInfo {
 	height: 385px;
 	border: solid #AAAAAA thin;

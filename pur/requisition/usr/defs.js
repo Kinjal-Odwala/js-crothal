@@ -97,8 +97,8 @@ ii.init.register( function() {
 		, shipToZip: {type: String, required: false, defaultValue: ""}
 		, shipToPhone: {type: String, required: false, defaultValue: ""}
 		, shipToFax: {type: String, required: false, defaultValue: ""}		
-		, requestorName: { type: String, required: false, defaultValue: "" }
-        , requestorPhone: { type: String, required: false, defaultValue: "" }
+		, requestorName: {type: String, required: false, defaultValue: ""}
+        , requestorPhone: { type: String, required: false, defaultValue: ""}
 		, requestorEmail: {type: String, required: false, defaultValue: ""}
 		, requestedDate: {type: String, required: false, defaultValue: ""}
 		, deliveryDate: {type: String, required: false, defaultValue: ""}
@@ -118,7 +118,8 @@ ii.init.register( function() {
 		, chargeToPeriod: {type: String, required: false, defaultValue: ""}
 		, template: {type: Boolean, required: false, defaultValue: false}
 		, templateTitle: {type: String, required: false, defaultValue: ""}	
-		, valid: {type: Boolean, required: false, defaultValue: true}		
+		, valid: {type: Boolean, required: false, defaultValue: true}
+        , purchaseOrderNumber: {type: Number, required: false, defaultValue: 0}
 	};
 	
 	fin.pur.poRequisition.poRequisitionDetailArgs = {

@@ -50,6 +50,7 @@ ii.Class({
 			me.lastSelectedItemRowIndex = -1;
 			me.loadCount = 0;
 			me.glAccounts = [];
+			me.purchaseOrderNumber = location.href.split("purchaseOrderNumber=")[1];
 			
 			me.gateway = ii.ajax.addGateway("pur", ii.config.xmlProvider); 
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -896,7 +897,10 @@ ii.Class({
 			$("#TabOpenOrders").parent().addClass("tabs-selected");
 			me.houseCodeDetailStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId, me.houseCodeDetailsLoaded, me);
 			me.houseCodeJobStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId, me.houseCodeJobsLoaded, me);
-			me.loadPurchaseOrders();
+			if (me.purchaseOrderNumber != undefined && me.purchaseOrderNumber !== 0)
+			    me.searchPurchaseOrder();
+            else
+			    me.loadPurchaseOrders();
 			me.resizeControls();
 		},
 		
@@ -975,14 +979,20 @@ ii.Class({
 				statusType = 3;
 				
 			if (me.searchType.lastBlurValue == "Purchase Order #")
-				statusType = 0;
+			    statusType = 0;
+
+			if (me.purchaseOrderNumber != undefined && me.purchaseOrderNumber !== 0) {
+			    houseCodeId = 0;
+			    searchValue = me.purchaseOrderNumber;
+			    statusType = 0;
+			}
 
 			me.checkStatus = true;
 			me.setLoadCount();
 			me.purchaseOrderStore.fetch("userId:[user],"
 				+ ",houseCodeId:" + houseCodeId
 				+ ",statusType:" + statusType
-				+ ",searchType:" + me.searchType.lastBlurValue
+                + ",searchType:" + (me.purchaseOrderNumber != undefined && me.purchaseOrderNumber !== 0 ? "Purchase Order #" : me.searchType.lastBlurValue)
 				+ ",searchValue:" + searchValue
 				, me.purchaseOrdersLoaded
 				, me);
@@ -1063,7 +1073,8 @@ ii.Class({
 			}
 			
 			if (!reload)
-				me.checkLoadCount();
+			    me.checkLoadCount();
+			me.purchaseOrderNumber = 0;
 		},
 		
 		itemSelect: function() {
