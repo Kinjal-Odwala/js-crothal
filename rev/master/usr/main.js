@@ -107,7 +107,6 @@ ii.Class({
 			me.setStatus("Loading");
 			me.modified(false);
             me.setTabIndexes();
-            $("#backLabel").hide();
 
             me.houseCodeSearch = new ui.lay.HouseCodeSearch();
 			me.houseCodeSearchTemplate = new ui.lay.HouseCodeSearchTemplate();
@@ -1272,7 +1271,7 @@ ii.Class({
 
             me.resetGrids();
             me.invoiceStore.reset();
-            me.invoiceStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",status:5,year:" + yearId + ",invoiceByHouseCode:-1", me.invoiceLoaded, me);
+			me.invoiceStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",status:5,year:" + yearId + ",invoiceByHouseCode:-1,invoiceNumber:" + me.invoiceNumber, me.invoiceLoaded, me);
         },
 
         invoiceLoaded: function(me, activeId) {
@@ -1286,6 +1285,7 @@ ii.Class({
 			me.invoiceGrid.setData(me.invoices);
 			
 			if (me.fscYear >= 0 && me.statusType == "true") {
+				me.statusType = "false";
 				index = ii.ajax.util.findIndexById(me.fscYear.toString(), me.years);
 				if (index != undefined) 
 					me.fiscalYear.select(index, me.fiscalYear.focused);
