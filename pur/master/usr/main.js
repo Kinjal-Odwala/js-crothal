@@ -50,6 +50,7 @@ ii.Class({
 			me.lastSelectedItemRowIndex = -1;
 			me.loadCount = 0;
 			me.glAccounts = [];
+			me.purchaseOrderNumber = location.href.split("purchaseOrderNumber=")[1];
 			
 			me.gateway = ii.ajax.addGateway("pur", ii.config.xmlProvider); 
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -582,7 +583,7 @@ ii.Class({
 				selectFunction: function(index) { me.itemSelect(index); },
 				validationFunction: function() { return parent.fin.cmn.status.itemValid(); }
 			});
-			
+
 			me.purchaseOrderGrid.addColumn("houseCodeName", "houseCodeName", "House Code", "House Code", 300);
 			me.purchaseOrderGrid.addColumn("orderNumber", "", "Order #", "Order #", 80, function(order) {
 				if (order.statusType == 1) {
@@ -598,6 +599,12 @@ ii.Class({
 			me.purchaseOrderGrid.addColumn("vendorName", "vendorName", "Vendor", "Vendor", null);
 			me.purchaseOrderGrid.addColumn("orderAmount", "orderAmount", "Amount", "Order Amount", 120);
 			me.purchaseOrderGrid.addColumn("placedBy", "placedBy", "Placed By", "Placed By", 200);
+			me.purchaseOrderGrid.addColumn("requisitionNumber", "requisitionNumber", "Requisition #", "Requisition #", 120, function(requisitionNumber) {
+			    if (requisitionNumber != 0)
+					return "<div class='viewRequisition' onclick='fin.purMasterUi.actionViewRequisition(" + requisitionNumber + ");'>" + requisitionNumber +"</div>";
+			    else
+			        return "";
+			});
 			me.purchaseOrderGrid.capColumns();
 			me.purchaseOrderGrid.setHeight(150);
 			
@@ -890,7 +897,10 @@ ii.Class({
 			$("#TabOpenOrders").parent().addClass("tabs-selected");
 			me.houseCodeDetailStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId, me.houseCodeDetailsLoaded, me);
 			me.houseCodeJobStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId, me.houseCodeJobsLoaded, me);
-			me.loadPurchaseOrders();
+			if (me.purchaseOrderNumber != undefined && me.purchaseOrderNumber !== 0)
+			    me.searchPurchaseOrder();
+            else
+			    me.loadPurchaseOrders();
 			me.resizeControls();
 		},
 		
@@ -913,6 +923,7 @@ ii.Class({
 			me.searchTypes.push(new fin.pur.master.SearchType(1, "Purchase Order #"));
 			me.searchTypes.push(new fin.pur.master.SearchType(2, "Vendor #"));
 			me.searchTypes.push(new fin.pur.master.SearchType(3, "Vendor Title"));
+			me.searchTypes.push(new fin.pur.master.SearchType(4, "Requisition #"));
 			me.searchType.setData(me.searchTypes);
 		},
 		
@@ -953,7 +964,9 @@ ii.Class({
 			else if (me.searchType.lastBlurValue == "Vendor #" && (searchValue == "" || !(/^[0-9]+$/.test(searchValue))))
 				me.searchInput.setInvalid("Please enter valid Vendor #.");
 			else if (me.searchType.lastBlurValue == "Vendor Title" && searchValue.trim() == "")
-				me.searchInput.setInvalid("Please enter Search Criteria.");
+			    me.searchInput.setInvalid("Please enter Search Criteria.");
+			else if (me.searchType.lastBlurValue == "Requisition #" && (searchValue == "" || !(/^[0-9]+$/.test(searchValue))))
+			    me.searchInput.setInvalid("Please enter valid Requisition #.");
 
 			if (!me.searchType.validate(true) || !me.searchInput.valid)
 				return;
@@ -966,14 +979,20 @@ ii.Class({
 				statusType = 3;
 				
 			if (me.searchType.lastBlurValue == "Purchase Order #")
-				statusType = 0;
+			    statusType = 0;
+
+			if (me.purchaseOrderNumber != undefined && me.purchaseOrderNumber !== 0) {
+			    houseCodeId = 0;
+			    searchValue = me.purchaseOrderNumber;
+			    statusType = 0;
+			}
 
 			me.checkStatus = true;
 			me.setLoadCount();
 			me.purchaseOrderStore.fetch("userId:[user],"
 				+ ",houseCodeId:" + houseCodeId
 				+ ",statusType:" + statusType
-				+ ",searchType:" + me.searchType.lastBlurValue
+                + ",searchType:" + (me.purchaseOrderNumber != undefined && me.purchaseOrderNumber !== 0 ? "Purchase Order #" : me.searchType.lastBlurValue)
 				+ ",searchValue:" + searchValue
 				, me.purchaseOrdersLoaded
 				, me);
@@ -1000,11 +1019,14 @@ ii.Class({
 		purchaseOrdersLoaded: function(me, activeId) {
 			var reload = me.reloadGrid;
 
-			if (me.checkStatus && me.purchaseOrders.length == 0) {
-				alert("There are no purchase orders matching the given criteria or you do not have enough permission to access it.");	
-			    me.resetGrids();				
-			}				
-				
+			if (me.checkStatus && me.purchaseOrders.length === 0) {
+				if (me.searchType.indexSelected === 3)
+			        alert("Requisition # does not exists.");
+				else
+					alert("There are no purchase orders matching the given criteria or you do not have enough permission to access it.");
+			    me.resetGrids();
+			}
+
 			me.purchaseOrderGrid.setData(me.purchaseOrders);
 
 			if (me.checkStatus) {
@@ -1051,7 +1073,8 @@ ii.Class({
 			}
 			
 			if (!reload)
-				me.checkLoadCount();
+			    me.checkLoadCount();
+			me.purchaseOrderNumber = 0;
 		},
 		
 		itemSelect: function() {
@@ -1683,6 +1706,13 @@ ii.Class({
 				}
 			}
 		},		
+
+		actionViewRequisition: function(requisitionNumber) {
+   		    var node = top.ui.ctl.menu.Dom.me.items["pur"].items["PO Requisition"].xmlNode;
+
+			top.ui.ctl.menu.Dom.me.items["pur"].items["PO Requisition"].select();
+			window.location = $(node).attr("actionData") + "?requisitionNumber=" + requisitionNumber;
+		},
 
 		actionUndoItem: function() {
 			var args = ii.args(arguments,{});

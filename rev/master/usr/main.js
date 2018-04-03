@@ -107,7 +107,6 @@ ii.Class({
 			me.setStatus("Loading");
 			me.modified(false);
             me.setTabIndexes();
-            $("#backLabel").hide();
 
             me.houseCodeSearch = new ui.lay.HouseCodeSearch();
 			me.houseCodeSearchTemplate = new ui.lay.HouseCodeSearchTemplate();
@@ -1272,7 +1271,7 @@ ii.Class({
 
             me.resetGrids();
             me.invoiceStore.reset();
-            me.invoiceStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",status:5,year:" + yearId + ",invoiceByHouseCode:-1", me.invoiceLoaded, me);
+			me.invoiceStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId + ",status:5,year:" + yearId + ",invoiceByHouseCode:-1,invoiceNumber:" + me.invoiceNumber, me.invoiceLoaded, me);
         },
 
         invoiceLoaded: function(me, activeId) {
@@ -1286,6 +1285,7 @@ ii.Class({
 			me.invoiceGrid.setData(me.invoices);
 			
 			if (me.fscYear >= 0 && me.statusType == "true") {
+				me.statusType = "false";
 				index = ii.ajax.util.findIndexById(me.fscYear.toString(), me.years);
 				if (index != undefined) 
 					me.fiscalYear.select(index, me.fiscalYear.focused);
@@ -1299,11 +1299,6 @@ ii.Class({
 			$("#TabCreateInvoices").parent().addClass("tabs-selected");
 
 			me.resize();
-
-            if (me.invoiceSearch == "true" && parseInt(me.invoiceId) > 0 && me.invoices.length > 0) {
-                me.invoiceGrid.body.select(0);
-                $("#backLabel").show();
-            }
         },
 
         invoiceDetailsLoaded: function() {
@@ -1714,6 +1709,10 @@ ii.Class({
 					break;
 				}
 			}
+
+			if (me.invoiceSearch === "true" && parseInt(me.invoiceId, 10) > 0 && me.invoices.length === 1) {
+                me.invoiceGrid.body.select(0);
+            }
 		},
 				
 		actionSearchItem: function() {

@@ -56,6 +56,20 @@
 	padding: 2px 0px 1px 5px;
 }
 
+.viewRequisition {
+	color: blue;
+	cursor: pointer; 
+	font-family: Verdana;
+	font-size: 8pt;
+	text-align: center;
+	text-decoration: underline;
+}
+
+.viewRequisition:hover {	
+	color: red;
+	text-decoration: underline;
+}
+
 #shippingInfoContainerLeft {
 	float: left;
 	margin-right: 20px;

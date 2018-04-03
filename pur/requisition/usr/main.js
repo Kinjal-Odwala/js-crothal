@@ -46,6 +46,7 @@ ii.Class({
 			me.vendorsLoading = false;
 			me.saveSendRequisition = false;
 			me.poRequisitionDetailsTemp = [];
+			me.requisitionNumber = location.href.split("requisitionNumber=")[1];
 
 			me.gateway = ii.ajax.addGateway("pur", ii.config.xmlProvider); 
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -401,6 +402,12 @@ ii.Class({
 				return fin.cmn.sort.dateSort(me, displayProperty, a, b);
 			});
 			me.requisitionGrid.addColumn("vendorTitle", "vendorTitle", "Vendor Title", "Vendor Title", null);
+			me.requisitionGrid.addColumn("purchaseOrderNumber", "purchaseOrderNumber", "Purchase Order #", "Purchase Order #", 150, function (purchaseOrderNumber) {
+			    if (purchaseOrderNumber != 0)
+			        return "<div class='viewPurchaseOrder' onclick='fin.pur.poRequisitionUi.actionViewPurchaseOrder(" + purchaseOrderNumber + ");'>" + purchaseOrderNumber + "</div>";
+			    else
+			        return "";
+			});
 			me.requisitionGrid.addColumn("statusType", "statusType", "Status", "Status", 120, function(statusType) {
 				if (statusType == 1)
 					return "Open";
@@ -1512,6 +1519,7 @@ ii.Class({
 			me.searchTypes.push(new fin.pur.poRequisition.SearchType(2, "Requested Date"));
 			me.searchTypes.push(new fin.pur.poRequisition.SearchType(3, "Vendor #"));
 			me.searchTypes.push(new fin.pur.poRequisition.SearchType(4, "Vendor Title"));
+			me.searchTypes.push(new fin.pur.poRequisition.SearchType(5, "Purchase Order #"));
 			me.searchType.setData(me.searchTypes);
 		},
 		
@@ -1612,7 +1620,15 @@ ii.Class({
 			if (event.keyCode == 13) {
 				me.loadPORequisitions();
 			}
-		},		
+		},
+
+		actionViewPurchaseOrder: function (purchaseOrderNumber) {
+
+		    var node = top.ui.ctl.menu.Dom.me.items["pur"].items["ord"].xmlNode;
+
+		    top.ui.ctl.menu.Dom.me.items["pur"].items["ord"].select();
+		    window.location = $(node).attr("actionData") + "?purchaseOrderNumber=" + purchaseOrderNumber;
+		},
 
 		loadPORequisitions: function() {
 			var me = this;
@@ -1636,7 +1652,7 @@ ii.Class({
 
 			if (!me.statusType.validate(true) || !me.searchType.validate(true) || !me.searchRequestedDate.valid || !me.searchInput.valid)
 				return;
-			
+
 			if (me.action == "PORequisition")
 				statusType = me.statusType.indexSelected == -1 ? 0 : me.statuses[me.statusType.indexSelected].id;
 			else if (me.action == "GeneratePurchaseOrder")
@@ -1644,13 +1660,19 @@ ii.Class({
 			else
 				return;
 
+  			if (me.requisitionNumber != undefined && me.requisitionNumber !== 0) {
+				houseCodeId = 0;
+			    searchValue = me.requisitionNumber;
+			    statusType = "11";
+			}
+
 			me.lastSelectedRowIndex = -1;
 			me.setLoadCount();
 			me.poRequisitionStore.reset();
 			me.poRequisitionStore.fetch("userId:[user],poRequisitionId:0"
 				+ ",houseCodeId:" + houseCodeId
 				+ ",statusType:" + statusType
-				+ ",searchType:" + me.searchType.text.value
+				+ ",searchType:" +  (me.requisitionNumber != undefined && me.requisitionNumber !== 0 ? "Requisition #" : me.searchType.text.value)
 				+ ",searchValue:" + (me.searchType.indexSelected == 1 ? me.searchRequestedDate.text.value : searchValue)
 				+ ",template:-1"
 				, me.poRequisitionsLoaded
@@ -1667,10 +1689,16 @@ ii.Class({
 			$("#AnchorOpen").hide();
 		},
 		
-		poRequisitionsLoaded: function(me, activeId) {
-				
+		poRequisitionsLoaded: function (me, activeId) {
+
+		    if (me.poRequisitions.length === 0) {
+		        if (me.searchType.indexSelected === 4)
+		            alert("Purchase Order # does not exists.");			      
+		    }
+
 			me.requisitionGrid.setData(me.poRequisitions);			
 			me.checkLoadCount();
+			me.requisitionNumber = 0;
 		},
 		
 		loadPOItems: function() {
@@ -2559,8 +2587,8 @@ ii.Class({
 						me.anchorSaveSendRequisition.display(ui.cmn.behaviorStates.disabled);
 					}
 
-					if (me.requisitionGrid.data[me.lastSelectedRowIndex].statusType == 13)
-					    me.anchorSaveSendRequisition.display(ui.cmn.behaviorStates.disabled);
+					if (me.status === "EditPORequisition" && me.requisitionGrid.data[me.lastSelectedRowIndex].statusType === 13)
+				        me.anchorSaveSendRequisition.display(ui.cmn.behaviorStates.disabled);
 
 					$("#Header").text("Shipping Information");
 					break;
@@ -2822,7 +2850,6 @@ ii.Class({
 
 			if (me.requisitionGrid.activeRowIndex == -1)
 				return true;
-
 			me.validator.forceBlur();
 			if (!me.validator.queryValidity(true) || me.itemGrid.data.length == 0) {
 				alert("There are few mandatory fields which are not entered. Please enter values for all mandatory fields and try again.");

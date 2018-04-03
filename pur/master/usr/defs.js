@@ -72,7 +72,8 @@ ii.init.register( function() {
 		, templateTitle: {type: String, required: false, defaultValue: ""}		
 		, reportFooter: {type: String, required: false, defaultValue: ""}
 		, placedBy: {type: String, required: false, defaultValue: ""}
-        , miscPurchaseOrder: {type: Boolean, defaultValue: false},
+        , miscPurchaseOrder: {type: Boolean, defaultValue: false}
+        , requisitionNumber: {type: Number, required: false, defaultValue: 0}
 	};
 	
 	fin.pur.master.vendorArgs = {

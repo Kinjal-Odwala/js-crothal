@@ -24,6 +24,12 @@
 				</tr>
 			</table>
 		</div>
+		<div id="popupLoading" style="position: absolute; z-index: 6000; width: 800px; height: 400px; background-color: white; display:none">
+		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px; text-align:center;">
+		        <img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+		        <div id="popupMessageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px;">Loading</div>    
+		    </div>
+		</div>
 		<div style="clear:both;"></div>
 		<div id="itemStatusDiv">
 			<div id="itemStatusImage" class="itemStatusImage"></div>
@@ -419,6 +425,21 @@
                         <div id="AnchorUndo"></div>
                         <div style="clear:both;"></div>
                     </div>
+				</div>
+			</div>
+		</div>
+		<div id="NodePopup">
+			<div class="contentArea">
+				<div class="body">
+					<div class="header">Hierarchy Information</div>
+					<div style="clear:both;"></div>
+					<div id="NodeGrid"></div>								
+				</div>
+				<div style="clear:both; height:5px;"></div>
+				<div class="body">
+                	<div id="AnchorOK"></div>
+					<div id="AnchorCancel"></div>
+					<div style="clear:both;"></div>
 				</div>
 			</div>
 		</div>

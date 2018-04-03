@@ -301,8 +301,11 @@ ii.Class({
 
 			if (me.houseCodeChangedAtSearch) {
 				me.houseCodeGlobalParametersUpdate(false, me.houseCodes[0]);
-				if (!me.columnSorted())
-					window.location = "/fin/rev/master/usr/markup.htm?invoiceSearch=true&invoiceId=" + me.invoiceId + "&invoiceNumber=" + me.invoiceNumberValue;
+				if (!me.columnSorted()) {
+					var item = me.invoiceGrid.data[me.invoiceGrid.activeRowIndex];
+					top.ui.ctl.menu.Dom.me.items["arm"].items["inv"].select();
+					window.location = "/fin/rev/master/usr/markup.htm?invoiceSearch=true&invoiceId=" + item.id + "&invoiceNumber=" + item.invoiceNumber + "&fscYear=" + item.fscYear + "&statusType=" + item.paidOff;
+				}
 			}
 			else {
 				me.houseCodeGlobalParametersUpdate(false);
@@ -398,16 +401,16 @@ ii.Class({
 
 			if (parent.fin.appUI.houseCodeId !== item.houseCode) {
 				me.houseCodeChangedAtSearch = true;
-				me.invoiceId = item.id;
-				me.invoiceNumberValue = item.invoiceNumber;
 				me.setStatus("Loading");
 				$("#messageToUser").text("Loading");
 				$("#pageLoading").fadeIn("slow");
 				me.houseCodeStore.fetch("userId:[user],appUnitBrief:" + item.houseCodeBrief + ",", me.houseCodesLoaded, me);
 			}
 			else {
-				if (!me.columnSorted())
+				if (!me.columnSorted()) {
+					top.ui.ctl.menu.Dom.me.items["arm"].items["inv"].select();
 					window.location = "/fin/rev/master/usr/markup.htm?invoiceSearch=true&invoiceId=" + item.id + "&invoiceNumber=" + item.invoiceNumber + "&fscYear=" + item.fscYear + "&statusType=" + item.paidOff;
+				}
 			}
 		},
 
