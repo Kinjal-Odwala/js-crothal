@@ -39,7 +39,7 @@ ii.Class({
 		init: function() {
 			var me = this;
 
-			me.level = "";
+			me.level = "Senior Vice President";
 			me.searchLevel = "";
 			me.status = "";
 			me.lastSelectedRowIndex = -1;
@@ -1186,6 +1186,29 @@ ii.Class({
 			var ams = [];
 			var index = 0;
 
+			if (me.showNodePopup) {
+				if (me.searchLevel === "AM") {
+					$(me.am.action).removeClass("Loading");
+					me.am.dataLoading = false;
+				}
+				else if (me.searchLevel === "RM") {
+					$(me.rm.action).removeClass("Loading");
+					me.rm.dataLoading = false;
+				}
+				else if (me.searchLevel === "SRM") {
+					$(me.srm.action).removeClass("Loading");
+					me.srm.dataLoading = false;
+				}
+				else if (me.searchLevel === "RVP") {
+					$(me.rvp.action).removeClass("Loading");
+					me.rvp.dataLoading = false;
+				}
+				else if (me.searchLevel === "DVP") {
+					$(me.dvp.action).removeClass("Loading");
+					me.dvp.dataLoading = false;
+				}
+			}
+
 			if (me.showNodePopup && me.hirNodes.length > 0) {
 				me.showNodePopup = false;
                 me.loadPopup("NodePopup");
@@ -1193,6 +1216,9 @@ ii.Class({
                 me.nodeGrid.setHeight($(window).height() - 180);
 				return;
             }
+			else {
+				me.showNodePopup = false;
+			}
 
 			for (index = 0; index < me.hirNodes.length; index++) {
 				if (me.hirNodes[index].hirLevelTitle === "Enterprise")
@@ -1211,7 +1237,7 @@ ii.Class({
 					ams.push(new fin.hcm.activateHouseCode.Division(me.hirNodes[index].id, me.hirNodes[index].brief, me.hirNodes[index].title));
 			}
 
-			if (me.level === "")
+			if (me.level === "Senior Vice President")
 				me.svp.setData(svps);
 			else if (me.level === "Divisonal Vice President")
 				me.dvp.setData(dvps);
@@ -1282,6 +1308,7 @@ ii.Class({
 			else {
 				me.searchLevel = "DVP";
 				me.showNodePopup = true;
+				me.dvp.fetchingData();
 				me.dvpBrief.setValue(me.dvp.lastBlurValue.substring(0, 3).toUpperCase());
 				me.hirNodeStore.fetch("userId:[user],levelBrief:DVP,title:" + me.dvp.lastBlurValue + ",", me.hirNodesLoaded, me);
 			}
@@ -1310,6 +1337,7 @@ ii.Class({
 			else {
 				me.searchLevel = "RVP";
 				me.showNodePopup = true;
+				me.rvp.fetchingData();
 				me.rvpBrief.setValue(me.rvp.lastBlurValue.substring(0, 3).toUpperCase());
 				me.hirNodeStore.fetch("userId:[user],levelBrief:RVP,title:" + me.rvp.lastBlurValue + ",", me.hirNodesLoaded, me);
 			}
@@ -1335,6 +1363,7 @@ ii.Class({
 			else {
 				me.searchLevel = "SRM";
 				me.showNodePopup = true;
+				me.srm.fetchingData();
 				me.srmBrief.setValue(me.srm.lastBlurValue.substring(0, 3).toUpperCase());
 				me.hirNodeStore.fetch("userId:[user],levelBrief:SRM,title:" + me.srm.lastBlurValue + ",", me.hirNodesLoaded, me);
 			}
@@ -1357,6 +1386,7 @@ ii.Class({
 			else {
 				me.searchLevel = "RM";
 				me.showNodePopup = true;
+				me.rm.fetchingData();
 				me.rmBrief.setValue(me.rm.lastBlurValue.substring(0, 3).toUpperCase());
 				me.hirNodeStore.fetch("userId:[user],levelBrief:RM,title:" + me.rm.lastBlurValue + ",", me.hirNodesLoaded, me);
 			}
@@ -1371,6 +1401,7 @@ ii.Class({
 			else {
 				me.searchLevel = "AM";
 				me.showNodePopup = true;
+				me.am.fetchingData();
 				me.amBrief.setValue(me.am.lastBlurValue.substring(0, 3).toUpperCase());
 				me.hirNodeStore.fetch("userId:[user],levelBrief:AM,title:" + me.am.lastBlurValue + ",", me.hirNodesLoaded, me);
 			}
