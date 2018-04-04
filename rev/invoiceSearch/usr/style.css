@@ -5,12 +5,20 @@
 
 .inputTextArea {
 	float: left;
-	width: 150px;
+	width: 120px;
 }
 
 .inputTextAreaLarge {
 	float: left;
 	width: 230px;
+}
+
+.iiGridHeaderColumn {
+	font-size: 8pt;
+}
+
+.iiGridBodyColumn {
+	font-size: 8pt;
 }
 
 #searchArea {
@@ -21,4 +29,8 @@
 	float: left;
 	margin-top: 18px;
 	margin-bottom: 10px;
+}
+
+#amountBodyColumn, #collectedBodyColumn, #creditedBodyColumn {
+	text-align: right;	
 }

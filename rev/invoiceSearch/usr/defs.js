@@ -67,6 +67,7 @@ ii.init.register( function() {
 		, poNumber: {type: String, required: false, defaultValue: ""}
 		, version: {type: Number, required: false, defaultValue: 0}
 		, active: {type: Boolean, required: false, defaultValue: true}
+		, workOrderNumber: {type: String, required: false, defaultValue: ""}
 	};
 
 }, 2);

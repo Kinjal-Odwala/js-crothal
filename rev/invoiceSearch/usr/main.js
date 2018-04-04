@@ -170,6 +170,24 @@ ii.Class({
 						this.setInvalid("Please select the correct Company Code.");
 				});
 
+			me.workOrderNumber = new ui.ctl.Input.Text({
+				id: "WorkOrderNumber",
+				maxLength: 10
+			});
+
+			me.workOrderNumber.makeEnterTab()
+				.setValidationMaster( me.validator )
+				.addValidation( function( isFinal, dataMap ) {
+
+					var enteredText = me.workOrderNumber.getValue();
+
+					if (enteredText === "")
+						return;
+
+					if (!(/^[0-9]+$/.test(enteredText)))
+						this.setInvalid("Please enter valid Work Order #");
+			});
+
 			me.anchorSearch = new ui.ctl.buttons.Sizeable({
 				id: "AnchorSearch",
 				className: "iiButton",
@@ -197,6 +215,7 @@ ii.Class({
 			me.invoiceGrid.addColumn("lastPrinted", "lastPrinted", "Last Printed", "Last Printed", 120);
 			me.invoiceGrid.addColumn("serviceLocation", "serviceLocation", "Service Location", "Service Location", 250);
 			me.invoiceGrid.addColumn("poNumber", "poNumber", "PO Number", "PO Number", 100);
+			me.invoiceGrid.addColumn("workOrderNumber", "workOrderNumber", "Work Order #", "Work Order #", 100);
 			me.invoiceGrid.capColumns();
 
 			$("#InvoiceNumberText").bind("keydown", me, me.actionSearchItem);
@@ -206,6 +225,7 @@ ii.Class({
 			$("#ServiceLocationText").bind("keydown", me, me.actionSearchItem);
 			$("#PONumberText").bind("keydown", me, me.actionSearchItem);
 			$("#JDECompanyText").bind("keydown", me, me.actionSearchItem);
+			$("#WorkOrderNumberText").bind("keydown", me, me.actionSearchItem);
 
 			$("#pageLoading").css({
 				"opacity": "0.5",
@@ -225,6 +245,7 @@ ii.Class({
 			me.serviceLocation.resizeText();
 			me.poNumber.resizeText();
 			me.jdeCompany.resizeText();
+			me.workOrderNumber.resizeText();
 			me.resize();
 		},
 
@@ -353,8 +374,8 @@ ii.Class({
 			}
 
 			if (me.invoiceNumber.getValue() === "" && me.documentNumber.getValue() === "" && me.invoiceDate.text.value === "" && me.customer.getValue() === "" 
-				&& me.serviceLocation.getValue() === "" && me.poNumber.getValue() === "" && me.jdeCompany.lastBlurValue === "" && $("#houseCodeText").val() === "") {
-				alert("Please enter search criteria: Invoice #, Document #, Invoice Date, Customer, Service Location, PO Number, Company Code or House Code.")
+				&& me.serviceLocation.getValue() === "" && me.poNumber.getValue() === "" && me.jdeCompany.lastBlurValue === "" && me.workOrderNumber.getValue() === "" && $("#houseCodeText").val() === "") {
+				alert("Please enter search criteria: Invoice #, Document #, Invoice Date, Customer, Service Location, PO Number, Company Code, Work Order # or House Code.")
 				return false;
 			}
 
@@ -367,6 +388,7 @@ ii.Class({
 			var serviceLocation = me.serviceLocation.getValue();
 			var poNumber = me.poNumber.getValue();
 			var jdeCompany = (me.jdeCompany.indexSelected >= 0 ? me.jdeCompany.data[me.jdeCompany.indexSelected].id : 0)
+			var workOrderNumber = me.workOrderNumber.getValue();
 
 			if (invoiceDate === undefined || invoiceDate === "")
 				invoiceDate = "1/1/1900";
@@ -381,6 +403,7 @@ ii.Class({
 				+ ",serviceLocation:" + serviceLocation 
 				+ ",poNumber:" + poNumber 
 				+ ",jdeCompany:" + jdeCompany
+				+ ",workOrderNumber:" + workOrderNumber
 				, me.invoiceLoaded, me);
 		},
 
