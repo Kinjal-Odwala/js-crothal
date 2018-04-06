@@ -3761,10 +3761,17 @@ Bud.data.BudgetSummaryStore = WebLight.extend(Bud.data.XmlStore, {
             return rec.get('fscAccount') == fscAccount;
         });
 
+        if (!records)
+            return null;
+
         var record = records.get(0);
 
         if (!record) {
             var fscAccountRecord = me.fscAccountStore.getById(fscAccount);
+
+            if (!fscAccountRecord)
+                return null;
+
             var title = !!fscAccountRecord ? fscAccountRecord.get('friendlyName') : String.format('Unknown "{0}"', fscAccount);
             var initData = me.initDataRecord(fscAccount, title);
 
@@ -3846,6 +3853,8 @@ Bud.data.BudgetSummaryStore = WebLight.extend(Bud.data.XmlStore, {
         me.budDetailStore.each(function (r, index) {
 
             var record = me.getByFscAccount(r.get('fscAccount'));
+            if (!record)
+                return;
             for (var i = 1; i <= 13; i++)
                 record.set('budget' + i, r.get('period' + i));
         });
@@ -3856,6 +3865,9 @@ Bud.data.BudgetSummaryStore = WebLight.extend(Bud.data.XmlStore, {
                 return;
 
             var record = me.getByFscAccount(r.get('fscAccount'));
+
+            if (!record)
+                return;
             var period = r.get('fscPeriod');
 
             var rec = me.fscPeriodStore.getById(period);
