@@ -307,7 +307,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
 
         if (editStatus()) {
             $scope.previousTabSelected.active = true;
-            $scope.previousTabSelected = previousTabSelected.heading;
+            $scope.previousTabSelected = $scope.previousTabSelected.heading;
             return;
         }
         else {
@@ -488,6 +488,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.selectedptoTypePayCode = null;
         $scope.selectedptoTypePayCodeId = null;
         $scope.ptoTypePayCodesSelected = [];
+		$scope.selectedptoTypePayCodes = [];
 
         $scope.payCodeSettings = {
             scrollableHeight: '300px',

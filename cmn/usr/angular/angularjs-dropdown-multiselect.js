@@ -56,6 +56,8 @@ function ($filter, $document, $compile, $parse) {
             };
 
             $scope.checkboxClick = function ($event, id) {
+				setStatus("Edit");
+    			modified(true);
                 $scope.setSelectedItem(id);
                 $event.stopImmediatePropagation();
             };
