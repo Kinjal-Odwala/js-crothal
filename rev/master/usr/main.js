@@ -1610,7 +1610,10 @@ ii.Class({
 					}
 				}
 
-				$("#SAPCustomerNumber").html(me.billTo.data[me.billTo.indexSelected].sapCustomerNumber);
+				if (me.billTo.indexSelected !== -1)
+					$("#SAPCustomerNumber").html(me.billTo.data[me.billTo.indexSelected].sapCustomerNumber);
+				else
+					$("#SAPCustomerNumber").html("");
 				me.company.setValue(searchInvoice.company);
 				me.address1.setValue(searchInvoice.address1);
 				me.address2.setValue(searchInvoice.address2);

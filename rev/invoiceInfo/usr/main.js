@@ -691,8 +691,9 @@ ii.Class({
 			}
 
 			me.notes.value = me.invoice.notes;
-			if (me.billTo.indexSelected !== -1)
-				$("#SAPCustomerNumber").html(me.invoiceBillTos[me.billTo.indexSelected].sapCustomerNumber);
+			index = ii.ajax.util.findIndexById(me.invoice.houseCodeJobId.toString(), me.invoiceBillTos);
+			if (index !== null)
+				$("#SAPCustomerNumber").html(me.invoiceBillTos[index].sapCustomerNumber);
 
 			if (me.invoice.printed) {
 				me.taxExempt.text.readOnly = true;			
