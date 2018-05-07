@@ -189,6 +189,14 @@ ii.Class({
 			    hasHotState: true
 			});
 
+			me.anchorClone = new ui.ctl.buttons.Sizeable({
+			    id: "AnchorClone",
+			    className: "iiButton",
+			    text: "<span>&nbsp;&nbsp;Clone&nbsp;&nbsp;</span>",
+			    clickFunction: function () { me.actionCloneItem(); },
+			    hasHotState: true
+			});
+
 			me.anchorClose = new ui.ctl.buttons.Sizeable({
 			    id: "AnchorClose",
 			    className: "iiButton",
@@ -221,7 +229,7 @@ ii.Class({
 				id: "SearchButton",
 				className: "iiButton",
 				text: "<span>Search</span>",
-				clickFunction: function () { $("#itemHistory").hide(); me.loadSearchResults(); },
+				clickFunction: function () { me.loadSearchResults(); },
 				hasHotState: true
 			});
 			
@@ -516,7 +524,8 @@ ii.Class({
 				me.searchInput.valid = true;
 				me.searchInput.updateStatus();
 			}
-			
+
+			$("#itemHistory").hide();
 			me.setLoadCount();
 			me.itemStore.reset();
 			me.itemStore.fetch("searchValue:" + me.searchInput.getValue() 
@@ -807,6 +816,18 @@ ii.Class({
 			});
 			
 			return true;
+		},
+
+		actionCloneItem: function() {
+			var me = this;
+
+			if (!parent.fin.cmn.status.itemValid())
+				return;
+
+			me.itemSelect(me.lastSelectedRowIndex);
+			me.itemGrid.body.deselectAll();
+			me.itemId = 0;
+			me.status = "new";
 		},
 
 		actionSaveItem: function() {
