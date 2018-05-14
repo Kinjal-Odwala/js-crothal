@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+	    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+	    <title>Closed Order</title>
+	    <script type="text/javascript">
+	        var globalContext = "/net/crothall/chimes/fin/pur/act";
+	        var js = document.createElement("script");
+	        js.id = "loader";
+	        js.type = "text/javascript";
+	        js.src = "/fin/ii/framework/core/krn/sys/cycligent.js";
+	        document.getElementsByTagName("head")[0].appendChild(js);
+		</script>
+	</head>
+	<!-- onload is necessary to overcome jQuery/IE7 $(document).ready bug when page loaded into an IFrame -->
+	<body id="appBody" onload="iiForceBodyReady = true;">
+	    <div id="pageBody" class="pageBody" style="display: none;">
+	        <div class="contentArea">
+	            <div id="divPurchaseOrderDetails">
+	                <div id="divPODHeader" class="header"></div>
+	                <div class="body">
+	                    <div id="divPurchaseOrderGrid" class="tbodyBorder">
+	                        <table id="PurchaseOrderGrid" class="gridBorder" width="100%" border="0" cellpadding="0" cellspacing="0">
+	                            <thead id="PurchaseOrderGridHead">
+	                                <tr>
+	                                    <th class="gridHeaderColumn" width="3%">#</th>
+	                                    <th class="gridHeaderColumn" width="15%">Category</th>
+	                                    <th class="gridHeaderColumn" width="10%">Job</th>
+	                                    <th class="gridHeaderColumn" width="10%">Item #</th>
+	                                    <th class="gridHeaderColumn" width="28%">Description</th>
+	                                    <th class="gridHeaderColumn" width="8%">GL Account</th>
+	                                    <th class="gridHeaderColumn" width="4%">Unit</th>
+	                                    <th class="gridHeaderColumn" width="7%">Quantity</th>
+	                                    <th class="gridHeaderColumn" width="7%">Unit Price</th>
+	                                    <th class="gridHeaderColumn" width="9%">Extended Cost</th>
+	                                </tr>
+	                            </thead>
+	                            <tbody id="PurchaseOrderGridBody"></tbody>
+	                        </table>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</body>
+</html>

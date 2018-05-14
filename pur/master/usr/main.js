@@ -39,6 +39,8 @@ ii.Class({
 			me.activeFrameId = 0;			
 			me.openOrderNeedUpdate = true;
 			me.placedOrderNeedUpdate = true;
+			me.voucherOrderNeedUpdate = true;
+			me.closedOrderNeedUpdate = true;
 			me.transactionStatusType = 0;
 			me.status = "";
 			me.checkStatus = false;
@@ -111,6 +113,10 @@ ii.Class({
 						tabIndex = 1;
 					else if (this.id == "TabPlacedOrders")
 						tabIndex = 2;
+					else if (this.id == "TabVoucherOrders")
+						tabIndex = 3;
+					else if (this.id == "TabClosedOrders")
+						tabIndex = 4;
 							
 					$("#container-1").tabs(tabIndex);
 					$("#container-1").triggerTab(tabIndex);
@@ -131,6 +137,8 @@ ii.Class({
 						$("#Buttons").show();
 						me.openOrderNeedUpdate = false;
 						me.placedOrderNeedUpdate = true;
+						me.voucherOrderNeedUpdate = true;
+						me.closedOrderNeedUpdate = true;
 						break;
 						
 					case "TabPlacedOrders":
@@ -144,6 +152,38 @@ ii.Class({
 						$("#Buttons").hide();
 						me.openOrderNeedUpdate = true;
 						me.placedOrderNeedUpdate = false;
+						me.voucherOrderNeedUpdate = true;
+						me.closedOrderNeedUpdate = true;
+						break;
+
+					case "TabVoucherOrders":
+
+						me.activeFrameId = 2;
+						if (me.voucherOrderNeedUpdate) {
+							me.lastSelectedRowIndex = -1;
+							me.loadPurchaseOrders();
+						}							
+
+						$("#Buttons").hide();
+						me.openOrderNeedUpdate = true;
+						me.placedOrderNeedUpdate = true;
+						me.voucherOrderNeedUpdate = false;
+						me.closedOrderNeedUpdate = true;
+						break;
+
+					case "TabClosedOrders":
+
+						me.activeFrameId = 3;
+						if (me.closedOrderNeedUpdate) {
+							me.lastSelectedRowIndex = -1;
+							me.loadPurchaseOrders();
+						}							
+
+						$("#Buttons").hide();
+						me.openOrderNeedUpdate = true;
+						me.placedOrderNeedUpdate = true;
+						me.voucherOrderNeedUpdate = true;
+						me.closedOrderNeedUpdate = false;
 						break;
 				}
 			});
@@ -243,6 +283,8 @@ ii.Class({
 
 				$("#iFrameOpenOrders").height(offset);
 				$("#iFramePlacedOrders").height(offset);
+				$("#iFrameVoucherOrders").height(offset);
+				$("#iFrameClosedOrders").height(offset);
 				
 				me.windowWidth = $(window).width();
 				me.windowHeight = $(window).height();
@@ -256,7 +298,11 @@ ii.Class({
 			if (me.activeFrameId == 0 && $("iframe")[0].contentWindow.fin != undefined)
 				$("iframe")[0].contentWindow.fin.openOrderUi.resize();
 			else if (me.activeFrameId == 1 && $("iframe")[1].contentWindow.fin != undefined)
-				$("iframe")[1].contentWindow.fin.placedOrderUi.resize();			
+				$("iframe")[1].contentWindow.fin.placedOrderUi.resize();
+			else if (me.activeFrameId == 2 && $("iframe")[2].contentWindow.fin != undefined)
+				$("iframe")[2].contentWindow.fin.voucherOrderUi.resize();
+			else if (me.activeFrameId == 3 && $("iframe")[3].contentWindow.fin != undefined)
+				$("iframe")[3].contentWindow.fin.closedOrderUi.resize();
 		},
 		
 		defineFormControls: function() {
@@ -911,6 +957,8 @@ ii.Class({
 			me.lastSelectedRowIndex = -1;
 			me.openOrderNeedUpdate = true;
 			me.placedOrderNeedUpdate = true;
+			me.voucherOrderNeedUpdate = true;
+			me.closedOrderNeedUpdate = true;
 			me.houseCodeDetailStore.fetch("userId:[user],houseCode:" + parent.fin.appUI.houseCodeId, me.houseCodeDetailsLoaded, me);
 			me.houseCodeJobStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId, me.houseCodeJobsLoaded, me);
 			me.loadPurchaseOrders();
@@ -976,15 +1024,17 @@ ii.Class({
 			else if (me.activeFrameId == 1)
 				statusType = 2;
 			else if (me.activeFrameId == 2)
-				statusType = 3;
-				
+				statusType = 12;
+			else if (me.activeFrameId == 3)
+				statusType = 5;
+
 			if (me.searchType.lastBlurValue == "Purchase Order #")
 			    statusType = 0;
 
 			if (me.purchaseOrderNumber != undefined && me.purchaseOrderNumber !== 0) {
 			    houseCodeId = 0;
+				statusType = 0;
 			    searchValue = me.purchaseOrderNumber;
-			    statusType = 0;
 			}
 
 			me.checkStatus = true;
@@ -1007,7 +1057,9 @@ ii.Class({
 			else if (me.activeFrameId == 1)
 				statusType = 2;
 			else if (me.activeFrameId == 2)
-				statusType = 3;
+				statusType = 12;
+			else if (me.activeFrameId == 3)
+				statusType = 5;
 			
 			me.searchType.reset();
 			me.searchInput.setValue("");
@@ -1051,9 +1103,15 @@ ii.Class({
 						me.placedOrderNeedUpdate = false;
 						$("#container-1").triggerTab(2);						
 					}
-					else if (me.purchaseOrders[0].statusType == 3) {
+					else if (me.purchaseOrders[0].statusType == 12) {
 						me.activeFrameId = 2;
+						me.voucherOrderNeedUpdate = false;
 						$("#container-1").triggerTab(3);
+					}
+					else if (me.purchaseOrders[0].statusType == 5) {
+						me.activeFrameId = 3;
+						me.closedOrderNeedUpdate = false;
+						$("#container-1").triggerTab(4);
 					}
 				}
 			}
@@ -1087,6 +1145,8 @@ ii.Class({
 			
 			me.openOrderNeedUpdate = true;
 			me.placedOrderNeedUpdate = true;
+			me.voucherOrderNeedUpdate = true;
+			me.closedOrderNeedUpdate = true;
 			me.lastSelectedRowIndex = index;
 			me.status = "";
 			
@@ -1103,31 +1163,42 @@ ii.Class({
 		
 		showPurchaseOrderDetails: function() {
 			var me = this;
-	
+
 			switch(me.activeFrameId) {
-				
 				case 0:
 					$("iframe")[0].src = "/fin/pur/openOrder/usr/markup.htm?orderId=" + me.purchaseOrderId;
-					
 					me.openOrderNeedUpdate = false;
 					break;
 
 				case 1:
 					$("iframe")[1].src = "/fin/pur/placedOrder/usr/markup.htm?orderId=" + me.purchaseOrderId;
-					
 					me.placedOrderNeedUpdate = false;
 					break;
-				
+
+				case 2:
+					$("iframe")[2].src = "/fin/pur/voucherOrder/usr/markup.htm?orderId=" + me.purchaseOrderId;
+					me.voucherOrderNeedUpdate = false;
+					break;
+
+				case 3:
+					$("iframe")[3].src = "/fin/pur/closedOrder/usr/markup.htm?orderId=" + me.purchaseOrderId;
+					me.closedOrderNeedUpdate = false;
+					break;
 			}
 		},
 		
 		resetGrids: function() {
 			if ($("iframe")[0].contentWindow.fin != undefined)
 				$("iframe")[0].contentWindow.fin.openOrderUi.resetGrid();
-				
+
 			if ($("iframe")[1].contentWindow.fin != undefined)
 				$("iframe")[1].contentWindow.fin.placedOrderUi.resetGrid();
 
+			if ($("iframe")[2].contentWindow.fin != undefined)
+				$("iframe")[2].contentWindow.fin.voucherOrderUi.resetGrid();
+
+			if ($("iframe")[3].contentWindow.fin != undefined)
+				$("iframe")[3].contentWindow.fin.closedOrderUi.resetGrid();
 		},
 		
 		vendorsLoaded: function(me, activeId) {
@@ -1368,7 +1439,7 @@ ii.Class({
 				me.status = "EditOrderInfo";
 				$("#AnchorItemSave").show();
 			}							
-			else if (me.activeFrameId == 1 || me.activeFrameId == 2) {
+			else if (me.activeFrameId == 1 || me.activeFrameId == 2 || me.activeFrameId == 3) {
 				readOnly = true;				
 				$("#AnchorItemSave").hide();
 			}
