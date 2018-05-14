@@ -64,6 +64,12 @@ ii.init.register( function() {
 		, name: {type: String}
 	};
 
+	fin.hcm.job.sendMethodTypeArgs = {
+		id: {type: Number}
+		, brief: {type: String}
+		, name: {type: String}
+	};
+
 	fin.hcm.job.bolsReportTypeArgs = {
 		id: {type: Number}
 		, name: {type: String}
@@ -92,6 +98,7 @@ ii.init.register( function() {
 		, industryType: {type: Number, required: false, defaultValue: 0}
 		, paymentTerm: {type: Number, required: false, defaultValue: 0}
 		, jobType: {type: fin.hcm.job.JobType, required: false}
+		, sendMethodType: {type: Number, required: false, defaultValue: 0}
 		, invoiceTemplate: {type: Number, required: false, defaultValue: 0}
 		, customerName: {type: String, required: false, defaultValue: ""}
 		, customerPhone: {type: String, required: false, defaultValue: ""}
@@ -207,6 +214,16 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.hcm.job.jobTypeArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+	Name: "fin.hcm.job.SendMethodType",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.hcm.job.sendMethodTypeArgs);
 			$.extend(this, args);
 		}
 	}

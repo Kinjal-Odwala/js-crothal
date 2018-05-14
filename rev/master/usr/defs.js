@@ -116,6 +116,7 @@ ii.init.register( function() {
 		, postalCode: {type: String, required: false, defaultValue: ""}
 		, taxId: {type: String, required: false, defaultValue: "0"}
 		, sapCustomerNumber: {type: String, required: false, defaultValue: ""}
+		, sendMethodType: {type: String, required: false, defaultValue: ""}
 	};
 	
 	fin.rev.master.exportArgs = {

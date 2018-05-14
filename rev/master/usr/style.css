@@ -30,13 +30,6 @@
 	width: 100%;
 }
 
-.linkTextBack {
-	font-family: Verdana;
-	font-size: 10px;
-	text-decoration: none;
-	color: #032D23;
-}
-
 .labelNewInvoice {
 	float: left;
 	width: 150px;
@@ -55,7 +48,7 @@
 	padding: 8px 0px 0px 0px;
 }
 
-.labelCustomerNumber {
+.labeTextArea {
 	float: left;
 	width: 150px;	
 	font-family: Verdana;

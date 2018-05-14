@@ -607,6 +607,7 @@ ii.Class({
 				}
 
 				$("#SAPCustomerNumber").html(me.invoiceBillTos[index].sapCustomerNumber);
+				$("#SendMethodType").html(me.invoiceBillTos[index].sendMethodType);
 				me.company.setValue(me.invoiceBillTos[index].company);
 				me.address1.setValue(me.invoiceBillTos[index].address1);
 				me.address2.setValue(me.invoiceBillTos[index].address2);
@@ -619,6 +620,7 @@ ii.Class({
 			}
 			else {
 				$("#SAPCustomerNumber").html("");
+				$("#SendMethodType").html("");
 				me.company.setValue("");
 				me.address1.setValue("");
 				me.address2.setValue("");
@@ -692,8 +694,10 @@ ii.Class({
 
 			me.notes.value = me.invoice.notes;
 			index = ii.ajax.util.findIndexById(me.invoice.houseCodeJobId.toString(), me.invoiceBillTos);
-			if (index !== null)
+			if (index !== null) {
 				$("#SAPCustomerNumber").html(me.invoiceBillTos[index].sapCustomerNumber);
+				$("#SendMethodType").html(me.invoiceBillTos[index].sendMethodType);
+			}
 
 			if (me.invoice.printed) {
 				me.taxExempt.text.readOnly = true;			
@@ -751,6 +755,7 @@ ii.Class({
 			me.serviceLocation.reset();
 			me.notes.value = "";
 			$("#SAPCustomerNumber").html("");
+			$("#SendMethodType").html("");
 		},
 		
 		actionUndoItem: function() {

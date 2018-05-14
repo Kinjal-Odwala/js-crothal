@@ -162,6 +162,7 @@ ii.Class({
 			me.jIndustryShow = me.isCtrlVisible(me.authorizePath + "\\Industry", me.jobsShow, (me.jobsWrite || me.jobsReadOnly));
 			me.jPaymentTermShow = me.isCtrlVisible(me.authorizePath + "\\PaymentTerm", me.jobsShow, (me.jobsWrite || me.jobsReadOnly));
 			me.jJobTypeShow = me.isCtrlVisible(me.authorizePath + "\\JobType", me.jobsShow, (me.jobsWrite || me.jobsReadOnly));
+			me.jSendMethodTypeShow = me.isCtrlVisible(me.authorizePath + "\\SendMethodType", me.jobsShow, (me.jobsWrite || me.jobsReadOnly));
 			me.jInvoiceTemplateShow = me.isCtrlVisible(me.authorizePath + "\\InvoiceTemplate", me.jobsShow, (me.jobsWrite || me.jobsReadOnly));
 			me.jCustomerNameShow = me.isCtrlVisible(me.authorizePath + "\\CustomerName", me.jobsShow, (me.jobsWrite || me.jobsReadOnly));
 			me.jCustomerPhoneShow = me.isCtrlVisible(me.authorizePath + "\\CustomerPhone", me.jobsShow, (me.jobsWrite || me.jobsReadOnly));
@@ -191,6 +192,7 @@ ii.Class({
 			me.jIndustryReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\Industry\\Read", me.jobsWrite, me.jobsReadOnly);
 			me.jPaymentTermReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\PaymentTerm\\Read", me.jobsWrite, me.jobsReadOnly);
 			me.jJobTypeReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\JobType\\Read", me.jobsWrite, me.jobsReadOnly);
+			me.jSendMethodTypeReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\SendMethodType\\Read", me.jobsWrite, me.jobsReadOnly);
 			me.jInvoiceTemplateReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\InvoiceTemplate\\Read", me.jobsWrite, me.jobsReadOnly);
 			me.jCustomerNameReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\CustomerName\\Read", me.jobsWrite, me.jobsReadOnly);
 			me.jCustomerPhoneReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\CustomerPhone\\Read", me.jobsWrite, me.jobsReadOnly);
@@ -230,6 +232,7 @@ ii.Class({
 				me.country.fetchingData();
 				me.industry.fetchingData();
 				me.jobType.fetchingData();
+				me.sendMethodType.fetchingData();
 				me.invoiceTemplate.fetchingData();
 				me.countryTypeStore.fetch("userId:[user]", me.countryTypesLoaded, me);
 				me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);
@@ -306,6 +309,7 @@ ii.Class({
 			me.setControlState("Industry", me.jIndustryReadOnly, me.jIndustryShow);
 			me.setControlState("PaymentTerm", me.jPaymentTermReadOnly, me.jPaymentTermShow);
 			me.setControlState("JobType", me.jJobTypeReadOnly, me.jJobTypeShow);
+			me.setControlState("SendMethodType", me.jSendMethodTypeReadOnly, me.jSendMethodTypeShow);
 			me.setControlState("InvoiceTemplate", me.jInvoiceTemplateReadOnly, me.jInvoiceTemplateShow);
 			me.setControlState("CustomerName", me.jCustomerNameReadOnly, me.jCustomerNameShow);
 			me.setControlState("CustomerPhone", me.jCustomerPhoneReadOnly, me.jCustomerPhoneShow);
@@ -402,6 +406,7 @@ ii.Class({
 			me.state.resizeText();
 			me.country.resizeText();
 			me.industry.resizeText();
+			me.sendMethodType.resizeText();
 			me.invoiceTemplate.resizeText();
 			me.taxId.resizeText();
 			me.serviceContract.resizeText();
@@ -742,6 +747,21 @@ ii.Class({
 						this.setInvalid("Please select the correct Job Type.");
 				});
 
+			me.sendMethodType = new ui.ctl.Input.DropDown.Filtered({
+				id: "SendMethodType",
+				formatFunction: function(type) { return type.name; },
+				changeFunction: function() { me.modified(); },
+				title: "Select Send Method Type"
+			});
+
+			me.sendMethodType.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation( function( isFinal, dataMap ) {
+
+					if ((this.focused || this.touched) && me.sendMethodType.lastBlurValue !== "" && me.sendMethodType.indexSelected === -1)
+						this.setInvalid("Please select the correct Send Method Type.");
+				});
+
 			me.invoiceTemplate = new ui.ctl.Input.DropDown.Filtered({
 				id: "InvoiceTemplate",
 				formatFunction: function(type) { return type.title; },
@@ -1035,6 +1055,14 @@ ii.Class({
 				injectionArray: me.jobTypes
 			});
 
+			me.sendMethodTypes = [];
+			me.sendMethodTypeStore = me.cache.register({
+				storeId: "sendMethodTypes",
+				itemConstructor: fin.hcm.job.SendMethodType,
+				itemConstructorArgs: fin.hcm.job.sendMethodTypeArgs,
+				injectionArray: me.sendMethodTypes
+			});
+
 			me.bolsReportTypes = [];
 			me.bolsReportTypeStore = me.cache.register({
 				storeId: "bolsReportTypes",
@@ -1188,6 +1216,7 @@ ii.Class({
 			me.industry.setData(me.industryTypes);
 			me.paymentTerm.setData(me.paymentTerms);
 			me.jobType.setData(me.jobTypes);
+			me.sendMethodType.setData(me.sendMethodTypes);
 			me.bolsReportType.setData(me.bolsReportTypes);
 			me.jobTemplate.setData(me.jobTemplates);
 			me.loadJobs();
@@ -1348,6 +1377,12 @@ ii.Class({
 						else
 							$("#LabelContactName").html("<span class='nonRequiredFieldIndicator'>&#149;&nbsp;</span>Contact Name:");
 
+						index = ii.ajax.util.findIndexById(item.sendMethodType.toString(), me.sendMethodTypes);
+						if (index !== null)
+							me.sendMethodType.select(index, me.sendMethodType.focused);
+						else
+							me.sendMethodType.reset();
+
 						index = ii.ajax.util.findIndexById(item.invoiceTemplate.toString(), me.invoiceTemplates);
 						if (index !== null)
 							me.invoiceTemplate.select(index, me.invoiceTemplate.focused);
@@ -1360,6 +1395,7 @@ ii.Class({
 							me.taxId.setValue(item.taxId);
 					}
 					else {
+						me.sendMethodType.reset();
 						me.invoiceTemplate.reset();
 						me.taxId.setValue("");
 						me.paymentTerm.text.disabled = false;
@@ -1690,6 +1726,7 @@ ii.Class({
 			me.industry.reset();
 			me.paymentTerm.reset();
 			me.jobType.reset();
+			me.sendMethodType.reset();
 			me.invoiceTemplate.reset();
 			me.customerName.setValue("");
 			me.customerPhone.setValue("");
@@ -1856,6 +1893,7 @@ ii.Class({
 				, industryType: me.industry.indexSelected !== -1 ? me.industryTypes[me.industry.indexSelected].id : 0
 				, paymentTerm: me.paymentTerm.indexSelected !== -1 ? me.paymentTerms[me.paymentTerm.indexSelected].id : 0
 				, jobType: me.jobType.indexSelected !== -1 ? me.jobTypes[me.jobType.indexSelected] : 0
+				, sendMethodType: me.sendMethodType.indexSelected !== -1 ? me.sendMethodTypes[me.sendMethodType.indexSelected].id : 0
 				, invoiceTemplate: me.invoiceTemplate.indexSelected !== -1 ? me.invoiceTemplates[me.invoiceTemplate.indexSelected].id : 0
 				, customerName: me.customerName.getValue()
 				, customerPhone: me.customerPhone.getValue()
@@ -1900,6 +1938,7 @@ ii.Class({
 			xml += ' industryType="' + item.industryType + '"';
 			xml += ' paymentTerm="' + item.paymentTerm + '"';
 			xml += ' jobType="' + (item.jobType.id ? item.jobType.id : 0) + '"';
+			xml += ' sendMethodType="' + item.sendMethodType + '"';
 			xml += ' invoiceTemplate="' + item.invoiceTemplate + '"';
 			xml += ' customerName="' + ui.cmn.text.xml.encode(item.customerName) + '"';
 			xml += ' customerPhone="' + fin.cmn.text.mask.phone(item.customerPhone, true) + '"';
