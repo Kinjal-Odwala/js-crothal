@@ -100,7 +100,7 @@ ii.Class({
                 me.session.registerFetchNotify(me.sessionLoaded, me);
                 me.state.fetchingData();
                 me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);
-                me.wageTypeStore.fetch("userId:[user]:", me.wageTypesLoaded, me);
+                me.payCodeTypeStore.fetch("userId:[user],payCodeType:checkRequest", me.payCodeTypesLoaded, me);
                 me.personStore.fetch("userId:[user],id:" + me.session.propertyGet("personId"), me.personsLoaded, me);
                 if (parent.fin.appUI.houseCodeId === 0)
                     me.houseCodeStore.fetch("userId:[user],defaultOnly:true,", me.houseCodesLoaded, me);
@@ -474,7 +474,7 @@ ii.Class({
             me.wageType = new ui.ctl.Input.DropDown.Filtered({
                 id: "WageType",
                 appendToId: "WageTypeDetailGridControlHolder",
-                formatFunction: function(type) { return type.brief + " - " + type.title; },
+                formatFunction: function(type) { return type.brief + " - " + type.name; },
                 changeFunction: function() { me.modified(); }
             });
 
@@ -598,7 +598,7 @@ ii.Class({
                 changeFunction: function() { me.modified(); }
             });
 
-            me.wageTypeDetailGrid.addColumn("wageType", "wageType", "Wage Type", "Wage Type", 350, function(type) { return type.brief + " - " + type.title; }, me.wageType);
+            me.wageTypeDetailGrid.addColumn("payCode", "payCode", "Wage Type", "Wage Type", 350, function(type) { return type.brief + " - " + type.name; }, me.wageType);
             me.wageTypeDetailGrid.addColumn("hours", "hours", "Hours", "Hours", 100, function(hours) { return ui.cmn.text.money.format(hours); }, me.hours);
             me.wageTypeDetailGrid.addColumn("date", "date", "Date", "Date", 120, null, me.date);
             me.wageTypeDetailGrid.addColumn("earnings", "earnings", "Earnings", "Earnings", 100, function(earnings) { return ui.cmn.text.money.format(earnings); }, me.earnings);
@@ -617,7 +617,7 @@ ii.Class({
                 id: "WageTypeDetailReadOnlyGrid"
             });
 
-            me.wageTypeDetailReadOnlyGrid.addColumn("wageType", "wageType", "Wage Type", "Wage Type", 350, function(type) { return type.brief + " - " + type.title; });
+            me.wageTypeDetailReadOnlyGrid.addColumn("payCode", "payCode", "Wage Type", "Wage Type", 350, function(type) { return type.brief + " - " + type.name; });
             me.wageTypeDetailReadOnlyGrid.addColumn("hours", "hours", "Hours", "Hours", 100, function(hours) { return ui.cmn.text.money.format(hours); });
             me.wageTypeDetailReadOnlyGrid.addColumn("date", "date", "Date", "Date", 120);
             me.wageTypeDetailReadOnlyGrid.addColumn("earnings", "earnings", "Earnings", "Earnings", 100, function(earnings) { return ui.cmn.text.money.format(earnings); });
@@ -779,12 +779,12 @@ ii.Class({
                 injectionArray: me.employees
             });
 
-            me.wageTypes = [];
-            me.wageTypeStore = me.cache.register({
-                storeId: "wageTypes",
-                itemConstructor: fin.pay.payCheck.WageType,
-                itemConstructorArgs: fin.pay.payCheck.wageTypeArgs,
-                injectionArray: me.wageTypes
+            me.payCodeTypes = [];
+            me.payCodeTypeStore = me.cache.register({
+                storeId: "payCodes",
+                itemConstructor: fin.pay.payCheck.PayCodeType,
+                itemConstructorArgs: fin.pay.payCheck.payCodeTypeArgs,
+                injectionArray: me.payCodeTypes
             });
 
             me.payCheckRequests = [];
@@ -801,7 +801,7 @@ ii.Class({
                 itemConstructor: fin.pay.payCheck.WageTypeDetail,
                 itemConstructorArgs: fin.pay.payCheck.wageTypeDetailArgs,
                 injectionArray: me.wageTypeDetails,
-                lookupSpec: { wageType: me.wageTypes }
+                lookupSpec: { payCode: me.payCodeTypes }
             });
 
             me.fileNames = [];
@@ -1251,9 +1251,9 @@ ii.Class({
             me.checkLoadCount();
         },
 
-        wageTypesLoaded: function(me, activeId) {
+        payCodeTypesLoaded: function(me, activeId) {
 
-            me.wageType.setData(me.wageTypes);
+            me.wageType.setData(me.payCodeTypes);
             me.wageTypeDetailGrid.setData(me.wageTypeDetails);
             me.wageTypeDetailGrid.setHeight(150);
             me.requestedDate.setValue(me.currentDate());
@@ -1902,15 +1902,15 @@ ii.Class({
             var item = [];
             var wageTypeTotalsTemp = [];
             var wageTypeTotals = [];
-            var wageTypeId = 0;
+            var payCodeId = 0;
             var totalHours = 0;
             var totalEarnings = 0;
             var wageTypeTotalHours = 0;
             var wageTypeTotalEarnings = 0;
 
             for (var index = 0; index < me.wageTypeDetailGrid.data.length; index++) {
-                var item = new fin.pay.payCheck.WageTypeTotal(me.wageTypeDetailGrid.data[index].wageType.id
-															, me.wageTypeDetailGrid.data[index].wageType.brief + " - " + me.wageTypeDetailGrid.data[index].wageType.title
+                var item = new fin.pay.payCheck.WageTypeTotal(me.wageTypeDetailGrid.data[index].payCode.id
+															, me.wageTypeDetailGrid.data[index].payCode.brief + " - " + me.wageTypeDetailGrid.data[index].payCode.name
 															, (me.wageTypeDetailGrid.data[index].hours === "" ? 0.00 : parseFloat(me.wageTypeDetailGrid.data[index].hours))
 															, (me.wageTypeDetailGrid.data[index].earnings === "" ? 0.00 : parseFloat(me.wageTypeDetailGrid.data[index].earnings))
 															)
@@ -1920,13 +1920,13 @@ ii.Class({
             wageTypeTotalsTemp.sort(me.customSort);
 
             for (var index = 0; index < wageTypeTotalsTemp.length; index++) {
-                if (wageTypeId !== wageTypeTotalsTemp[index].id) {
-                    if (wageTypeId !== 0) {
-                        item = new fin.pay.payCheck.WageTypeTotal(wageTypeId, wageTypeTotalsTemp[index - 1].title, totalHours, totalEarnings);
+                if (payCodeId !== wageTypeTotalsTemp[index].id) {
+                    if (payCodeId !== 0) {
+                        item = new fin.pay.payCheck.WageTypeTotal(payCodeId, wageTypeTotalsTemp[index - 1].title, totalHours, totalEarnings);
                         wageTypeTotals.push(item);
                     }
 
-                    wageTypeId = wageTypeTotalsTemp[index].id;
+                    payCodeId = wageTypeTotalsTemp[index].id;
                     totalHours = parseFloat(wageTypeTotalsTemp[index].hours);
                     totalEarnings = parseFloat(wageTypeTotalsTemp[index].earnings);
                     wageTypeTotalHours += parseFloat(wageTypeTotalsTemp[index].hours);
@@ -1941,7 +1941,7 @@ ii.Class({
             }
 
             if (wageTypeTotalsTemp.length > 0) {
-                item = new fin.pay.payCheck.WageTypeTotal(wageTypeId, wageTypeTotalsTemp[wageTypeTotalsTemp.length - 1].title, totalHours, totalEarnings);
+                item = new fin.pay.payCheck.WageTypeTotal(payCodeId, wageTypeTotalsTemp[wageTypeTotalsTemp.length - 1].title, totalHours, totalEarnings);
                 wageTypeTotals.push(item);
             }
 
@@ -2104,13 +2104,13 @@ ii.Class({
                 xml += '<payCheckRequestWageType';
                 xml += ' id="' + me.wageTypeDetailGrid.data[index].id + '"';
                 xml += ' payCheckRequestId="' + item.id + '"';
-                xml += ' wageTypeId="' + me.wageTypeDetailGrid.data[index].wageType.id + '"';
+                xml += ' payCodeId="' + me.wageTypeDetailGrid.data[index].payCode.id + '"';
                 xml += ' hours="' + me.wageTypeDetailGrid.data[index].hours + '"';
                 xml += ' earnings="' + me.wageTypeDetailGrid.data[index].earnings + '"';
                 xml += ' alternateBaseRate="' + me.wageTypeDetailGrid.data[index].alternateBaseRate + '"';
                 xml += ' date="' + ui.cmn.text.date.format(new Date(me.wageTypeDetailGrid.data[index].date), "mm/dd/yyyy") + '"';
                 xml += ' houseCodeId="' + me.wageTypeDetailGrid.data[index].houseCodeId + '"';
-                xml += ' houseCodeTitle="' + (me.wageTypeDetailGrid.data[index].houseCodeId != 0 ? me.wageTypeDetailGrid.data[index].houseCodeTitle : "") + '"';
+                xml += ' houseCodeTitle="' + (me.wageTypeDetailGrid.data[index].houseCodeId != 0 ? ui.cmn.text.xml.encode(me.wageTypeDetailGrid.data[index].houseCodeTitle) : "") + '"';
                 xml += '/>';
             }
 

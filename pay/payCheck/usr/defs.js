@@ -76,10 +76,10 @@ ii.init.register(function() {
 		, title: { type: String }
     };
 
-    fin.pay.payCheck.wageTypeArgs = {
+	fin.pay.payCheck.payCodeTypeArgs = {
         id: { type: Number }
 		, brief: { type: String }
-		, title: { type: String }
+		, name: { type: String }
     };
 
     fin.pay.payCheck.payCheckRequestArgs = {
@@ -118,7 +118,7 @@ ii.init.register(function() {
 
     fin.pay.payCheck.wageTypeDetailArgs = {
         id: { type: Number, required: false, defaultValue: 0 }
-		, wageType: { type: fin.pay.payCheck.WageType, required: false }
+		, payCode: { type: fin.pay.payCheck.PayCodeType, required: false }
 		, hours: { type: Number, required: false, defaultValue: 0 }
 		, date: { type: String, required: false, defaultValue: "" }
 		, earnings: { type: Number, required: false, defaultValue: 0 }
@@ -221,10 +221,10 @@ ii.Class({
 });
 
 ii.Class({
-    Name: "fin.pay.payCheck.WageType",
+    Name: "fin.pay.payCheck.PayCodeType",
     Definition: {
         init: function() {
-            var args = ii.args(arguments, fin.pay.payCheck.wageTypeArgs);
+            var args = ii.args(arguments, fin.pay.payCheck.payCodeTypeArgs);
             $.extend(this, args);
         }
     }
