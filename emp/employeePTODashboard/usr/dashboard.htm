@@ -22,7 +22,7 @@
 				                </div>
 				                <label class="col-md-1 control-label" style="line-height:2;width:120px;">PTO Year:</label>
 				                <div class="col-md-2" style="padding-left:0px">
-				                    <select class="form-control input-sm" ng-model="ptoYearId" ng-options="item.id as item.name for item in ptoYears" ng-change="onYearChange()"></select>  
+				                    <select class="form-control input-sm" ng-model="ptoYear" ng-options="item.name for item in ptoYears" ng-change="onYearChange(ptoYear)"></select>  
 				                </div>
 				                <div class="col-md-2">
 				                    <a class="btn btn-primary" ng-click="actionDashboardItem()">Search</a>

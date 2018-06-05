@@ -205,6 +205,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
 		EmpActions.getPTOYears(function(result) {
 	        $scope.ptoYears = result;
 	        if (angular.isDefined(result)) {
+				$scope.ptoYear = result[0];
 	            $scope.ptoYearId = result[0].id;
 	        }
 
@@ -262,6 +263,11 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
             $scope.actionDashboardItem();
 
         $scope.previousTabSelected = $scope.currentTabSelected;
+    };
+
+	$scope.onYearChange = function(item) {
+        $scope.ptoYearId = item.id;
+		$scope.actionDashboardItem();
     };
 
 	$scope.actionDashboardItem = function() {
