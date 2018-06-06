@@ -25,11 +25,12 @@ ii.Class({
     Definition: {		 
         init: function() {
 			var me = this;
-			
 			me.activeFrameId = 0;
 			me.loadCount = 0;
 			me.ptMetricId = 0;
 			me.reloadData = false;
+            me.supportedByNPCs=[];
+
 
 			me.gateway = ii.ajax.addGateway("hcm", ii.config.xmlProvider); 
 			me.cache = new ii.ajax.Cache(me.gateway);
@@ -89,10 +90,18 @@ ii.Class({
 
 				ii.timer.timing("Page displayed");
 				me.session.registerFetchNotify(me.sessionLoaded, me);
+				debugger;
 				me.fiscalYearStore.fetch("userId:[user]", me.fiscalYearsLoaded, me);
 				me.taskManagementSystemStore.fetch("userId:[user]", me.taskManagementSystemsLoaded, me);
 				me.administratorObjectiveStore.fetch("userId:[user]", me.administratorObjectivesLoaded, me);
 				me.metricTypeStore.fetch("userId:[user]", me.metricTypesLoaded, me);
+				//add the static vlaues for supportedByNPCArgs
+				me.supportedByNPCs.push(new fin.hcm.ptMetric.SupportedByNPCs (
+					0,"No"));
+                me.supportedByNPCs.push(new fin.hcm.ptMetric.SupportedByNPCs (
+                    1,"Yes"));
+
+                me.supportedByNPC.setData(me.supportedByNPCs);
 			}
 			else
 				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
@@ -539,6 +548,24 @@ ii.Class({
 		        maxLength: 64,
 				changeFunction: function() { me.modified(); }
 		    });
+
+			me.metricStandard = new ui.ctl.Input.DropDown.Filtered({
+				id: "MetricStandard",
+				formatFunction: function(type) {return type.name},
+				changeFunction : function () {
+					me.modified();
+				}
+
+			});
+
+            me.supportedByNPC = new ui.ctl.Input.DropDown.Filtered({
+                id: "SupportedByNPC",
+                formatFunction: function(type) {return type.name},
+                changeFunction : function () {
+                    me.modified();
+                }
+
+            })
 
 			me.notes = $("#Notes")[0];
 
@@ -2661,6 +2688,8 @@ ii.Class({
 			me.contractedAnnualTrips.setValue("");
 			me.contractTripEscalator.setValue("");
 			me.taskManagementSystem.reset();
+			me.supportedByNPC.reset();
+			me.metricStandard.reset();
 			me.taskManagementSystemOther.setValue("");
 			me.notes.value = "";
 			$("#TMSOtherContainer").hide();
@@ -2726,6 +2755,25 @@ ii.Class({
 
 		metricTypesLoaded: function(me, activeId) {
 
+        	me.metricStandards=[];
+        	if (me.metricTypes.length>0)
+			{
+				for (var i=0;i<=me.metricTypes.length-1;i++)
+				{
+					if (me.metricTypes[i].subType=='Metric Standards')
+					{
+						var item = new fin.hcm.ptMetric.MetricStandards(
+                        me.metricTypes[i].id,
+						me.metricTypes[i].title
+					);
+
+						me.metricStandards.push(item);
+
+				}
+				}
+			}
+			me.metricStandard.setData(me.metricStandards);
+
 		},
 		
 		taskManagementSystemsLoaded: function(me, activeId) {
@@ -2789,11 +2837,22 @@ ii.Class({
 				if (itemIndex != undefined && itemIndex >= 0)
 					me.taskManagementSystem.select(itemIndex, me.taskManagementSystem.focused);
 				me.taskManagementSystemOther.setValue(me.metrics[0].taskManagementSystemOther);
+				//todo : add the existing value of MetricStandard
 				me.notes.value = me.metrics[0].notes;
 				if (me.taskManagementSystem.lastBlurValue == "Other")
 					$("#TMSOtherContainer").show();
 				else
 					$("#TMSOtherContainer").hide();
+
+                itemIndex = ii.ajax.util.findIndexById(me.metrics[0].metricStandard.toString(), me.metricStandards);
+                if (itemIndex != undefined && itemIndex >= 0)
+                    me.metricStandard.select(itemIndex, me.metricStandard.focused);
+
+
+                itemIndex = ii.ajax.util.findIndexById(me.metrics[0].supportedByNPC.toString(), me.supportedByNPCs);
+                if (itemIndex != undefined && itemIndex >= 0)
+                    me.supportedByNPC.select(itemIndex, me.supportedByNPC.focused);
+
 
 				me.numericDetailStore.fetch("userId:[user],ptMetricId:" + me.ptMetricId, me.numericDetailsLoaded, me);
 				me.strategicInitiativeStore.fetch("userId:[user],ptMetricId:" + me.ptMetricId, me.strategicInitiativesLoaded, me);
@@ -2815,9 +2874,9 @@ ii.Class({
 		
 		standardMetricsLoaded: function(me, activeId) {
 		
-			me.inHouseStandardMetrics = [];
+			me.inHouseStandardMetrics=[];
 			me.thirdPartyStandardMetrics = [];
-			
+
 			if (me.inHouseStandardMetricGrid.activeRowIndex != - 1)
 				me.inHouseStandardMetricGrid.body.deselect(me.inHouseStandardMetricGrid.activeRowIndex, true);
 			if (me.thirdPartyStandardMetricGrid.activeRowIndex != - 1)
@@ -3776,7 +3835,7 @@ ii.Class({
 					|| !me.cpiDueDate.valid || !me.cpiCap.valid || !me.hourlyFTEVacancies.valid || !me.fullTimePartTimeRatio.valid
 					|| !me.operatingCapacity.valid || !me.serviceLineEVS.valid || !me.serviceLineLaundry.valid
 					|| !me.serviceLinePOM.valid || !me.serviceLineCES.valid 
-					|| !me.costedTripCycleTime.valid || !me.contractedAnnualTrips.valid || !me.contractTripEscalator.valid || !me.taskManagementSystem.valid || !me.taskManagementSystemOther.valid) {
+					|| !me.costedTripCycleTime.valid || !me.contractedAnnualTrips.valid || !me.contractTripEscalator.valid || !me.taskManagementSystem.valid || !me.taskManagementSystemOther.valid || !me.metricStandard.valid) {
 					alert("In order to save, the errors on the page must be corrected. Please verify the data on Hospital & Contract tab.");
 					return false;
 				}
@@ -3842,6 +3901,8 @@ ii.Class({
                 , me.contractTripEscalator.getValue()
 				, (me.taskManagementSystem.indexSelected >= 0 ? me.taskManagementSystems[me.taskManagementSystem.indexSelected].id : 0)
 				, me.taskManagementSystemOther.getValue()
+                ,(me.metricStandard.indexSelected >= 0 ? me.metricStandards[me.metricStandard.indexSelected].id : 0)
+				,(me.supportedByNPC.indexSelected>=0 ? me.supportedByNPCs[me.supportedByNPC.indexSelected].id :-1)
 				, me.notes.value
 				);
 			
@@ -3896,6 +3957,8 @@ ii.Class({
 				xml += ' contractTripEscalator="' + item.contractTripEscalator + '"';
 				xml += ' taskManagementSystem="' + item.taskManagementSystem + '"';
 				xml += ' taskManagementSystemOther="' + ui.cmn.text.xml.encode(item.taskManagementSystemOther) + '"';
+				xml += ' metricStandard="' + item.metricStandard + '"' ;
+                xml += ' supportedByNPC="' + item.supportedByNPC + '"';
 				xml += ' notes="' + ui.cmn.text.xml.encode(item.notes) + '"';
 				xml += '/>';
 			}

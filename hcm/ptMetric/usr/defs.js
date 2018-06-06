@@ -45,6 +45,19 @@ ii.init.register( function() {
 		id: {type: Number, required: false, defaultValue: 0}
 		, name: {type: String, required: false, defaultValue: ""}
 	};
+
+    fin.hcm.ptMetric.metricStandardsArgs = {
+        id: {type: Number, required: false, defaultValue: 0}
+        , name: {type: String, required: false, defaultValue: ""}
+
+    };
+
+    fin.hcm.ptMetric.supportedByNPCArgs = {
+        id: {type: Number, required: false, defaultValue: 0}
+        , name: {type: String, required: false, defaultValue: ""}
+
+    };
+
 	
 	fin.hcm.ptMetric.administratorObjectiveArgs = {
 		id: {type: Number, required: false, defaultValue: 0}
@@ -75,6 +88,8 @@ ii.init.register( function() {
         , contractTripEscalator: {type: String, required: false, defaultValue: ""}
 		, taskManagementSystem: {type: Number, required: false, defaultValue: 0}
 		, taskManagementSystemOther: {type: String, required: false, defaultValue: ""}
+		, metricStandard : {type:Number,required:false,defaultValue:0}
+		,supportedByNPC : {type:Number,required:false,defualtValue:-1}
 		, notes: {type: String, required: false, defaultValue: ""}
 	};
 	
@@ -501,6 +516,29 @@ ii.Class({
 		}
 	}
 });
+
+
+ii.Class({
+    Name: "fin.hcm.ptMetric.MetricStandards",
+    Definition: {
+        init: function() {
+            var args = ii.args(arguments, fin.hcm.ptMetric.metricStandardsArgs);
+            $.extend(this, args);
+        }
+    }
+});
+
+
+ii.Class({
+    Name: "fin.hcm.ptMetric.SupportedByNPCs",
+    Definition: {
+        init: function() {
+            var args = ii.args(arguments, fin.hcm.ptMetric.supportedByNPCArgs);
+            $.extend(this, args);
+        }
+    }
+});
+
 
 ii.Class({
 	Name: "fin.hcm.ptMetric.ThirdPartyStandardMetric",
