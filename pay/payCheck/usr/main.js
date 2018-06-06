@@ -489,7 +489,7 @@ ii.Class({
 
             me.hours = new ui.ctl.Input.Text({
                 id: "Hours",
-                maxLength: 11,
+                maxLength: 10,
                 appendToId: "WageTypeDetailGridControlHolder",
                 changeFunction: function() {
 					me.modified();
@@ -515,7 +515,7 @@ ii.Class({
 				            me.earnings.setValue("");
 				    }
 
-				    if (enteredText !== "" && !(ui.cmn.text.validate.generic(enteredText, "^\\d{0,}\\.?\\d{0,2}$")))
+				    if (enteredText !== "" && !(ui.cmn.text.validate.generic(enteredText, "^\\d{1,7}(\\.\\d{1,2})?$")))
 				        this.setInvalid("Please enter valid Hours. Example: 99.99");
 				});
 
@@ -541,7 +541,7 @@ ii.Class({
 
             me.earnings = new ui.ctl.Input.Text({
                 id: "Earnings",
-                maxLength: 11,
+                maxLength: 10,
                 appendToId: "WageTypeDetailGridControlHolder",
                 changeFunction: function() {
 					me.modified();
@@ -567,13 +567,13 @@ ii.Class({
 				            me.hours.setValue("");
 				    }
 
-				    if (enteredText !== "" && !(ui.cmn.text.validate.generic(enteredText, "^\\d+\\.?\\d{0,2}$")))
+				    if (enteredText !== "" && !(ui.cmn.text.validate.generic(enteredText, "^\\d{1,7}(\\.\\d{1,2})?$")))
 				        this.setInvalid("Please enter valid Earnings. Example: 99.99");
 				});
 
             me.alternateBaseRate = new ui.ctl.Input.Text({
                 id: "AlternateBaseRate",
-                maxLength: 11,
+                maxLength: 5,
                 appendToId: "WageTypeDetailGridControlHolder",
                 changeFunction: function() { me.modified(); }
             });
@@ -587,7 +587,7 @@ ii.Class({
 				    if (enteredText === "")
 				        return;
 
-				    if (!(ui.cmn.text.validate.generic(enteredText, "^\\d+\\.?\\d{0,2}$")))
+					if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\.\\d{1,2})?$")))
 				        this.setInvalid("Please enter valid Alternate Base Rate. Example: 99.99");
 				});
 
@@ -599,9 +599,9 @@ ii.Class({
             });
 
             me.wageTypeDetailGrid.addColumn("payCode", "payCode", "Wage Type", "Wage Type", 350, function(type) { return type.brief + " - " + type.name; }, me.wageType);
-            me.wageTypeDetailGrid.addColumn("hours", "hours", "Hours", "Hours", 100, function(hours) { return ui.cmn.text.money.format(hours); }, me.hours);
+            me.wageTypeDetailGrid.addColumn("hours", "hours", "Hours", "Hours", 120, function(hours) { return ui.cmn.text.money.format(hours); }, me.hours);
             me.wageTypeDetailGrid.addColumn("date", "date", "Date", "Date", 120, null, me.date);
-            me.wageTypeDetailGrid.addColumn("earnings", "earnings", "Earnings", "Earnings", 100, function(earnings) { return ui.cmn.text.money.format(earnings); }, me.earnings);
+            me.wageTypeDetailGrid.addColumn("earnings", "earnings", "Earnings", "Earnings", 120, function(earnings) { return ui.cmn.text.money.format(earnings); }, me.earnings);
             me.wageTypeDetailGrid.addColumn("alternateBaseRate", "alternateBaseRate", "Alternate Base Rate", "Alternate Base Rate", 180, function(alternateBaseRate) { return ui.cmn.text.money.format(alternateBaseRate); }, me.alternateBaseRate);
             me.wageTypeDetailGrid.addColumn("houseCodeTitle", "houseCodeTitle", "CHARGE TO HOUSE CODE", "CHARGE TO HOUSE CODE", null, null, me.chargeToHouseCode);
             me.wageTypeDetailGrid.capColumns();
@@ -618,9 +618,9 @@ ii.Class({
             });
 
             me.wageTypeDetailReadOnlyGrid.addColumn("payCode", "payCode", "Wage Type", "Wage Type", 350, function(type) { return type.brief + " - " + type.name; });
-            me.wageTypeDetailReadOnlyGrid.addColumn("hours", "hours", "Hours", "Hours", 100, function(hours) { return ui.cmn.text.money.format(hours); });
+            me.wageTypeDetailReadOnlyGrid.addColumn("hours", "hours", "Hours", "Hours", 120, function(hours) { return ui.cmn.text.money.format(hours); });
             me.wageTypeDetailReadOnlyGrid.addColumn("date", "date", "Date", "Date", 120);
-            me.wageTypeDetailReadOnlyGrid.addColumn("earnings", "earnings", "Earnings", "Earnings", 100, function(earnings) { return ui.cmn.text.money.format(earnings); });
+            me.wageTypeDetailReadOnlyGrid.addColumn("earnings", "earnings", "Earnings", "Earnings", 120, function(earnings) { return ui.cmn.text.money.format(earnings); });
             me.wageTypeDetailReadOnlyGrid.addColumn("alternateBaseRate", "alternateBaseRate", "Alternate Base Rate", "Alternate Base Rate", 180, function(alternateBaseRate) { return ui.cmn.text.money.format(alternateBaseRate); });
             me.wageTypeDetailReadOnlyGrid.addColumn("houseCodeTitle", "houseCodeTitle", "CHARGE TO HOUSE CODE", "CHARGE TO HOUSE CODE", null);
             me.wageTypeDetailReadOnlyGrid.capColumns();
