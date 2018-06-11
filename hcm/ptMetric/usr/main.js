@@ -43,7 +43,7 @@ ii.Class({
 			me.session = new ii.Session(me.cache);
 			
 			me.authorizer = new ii.ajax.Authorizer( me.gateway );
-			me.authorizePath = "\\crothall\\chimes\\fin\\HouseCodeSetup\\PTMetrics";
+			me.authorizePath = "\\crothall\\chimes\\fin\\Metrics\\PTMetrics";
 			me.authorizer.authorize([me.authorizePath],
 				function authorizationsLoaded() {
 					me.authorizationProcess.apply(me);

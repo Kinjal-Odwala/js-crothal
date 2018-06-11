@@ -1,0 +1,117 @@
+﻿.fragment {
+	border: 0;
+	border: solid #AAAAAA thin;
+	border-width: 1px;
+}
+
+.leftContainer {
+	float: left;
+	margin: 10px 20px 10px 10px;
+}
+
+.rightContainer {
+	float: left;
+	margin: 10px 20px 10px 10px;
+}
+
+.groupHeader {
+    height: 30px;
+    font-family: Verdana;
+    font-size: 14px;
+    font-weight: bold;
+    color: #2C2F50;
+	padding-left: 10px;
+}
+
+.labelTextYear {
+	float: left;
+	width: 50px;
+	font-family: Verdana;
+	font-size: 12px;
+	font-weight: bold;
+	color: #032D23;
+	padding: 5px 0px 0px 10px;
+}
+
+.labelText {
+	float: left;
+	font-family: Verdana;
+	font-size: 12px;
+	font-weight: bold;
+	color: #032D23;
+}
+
+.labelTextArea {
+	float:left;
+	width: 200px;
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+}
+
+.inputTextSmall {
+	float: left; 
+	width: 120px; 
+	padding-top: 2px;
+	padding-bottom: 1px;
+	padding-right: 5px;	
+}
+
+.inputTextArea {
+	float: left;
+	width: 200px;
+	height: 20px;
+}
+
+.iiGridHeaderColumn {
+	font-size: 8pt;
+	font-style: normal;
+}
+
+.iiGridBodyColumn {
+	font-size: 8pt;
+}
+
+.spanColumn {	
+	padding-right: 3px;
+}
+
+.totalGridRow {
+	height: 20px;
+	font-weight: bold;
+	background-color: #C5D7EC;
+}
+
+.grandTotalGridRow {
+	height: 20px;
+	color: white;
+	font-weight: bold;
+	background-color: #5F86AB;
+}
+
+#Notes {
+	float: left;
+	width: 620px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: black;
+}
+
+#GridLaborControl, #StrategicInitiativeGrid, #GridQualityAssurance, #AdminObjectiveGrid, #GridEVSStatistic {
+	margin: 10px;
+}
+
+#LaborControlGridContainer, #EVSHCAHPSGridContainer, #EVSStatisticGridContainer {
+	float: left;
+	width: 100%;
+	position: relative;
+	overflow-x: auto;
+	overflow-y: hidden;
+}
+
+#LaborControlContainer, #QualityAssuranceContainer {
+	position: relative;
+	overflow-x: hidden;
+	overflow-y: auto;
+}

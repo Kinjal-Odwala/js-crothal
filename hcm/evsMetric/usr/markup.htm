@@ -1,0 +1,617 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>EVS Metrics</title>
+		<script type="text/javascript">
+			var globalContext = "/net/crothall/chimes/fin/hcm/act";
+			var js = document.createElement("script");
+			js.id = "loader";
+			js.type = "text/javascript";
+			js.src = "/fin/ii/framework/core/krn/sys/cycligent.js";
+			document.getElementsByTagName("head")[0].appendChild(js);
+		</script>
+	</head>
+
+	<!-- onload is necessary to overcome jQuery/IE7 $(document).ready bug when page loaded into an IFrame -->
+	<body id="appBody">
+		<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: white;">
+		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
+		        <img id="imgLoading" src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+		        <div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
+		    </div>
+		</div>
+		<div class="pageHeader">
+	        <div id="actionMenu" title="Menu of actions that you can perform.">Actions<span>&nbsp;</span></div>
+			<div id="HouseCode">
+				<div id="LabelTextAreaLeftHeader">House Code:</div>
+				<div id="DropDownRightHouseCode">
+					<div id="houseCodeContainer" class="HouseCodeContainer"></div>
+				</div>
+			</div>
+			<div class="labelTextYear">Year:</div>
+			<div class="inputTextSmall">
+				<div id="Year"></div>
+			</div>
+        </div>
+		<div style="clear:both;"></div>
+		<div id="itemStatusDiv">
+			<div id="itemStatusImage" class="itemStatusImage"></div>
+			<div id="itemModifiedImage" class="itemModifiedImage"></div>
+			<div id="itemStatusText">Loading, please wait...</div>
+		</div>
+		<div style="clear:both;"></div>
+		<div id="pageBody" class="pageBody">
+	        <div id="container-1">
+	    		<div id="fragment-1" class="fragment">
+	    			<div id="HospitalContractContainer">
+	    				<div class="contentArea">
+				        	<div class="header">Hospital and Contract Data</div>
+			        	</div>
+						<div class="leftContainer">
+							<div class="body">
+								<div class="TableEditArea">
+									<div class="labelTextArea">
+										<span id="nonRequiredFieldIndicator">Chief Executive Officer:</span>
+									</div>
+									<div class="inputTextArea">
+										<div id="ChiefExecutiveOfficer"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="TableEditArea">
+									<div class="labelTextArea">
+										<span id="nonRequiredFieldIndicator">Chief Financial Officer:</span>
+									</div>
+									<div class="inputTextArea">
+										<div id="ChiefFinancialOfficer"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="TableEditArea">
+									<div class="labelTextArea">
+										<span id="nonRequiredFieldIndicator">Chief Operating Officer:</span>
+									</div>
+									<div class="inputTextArea">
+										<div id="ChiefOperatingOfficer"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="TableEditArea">
+									<div class="labelTextArea">
+										<span id="nonRequiredFieldIndicator">Chief Nursing Officer:</span>
+									</div>
+									<div class="inputTextArea">
+										<div id="ChiefNursingOfficer"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="TableEditArea">
+									<div class="labelTextArea">
+										<span id="nonRequiredFieldIndicator">Contract Start Date:</span>
+									</div>
+									<div class="inputTextArea">
+										<div id="ContractStartDate"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="TableEditArea">
+									<div class="labelTextArea">
+										<span id="nonRequiredFieldIndicator">Next Contract Renewal Date:</span>
+									</div>
+									<div class="inputTextArea">
+										<div id="ContractRenewalDate"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="TableEditArea">
+									<div class="labelTextArea">
+										<span id="nonRequiredFieldIndicator">CPI Due Date:</span>
+									</div>
+									<div class="inputTextArea">
+										<div id="CPIDueDate"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="TableEditArea">
+									<div class="labelTextArea">
+										<span id="nonRequiredFieldIndicator">CPI Cap:</span>
+									</div>
+									<div class="inputTextArea">
+										<div id="CPICap"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="TableEditArea">
+									<div class="labelTextArea">
+										<span id="nonRequiredFieldIndicator">Hourly FTE Vacancies:</span>
+									</div>
+									<div class="inputTextArea">
+										<div id="HourlyFTEVacancies"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="TableEditArea">
+									<div class="labelTextArea">
+										<span id="nonRequiredFieldIndicator">Full Time / Part Time Ratio:</span>
+									</div>
+									<div class="inputTextArea">
+										<div id="FullTimePartTimeRatio"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="TableEditArea">
+									<div class="labelTextArea">
+										<span id="nonRequiredFieldIndicator"># of Vacant Positions:</span>
+									</div>
+									<div class="inputTextArea">
+										<div id="VacantPositions"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="TableEditArea">
+									<div class="labelTextArea">
+										<span id="nonRequiredFieldIndicator">Budgeted Productivity:</span>
+									</div>
+									<div class="inputTextArea">
+										<div id="BudgetedProductivity"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="TableEditArea">
+									<div class="labelTextArea">
+										<span id="nonRequiredFieldIndicator">Contracted Productivity:</span>
+									</div>
+									<div class="inputTextArea">
+										<div id="ContractedProductivity"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="TableEditArea">
+									<div class="labelTextArea">
+										<span id="nonRequiredFieldIndicator">Supported by NPC:</span>
+									</div>
+									<div class="inputTextArea">
+										<div id="SupportedByNPC"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="TableEditArea">
+									<div class="labelTextArea">
+										<span id="nonRequiredFieldIndicator">Third Party Satisfaction:</span>
+									</div>
+									<div class="inputTextArea">
+										<div id="ThirdPartySatisfaction"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="TableEditArea">
+									<div class="labelTextArea">
+										<span id="nonRequiredFieldIndicator">Task Management System:</span>
+									</div>
+									<div class="inputTextArea">
+										<div id="TaskManagementSystem"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+								<div id="TMSOtherContainer" class="TableEditArea" style="display:none;">
+			                        <div class="labelTextArea">
+			                        	<span id="nonRequiredFieldIndicator">If Other, Please Specify:</span>
+									</div>
+									<div class="inputTextArea">
+			                        	<div id="TaskManagementSystemOther"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+							</div>
+						</div>
+						<div class="rightContainer">
+							<div class="body">
+								<div class="TableEditArea">
+			                        <div class="labelTextArea">
+										<span class="labelText">Competition by Service Line</span>
+									</div>
+									<div class="inputTextArea">
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="TableEditArea">
+			                        <div class="labelTextArea">
+			                        	<span id="nonRequiredFieldIndicator">PT:</span>
+									</div>
+									<div class="inputTextArea">
+			                        	<div id="ServiceLinePT"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="TableEditArea">
+			                        <div class="labelTextArea">
+			                        	<span id="nonRequiredFieldIndicator">Laundry:</span>
+									</div>
+									<div class="inputTextArea">
+			                        	<div id="ServiceLineLaundry"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="TableEditArea">
+			                        <div class="labelTextArea">
+			                        	<span id="nonRequiredFieldIndicator">POM:</span>
+									</div>
+									<div class="inputTextArea">
+			                        	<div id="ServiceLinePOM"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="TableEditArea">
+			                        <div class="labelTextArea">
+			                        	<span id="nonRequiredFieldIndicator">CES:</span>
+									</div>
+									<div class="inputTextArea">
+			                        	<div id="ServiceLineCES"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="TableEditArea">
+			                        <div class="labelTextArea">
+										<span class="labelText">Supply Vendors</span>
+									</div>
+									<div class="inputTextArea">
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="TableEditArea">
+			                        <div class="labelTextArea">
+			                        	<span id="nonRequiredFieldIndicator">UV Manufacturer:</span>
+									</div>
+									<div class="inputTextArea">
+			                        	<div id="UVManufacturer"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="TableEditArea">
+			                        <div class="labelTextArea">
+			                        	<span id="nonRequiredFieldIndicator">Hygiena:</span>
+									</div>
+									<div class="inputTextArea">
+			                        	<div id="Hygiena"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="TableEditArea">
+			                        <div class="labelTextArea">
+			                        	<span id="nonRequiredFieldIndicator">Wanda:</span>
+									</div>
+									<div class="inputTextArea">
+			                        	<div id="Wanda"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="TableEditArea">
+			                        <div class="labelTextArea">
+			                        	<span id="nonRequiredFieldIndicator">Union:</span>
+									</div>
+									<div class="inputTextArea">
+			                        	<div id="Union"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="TableEditArea">
+			                        <div class="labelTextArea">
+			                        	<span id="nonRequiredFieldIndicator">Micro Fiber:</span>
+									</div>
+									<div class="inputTextArea">
+			                        	<div id="MicroFiber"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="TableEditArea">
+			                        <div class="labelTextArea">
+			                        	<span id="nonRequiredFieldIndicator">MOP:</span>
+									</div>
+									<div class="inputTextArea">
+			                        	<div id="MOP"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+								<div class="TableEditArea">
+			                        <div class="labelTextArea">
+			                        	<span id="nonRequiredFieldIndicator">Cart Manufacturer:</span>
+									</div>
+									<div class="inputTextArea">
+			                        	<div id="CartManufacturer"></div>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+							</div>
+						</div>
+						<div style="clear:both;"></div>
+						<div class="contentArea">
+				        	<div class="header">Notes and Additional Information</div>
+			        	</div>
+						<div style="height:10px;"></div>
+						<div id="TableEditArea">
+							<div class="labelTextArea" style="margin-left:10px;">
+								<span id="nonRequiredFieldIndicator">Notes:</span>
+							</div>
+							<div class="inputTextArea">
+								<textarea id="Notes"></textarea>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+                        <div style="clear:both;"></div>
+					</div>
+	        	</div>
+				<div id="fragment-2" class="fragment">
+					<div id="LaborControlContainer" class="contentArea">
+			        	<div class="header">Labor Control</div>
+						<div id="GridLaborControl" style="display: none">
+							<div id="LaborControlGridContainer">
+								<div id="LaborControlGrid"></div>
+							</div>
+						</div>
+						<div id="GridLaborControl">
+							<table class="gridBorderFull" cellpadding="0" cellspacing="0" width="100%;" height="100%;">
+						    	<tr>
+						        	<td>
+                                    	<table style="float:left" cellpadding="0" cellspacing="0">
+	                                        <thead>
+	                                            <tr>
+	                                                <th class="gridHeaderCell" width="195px" style="left:0">&nbsp;</th>
+	                                            </tr>
+	                                            <tr>
+	                                                <th class="gridHeaderCell" width="195px" style="left:0">Title</th>
+	                                            </tr>
+	                                        </thead>
+                                    	</table>						        		
+										<div style="height: 40px; position: relative; z-index: 3; overflow: hidden; margin-left: 200px;">
+											<table id="tblLaborControlGridHeader" border="0" cellpadding="0" cellspacing="0" style="position: absolute; z-index: 2;width: 3190px;">
+												<thead id="LaborControlGridHead">
+													<tr>
+														<th class="gridHeaderCell" colspan="2">Period 1</th>
+														<th class="gridHeaderCell" colspan="2">Period 2</th>
+														<th class="gridHeaderCell" colspan="2">Period 3</th>
+														<th class="gridHeaderCell" colspan="2">Period 4</th>
+														<th class="gridHeaderCell" colspan="2">Period 5</th>
+														<th class="gridHeaderCell" colspan="2">Period 6</th>
+														<th class="gridHeaderCell" colspan="2">Period 7</th>
+														<th class="gridHeaderCell" colspan="2">Period 8</th>
+														<th class="gridHeaderCell" colspan="2">Period 9</th>
+														<th class="gridHeaderCell" colspan="2">Period 10</th>
+														<th class="gridHeaderCell" colspan="2">Period 11</th>
+														<th class="gridHeaderCellRight" colspan="2">Period 12</th>
+													</tr>
+													<tr id="trLaborControlGridHead">
+														<th class="gridHeaderCell" width="70px">Budget</th>
+														<th class="gridHeaderCell" width="70px">Actual</th>
+														<th class="gridHeaderCell" width="70px">Budget</th>
+														<th class="gridHeaderCell" width="70px">Actual</th>
+														<th class="gridHeaderCell" width="70px">Budget</th>
+														<th class="gridHeaderCell" width="70px">Actual</th>
+														<th class="gridHeaderCell" width="70px">Budget</th>
+														<th class="gridHeaderCell" width="70px">Actual</th>
+														<th class="gridHeaderCell" width="70px">Budget</th>
+														<th class="gridHeaderCell" width="70px">Actual</th>
+														<th class="gridHeaderCell" width="70px">Budget</th>
+														<th class="gridHeaderCell" width="70px">Actual</th>
+														<th class="gridHeaderCell" width="70px">Budget</th>
+														<th class="gridHeaderCell" width="70px">Actual</th>
+														<th class="gridHeaderCell" width="70px">Budget</th>
+														<th class="gridHeaderCell" width="70px">Actual</th>
+														<th class="gridHeaderCell" width="70px">Budget</th>
+														<th class="gridHeaderCell" width="70px">Actual</th>
+														<th class="gridHeaderCell" width="70px">Budget</th>
+														<th class="gridHeaderCell" width="70px">Actual</th>
+														<th class="gridHeaderCell" width="70px">Budget</th>
+														<th class="gridHeaderCell" width="70px">Actual</th>
+														<th class="gridHeaderCell" width="70px">Budget</th>
+														<th class="gridHeaderCellRight" width="70px">Actual</th>
+													</tr>
+												</thead>
+											</table>
+										</div>
+									</td>
+								</tr>
+								<tr>
+					                <td>
+					                    <div id="divLaborControlGrid" style="overflow-x: scroll; overflow-y: visible; margin-left: 200px; width: 3495px;">                              
+					                        <table id="LaborControlGrid" border="0" cellpadding="0" cellspacing="0" style="table-layout: fixed;">
+					                            <tbody id="LaborControlGridBody"></tbody>
+					                        </table>
+					                    </div>
+					                </td>
+				            	</tr>
+			        		</table>
+							<div style="clear:both;height:10px;"></div>
+							<table class="gridBorderFull" cellpadding="0" cellspacing="0" width="100%;" height="100%;">
+						    	<tr>
+						        	<td>
+						            	<div class="header">Comments</div>
+	                                    <table style="float:left" cellpadding="0" cellspacing="0">
+	                                        <thead>
+	                                            <tr>
+	                                                <th class="gridHeaderCell" width="195px" style="left:0">&nbsp;</th>
+	                                            </tr>
+	                                        </thead>
+	                                    </table>
+										<div style="height: 20px; position: relative; z-index: 23; overflow: hidden; margin-left: 200px;">
+											<table id="tblCommentsGridHeader"  border="0" cellpadding="0" cellspacing="0" style="position: absolute; z-index: 22;width:3152px">
+												<thead id="CommentsHead">
+													<tr>
+														<th class="gridHeaderCell" width="20px">Period 1</th>
+														<th class="gridHeaderCell" width="20px">Period 2</th>
+														<th class="gridHeaderCell" width="20px">Period 3</th>
+														<th class="gridHeaderCell" width="20px">Period 4</th>
+														<th class="gridHeaderCell" width="20px">Period 5</th>
+														<th class="gridHeaderCell" width="20px">Period 6</th>
+														<th class="gridHeaderCell" width="20px">Period 7</th>
+														<th class="gridHeaderCell" width="20px">Period 8</th>
+														<th class="gridHeaderCell" width="20px">Period 9</th>
+														<th class="gridHeaderCell" width="20px">Period 10</th>
+														<th class="gridHeaderCell" width="20px">Period 11</th>
+														<th class="gridHeaderCellRight" width="20px">Period 12</th>
+													</tr>
+												</thead>
+											</table>
+										</div>
+									</td>
+								</tr>
+								<tr>
+					                <td>
+					                    <div id="divCommentsGrid" style="overflow-x: scroll; overflow-y: visible; margin-left: 200px; width: 3495px; z-index: 21">                              
+					                        <table id="CommentsGrid" border="0" cellpadding="0" cellspacing="0" style="table-layout: fixed;">
+					                            <tbody id="CommentsGridBody"></tbody>
+					                        </table>
+					                    </div>
+					                </td>
+				            	</tr>
+			        		</table>
+						</div>
+					</div>
+					<div style="clear:both;"></div>
+	        	</div>
+				<div id="fragment-3" class="fragment">
+					<div id="StrategicInitiativeContainer">
+						<div class="contentArea">
+				        	<div class="header">Strategic Initiatives</div>
+			        	</div>
+						<div id="StrategicInitiativeGridContainer">
+							<div id="StrategicInitiativeGrid"></div>
+						</div>
+					</div>
+					<div style="clear:both;"></div>
+	    		</div>
+				<div id="fragment-4" class="fragment">
+	    			<div id="QualityAssuranceContainer" class="contentArea">
+			        	<div class="header">Quality Assurance</div>
+						<div id="GridQualityAssurance">
+							<div class="groupHeader">Third Party Satisfaction - EVS HCAHPS:</div>
+							<div id="EVSHCAHPSGridContainer">
+								<div id="EVSHCAHPSGrid"></div>
+							</div>
+							<div style="clear:both;height:10px;"></div>
+							<div class="groupHeader">Quality Partnership:</div>
+							<div id="QualityPartnershipGrid"></div>
+							<div style="clear:both;height:10px;"></div>
+							<div class="groupHeader">Audit Scores:</div>
+							<div id="AuditScoreGrid"></div>
+							<div style="clear:both;height:10px;"></div>
+							<div class="groupHeader">Competency Training:</div>
+							<div id="CompetencyTrainingGrid"></div>
+						</div>
+					</div>
+					<div style="clear:both;"></div>
+	    		</div>
+				<div id="fragment-5" class="fragment">
+	    			<div id="AdminObjectiveContainer" class="contentArea">
+			        	<div class="header">Administrator Objectives</div>
+						<div id="AdminObjectiveGridContainer">
+							<div id="AdminObjectiveGrid"></div>
+						</div>
+					</div>
+					<div style="clear:both;"></div>
+	    		</div>
+                <div id="fragment-6" class="fragment">
+	    			<div id="EVSStatisticContainer" class="contentArea">
+	    			   	<div class="header">EVS Statistics</div>
+						<div id="GridEVSStatistic">
+							<div id="EVSStatisticGridContainer">
+								<div id="EVSStatisticGrid"></div>
+							</div>
+						</div>
+					</div>
+					<div style="clear:both;"></div>
+	    		</div>
+	    		<ul id="TabCollection">
+					<li><a id="TabHospitalContract" href="#fragment-1" style="display:none;"><span>Hospital & Contract</span></a></li>
+	                <li><a id="TabLaborControl" href="#fragment-2" style="display:none;"><span>Labor Control</span></a></li>
+	                <li><a id="TabStrategicInitiative" href="#fragment-3" style="display:none;"><span>Strategic Initiatives</span></a></li>
+					<li><a id="TabQualityAssurance" href="#fragment-4" style="display:none;"><span>Quality Assurance</span></a></li>
+					<li><a id="TabAdminObjectives" href="#fragment-5" style="display:none;"><span>Admin Objectives</span></a></li>
+                    <li><a id="TabEVSStatistics" href="#fragment-6" style="display:none;"><span>EVS Statistics</span></a></li>
+	            </ul>
+			</div>
+			<div style="clear:both;"></div>
+		</div>
+		<!-- This area holds the templates for the labor controls -->
+		<div style="display: none">		    
+		    <table>
+		        <tbody id="tblLaborControlTemplate">
+		            <tr id="trLaborControlRowCount" class="RowStyle">
+						<td class="gridCell" style="position: absolute; left: 0; width: 191px; margin-left: 12px; padding-left: 5px" id="tdTitleRowCount">&nbsp;</td>
+						<td class="gridCell" style="width: 128px" align="center"><input type="text" maxlength="9" id="txtPeriod1BudgetRowCount" style="width: 126px; height: 17px; text-align: right;" /></td>
+                        <td class="gridCell" style="width: 128px" align="center"><input type="text" maxlength="9" id="txtPeriod1ActualRowCount" style="width: 126px; height: 17px; text-align: right;" /></td>
+                        <td class="gridCell" style="width: 128px" align="center"><input type="text" maxlength="9" id="txtPeriod2BudgetRowCount" style="width: 126px; height: 17px; text-align: right;" /></td>
+                        <td class="gridCell" style="width: 128px" align="center"><input type="text" maxlength="9" id="txtPeriod2ActualRowCount" style="width: 126px; height: 17px; text-align: right;" /></td>
+                        <td class="gridCell" style="width: 128px" align="center"><input type="text" maxlength="9" id="txtPeriod3BudgetRowCount" style="width: 126px; height: 17px; text-align: right;" /></td>
+                        <td class="gridCell" style="width: 128px" align="center"><input type="text" maxlength="9" id="txtPeriod3ActualRowCount" style="width: 126px; height: 17px; text-align: right;" /></td>
+						<td class="gridCell" style="width: 128px" align="center"><input type="text" maxlength="9" id="txtPeriod4BudgetRowCount" style="width: 126px; height: 17px; text-align: right;" /></td>
+                        <td class="gridCell" style="width: 128px" align="center"><input type="text" maxlength="9" id="txtPeriod4ActualRowCount" style="width: 126px; height: 17px; text-align: right;" /></td>
+					  	<td class="gridCell" style="width: 128px" align="center"><input type="text" maxlength="9" id="txtPeriod5BudgetRowCount" style="width: 126px; height: 17px; text-align: right;" /></td>
+                        <td class="gridCell" style="width: 128px" align="center"><input type="text" maxlength="9" id="txtPeriod5ActualRowCount" style="width: 126px; height: 17px; text-align: right;" /></td>
+                     	<td class="gridCell" style="width: 128px" align="center"><input type="text" maxlength="9" id="txtPeriod6BudgetRowCount" style="width: 126px; height: 17px; text-align: right;" /></td>
+                        <td class="gridCell" style="width: 128px" align="center"><input type="text" maxlength="9" id="txtPeriod6ActualRowCount" style="width: 126px; height: 17px; text-align: right;" /></td>
+                        <td class="gridCell" style="width: 128px" align="center"><input type="text" maxlength="9" id="txtPeriod7BudgetRowCount" style="width: 126px; height: 17px; text-align: right;" /></td>
+                        <td class="gridCell" style="width: 128px" align="center"><input type="text" maxlength="9" id="txtPeriod7ActualRowCount" style="width: 126px; height: 17px; text-align: right;" /></td>
+						<td class="gridCell" style="width: 128px" align="center"><input type="text" maxlength="9" id="txtPeriod8BudgetRowCount" style="width: 126px; height: 17px; text-align: right;" /></td>
+                        <td class="gridCell" style="width: 128px" align="center"><input type="text" maxlength="9" id="txtPeriod8ActualRowCount" style="width: 126px; height: 17px; text-align: right;" /></td>
+						<td class="gridCell" style="width: 128px" align="center"><input type="text" maxlength="9" id="txtPeriod9BudgetRowCount" style="width: 126px; height: 17px; text-align: right;" /></td>
+                        <td class="gridCell" style="width: 128px" align="center"><input type="text" maxlength="9" id="txtPeriod9ActualRowCount" style="width: 126px; height: 17px; text-align: right;" /></td>
+						<td class="gridCell" style="width: 128px" align="center"><input type="text" maxlength="9" id="txtPeriod10BudgetRowCount" style="width: 126px; height: 17px; text-align: right;" /></td>
+                        <td class="gridCell" style="width: 128px" align="center"><input type="text" maxlength="9" id="txtPeriod10ActualRowCount" style="width: 126px; height: 17px; text-align: right;" /></td>
+						<td class="gridCell" style="width: 128px" align="center"><input type="text" maxlength="9" id="txtPeriod11BudgetRowCount" style="width: 126px; height: 17px; text-align: right;" /></td>
+                        <td class="gridCell" style="width: 128px" align="center"><input type="text" maxlength="9" id="txtPeriod11ActualRowCount" style="width: 126px; height: 17px; text-align: right;" /></td>
+						<td class="gridCell" style="width: 128px" align="center"><input type="text" maxlength="9" id="txtPeriod12BudgetRowCount" style="width: 126px; height: 17px; text-align: right;" /></td>
+                        <td class="gridCellRight" style="width: 128px" align="center"><input type="text" maxlength="9" id="txtPeriod12ActualRowCount" style="width: 126px; height: 17px; text-align: right;" /></td>
+					</tr>
+                </tbody>
+				<tbody id="tblLaborControlTotalTemplate">
+		            <tr id="trLaborControlTotalRowCount" class="RowStyle">
+						<td class="gridCell" style="position: absolute; left: 0; width: 191px; margin-left: 12px; padding-left: 5px" id="tdTitleTotalRowCount">&nbsp;</td>
+                        <td class="gridCell" style="width: 128px" align="right"><span id="spnPeriod1BudgetRowCount" class="spanColumn"></span></td>
+						<td class="gridCell" style="width: 128px" align="right"><span id="spnPeriod1ActualRowCount" class="spanColumn"></span></td>
+						<td class="gridCell" style="width: 128px" align="right"><span id="spnPeriod2BudgetRowCount" class="spanColumn"></span></td>
+                        <td class="gridCell" style="width: 128px" align="right"><span id="spnPeriod2ActualRowCount" class="spanColumn"></span></td>
+                        <td class="gridCell" style="width: 128px" align="right"><span id="spnPeriod3BudgetRowCount" class="spanColumn"></span></td>
+                        <td class="gridCell" style="width: 128px" align="right"><span id="spnPeriod3ActualRowCount" class="spanColumn"></span></td>
+                        <td class="gridCell" style="width: 128px" align="right"><span id="spnPeriod4BudgetRowCount" class="spanColumn"></span></td>
+						<td class="gridCell" style="width: 128px" align="right"><span id="spnPeriod4ActualRowCount" class="spanColumn"></span></td>
+                        <td class="gridCell" style="width: 128px" align="right"><span id="spnPeriod5BudgetRowCount" class="spanColumn"></span></td>
+					  	<td class="gridCell" style="width: 128px" align="right"><span id="spnPeriod5ActualRowCount" class="spanColumn"></span></td>
+                        <td class="gridCell" style="width: 128px" align="right"><span id="spnPeriod6BudgetRowCount" class="spanColumn"></span></td>
+                     	<td class="gridCell" style="width: 128px" align="right"><span id="spnPeriod6ActualRowCount" class="spanColumn"></span></td>
+                        <td class="gridCell" style="width: 128px" align="right"><span id="spnPeriod7BudgetRowCount" class="spanColumn"></span></td>
+                        <td class="gridCell" style="width: 128px" align="right"><span id="spnPeriod7ActualRowCount" class="spanColumn"></span></td>
+                        <td class="gridCell" style="width: 128px" align="right"><span id="spnPeriod8BudgetRowCount" class="spanColumn"></span></td>
+						<td class="gridCell" style="width: 128px" align="right"><span id="spnPeriod8ActualRowCount" class="spanColumn"></span></td>
+                        <td class="gridCell" style="width: 128px" align="right"><span id="spnPeriod9BudgetRowCount" class="spanColumn"></span></td>
+						<td class="gridCell" style="width: 128px" align="right"><span id="spnPeriod9ActualRowCount" class="spanColumn"></span></td>
+                        <td class="gridCell" style="width: 128px" align="right"><span id="spnPeriod10BudgetRowCount" class="spanColumn"></span></td>
+						<td class="gridCell" style="width: 128px" align="right"><span id="spnPeriod10ActualRowCount" class="spanColumn"></span></td>
+                        <td class="gridCell" style="width: 128px" align="right"><span id="spnPeriod11BudgetRowCount" class="spanColumn"></span></td>
+						<td class="gridCell" style="width: 128px" align="right"><span id="spnPeriod11ActualRowCount" class="spanColumn"></span></td>
+						<td class="gridCell" style="width: 128px" align="right"><span id="spnPeriod12BudgetRowCount" class="spanColumn"></span></td>
+                        <td class="gridCellRight" style="width: 128px" align="right"><span id="spnPeriod12ActualRowCount" class="spanColumn"></span></td>
+					</tr>
+                </tbody>
+				<tbody id="tblCommentsTemplate">
+		            <tr id="trComments" class="gridRow">
+						<td class="gridCell" style="position: absolute; left: 0; width: 192px; margin-left: 12px; padding-left: 5px" id="tdComments">Comments</td>
+						<td class="gridCell" style="width: 260px" align="center"><input type="text" id="txtPeriod1" style="width: 256px; height: 17px;" /></td>
+                        <td class="gridCell" style="width: 260px" align="center"><input type="text" id="txtPeriod2" style="width: 256px; height: 17px;" /></td>
+						<td class="gridCell" style="width: 260px" align="center"><input type="text" id="txtPeriod3" style="width: 256px; height: 17px;" /></td>
+						<td class="gridCell" style="width: 260px" align="center"><input type="text" id="txtPeriod4" style="width: 256px; height: 17px;" /></td>
+						<td class="gridCell" style="width: 260px" align="center"><input type="text" id="txtPeriod5" style="width: 256px; height: 17px;" /></td>
+						<td class="gridCell" style="width: 260px" align="center"><input type="text" id="txtPeriod6" style="width: 256px; height: 17px;" /></td>
+						<td class="gridCell" style="width: 260px" align="center"><input type="text" id="txtPeriod7" style="width: 256px; height: 17px;" /></td>
+						<td class="gridCell" style="width: 260px" align="center"><input type="text" id="txtPeriod8" style="width: 256px; height: 17px;" /></td>
+						<td class="gridCell" style="width: 260px" align="center"><input type="text" id="txtPeriod9" style="width: 256px; height: 17px;" /></td>
+						<td class="gridCell" style="width: 260px" align="center"><input type="text" id="txtPeriod10" style="width: 256px; height: 17px;" /></td>
+						<td class="gridCell" style="width: 260px" align="center"><input type="text" id="txtPeriod11" style="width: 256px; height: 17px;" /></td>
+                        <td class="gridCellRight" style="width: 260px" align="center"><input type="text" maxlength="9" id="txtPeriod12" style="width: 256px; height: 17px;" /></td>
+					</tr>
+                </tbody>
+            </table>
+		</div>
+		<div id="iiInputValidationMaster"></div>
+	</body>
+</html>
