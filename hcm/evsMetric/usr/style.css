@@ -90,6 +90,16 @@
 	background-color: #5F86AB;
 }
 
+.inputText {
+	width: 126px;
+	text-align: right;
+	border: solid #AAAAAA thin;	
+}
+
+.invalid {
+	background-color: pink;
+}
+
 #Notes {
 	float: left;
 	width: 620px;

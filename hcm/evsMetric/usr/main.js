@@ -2279,12 +2279,12 @@ ii.Class({
             for (index = 0; index < me.laborControls.length; index++) {
                 if (me.laborControls[index].evsMetricType.brief === "Budget") {
                     for (iIndex = 1; iIndex <= 12; iIndex++) {
-                        $("#txtPeriod" + iIndex + "Budget" + index).val(me.laborControls[index]["period" + iIndex] === "" ? "" : parseFloat(me.laborControls[index]["period" + iIndex]));
+                        $("#txtPeriod" + iIndex + "Budget" + index).val(me.laborControls[index]["period" + iIndex]);
                     }
                 }
                 else if (me.laborControls[index].evsMetricType.brief === "Actual") {
                     for (iIndex = 1; iIndex <= 12; iIndex++) {
-                        $("#txtPeriod" + iIndex + "Actual" + (index - 1)).val(me.laborControls[index]["period" + iIndex] === "" ? "" : parseFloat(me.laborControls[index]["period" + iIndex]));
+                        $("#txtPeriod" + iIndex + "Actual" + (index - 1)).val(me.laborControls[index]["period" + iIndex]);
                     }
                 }
                 else if (me.laborControls[index].evsMetricType.brief === "Comments") {
@@ -2297,10 +2297,10 @@ ii.Class({
                     for (iIndex = 1; iIndex <= 12; iIndex++) {
                         total = ($("#txtPeriod" + iIndex + "Budget" + (index - 3)).val() === "" ? 0 : parseFloat($("#txtPeriod" + iIndex + "Budget" + (index - 3)).val()))
                             + ($("#txtPeriod" + iIndex + "Budget" + (index - 1)).val() === "" ? 0 : parseFloat($("#txtPeriod" + iIndex + "Budget" + (index - 1)).val()));
-                        $("#spnPeriod" + iIndex + "Budget" + index).html(total);
+                        $("#spnPeriod" + iIndex + "Budget" + index).html(total.toFixed(2));
                         total = ($("#txtPeriod" + iIndex + "Actual" + (index - 3)).val() === "" ? 0 : parseFloat($("#txtPeriod" + iIndex + "Actual" + (index - 3)).val()))
                             + ($("#txtPeriod" + iIndex + "Actual" + (index - 1)).val() === "" ? 0 : parseFloat($("#txtPeriod" + iIndex + "Actual" + (index - 1)).val()));
-                        $("#spnPeriod" + iIndex + "Actual" + index).html(total);
+                        $("#spnPeriod" + iIndex + "Actual" + index).html(total.toFixed(2));
                     }
                 }
             }
@@ -2337,6 +2337,16 @@ ii.Class({
                 me.laborControls[rowCount].modified = true;
                 me.modified();
 
+				if (objInput.value !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(objInput.value))) {
+					$("#" + objInput.id).attr("title", "Please enter numeric value. Example 99.99");
+					$("#" + objInput.id).addClass("invalid");
+					return;
+				}
+				else {
+					$("#" + objInput.id).attr("title", "");
+					$("#" + objInput.id).removeClass("invalid");
+				}
+
                 if (rowCount === 0 || rowCount === 2) {
                     startRowNumber = 0;
                     endRowNumber = 2;
@@ -2360,7 +2370,7 @@ ii.Class({
 
                 total = (me.laborControls[startRowNumber]["period" + period] === "" ? 0 : parseFloat(me.laborControls[startRowNumber]["period" + period]))
                     + (me.laborControls[endRowNumber]["period" + period] === "" ? 0 : parseFloat(me.laborControls[endRowNumber]["period" + period]));
-                $("#spnPeriod" + period + type + totalRowNumber).html(total);
+                $("#spnPeriod" + period + type + totalRowNumber).html(total.toFixed(2));
             }
         },
 
@@ -2368,9 +2378,9 @@ ii.Class({
             var me = this;
             var period = objInput.id.replace("txtPeriod", "");
 
-            if (objInput.value !== me.laborControls[24]["period" + period]) {
-                me.laborControls[24]["period" + period] = objInput.value;
-                me.laborControls[24].modified = true;
+            if (objInput.value !== me.laborControls[8]["period" + period]) {
+                me.laborControls[8]["period" + period] = objInput.value;
+                me.laborControls[8].modified = true;
                 me.modified();
             }
         },
@@ -2400,6 +2410,30 @@ ii.Class({
                     control.setInvalid("Please enter valid number.");
             }
         },
+
+		validateLaborControl: function() {
+			var me = this;
+
+			 for (var index = 0; index < me.laborControls.length; index++) {
+			 	if (me.laborControls[index].evsMetricType.dataType === "Decimal") {
+			 		if (me.laborControls[index].period1 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.laborControls[index].period1))
+						|| me.laborControls[index].period2 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.laborControls[index].period2))
+						|| me.laborControls[index].period3 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.laborControls[index].period3))
+						|| me.laborControls[index].period4 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.laborControls[index].period4))
+						|| me.laborControls[index].period5 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.laborControls[index].period5))
+						|| me.laborControls[index].period6 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.laborControls[index].period6))
+						|| me.laborControls[index].period7 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.laborControls[index].period7))
+						|| me.laborControls[index].period8 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.laborControls[index].period8))
+						|| me.laborControls[index].period9 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.laborControls[index].period9))
+						|| me.laborControls[index].period10 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.laborControls[index].period10))
+						|| me.laborControls[index].period11 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.laborControls[index].period11))
+						|| me.laborControls[index].period12 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.laborControls[index].period12))) {
+			 			return false;
+			 		}
+			 	}
+			}
+			return true;
+		},
 
         strategicInitiativeItemSelect: function() {
             var args = ii.args(arguments, {
@@ -2537,6 +2571,11 @@ ii.Class({
                     alert("In order to save, the errors on the page must be corrected. Please verify the data on Hospital & Contract tab.");
                     return false;
                 }
+            }
+
+			if (me.laborControlShow && !me.validateLaborControl()) {
+                alert("In order to save, the errors on the page must be corrected. Please verify the data on Labor Control tab.");
+                return false;
             }
 
             if (me.strategicInitiativesShow && me.strategicInitiativeGrid.activeRowIndex >= 0) {
