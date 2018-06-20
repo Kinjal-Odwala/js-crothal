@@ -105,7 +105,7 @@
 			                            </tr>
 			                        </thead>
 			                        <tbody style="height: 150px;">
-			                            <tr ng-repeat="item in empPTOBalanceHours">
+			                            <tr ng-repeat="item in empPTOBalanceHours" ng-click="onPTOTypeSelected(item)" ng-class="{'warning':selectedPTOType == item};">
 			                                <td style="text-align:center;width:5%;line-height:normal">{{$index + 1}}</td>
 			                                <td style="text-align:left;width:30%;line-height:normal">{{item.ptoTypeTitle}}</td>
 			                                <td style="text-align:right;width:20%;line-height:normal">
@@ -137,8 +137,8 @@
 								</div>
 								<div class="row" style="padding-bottom:25px;"></div>
 		                        <div>
-		                            <a class="btn btn-primary" ng-click="printPDFItem()" ng-disabled="true">Print PDF</a>&nbsp;&nbsp;
-		                            <a class="btn btn-primary" ng-click="ptoStubItem()" ng-disabled="true">PTO Stub</a>
+		                            <a class="btn btn-primary" ng-click="printPDFItem()">Print PDF</a>&nbsp;&nbsp;
+		                            <a class="btn btn-primary" ng-click="ptoStubItem()" ng-disabled="selectedEmployee === null || selectedPTOType === null">PTO Stub</a>
 		                        </div>
 			                </div>
 		            	</div>

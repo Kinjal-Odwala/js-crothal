@@ -217,6 +217,10 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
 	    });
     });
 
+	EmpActions.getReports(function(result) {
+		$scope.reports = result;
+    });
+
 	EmpActions.getHcmHouseCodes(function(result) {
         $scope.hcmHouseCodes = result;
     });
@@ -278,6 +282,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.employees = [];
 		$scope.empPTOBalanceHours = [];
 		$scope.selectedEmployee = null;
+		$scope.selectedPTOType = null;
         $scope.loadingTitle = " Loading...";
         setStatus("Loading");
 
@@ -294,6 +299,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
 
     $scope.onEmployeeSelected = function(item) {
         $scope.selectedEmployee = item;
+		$scope.selectedPTOType = null;
         $scope.loadingTitle = " Loading...";
         setStatus("Loading");
 
@@ -303,17 +309,77 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
 		});
     };
 
+	$scope.onPTOTypeSelected = function(item) {
+        $scope.selectedPTOType = item;
+    };
+
 	$scope.showTitle = function(item) {
 		return "Employee #: " + item.employeeNumber + "\nStatus: " + item.status + "\nUnion: " + item.union + "\nEnrolled Plans: " + item.enrolledPlans;
     };
 
 	$scope.printPDFItem = function() {
+		var reportURL = "";
+		var parametersList = "";
 
+		for(var index = 0; index < $scope.reports.length; index++) {
+			if ($scope.reports[index].brief === "Balance Usage") {
+				reportURL = $scope.reports[index].reportURL;
+				break;
+			}
+		}
+
+		if (reportURL === "")
+			return;
+
+		parametersList = "CostCenter=" + parent.fin.appUI.houseCodeBrief + "~EmpPTOYear=" + $scope.ptoYearId;
+		$scope.generateReport(reportURL, parametersList);
     };
 
 	$scope.ptoStubItem = function() {
+		var reportURL = "";
+		var parametersList = "";
 
+		if ($scope.selectedEmployee === null || $scope.selectedPTOType === null)
+			return;
+
+		for(var index = 0; index < $scope.reports.length; index++) {
+			if ($scope.reports[index].brief === "PTO Stub") {
+				reportURL = $scope.reports[index].reportURL;
+				break;
+			}
+		}
+
+		if (reportURL === "")
+			return;
+
+		parametersList = "EmpEmployeeGeneral=" + $scope.selectedEmployee.id + "~EmpPTOYear=" + $scope.ptoYearId + "~EmpPTOType=" + $scope.selectedPTOType.id;
+		$scope.generateReport(reportURL, parametersList);
     };
+
+	$scope.generateReport = function(reportURL, parametersList) {
+		console.log(parametersList);
+		var form = document.createElement("form");
+		form.setAttribute("method", "post");
+		form.setAttribute("action", reportURL);
+		form.setAttribute("target", "_blank");
+		
+		var parameters = parametersList.split("~");
+		for (var index = 0; index < parameters.length; index++) {
+			var nameValues = [];
+			var nameValueList;
+			var hiddenField = document.createElement("input");
+
+			nameValueList = parameters[index].toString();
+			nameValues = nameValueList.split("=");
+			hiddenField.setAttribute("type", "hidden");
+			hiddenField.setAttribute("name", nameValues[0]);
+			hiddenField.setAttribute("value", nameValues[1]);
+			form.appendChild(hiddenField);
+		}
+
+		document.body.appendChild(form);
+		form.submit();
+	},
 
     $scope.getPTODate = function(date) {
         if (!angular.isDefined(date))
@@ -592,6 +658,14 @@ pto.factory('EmpActions', ["$http", "$filter", '$rootScope', function($http, $fi
         });
     };
 
+	var getReports = function(callback) {
+        apiRequest('rpt', 'iiCache', '<criteria>storeId:rptReports,userId:[user],</criteria>', function(xml) {
+		    if (callback) {
+		        callback(deserializeXml(xml, 'item', { upperFirstLetter: false, intItems: ['id'], boolItems: ['active'] }));
+		    }
+		});
+    };
+
     return {
 		getAuthorizations: getAuthorizations,
 		getCurrentHouseCodeId: getCurrentHouseCodeId,
@@ -602,6 +676,7 @@ pto.factory('EmpActions', ["$http", "$filter", '$rootScope', function($http, $fi
         getPlanAssignments: getPlanAssignments,
 		getSiteDetails: getSiteDetails,
         getPTODays: getPTODays,
-		getPTOBalanceHours: getPTOBalanceHours
+		getPTOBalanceHours: getPTOBalanceHours,
+		getReports: getReports
     }
 }]);
