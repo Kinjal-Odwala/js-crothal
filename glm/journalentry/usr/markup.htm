@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-		<title>Journal Entry - Debit/Credit</title>
+		<title>Journal Entry</title>
 		<script type="text/javascript">
 			var globalContext = "/net/crothall/chimes/fin/glm/act";
 			var js = document.createElement("script");
@@ -16,40 +16,120 @@
 	<!-- onload is necessary to overcome jQuery/IE7 $(document).ready bug when page loaded into an IFrame -->
 	<body id="appBody">
 		<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: white;">
-		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
+			<table width="100%" height="100%">
+				<tr>
+					<td align="center">
+						<img id="imgLoading" src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+						<div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;">Loading</div>    
+		        	</td>
+				</tr>
+			</table>
+		</div>
+		<div id="popupLoading" style="position: absolute; z-index: 6000; width: 400px; height: 200px; background-color: white; display:none">
+		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px; text-align:center;">
 		        <img src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
-		        <div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
+		        <div id="popupMessageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px;">Loading</div>    
 		    </div>
 		</div>
-
-	<div class="pageBodyJournal">
-		<div id="contentAreasJournalLeft">
-			<div class="body">
-			<div class="contentArea">
-				<div class="header">Credit</div>
-					<div style="clear:both;"></div>
-					<div id="JournalEntryCredit"></div>
-					<div style="clear:both;"></div>
-					<div id="JournalEntryCreditTotal">Total:</div>
-					<div id="CreditTotal"></div>
+		<div class="pageHeader">
+			<div id="LabelTextAreaLeftHeader">&nbsp;&nbsp;House Code:</div>
+			<div id="DropDownRightHouseCode">
+				<div id="houseCodeContainer" class="HouseCodeContainer"></div>
+			</div>
+			<div class="labelTextAreaSearch">Status:</div>
+			<div class="inputTextAreaSmall">
+				<div id="StatusType"></div>
+			</div>
+			<div id="AnchorSearch"></div>
+        </div>
+		<div style="clear:both;"></div>
+		<div id="itemStatusDiv">
+			<div id="itemStatusImage" class="itemStatusImage"></div>
+			<div id="itemModifiedImage" class="itemModifiedImage"></div>
+			<div id="itemStatusText">Loading, please wait...</div>
+		</div>
+		<div style="clear:both;"></div>
+		<div class="pageBody">
+			<div class="contentArea">				
+	            <div class="header">Journal Entries</div>				
+	            <div class="body">
+            		<div id="JournalEntryGrid"></div>
 				</div>
 			</div>
 		</div>
-		<div id="contentAreasJournalRight">
-			<div class="body">
-			<div class="contentArea">
-				<div class="header">Debit</div>
-					<div style="clear:both;"></div>
-					<div id="JournalEntryDebit"></div>
-					<div style="clear:both;"></div>
-					<div id="JournalEntryDebitTotal">Total:</div>
-					<div id="DebitTotal"></div>
+		<div id="anchorAlign">
+			<div id="AnchorNew"></div>
+			<div id="AnchorView"></div>
+			<div id="AnchorCancelJE"></div>
+		</div>
+		<div class="pageBody">
+			<div id="journalEntryPopup">
+				<div class="contentArea">
+					<div class="header" id="Header"></div>
+					<div style="clear:both;"></div>					
+					<div id="GeneralInfo">						
+						<div class="contentAreaLeft">
+							<div id="GLCodeDebitContainer">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>GL Code - Debit:
+								</div>
+								<div class="inputTextArea">
+									<div id="GLCodeDebit"></div>
+								</div>
+								<div style="clear:both;height:10px;"></div>
+							</div>
+							<div id="GLCodeCreditContainer" style="display:none;">	
+                                <div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>GL Code - Credit:
+								</div>
+								<div class="inputTextArea">
+									<div id="GLCodeCredit"></div>
+								</div>
+								<div style="clear:both;height:10px;"></div>
+							</div>
+						</div>
+						<div class="contentAreaLeft">
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>Amount:
+								</div>
+								<div class="inputTextArea">
+									<div id="Amount"></div>
+								</div>
+							</div>
+							<div style="clear:both;height:10px;"></div>
+						</div>
+						<div style="clear:both;"></div>
+						<div id="TableEditArea">
+                            <div class="labelTextArea">
+                            	<span class="requiredFieldIndicator">&#149;</span>Justification:
+                            </div>
+                            <div class="inputTextAreaLarge">
+                                <div id="Justification"></div>
+                            </div>
+							<div>&nbsp;&nbsp;<img src="/fin/cmn/usr/media/Common/info.png" title="Maximum 50 charactes are allowed. Must start with 'RCL' and include vendor name and invoice number."/></div>
+                        </div>
+						<div style="clear:both;"></div>
+						<div id="TableEditArea">
+                            <div class="labelTextArea">
+                            	<span id="nonRequiredFieldIndicator">Assignment:</span>
+                            </div>
+                            <div class="inputTextAreaLarge">
+                                <div id="Assignment"></div>
+                            </div>
+							<div>&nbsp;&nbsp;<img src="/fin/cmn/usr/media/Common/info.png" title="List GL account that the expense is being moved from/to Ex. 674700/410904"/></div>
+                        </div>
+                    </div>
+					<div style="clear:both;"></div>	
+					<div id="anchorAlign">
+						<div id="AnchorCancel"></div>
+						<div id="AnchorNext"></div>
+						<div id="AnchorSave"></div>
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-
-	<div id="iiInputValidationMaster"></div>
-		
+		<div id="backgroundPopup"></div>
+		<div id="iiInputValidationMaster"></div>
 	</body>
 </html>

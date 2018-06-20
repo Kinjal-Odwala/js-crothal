@@ -1,582 +1,787 @@
 ii.Import( "ii.krn.sys.ajax" );
 ii.Import( "ii.krn.sys.session" );
 ii.Import( "ui.ctl.usr.input" );
-ii.Import( "ui.ctl.usr.buttons" );
 ii.Import( "ui.ctl.usr.grid" );
+ii.Import( "fin.cmn.usr.util" );
+ii.Import( "ui.ctl.usr.buttons" );
+ii.Import( "ui.ctl.usr.toolbar" );
+ii.Import( "ui.cmn.usr.text" );
 ii.Import( "fin.glm.journalEntry.usr.defs" );
+ii.Import( "fin.cmn.usr.houseCodeSearch" );
 
-ii.Style( "style" , 1);
-ii.Style( "fin.cmn.usr.common" , 2);
-ii.Style( "fin.cmn.usr.statusBar" , 3);
-ii.Style( "fin.cmn.usr.input" , 4);
-ii.Style( "fin.cmn.usr.grid" , 5);
-ii.Style( "fin.cmn.usr.button" , 6);
-ii.Style( "fin.cmn.usr.dropDown" , 7);
-ii.Style( "fin.cmn.usr.dateDropDown" , 8);
+ii.Style( "style", 1 );
+ii.Style( "fin.cmn.usr.common", 2 );
+ii.Style( "fin.cmn.usr.statusBar", 3 );
+ii.Style( "fin.cmn.usr.toolbar", 4 );
+ii.Style( "fin.cmn.usr.input", 5 );
+ii.Style( "fin.cmn.usr.grid", 6 );
+ii.Style( "fin.cmn.usr.button", 7 );
+ii.Style( "fin.cmn.usr.dropDown", 8 );
 
 ii.Class({
     Name: "fin.glm.journalEntry.UserInterface",
-    Definition: {		
-		init: function() {
-			var args = ii.args(arguments, {});
-			var me = this;			
-			var queryStringArgs = {}; 
-			var queryString = location.search.substring(1); 
-			var pairs = queryString.split("&");
-			
-			for(var i = 0; i < pairs.length; i++) { 
-				var pos = pairs[i].indexOf('='); 
-				if (pos == -1) continue; 
-				var argName = pairs[i].substring(0, pos); 
-				var value = pairs[i].substring(pos + 1); 
-				queryStringArgs[argName] = unescape(value); 
-			} 
+    Extends: "ui.lay.HouseCodeSearch",
+    Definition: {
+        init: function() {
+            var me = this;
 
-			me.houseCodeId = queryStringArgs["houseCodeId"];
-			me.fiscalYearId = queryStringArgs["fiscalYearId"];
-			me.journalEntryId = queryStringArgs["journalEntryId"];
-			
-			me.creditTotal = 0.00;
-			me.debitTotal = 0.00;
+            me.journalEntryId = 0;
+            me.lastSelectedRowIndex = -1;
+            me.status = "";
+            me.wizardCount = 0;
+            me.loadCount = 0;
+            me.glDebitAccounts = [];
+            me.glCreditAccounts = [];
 
-			me.gateway = ii.ajax.addGateway("glm", ii.config.xmlProvider);
-			me.cache = new ii.ajax.Cache(me.gateway);
-			me.transactionMonitor = new ii.ajax.TransactionMonitor(me.gateway, function(status, errorMessage){
-				me.nonPendingError(status, errorMessage);
-			}); 
-			
-			me.authorizer = new ii.ajax.Authorizer( me.gateway );	//@iiDoc {Property:ii.ajax.Authorizer} Boolean
-			me.authorizePath = "glm\\journalentry";
-			me.authorizer.authorize([me.authorizePath],
-				function authorizationsLoaded(){
-					me.authorizationProcess.apply(me);
-				},
-				me);
-							
-			me.validator = new ui.ctl.Input.Validation.Master(); 
-			me.session = new ii.Session(me.cache);
-			
-			me.defineFormControls();			
-			me.configureCommunications();	
+            me.gateway = ii.ajax.addGateway("glm", ii.config.xmlProvider);
+            me.cache = new ii.ajax.Cache(me.gateway);
+            me.transactionMonitor = new ii.ajax.TransactionMonitor(
+                me.gateway,
+                function(status, errorMessage) { me.nonPendingError(status, errorMessage); }
+            );
 
-			$(window).bind("resize", me, me.resize);
-			$(document).bind("keydown", me, me.controlKeyProcessor);
-			
-			me.accountsLoaded();
-			
-		},
-		
-		authorizationProcess: function fin_glm_journalEntry_UserInterface_authorizationProcess(){
-			var args = ii.args(arguments,{});
-			var me = this;
+            me.authorizer = new ii.ajax.Authorizer( me.gateway );
+            me.authorizePath = "\\crothall\\chimes\\fin\\GeneralLedger\\JournalEntry";
+            me.authorizer.authorize([me.authorizePath],
+                function authorizationsLoaded() {
+                    me.authorizationProcess.apply(me);
+                },
+                me);
 
-			$("#pageLoading").hide();
-			
-			me.isAuthorized = me.authorizer.isAuthorized( me.authorizePath);
-				
-			ii.timer.timing("Page displayed");
-			me.session.registerFetchNotify(me.sessionLoaded,me);
-		},	
-		
-		sessionLoaded: function fin_glm_journalEntry_UserInterface_sessionLoaded(){
-			var args = ii.args(arguments, {
-				me: {type: Object}
-			});
+            me.validator = new ui.ctl.Input.Validation.Master();
+            me.session = new ii.Session(me.cache);
 
-			ii.trace("session loaded.", ii.traceTypes.Information, "Session");
-		},
-		
-		resize: function(){
-			var args = ii.args(arguments,{});
-			var offset =  65;
+            me.defineFormControls();
+            me.configureCommunications();
+			me.setTabIndexes();
+            me.initialize();
+            me.statusTypesLoaded();
+            me.setStatus("Loading");
+            me.modified(false);
 
-			fin.journalEntryUi.journalEntryCredit.setHeight($(window).height() - offset);
-			fin.journalEntryUi.journalEntryDebit.setHeight($(window).height() - offset);
-		},
-			
-		defineFormControls: function(){
-			var me = this;
+            if (!parent.fin.appUI.houseCodeId)
+                parent.fin.appUI.houseCodeId = 0;
+            me.houseCodeSearch = new ui.lay.HouseCodeSearch();
+            if (parent.fin.appUI.houseCodeId === 0)
+                me.houseCodeStore.fetch("userId:[user],defaultOnly:true,", me.houseCodesLoaded, me);
+            else
+                me.houseCodesLoaded(me, 0);
 
-			me.journalEntryCredit = new ui.ctl.Grid({
-				id: "JournalEntryCredit",
-				allowAdds: true,
-				createNewFunction: fin.glm.journalEntry.JournalEntryItem		
-			});
-			
-			me.creditAccount = new ui.ctl.Input.DropDown.Filtered({
-		        id: "CreditAccount" ,
-		        formatFunction: function( account ){ return account.code + ' ' + account.name; },
-		        appendToId: "JournalEntryCreditControlHolder",
-				changeFunction: function() { parent.fin.glmMasterUi.modified(); }
-		    });		
-		
-		    me.creditAccount.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
+            $(window).bind("resize", me, me.resize);
+            ui.cmn.behavior.disableBackspaceNavigation();
+
+            if (top.ui.ctl.menu) {
+                top.ui.ctl.menu.Dom.me.registerDirtyCheck(me.dirtyCheck, me);
+            }
+        },
+
+        authorizationProcess: function() {
+            var me = this;
+
+            me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
+            me.cancelApproved = me.authorizer.isAuthorized(me.authorizePath + "\\CancelApproved");
+
+            if (me.isAuthorized) {
+                $("#pageLoading").hide();
+                $("#pageLoading").css({
+                    "opacity": "0.5",
+                    "background-color": "black"
+                });
+                $("#messageToUser").css({ "color": "white" });
+                $("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
+                $("#pageLoading").fadeIn("slow");
+
+                ii.timer.timing("Page displayed");
+                me.session.registerFetchNotify(me.sessionLoaded,me);
+                me.accountStore.fetch("userId:[user],moduleId:journalEntry", me.accountsLoaded, me);
+            }
+            else
+                window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
+        },
+
+        sessionLoaded: function() {
+
+            ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
+        },
+
+        resize: function() {
+            var me = fin.glm.journalEntryUi;
+
+            if (me === undefined)
+                return;
+
+            me.journalEntryGrid.setHeight($(window).height() - 145);
+        },
+
+        defineFormControls: function() {
+            var me = this;
+
+            me.statusType = new ui.ctl.Input.DropDown.Filtered({
+                id: "StatusType",
+                formatFunction: function( type ) { return type.title; }
+            });
+
+            me.statusType.makeEnterTab()
+                .setValidationMaster(me.validator)
+                .addValidation(ui.ctl.Input.Validation.required)
+                .addValidation( function( isFinal, dataMap ) {
+
+                    if ((this.focused || this.touched) && me.statusType.indexSelected === -1)
+                        this.setInvalid("Please select the correct Status.");
+                });
+
+            me.journalEntryGrid = new ui.ctl.Grid({
+                id: "JournalEntryGrid",
+                appendToId: "divForm",
+                allowAdds: false,
+                selectFunction: function(index) { me.itemSelect(index); },
+                validationFunction: function() { return parent.fin.cmn.status.itemValid(); }
+            });
+
+            me.journalEntryGrid.addColumn("accountDebit", "accountDebit", "GL Code - Debit", "GL Code - Debit", 400, function(account) { return account.code + " - " + account.name; });
+            me.journalEntryGrid.addColumn("accountCredit", "accountCredit", "GL Code - Credit", "GL Code - Credit", 400, function(account) { return account.code + " - " + account.name; });
+            me.journalEntryGrid.addColumn("amount", "amount", "Amount", "Amount", 200);
+            me.journalEntryGrid.addColumn("statusType", "statusType", "Status", "Status", null, function(statusType) {
+                if (statusType === 8)
+                    return "Approved";
+                else if (statusType === 9)
+                    return "Completed";
+                else if (statusType === 6)
+                    return "Cancelled";
+                else if (statusType === 3)
+                    return "Posted";
+            });
+            me.journalEntryGrid.capColumns();
+
+            me.glCodeDebit = new ui.ctl.Input.DropDown.Filtered({
+                id: "GLCodeDebit",
+                formatFunction: function (type) { return type.code + " - " + type.name; },
+                changeFunction: function() { me.modified();}
+            });
+
+            me.glCodeDebit.makeEnterTab()
+                .setValidationMaster(me.validator)
+                .addValidation(ui.ctl.Input.Validation.required)
+                .addValidation(function (isFinal, dataMap) {
+
+                    if ((this.focused || this.touched) && me.glCodeDebit.indexSelected === -1)
+                        this.setInvalid("Please select the valid GL Code.");
+                });
+
+            me.glCodeCredit = new ui.ctl.Input.DropDown.Filtered({
+                id: "GLCodeCredit",
+                formatFunction: function (type) { return type.code + " - " + type.name; },
+                changeFunction: function() { me.modified();}
+            });
+
+            me.glCodeCredit.makeEnterTab()
+                .setValidationMaster(me.validator)
+                .addValidation(ui.ctl.Input.Validation.required)
+                .addValidation(function (isFinal, dataMap) {
+
+                    if ((this.focused || this.touched) && me.glCodeCredit.indexSelected === -1)
+                        this.setInvalid("Please select the valid GL Code.");
+                });
+
+            me.amount = new ui.ctl.Input.Text({
+                id: "Amount",
+                maxLength: 9,
+                changeFunction: function() { me.modified(); }
+            });
+
+            me.amount.makeEnterTab()
+                .setValidationMaster(me.validator)
+                .addValidation(ui.ctl.Input.Validation.required)
+                .addValidation( function( isFinal, dataMap ) {
+
+                var enteredText = me.amount.getValue();
+
+                if (enteredText === "")
+                    return;
+
+                if (!(/^\d{1,6}(\.\d{1,2})?$/.test(enteredText)) || parseFloat(enteredText) <= 0)
+                    this.setInvalid("Please enter valid Amount.");
+            });
+
+            me.justification = new ui.ctl.Input.Text({
+                id: "Justification",
+                maxLength: 50,
+                changeFunction: function() { me.modified(); }
+            });
+
+            me.justification.makeEnterTab()
+                .setValidationMaster(me.validator)
+                .addValidation(ui.ctl.Input.Validation.required)
 				.addValidation( function( isFinal, dataMap ) {
-					
-					if (me.creditAccount.indexSelected == -1)
-						this.setInvalid("Please select the correct Credit Account.");
-				});
-				
-			me.creditAmount = new ui.ctl.Input.Money({
-		        id: "CreditAmount" ,
-				appendToId : "JournalEntryCreditControlHolder",
-				changeFunction: function() { parent.fin.glmMasterUi.modified(); }
-		    });	
-				
-		    me.creditAmount.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
 
-			me.journalEntryDebit = new ui.ctl.Grid({
-				id: "JournalEntryDebit",
-				allowAdds: true,
-				createNewFunction: fin.glm.journalEntry.JournalEntryItem	
-			});
-			
-			me.debitAccount = new ui.ctl.Input.DropDown.Filtered({
-		        id: "DebitAccount" ,
-		        formatFunction: function( account ){ return account.code + ' ' + account.name; },
-		        appendToId: "JournalEntryDebitControlHolder",
-				changeFunction: function() { parent.fin.glmMasterUi.modified(); }
-		    });		
-		
-		    me.debitAccount.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
-				.addValidation( function( isFinal, dataMap ) {
-					
-					if (me.debitAccount.indexSelected == -1)
-						this.setInvalid("Please select the correct Debit Account.");
-				});
-				
-		    me.debitAmount = new ui.ctl.Input.Money({
-		        id: "DebitAmount" ,
-				appendToId : "JournalEntryDebitControlHolder",
-				changeFunction: function() { parent.fin.glmMasterUi.modified(); }
-		    });	
-			
-		    me.debitAmount.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( ui.ctl.Input.Validation.required )
+                var enteredText = me.justification.getValue();
 
-			if(parent.fin.glmMasterUi.journalEntrys.length <= 0) {
+                if (enteredText === "")
+                    return;
 
-				me.journalEntryCredit.allowAdds = false;
-				me.journalEntryDebit.allowAdds = false;
-				
-				me.journalEntryCredit.addColumn("accountId", "accountId", "Credit Account", "Credit Account", 150);
-				me.journalEntryCredit.addColumn("amount", "amount", "Amount", "Amount", 100);
-	
-				me.journalEntryDebit.addColumn("accountId", "accountId", "Debit Account", "Debit Account", 150);
-				me.journalEntryDebit.addColumn("amount", "amount", "Amount", "Amount", 100);
-			}
-			else if(parent.fin.glmMasterUi.journalEntrys[parent.fin.glmMasterUi.journalEntry.activeRowIndex].status != "Open") {
+                if (enteredText.substring(0, 3) !== "RCL")
+                    this.setInvalid("Justification must start with 'RCL'.");
+            });
 
-				me.journalEntryCredit.allowAdds = false;
-				me.journalEntryDebit.allowAdds = false;
-				
-				me.journalEntryCredit.addColumn("accountId", "accountId", "Credit Account", "Credit Account", 150, function( account ){ return account.code + ' ' + account.name; });
-				me.journalEntryCredit.addColumn("amount", "amount", "Amount", "Amount", 100, function( amount ){ return amount.toFixed(2); });
-	
-				me.journalEntryDebit.addColumn("accountId", "accountId", "Debit Account", "Debit Account", 150, function( account ){ return account.code + ' ' + account.name; });
-				me.journalEntryDebit.addColumn("amount", "amount", "Amount", "Amount", 100, function( amount ){ return amount.toFixed(2); });
-			}
-			else {
-				me.journalEntryCredit.addColumn("accountId", "accountId", "Credit Account", "Credit Account", 150, function( account ){ return account.code + ' ' + account.name; }, me.creditAccount);
-				me.journalEntryCredit.addColumn("amount", "amount", "Amount", "Amount", 100, function( amount ){ return amount.toFixed(2); }, me.creditAmount);
-	
-				me.journalEntryDebit.addColumn("accountId", "accountId", "Debit Account", "Debit Account", 150, function( account ){ return account.code + ' ' + account.name; }, me.debitAccount);
-				me.journalEntryDebit.addColumn("amount", "amount", "Amount", "Amount", 100, function( amount ){ return amount.toFixed(2); }, me.debitAmount);
-			}
-			
-			me.journalEntryCredit.addColumn("transactionStatusTitle", "transactionStatusTitle", "Status", "Status", null);
-			me.journalEntryCredit.capColumns();
-			
-			me.journalEntryDebit.addColumn("transactionStatusTitle", "transactionStatusTitle", "Status", "Status", null);
-			me.journalEntryDebit.capColumns();
-		},	
-		
-		resizeControls: function() {
-			var me = this;
-			
-			me.creditAccount.resizeText();
-			me.creditAmount.resizeText();
-			me.debitAccount.resizeText();
-			me.debitAmount.resizeText();
-			me.resize();
-		},
-		
-		configureCommunications: function(){
-			var me = this;
-			
-			me.accounts = [];
-			me.accountStore = me.cache.register({
-				storeId: "accounts",
-				itemConstructor: fin.glm.journalEntry.Account,
-				itemConstructorArgs: fin.glm.journalEntry.accountArgs,
-				injectionArray: me.accounts
-			});
-			
-			me.journalEntryItems = [];
-			me.journalEntryItemStore = me.cache.register({
-				storeId: "journalEntryItems",
-				itemConstructor: fin.glm.journalEntry.JournalEntryItem,
-				itemConstructorArgs: fin.glm.journalEntry.journalEntryItemArgs,
-				injectionArray: me.journalEntryItems,
-				lookupSpec: {accountId: me.accounts}
-			});			
-		},
-				
-		accountsLoaded: function() {
-			var me = this;
-			var account;
-			
-			for (var index = 0; index < parent.fin.glmMasterUi.accounts.length; index++) {
-				account = parent.fin.glmMasterUi.accounts[index];
-				me.accounts.push(new fin.glm.journalEntry.Account(account.id, account.number, account.code, account.name))
-			}
-			
-			me.creditAccount.reset();
-			me.creditAccount.setData(me.accounts);
-			
-			me.debitAccount.reset();
-			me.debitAccount.setData(me.accounts);	
+            me.assignment = new ui.ctl.Input.Text({
+                id: "Assignment",
+                maxLength: 18,
+                changeFunction: function() { me.modified(); }
+            });
 
-			me.journalEntryItemsLoad();
-		},	
+			me.anchorSearch = new ui.ctl.buttons.Sizeable({
+                id: "AnchorSearch",
+                className: "iiButton",
+                text: "<span>&nbsp;&nbsp;Search&nbsp;&nbsp;</span>",
+                clickFunction: function() { me.actionSearchItem(); },
+                hasHotState: true
+            });
 
-		journalEntryItemsLoad: function(){
-			var me = this;
-			
-			$("#messageToUser").html("Loading");
-			$("#pageLoading").show();
-			
-			me.journalEntryItemStore.reset();
-			me.journalEntryItemStore.fetch("userId:[user],journalEntryId:" + me.journalEntryId + ",transferTypeId:0,", me.journalEntryItemsLoaded, me);
-		},
-		
-		journalEntryItemsLoaded: function(me, activeId){
+            me.anchorNew = new ui.ctl.buttons.Sizeable({
+                id: "AnchorNew",
+                className: "iiButton",
+                text: "<span>&nbsp;&nbsp;New&nbsp;&nbsp;</span>",
+                clickFunction: function() { me.actionNewItem(); },
+                hasHotState: true
+            });
 
-			var index = 0;
-			
-			//UI level Security
-			if(parent.fin.glmMasterUi.journalEntryReadOnly){
-				me.journalEntryCredit.columns["accountId"].inputControl = null;
-				me.journalEntryCredit.columns["amount"].inputControl = null;
-				me.journalEntryCredit.allowAdds = false;
-				
-				me.journalEntryDebit.columns["accountId"].inputControl = null;
-				me.journalEntryDebit.columns["amount"].inputControl = null;
-				me.journalEntryDebit.allowAdds = false;
-			}
+            me.anchorView = new ui.ctl.buttons.Sizeable({
+                id: "AnchorView",
+                className: "iiButton",
+                text: "<span>&nbsp;View&nbsp;</span>",
+                clickFunction: function() { me.actionViewItem(); },
+                hasHotState: true
+            });
 
-			me.creditTotal = 0.00;
-			me.debitTotal = 0.00;
+            me.anchorCancelJE = new ui.ctl.buttons.Sizeable({
+                id: "AnchorCancelJE",
+                className: "iiButton",
+                text: "<span>&nbsp;&nbsp;Cancel&nbsp;&nbsp;</span>",
+                clickFunction: function() { me.actionCancelJEItem(); },
+                hasHotState: true
+            });
 
-			me.journalEntryCreditItems = [];
-			me.journalEntryDebitItems = [];
-			
-			for(index = 0; index < me.journalEntryItems.length; index++){
-				
-				if (me.journalEntryItems[index].transferTypeId == "1"){ //Credit
-					me.journalEntryCreditItems.push(me.journalEntryItems[index]);
-					me.creditTotal += parseFloat(me.journalEntryItems[index].amount);
-				}
-				else {
-					me.journalEntryDebitItems.push(me.journalEntryItems[index]);
-					me.debitTotal += parseFloat(me.journalEntryItems[index].amount);
-				}
-			}
+            me.anchorNext = new ui.ctl.buttons.Sizeable({
+                id: "AnchorNext",
+                className: "iiButton",
+                text: "<span>&nbsp;&nbsp;Next&nbsp;&nbsp;</span>",
+                clickFunction: function() { me.actionNextItem(); },
+                hasHotState: true
+            });
 
-			me.journalEntryCredit.setData(me.journalEntryCreditItems);
-			me.journalEntryDebit.setData(me.journalEntryDebitItems);
+            me.anchorSave = new ui.ctl.buttons.Sizeable({
+                id: "AnchorSave",
+                className: "iiButton",
+                text: "<span>&nbsp;&nbsp;Save&nbsp;&nbsp;</span>",
+                clickFunction: function() { me.actionSaveItem(); },
+                hasHotState: true
+            });
 
-			$("#CreditTotal").html(me.creditTotal.toFixed(2));
-			$("#DebitTotal").html(me.debitTotal.toFixed(2));
+            me.anchorCancel = new ui.ctl.buttons.Sizeable({
+                id: "AnchorCancel",
+                className: "iiButton",
+                text: "<span>&nbsp;&nbsp;Cancel&nbsp;&nbsp;</span>",
+                clickFunction: function() { me.actionCancelItem(); },
+                hasHotState: true
+            });
+        },
 
-			$("#pageLoading").hide();
-			me.resizeControls();
-		},
-		
-		resetGrids: function() {
-			var me = this;
-			
-			me.journalEntryCredit.setData([]);
-			me.journalEntryDebit.setData([]);
-			$("#CreditTotal").html("");
-			$("#DebitTotal").html("");
-		},
+        configureCommunications: function() {
+            var me = this;
 
-		controlKeyProcessor: function () {
-			var args = ii.args(arguments, {
-				event: {type: Object}		// The (key) event object
-			});			
-			var event = args.event;
-			var me = event.data;
-			var processed = false;
-			
-			if (event.ctrlKey) {
-				
-				switch (event.keyCode) {
-					case 68: //Ctrl+D
-						parent.fin.glmMasterUi.actionDeleteItem();
-						processed = true;
-						break;
+            me.hirNodes = [];
+            me.hirNodeStore = me.cache.register({
+                storeId: "hirNodes",
+                itemConstructor: fin.glm.journalEntry.HirNode,
+                itemConstructorArgs: fin.glm.journalEntry.hirNodeArgs,
+                injectionArray: me.hirNodes
+            });
 
-					case 78: // Ctrl+N
-						parent.fin.glmMasterUi.actionNewItem();
-						processed = true;
-						break;
-						
-					case 83: //Ctrl+S
-						me.actionSaveItem();
-						processed = true;
-						break;
+            me.houseCodes = [];
+            me.houseCodeStore = me.cache.register({
+                storeId: "hcmHouseCodes",
+                itemConstructor: fin.glm.journalEntry.HouseCode,
+                itemConstructorArgs: fin.glm.journalEntry.houseCodeArgs,
+                injectionArray: me.houseCodes
+            });
 
-					case 85: //Ctrl+U
-						me.actionUndoItem();
-						processed = true;
-						break;
-				}
-				
-				if (processed) {
-					return false;
-				}
-			}
-		},
-		
-		actionUndoItem: function(){
-			var me = this;			
-			
-			me.journalEntryCredit.body.deselectAll();
-			me.journalEntryDebit.body.deselectAll();
-			
-			me.journalEntryCredit.setData([]);
-			me.journalEntryDebit.setData([]);
+            me.accounts = [];
+            me.accountStore = me.cache.register({
+                storeId: "accounts",
+                itemConstructor: fin.glm.journalEntry.Account,
+                itemConstructorArgs: fin.glm.journalEntry.accountArgs,
+                injectionArray: me.accounts
+            });
 
-			me.journalEntryItemsLoad();
-		},
-		
-		actionSaveItem: function(){
-			var me = this;			
-			var item = [];
-			var index = 0;
-			
-			if(parent.fin.glmMasterUi.journalEntryReadOnly) return;
-			
-			if(me.journalEntryCredit.activeRowIndex < 0) return;
-			if(me.journalEntryDebit.activeRowIndex < 0) return;
-			
-			me.journalEntryCredit.body.deselectAll();
-			me.journalEntryDebit.body.deselectAll();
-			
-			me.validator.forceBlur();			
-			
-			// Check to see if the data entered is valid
-			if( !me.validator.queryValidity(true)){
-				alert( "In order to save, the errors on the page must be corrected.");
-				return false;
-			}
-			
-			if ((parent.fin.glmMasterUi.journalEntrys.length == 0) 
-				|| (me.journalEntryCredit.data.length == 0 && me.journalEntryDebit.data.length == 0))
-				return;
-			
-			me.creditTotal = 0.00;
-			me.debitTotal = 0.00;
-			
-			for(index = 0; index < me.journalEntryCreditItems.length; index++){
-			
-				item.push(
-					new fin.glm.journalEntry.JournalEntryItem(
-						 me.journalEntryCreditItems[index].id //id: {type: Number},
-						, parseInt(me.journalEntryId) //journalEntryId: {type: Number},
-						, '1/1/1900' //expenseDate: {type: Date},
-						, '0' //associatedRecurringFixedCost: {type: String},
-						, parseFloat('-' + me.journalEntryCreditItems[index].amount) //amount: {type: String},
-						, me.journalEntryCreditItems[index].accountId //accountId: {type: fin.glm.journalEntry.Account, required: false},
-						, 1 //transferTypeId: {type: Number},
-						, 0 //transactionStatusTypeId: {type: Number},
-						, '' //transactionStatusTitle:{type: String},
-						, true //active: {type: Boolean}
-					)
-				);
-				
-				me.creditTotal += parseFloat(me.journalEntryCreditItems[index].amount);
-			}
-			
-			for(index = 0; index < me.journalEntryDebitItems.length; index++){
-			
-				item.push(
-					new fin.glm.journalEntry.JournalEntryItem(
-						 me.journalEntryDebitItems[index].id //id: {type: Number},
-						, parseInt(me.journalEntryId) //journalEntryId: {type: Number},
-						, '1/1/1900' //expenseDate: {type: Date},
-						, '0' //associatedRecurringFixedCost: {type: String},
-						, me.journalEntryDebitItems[index].amount //amount: {type: String},
-						, me.journalEntryDebitItems[index].accountId //accountId: {type: fin.glm.journalEntry.Account, required: false},
-						, 2 //transferTypeId: {type: Number},
-						, 0 //transactionStatusTypeId: {type: Number},
-						, '' //transactionStatusTitle:{type: String},
-						, true //active: {type: Boolean}
-					)
-				);
-				
-				me.debitTotal += parseFloat(me.journalEntryDebitItems[index].amount);
-			}
-			
-			$("#CreditTotal").html(me.creditTotal.toFixed(2));
-			$("#DebitTotal").html(me.debitTotal.toFixed(2));
-			
-			if(me.creditTotal != me.debitTotal){
-				alert('The Total Credit Amount must equal the Total Debit Amount.');
-				return false;
-			}
+            me.journalEntries = [];
+            me.journalEntryStore = me.cache.register({
+                storeId: "journalEntrys",
+                itemConstructor: fin.glm.journalEntry.JournalEntry,
+                itemConstructorArgs: fin.glm.journalEntry.journalEntryArgs,
+                injectionArray: me.journalEntries,
+                lookupSpec: { accountDebit: me.accounts, accountCredit: me.accounts }
+            });
+        },
 
-			var xml = me.saveXmlBuild(item);
+        setStatus: function(status) {
 
-			$("#messageToUser").html("Saving");
-			$("#pageLoading").show();
-			
-			// Send the object back to the server as a transaction
-			me.transactionMonitor.commit({
-				transactionType: "itemUpdate",
-				transactionXml: xml,
-				responseFunction: me.saveResponse,
-				referenceData: {me: me, item: item}
-			});
-			
-			return true;
-		},
-		
-		saveXmlBuild: function(){
-			var args = ii.args(arguments,{
-				item: {type: [fin.glm.journalEntry.JournalEntryItem]}
-			});
-			
-			var me = this;
-			var item = args.item;
-			var xml = "";
-			var index = 0;
-			
-			for (var index=0; index < me.journalEntryCredit.deleteTransactions.length; index++) {
+            fin.cmn.status.setStatus(status);
+        },
 
-				xml += '<journalEntryItemDelete';
-				xml += ' id="' + me.journalEntryCredit.deleteTransactions[index] + '"';
-				xml += '/>';
-			};
-			
-			for (var index=0; index < me.journalEntryDebit.deleteTransactions.length; index++) {
+        dirtyCheck: function(me) {
 
-				xml += '<journalEntryItemDelete';
-				xml += ' id="' + me.journalEntryDebit.deleteTransactions[index] + '"';
-				xml += '/>';
-			};
-			
-			for (index in item) {
-				
-				xml += '<journalEntryItem'
-					+ ' id="' + item[index].id + '"'
-					+ ' journalEntryId="' + item[index].journalEntryId + '"'
-					+ ' expenseDate="' + item[index].expenseDate + '"'
-					+ ' associatedRecurringFixedCost="' + item[index].associatedRecurringFixedCost + '"'
-					+ ' amount="' + item[index].amount + '"'
-					+ ' accountId="' + item[index].accountId.id + '"'
-					+ ' transferTypeId="' + item[index].transferTypeId + '"'
-					+ ' transactionStatusTypeId="' + item[index].transactionStatusTypeId + '"'
-					+ ' transactionStatusTitle="' + item[index].transactionStatusTitle + '"'
-					+ ' active="' + item[index].active + '"'
-					+ '/>';
-			}
-			
-			return xml;
-		},
-		
-		saveResponse: function(){
-			var args = ii.args(arguments, {
-				transaction: {type: ii.ajax.TransactionMonitor.Transaction},	
-				xmlNode: {type: "XmlNode:transaction"}							
-			});
+            return !fin.cmn.status.itemValid();
+        },
 
-			$("#pageLoading").hide();
+        modified: function() {
+            var args = ii.args(arguments, {
+                modified: {type: Boolean, required: false, defaultValue: true}
+            });
+            var me = this;
 
-			var transaction = args.transaction;
-			var me = transaction.referenceData.me;
-			var item = transaction.referenceData.item;
-			var id =  parseInt($(this).attr("id"),10);
-			var clientId = parseInt($(this).attr("clientId"),10);
-			var success = true;
-			var errorMessage = "";
-			var status = $(args.xmlNode).attr("status");
-			var traceType = ii.traceTypes.errorDataCorruption;
-			var rowCounter = 0;
-			var debitRowCounter = 0;
-			
-			if(status == "success"){
-				parent.fin.glmMasterUi.modified(false);
-				$(args.xmlNode).find("*").each(function (){
+            parent.fin.appUI.modified = args.modified;
+            if (args.modified)
+                me.setStatus("Edit");
+        },
 
-					switch (this.tagName) {
-						case "journalEntryItem":
-							
-							id = parseInt($(this).attr("id"), 10);
-							clientId = parseInt($(this).attr("clientId"), 10);
-							
-							if (rowCounter < me.journalEntryCreditItems.length) {
-								if (me.journalEntryCreditItems[rowCounter] != undefined) {
-									//if new record
-									if (me.journalEntryCreditItems[rowCounter].id == 0) {
-										me.journalEntryCreditItems[rowCounter].transferTypeId = 1; //Credit
-										me.journalEntryCreditItems[rowCounter].transactionStatusTypeId = 1;
-										me.journalEntryCreditItems[rowCounter].transactionStatusTitle = 'Open';
-									}
-									
-									me.journalEntryCreditItems[rowCounter].id = id;
-									me.journalEntryCredit.body.renderRow(rowCounter, rowCounter);
-								}
-							}
-							else{
-								if (me.journalEntryDebitItems[debitRowCounter] != undefined) {
-									//if new record
-									if (me.journalEntryDebitItems[debitRowCounter].id == 0) {
-										me.journalEntryDebitItems[debitRowCounter].transferTypeId = 2; //Credit
-										me.journalEntryDebitItems[debitRowCounter].transactionStatusTypeId = 1;
-										me.journalEntryDebitItems[debitRowCounter].transactionStatusTitle = 'Open';
-									}
-									
-									me.journalEntryDebitItems[debitRowCounter].id = id;
-									me.journalEntryDebit.body.renderRow(debitRowCounter, debitRowCounter);
-								}
-								
-								debitRowCounter++;
-							}
-							
-							rowCounter++;
-							break;
-					}
-				});
-				
-				var indexJournalEntrySelected = parent.fin.glmMasterUi.journalEntry.activeRowIndex;
-				parent.fin.glmMasterUi.journalEntrys[indexJournalEntrySelected].amount = me.creditTotal.toFixed(2);
-				parent.fin.glmMasterUi.journalEntry.body.renderRow(indexJournalEntrySelected, indexJournalEntrySelected);
-			}
-			else{
-				alert('Error while updating Journal Entry Items: ' + $(args.xmlNode).attr("message"));
-				errorMessage = $(args.xmlNode).attr("error");
-				if( status == "invalid" ){
-					traceType = ii.traceTypes.warning;
-				}
-				else{
-					errorMessage += " [SAVE FAILURE]";
-				}
-			}
-		}
-	}
+        setLoadCount: function() {
+            var me = this;
+
+            me.loadCount++;
+            me.setStatus("Loading");
+            $("#messageToUser").text("Loading");
+            $("#pageLoading").fadeIn("slow");
+        },
+
+        checkLoadCount: function() {
+            var me = this;
+
+            me.loadCount--;
+            if (me.loadCount <= 0) {
+                me.setStatus("Loaded");
+                $("#pageLoading").fadeOut("slow");
+            }
+        },
+
+        initialize: function() {
+
+            $("#AnchorView").hide();
+            $("#AnchorCancelJE").hide();
+        },
+
+        setTabIndexes: function() {
+            var me = this;
+
+            me.glCodeDebit.text.tabIndex = 1;
+            me.glCodeCredit.text.tabIndex = 2;
+            me.amount.text.tabIndex = 3;
+            me.justification.text.tabIndex = 4;
+            me.assignment.text.tabIndex = 5;
+        },
+
+        resizeControls: function() {
+            var me = this;
+
+            me.glCodeDebit.resizeText();
+            me.glCodeCredit.resizeText();
+            me.amount.resizeText();
+            me.justification.resizeText();
+            me.assignment.resizeText();
+            me.resize();
+        },
+
+        statusTypesLoaded: function() {
+            var me = this;
+
+            me.statusTypes = [];
+            me.statusTypes.push(new fin.glm.journalEntry.StatusType(0, "[All]"));
+            me.statusTypes.push(new fin.glm.journalEntry.StatusType(8, "Approved"));
+            me.statusTypes.push(new fin.glm.journalEntry.StatusType(9, "Completed"));
+            me.statusTypes.push(new fin.glm.journalEntry.StatusType(3, "Posted"));
+            me.statusTypes.push(new fin.glm.journalEntry.StatusType(6, "Cancelled"));
+            me.statusType.setData(me.statusTypes);
+            me.statusType.select(1, me.statusType.focused);
+        },
+
+        accountsLoaded: function(me, activeId) {
+
+            for (var index = 0; index < me.accounts.length; index++) {
+                var item = new fin.glm.journalEntry.Account(me.accounts[index].id, me.accounts[index].code, me.accounts[index].name);
+                me.glDebitAccounts.push(item);
+            }
+            me.glCodeDebit.setData(me.glDebitAccounts);
+            me.loadJournalEntries();
+        },
+
+        actionSearchItem: function() {
+            var me = this;
+
+            me.loadJournalEntries();
+        },
+
+        houseCodesLoaded: function(me, activeId) {
+
+            if (parent.fin.appUI.houseCodeId === 0) {
+                if (me.houseCodes.length <= 0) {
+                    return me.houseCodeSearchError();
+                }
+
+                me.houseCodeGlobalParametersUpdate(false, me.houseCodes[0]);
+            }
+
+            me.houseCodeGlobalParametersUpdate(false);
+            me.resizeControls();
+        },
+
+        houseCodeChanged: function() {
+            var me = this;
+
+            me.lastSelectedRowIndex = -1;
+            me.loadJournalEntries();
+        },
+
+        loadJournalEntries: function() {
+            var me = this;
+            var statusType = me.statusType.indexSelected === -1 ? 0 : me.statusTypes[me.statusType.indexSelected].id;
+            var houseCodeId = $("#houseCodeText").val() !== "" ? parent.fin.appUI.houseCodeId : 0;
+
+            if (houseCodeId === 0 || !me.statusType.validate(true))
+                return;
+
+            $("#AnchorView").hide();
+            $("#AnchorCancelJE").hide();
+            me.journalEntryId = 0;
+            me.lastSelectedRowIndex = -1;
+            me.status = "";
+            me.setLoadCount();
+            me.journalEntryStore.reset();
+            me.journalEntryStore.fetch("userId:[user],journalEntryId:0,houseCodeId:" + houseCodeId + ",statusType:" + statusType, me.journalEntriesLoaded, me);
+        },
+
+        journalEntriesLoaded: function (me, activeId) {
+
+            me.journalEntryGrid.setData(me.journalEntries);
+            me.checkLoadCount();
+        },
+
+        itemSelect: function() {
+            var args = ii.args(arguments, {
+                index: {type: Number}
+            });
+            var me = this;
+            var index = args.index;
+            var item = me.journalEntryGrid.data[index];
+
+            me.lastSelectedRowIndex = index;
+            me.journalEntryId = item.id;
+            me.status = "";
+            //$("#AnchorView").show();
+            if (me.cancelApproved && item.statusType === 8)
+                $("#AnchorCancelJE").show();
+            else
+                $("#AnchorCancelJE").hide();
+        },
+
+        actionNewItem: function() {
+            var me = this;
+
+            if (parent.fin.appUI.houseCodeId === 0) {
+                alert("Please select the House Code before adding the new Journal Entry.");
+                return true;
+            }
+
+            me.journalEntryGrid.body.deselectAll();
+			me.validator.reset();
+			me.glCodeDebit.select(-1, me.glCodeDebit.focused);
+			me.glCodeCredit.reset();
+            me.amount.setValue("");
+            me.justification.setValue("");
+            me.assignment.setValue("");
+            me.journalEntryId = 0;
+            me.lastSelectedRowIndex = -1;
+            me.status = "NewJournalEntry";
+            me.wizardCount = 1;
+            me.modified(false);
+            me.setStatus("Normal");
+            loadPopup("journalEntryPopup");
+            me.actionShowWizard();
+			$("#AnchorCancelJE").hide();
+        },
+
+        actionViewItem: function() {
+            var me = this;
+
+            var item = me.journalEntryGrid.data[me.journalEntryGrid.activeRowIndex];
+            var itemIndex = ii.ajax.util.findIndexById(item.accountDebit.id.toString(), me.accounts);
+            if (itemIndex !== null && itemIndex >= 0)
+                me.glCodeDebit.select(itemIndex, me.glCodeDebit.focused);
+            me.glCodeCredit.setData(me.accounts);
+            itemIndex = ii.ajax.util.findIndexById(item.accountCredit.id.toString(), me.accounts);
+            if (itemIndex !== null && itemIndex >= 0)
+                me.glCodeCredit.select(itemIndex, me.glCodeCredit.focused);
+            me.amount.setValue(item.amount);
+            me.justification.setValue(item.justification);
+            me.assignment.setValue(item.assignment);
+			me.glCodeDebit.text.readOnly = true;
+            me.glCodeCredit.text.readOnly = true;
+            me.amount.text.readOnly = true;
+            me.justification.text.readOnly = true;
+            me.assignment.text.readOnly = true;
+            $("#Header").text("Journal Entry Details");
+            $("#GLCodeDebitContainer").show();
+            $("#GLCodeCreditContainer").show();
+            $("#GLCodeDebitAction").removeClass("iiInputAction");
+            $("#GLCodeCreditAction").removeClass("iiInputAction");
+            $("#AnchorNext").hide();
+            $("#AnchorSave").hide();
+            loadPopup("journalEntryPopup");
+            me.resizeControls();
+        },
+
+        actionNextItem: function() {
+            var me = this;
+
+            if (!me.validateJournalEntry()) {
+                return;
+            }
+
+            me.wizardCount++;
+            me.actionShowWizard();
+        },
+
+        validateJournalEntry: function() {
+            var me = this;
+
+            me.validator.forceBlur();
+            var valid = me.validator.queryValidity(true);
+
+            if (me.wizardCount === 1) {
+                if (!me.glCodeDebit.valid || !me.amount.valid || !me.justification.valid || !me.assignment.valid) {
+                    alert("In order to continue, the errors on the page must be corrected.");
+                    return false;
+                }
+            }
+            else if (me.wizardCount === 2) {
+                if (!me.glCodeCredit.valid) {
+                    alert("In order to save, the errors on the page must be corrected.");
+                    return false;
+                }
+            }
+            return true;
+        },
+
+        actionShowWizard: function() {
+            var me = this;
+
+            if (me.wizardCount === 1) {
+                $("#Header").text("GL Code To Be Debited");
+                $("#GLCodeDebitContainer").show();
+                $("#GLCodeCreditContainer").hide();
+                $("#AnchorNext").show();
+                $("#AnchorSave").hide();
+                me.amount.text.readOnly = false;
+                me.justification.text.readOnly = false;
+                me.assignment.text.readOnly = false;
+            }
+            else if (me.wizardCount === 2) {
+                $("#Header").text("GL Code To Be Credited");
+                $("#GLCodeDebitContainer").hide();
+                $("#GLCodeCreditContainer").show();
+                $("#AnchorNext").hide();
+                $("#AnchorSave").show();
+                me.amount.text.readOnly = true;
+                me.justification.text.readOnly = true;
+                me.assignment.text.readOnly = true;
+
+                for (var index = 0; index < me.accounts.length; index++) {
+                    if (me.accounts[index].id !== me.glDebitAccounts[me.glCodeDebit.indexSelected].id) {
+                        var item = new fin.glm.journalEntry.Account(me.accounts[index].id, me.accounts[index].code, me.accounts[index].name);
+                        me.glCreditAccounts.push(item);
+                    }
+                }
+                me.glCodeCredit.setData(me.glCreditAccounts);
+            }
+
+            me.resizeControls();
+        },
+
+        actionCancelItem: function() {
+            var me = this;
+
+            if (!parent.fin.cmn.status.itemValid())
+                return;
+
+            disablePopup("journalEntryPopup");
+
+            if (me.journalEntryGrid.activeRowIndex >= 0) {
+                me.journalEntryId = me.journalEntryGrid.data[me.journalEntryGrid.activeRowIndex].id;
+            }
+
+            me.wizardCount = 0;
+            me.status = "";
+            me.modified(false);
+            me.setStatus("Normal");
+        },
+
+        actionCancelJEItem: function() {
+            var me = this;
+
+            if (me.journalEntryGrid.activeRowIndex !== -1) {
+                me.status = "CancelJournalEntry";
+                me.actionSaveItem();
+            }
+        },
+
+        actionSaveItem: function() {
+            var me = this;
+            var item = [];
+
+            if (me.status === "NewJournalEntry") {
+                // Check to see if the data entered is valid
+                if (!me.validateJournalEntry()) {
+                    return false;
+                }
+                disablePopup("journalEntryPopup");
+
+                item = new fin.glm.journalEntry.JournalEntry(
+                    me.journalEntryId
+                    , parent.fin.appUI.houseCodeId
+                    , 8
+					, me.glDebitAccounts[me.glCodeDebit.indexSelected]
+                    , me.glCreditAccounts[me.glCodeCredit.indexSelected]
+                    , parseFloat(me.amount.getValue()).toFixed(2)
+					, me.justification.getValue()
+                    , me.assignment.getValue()
+                    );
+            }
+            else if (me.status === "CancelJournalEntry") {
+                item = me.journalEntryGrid.data[me.journalEntryGrid.activeRowIndex];
+                item.statusType = 6;
+            }
+
+            var xml = me.saveXmlBuildJournalEntry(item);
+
+            if (xml === "")
+                return;
+
+            me.setStatus("Saving");
+            $("#messageToUser").text("Saving");
+            $("#pageLoading").fadeIn("slow");
+
+            // Send the object back to the server as a transaction
+            me.transactionMonitor.commit({
+                transactionType: "itemUpdate",
+                transactionXml: xml,
+                responseFunction: me.saveResponse,
+                referenceData: {me: me, item: item}
+            });
+
+            return true;
+        },
+
+        saveXmlBuildJournalEntry: function() {
+            var args = ii.args(arguments,{
+                item: {type: fin.glm.journalEntry.JournalEntry}
+            });
+            var me = this;
+            var item = args.item;
+            var xml = "";
+
+            if (me.status === "NewJournalEntry") {
+                xml += '<journalEntry';
+                xml += ' id="' + item.id + '"';
+                xml += ' houseCodeId="' + item.houseCodeId + '"';
+                xml += ' statusType="' + item.statusType + '"';
+				xml += ' accountDebit="' + item.accountDebit.id + '"';
+                xml += ' accountCredit="' + item.accountCredit.id + '"';
+                xml += ' amount="' + item.amount + '"';
+				xml += ' justification="' + ui.cmn.text.xml.encode(item.justification) + '"';
+                xml += ' assignment="' + ui.cmn.text.xml.encode(item.assignment) + '"';
+                xml += '/>';
+            }
+            else if (me.status === "CancelJournalEntry") {
+                xml += '<journalEntryStatusUpdate';
+                xml += ' id="' + item.id + '"';
+                xml += ' statusType="' + item.statusType + '"';
+                xml += '/>';
+            }
+
+            return xml;
+        },
+
+        saveResponse: function() {
+            var args = ii.args(arguments, {
+                transaction: {type: ii.ajax.TransactionMonitor.Transaction},
+                xmlNode: {type: "XmlNode:transaction"}
+            });
+            var transaction = args.transaction;
+            var me = transaction.referenceData.me;
+            var item = transaction.referenceData.item;
+            var status = $(args.xmlNode).attr("status");
+
+            if (status === "success") {
+                $(args.xmlNode).find("*").each(function () {
+                    if (this.tagName === "journalEntry") {
+                        if (me.status === "NewJournalEntry") {
+                                item.id = parseInt($(this).attr("id"), 10);
+                                me.journalEntries.push(item);
+                                me.journalEntryGrid.setData(me.journalEntries);
+                                me.journalEntryGrid.body.select(me.journalEntries.length - 1);
+                        }
+                        else if (me.status === "CancelJournalEntry") {
+                            me.journalEntries[me.lastSelectedRowIndex] = item;
+                            me.journalEntryGrid.body.renderRow(me.lastSelectedRowIndex, me.lastSelectedRowIndex);
+                            $("#AnchorCancelJE").hide();
+                        }
+                    }
+                });
+
+                me.setStatus("Saved");
+                me.status = "";
+                me.modified(false);
+            }
+            else {
+                me.setStatus("Error");
+                alert("[SAVE FAILURE] Error while updating Journal Entry details: " + $(args.xmlNode).attr("message"));
+            }
+
+            $("#pageLoading").fadeOut("slow");
+        }
+    }
 });
 
-function main(){
-	fin.journalEntryUi = new fin.glm.journalEntry.UserInterface();
-	fin.journalEntryUi.resize();
+function loadPopup(id) {
+    centerPopup(id);
+
+    $("#backgroundPopup").css({
+        "opacity": "0.5"
+    });
+    $("#backgroundPopup").fadeIn("slow");
+    $("#" + id).fadeIn("slow");
+}
+
+function disablePopup(id) {
+
+    $("#backgroundPopup").fadeOut("slow");
+    $("#" + id).fadeOut("slow");
+}
+
+function centerPopup(id) {
+    var windowWidth = document.documentElement.clientWidth;
+    var windowHeight = document.documentElement.clientHeight;
+    var popupWidth = $("#" + id).width();
+    var popupHeight = $("#" + id).height();
+
+    $("#" + id + ", #popupLoading").css({
+        "width": popupWidth,
+        "height": popupHeight,
+        "top": windowHeight/2 - popupHeight/2,
+        "left": windowWidth/2 - popupWidth/2
+    });
+}
+
+function main() {
+    fin.glm.journalEntryUi = new fin.glm.journalEntry.UserInterface();
+    fin.glm.journalEntryUi.resize();
+    fin.houseCodeSearchUi = fin.glm.journalEntryUi;
 }
