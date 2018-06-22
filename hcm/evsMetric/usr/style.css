@@ -120,7 +120,7 @@
 	overflow-y: hidden;
 }
 
-#LaborControlContainer, #QualityAssuranceContainer {
+#HospitalContractContainer, #LaborControlContainer, #QualityAssuranceContainer {
 	position: relative;
 	overflow-x: hidden;
 	overflow-y: auto;

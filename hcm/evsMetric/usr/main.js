@@ -443,7 +443,13 @@ ii.Class({
             me.thirdPartySatisfaction = new ui.ctl.Input.DropDown.Filtered({
                 id: "ThirdPartySatisfaction",
                 formatFunction: function(type) { return type.title; },
-                changeFunction: function() { me.modified();	}
+                changeFunction: function() {
+					me.modified();
+					if (me.thirdPartySatisfaction.indexSelected === -1)
+						$("#spnThirdPartySatisfaction").html("");
+					else
+						$("#spnThirdPartySatisfaction").html(me.thirdPartySatisfaction.lastBlurValue);
+				}
             });
 
             me.thirdPartySatisfaction.makeEnterTab()
@@ -1815,6 +1821,7 @@ ii.Class({
             me.types.push(new fin.hcm.evsMetric.Type(0, "No"));
             me.supportedByNPC.setData(me.types);
             me.hygiena.setData(me.types);
+			me.union.setData(me.types);
         },
 
         metricTypesLoaded: function(me, activeId) {
@@ -1822,7 +1829,6 @@ ii.Class({
             me.thirdPartySatisfactionTypes = [];
             me.uvManufacturerTypes = [];
             me.wandaTypes = [];
-            me.unionTypes = [];
             me.microFiberTypes = [];
             me.mopTypes = [];
             me.cartManufacturerTypes = [];
@@ -1834,8 +1840,6 @@ ii.Class({
                     me.uvManufacturerTypes.push(new fin.hcm.evsMetric.Type(me.metricTypes[index].id, me.metricTypes[index].title));
                 else if (me.metricTypes[index].subType === "Wanda")
                     me.wandaTypes.push(new fin.hcm.evsMetric.Type(me.metricTypes[index].id, me.metricTypes[index].title));
-                else if (me.metricTypes[index].subType === "Union")
-                    me.unionTypes.push(new fin.hcm.evsMetric.Type(me.metricTypes[index].id, me.metricTypes[index].title));
                 else if (me.metricTypes[index].subType === "Micro Fiber")
                     me.microFiberTypes.push(new fin.hcm.evsMetric.Type(me.metricTypes[index].id, me.metricTypes[index].title));
                 else if (me.metricTypes[index].subType === "MOP")
@@ -1847,7 +1851,6 @@ ii.Class({
             me.thirdPartySatisfaction.setData(me.thirdPartySatisfactionTypes);
             me.uvManufacturer.setData(me.uvManufacturerTypes);
             me.wanda.setData(me.wandaTypes);
-            me.union.setData(me.unionTypes);
             me.microFiber.setData(me.microFiberTypes);
             me.mop.setData(me.mopTypes);
             me.cartManufacturer.setData(me.cartManufacturerTypes);
@@ -1909,6 +1912,7 @@ ii.Class({
                 itemIndex = ii.ajax.util.findIndexById(me.metrics[0].thirdPartySatisfaction.toString(), me.thirdPartySatisfaction.data);
                 if (itemIndex !== null && itemIndex >= 0)
                     me.thirdPartySatisfaction.select(itemIndex, me.thirdPartySatisfaction.focused);
+				$("#spnThirdPartySatisfaction").html(me.thirdPartySatisfaction.lastBlurValue);
                 itemIndex = ii.ajax.util.findIndexById(me.metrics[0].taskManagementSystem.toString(), me.taskManagementSystem.data);
                 if (itemIndex !== null && itemIndex >= 0)
                     me.taskManagementSystem.select(itemIndex, me.taskManagementSystem.focused);
@@ -1952,6 +1956,7 @@ ii.Class({
                 me.adminObjectiveStore.fetch("userId:[user],evsMetricId:" + me.evsMetricId, me.adminObjectivesLoaded, me);
             }
             else {
+				$("#spnThirdPartySatisfaction").html("");
                 me.evsMetricId = 0;
                 me.setGridData();
                 me.checkLoadCount();
@@ -2626,7 +2631,7 @@ ii.Class({
                 , (me.uvManufacturer.indexSelected >= 0 ? me.uvManufacturer.data[me.uvManufacturer.indexSelected].id : 0)
                 , (me.hygiena.indexSelected >= 0 ? me.hygiena.data[me.hygiena.indexSelected].id : -1)
                 , (me.wanda.indexSelected >= 0 ? me.wanda.data[me.wanda.indexSelected].id : 0)
-                , (me.union.indexSelected >= 0 ? me.union.data[me.union.indexSelected].id : 0)
+                , (me.union.indexSelected >= 0 ? me.union.data[me.union.indexSelected].id : -1)
                 , (me.microFiber.indexSelected >= 0 ? me.microFiber.data[me.microFiber.indexSelected].id : 0)
                 , (me.mop.indexSelected >= 0 ? me.mop.data[me.mop.indexSelected].id : 0)
                 , (me.cartManufacturer.indexSelected >= 0 ? me.cartManufacturer.data[me.cartManufacturer.indexSelected].id : 0)
