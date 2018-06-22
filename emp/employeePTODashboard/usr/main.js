@@ -352,7 +352,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
 		if (reportURL === "")
 			return;
 
-		parametersList = "EmpEmployeeGeneral=" + $scope.selectedEmployee.id + "~EmpPTOYear=" + $scope.ptoYearId + "~EmpPTOType=" + $scope.selectedPTOType.id;
+		parametersList = "EmpEmployeeGeneral=" + $scope.selectedEmployee.id + "~EmpPTOYear=" + $scope.ptoYearId + "~EmpPTOType=" + $scope.selectedPTOType.ptoType;
 		$scope.generateReport(reportURL, parametersList);
     };
 
