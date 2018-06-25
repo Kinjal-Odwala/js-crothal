@@ -84,6 +84,7 @@ ii.Class({
 
             me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
             me.approveInProcess = me.authorizer.isAuthorized(me.authorizePath + "\\ApproveInProcess");
+			me.reExport = me.authorizer.isAuthorized(me.authorizePath + "\\ReExport");
 
             if (me.isAuthorized) {
                 $("#pageLoading").hide();
@@ -681,6 +682,14 @@ ii.Class({
                 hasHotState: true
             });
 
+			me.anchorReExport = new ui.ctl.buttons.Sizeable({
+                id: "AnchorReExport",
+                className: "iiButton",
+                text: "<span>&nbsp;&nbsp;Re-Export&nbsp;&nbsp;</span>",
+                clickFunction: function () { me.actionReExport(); },
+                hasHotState: true
+            });
+
             me.anchorEmployeeOK = new ui.ctl.buttons.Sizeable({
                 id: "AnchorEmployeeOK",
                 className: "iiButton",
@@ -983,6 +992,7 @@ ii.Class({
             $("#SearchRequestedDate").hide();
             $("#AnchorResendRequest").hide();
             $("#AnchorApprove").hide();
+			$("#AnchorReExport").hide();
             me.anchorCancel.display(ui.cmn.behaviorStates.disabled);
         },
 
@@ -1124,7 +1134,7 @@ ii.Class({
             if (me.statuses[me.statusType.indexSelected].id === 0) {
                 if (me.status === "CheckRequestResend")
                     me.payCheckRequests[index].statusType = 2;
-                else if (me.status === "CheckRequestApprove")
+                else if (me.status === "CheckRequestApprove" || me.status === "ReExport")
                     me.payCheckRequests[index].statusType = 8;
                 else
                     me.payCheckRequests[index].statusType = 6;
@@ -1465,6 +1475,7 @@ ii.Class({
             me.requestedDate.setValue(me.currentDate());
             $("#AnchorResendRequest").hide();
             $("#AnchorApprove").hide();
+			$("#AnchorReExport").hide();
             $("#AnchorSendRequest").show();
             $("#LabelState").html("<span id='nonRequiredFieldIndicator'>State:</span>");
             $("#LabelUnit").html("<span id='nonRequiredFieldIndicator'>Unit (House Code):</span>");
@@ -1501,6 +1512,7 @@ ii.Class({
             me.wageTypeDetailReadOnlyGrid.setHeight(150);
             $("#AnchorResendRequest").hide();
             $("#AnchorApprove").hide();
+			$("#AnchorReExport").hide();
             $("#AnchorSendRequest").show();
             $("#pageLoading").height(document.body.scrollHeight);
             me.setStatus("Loaded");
@@ -1557,6 +1569,7 @@ ii.Class({
                 me.resizeControls();
                 $("#AnchorResendRequest").show();
                 $("#AnchorApprove").hide();
+				$("#AnchorReExport").hide();
                 $("#AnchorSendRequest").hide();
                 $("#WageTypeDetailGrid").show();
                 $("#WageTypeDetailReadOnlyGrid").hide();
@@ -1577,6 +1590,11 @@ ii.Class({
                     $("#AnchorApprove").hide();
                     $("#AnchorSendRequest").show();
                 }
+
+				if (me.reExport && item.statusType === 9)
+					$("#AnchorReExport").show();
+				else
+					$("#AnchorReExport").hide();
 
                 me.setReadOnly(true);
                 me.anchorUndo.display(ui.cmn.behaviorStates.disabled);
@@ -1815,6 +1833,15 @@ ii.Class({
             $("#messageToUser").text("Approving Request");
             me.status = "CheckRequestApprove";
             me.actionSaveItem();
+        },
+
+		actionReExport: function () {
+            var me = this;
+
+            if (confirm("The selected check request will be exported again during export process. Are you sure you want to continue?")) {
+                me.status = "ReExport";
+                me.actionSaveItem();
+            }
         },
 
         actionResendRequestItem: function() {
@@ -2069,70 +2096,77 @@ ii.Class({
             var item = args.item;
             var xml = "";
 
-            xml += '<payCheckRequest';
-            xml += ' id="' + item.id + '"';
-            xml += ' houseCodeId="' + item.houseCodeId + '"';
-            xml += ' houseCodeTitle="' + ui.cmn.text.xml.encode(item.houseCodeTitle) + '"';
-            xml += ' checkRequestNumber="' + item.checkRequestNumber + '"';
-            xml += ' requestedDate="' + item.requestedDate + '"';
-            xml += ' deliveryDate="' + item.deliveryDate + '"';
-            xml += ' employeeNumber="' + item.employeeNumber + '"';
-            xml += ' employeeName="' + ui.cmn.text.xml.encode(item.employeeName) + '"';
-            xml += ' reasonForRequest="' + ui.cmn.text.xml.encode(item.reasonForRequest) + '"';
-            xml += ' termRequest="' + item.termRequest + '"';
-            xml += ' stateType="' + item.stateType + '"';
-            xml += ' terminationDate="' + item.terminationDate + '"';
-            xml += ' mealBreakCompliance="' + item.mealBreakCompliance + '"';
-			xml += ' paymentMethod="' + item.paymentMethod + '"';
-            xml += ' upsDeliveryToUnit="' + item.upsDeliveryToUnit + '"';
-            xml += ' saturdayDeliveryUnit="' + item.saturdayDeliveryUnit + '"';
-            xml += ' deliveryHouseCodeId="' + item.deliveryHouseCodeId + '"';
-            xml += ' deliveryHouseCodeTitle="' + ui.cmn.text.xml.encode(item.deliveryHouseCodeTitle) + '"';
-            xml += ' houseCodeAddress="' + ui.cmn.text.xml.encode(item.houseCodeAddress) + '"';
-            xml += ' upsPackageAttentionTo="' + ui.cmn.text.xml.encode(item.upsPackageAttentionTo) + '"';
-            xml += ' upsDeliveryToHome="' + item.upsDeliveryToHome + '"';
-            xml += ' saturdayDeliveryHome="' + item.saturdayDeliveryHome + '"';
-            xml += ' homeAddress="' + ui.cmn.text.xml.encode(item.homeAddress) + '"';
-            xml += ' requestorName="' + ui.cmn.text.xml.encode(item.requestorName) + '"';
-            xml += ' requestorEmail="' + ui.cmn.text.xml.encode(item.requestorEmail) + '"';
-            xml += ' requestorPhone="' + ui.cmn.text.xml.encode(item.requestorPhone) + '"';
-            xml += ' managerName="' + ui.cmn.text.xml.encode(item.managerName) + '"';
-            xml += ' managerEmail="' + ui.cmn.text.xml.encode(item.managerEmail) + '"';
-            xml += '/>';
-
-            for (var index = 0; index < me.wageTypeDetailGrid.data.length; index++) {
-                xml += '<payCheckRequestWageType';
-                xml += ' id="' + me.wageTypeDetailGrid.data[index].id + '"';
-                xml += ' payCheckRequestId="' + item.id + '"';
-                xml += ' payCodeId="' + me.wageTypeDetailGrid.data[index].payCode.id + '"';
-                xml += ' hours="' + me.wageTypeDetailGrid.data[index].hours + '"';
-                xml += ' earnings="' + me.wageTypeDetailGrid.data[index].earnings + '"';
-                xml += ' alternateBaseRate="' + me.wageTypeDetailGrid.data[index].alternateBaseRate + '"';
-                xml += ' date="' + ui.cmn.text.date.format(new Date(me.wageTypeDetailGrid.data[index].date), "mm/dd/yyyy") + '"';
-                xml += ' houseCodeId="' + me.wageTypeDetailGrid.data[index].houseCodeId + '"';
-                xml += ' houseCodeTitle="' + (me.wageTypeDetailGrid.data[index].houseCodeId != 0 ? ui.cmn.text.xml.encode(me.wageTypeDetailGrid.data[index].houseCodeTitle) : "") + '"';
-                xml += '/>';
-            }
-
-            xml += '<payCheckRequestNotification';
-            xml += ' id="0"';
-            xml += ' action="' + me.status + '"';
-            xml += ' appVersion="' + me.session.propertyGet("appVersion") + '"';
-            xml += '/>';
-
-            if (me.status == "CheckRequestCancel") {
-                xml += '<payCheckRequestStatus';
-                xml += ' id="' + item.id + '"';
-                xml += ' transactionStatusType="6"';
-                xml += '/>';
-            }
-
-            if (me.status == "CheckRequestApprove") {
-                xml += '<payCheckRequestStatus';
+			if (me.status === "ReExport") {
+				xml += '<payCheckRequestStatus';
                 xml += ' id="' + item.id + '"';
                 xml += ' transactionStatusType="8"';
                 xml += '/>';
             }
+			else {
+				xml += '<payCheckRequest';
+	            xml += ' id="' + item.id + '"';
+	            xml += ' houseCodeId="' + item.houseCodeId + '"';
+	            xml += ' houseCodeTitle="' + ui.cmn.text.xml.encode(item.houseCodeTitle) + '"';
+	            xml += ' checkRequestNumber="' + item.checkRequestNumber + '"';
+	            xml += ' requestedDate="' + item.requestedDate + '"';
+	            xml += ' deliveryDate="' + item.deliveryDate + '"';
+	            xml += ' employeeNumber="' + item.employeeNumber + '"';
+	            xml += ' employeeName="' + ui.cmn.text.xml.encode(item.employeeName) + '"';
+	            xml += ' reasonForRequest="' + ui.cmn.text.xml.encode(item.reasonForRequest) + '"';
+	            xml += ' termRequest="' + item.termRequest + '"';
+	            xml += ' stateType="' + item.stateType + '"';
+	            xml += ' terminationDate="' + item.terminationDate + '"';
+	            xml += ' mealBreakCompliance="' + item.mealBreakCompliance + '"';
+				xml += ' paymentMethod="' + item.paymentMethod + '"';
+	            xml += ' upsDeliveryToUnit="' + item.upsDeliveryToUnit + '"';
+	            xml += ' saturdayDeliveryUnit="' + item.saturdayDeliveryUnit + '"';
+	            xml += ' deliveryHouseCodeId="' + item.deliveryHouseCodeId + '"';
+	            xml += ' deliveryHouseCodeTitle="' + ui.cmn.text.xml.encode(item.deliveryHouseCodeTitle) + '"';
+	            xml += ' houseCodeAddress="' + ui.cmn.text.xml.encode(item.houseCodeAddress) + '"';
+	            xml += ' upsPackageAttentionTo="' + ui.cmn.text.xml.encode(item.upsPackageAttentionTo) + '"';
+	            xml += ' upsDeliveryToHome="' + item.upsDeliveryToHome + '"';
+	            xml += ' saturdayDeliveryHome="' + item.saturdayDeliveryHome + '"';
+	            xml += ' homeAddress="' + ui.cmn.text.xml.encode(item.homeAddress) + '"';
+	            xml += ' requestorName="' + ui.cmn.text.xml.encode(item.requestorName) + '"';
+	            xml += ' requestorEmail="' + ui.cmn.text.xml.encode(item.requestorEmail) + '"';
+	            xml += ' requestorPhone="' + ui.cmn.text.xml.encode(item.requestorPhone) + '"';
+	            xml += ' managerName="' + ui.cmn.text.xml.encode(item.managerName) + '"';
+	            xml += ' managerEmail="' + ui.cmn.text.xml.encode(item.managerEmail) + '"';
+	            xml += '/>';
+	
+	            for (var index = 0; index < me.wageTypeDetailGrid.data.length; index++) {
+	                xml += '<payCheckRequestWageType';
+	                xml += ' id="' + me.wageTypeDetailGrid.data[index].id + '"';
+	                xml += ' payCheckRequestId="' + item.id + '"';
+	                xml += ' payCodeId="' + me.wageTypeDetailGrid.data[index].payCode.id + '"';
+	                xml += ' hours="' + me.wageTypeDetailGrid.data[index].hours + '"';
+	                xml += ' earnings="' + me.wageTypeDetailGrid.data[index].earnings + '"';
+	                xml += ' alternateBaseRate="' + me.wageTypeDetailGrid.data[index].alternateBaseRate + '"';
+	                xml += ' date="' + ui.cmn.text.date.format(new Date(me.wageTypeDetailGrid.data[index].date), "mm/dd/yyyy") + '"';
+	                xml += ' houseCodeId="' + me.wageTypeDetailGrid.data[index].houseCodeId + '"';
+	                xml += ' houseCodeTitle="' + (me.wageTypeDetailGrid.data[index].houseCodeId != 0 ? ui.cmn.text.xml.encode(me.wageTypeDetailGrid.data[index].houseCodeTitle) : "") + '"';
+	                xml += '/>';
+	            }
+	
+	            xml += '<payCheckRequestNotification';
+	            xml += ' id="0"';
+	            xml += ' action="' + me.status + '"';
+	            xml += ' appVersion="' + me.session.propertyGet("appVersion") + '"';
+	            xml += '/>';
+	
+	            if (me.status == "CheckRequestCancel") {
+	                xml += '<payCheckRequestStatus';
+	                xml += ' id="' + item.id + '"';
+	                xml += ' transactionStatusType="6"';
+	                xml += '/>';
+	            }
+	            else if (me.status == "CheckRequestApprove") {
+	                xml += '<payCheckRequestStatus';
+	                xml += ' id="' + item.id + '"';
+	                xml += ' transactionStatusType="8"';
+	                xml += '/>';
+	            }
+			}
 
             return xml;
         },
@@ -2203,6 +2237,11 @@ ii.Class({
                             }
                             else if (me.status === "CheckRequestApprove") {
                                 alert("Payroll check request approved successfully.");
+                                me.resetGrid();
+                            }
+							else if (me.status === "ReExport") {
+                                alert("Payroll check request status updated successfully.");
+								$("#AnchorReExport").hide();
                                 me.resetGrid();
                             }
 
