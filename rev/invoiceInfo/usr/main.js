@@ -113,6 +113,11 @@ ii.Class({
 			me.taxExempt.makeEnterTab()
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation( function( isFinal, dataMap ) {
+
+					if ((this.focused || this.touched) && me.taxExempt.indexSelected === -1)
+						this.setInvalid("Please select the correct Tax Exempt.");
+				});
 			
 			me.taxId = new ui.ctl.Input.Text({
 				id: "TaxId",
@@ -322,14 +327,36 @@ ii.Class({
 				changeFunction: function() { me.modified(); },
 		        required: false
 		    });
-			
+
+			me.invoiceLogo.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation( function( isFinal, dataMap ) {
+
+					if (me.invoiceLogo.text.value === "")
+						return;
+
+					if (me.invoiceLogo.indexSelected === -1)
+						this.setInvalid("Please select the correct Invoice Logo.");
+				});
+
 			me.invoiceAddress = new ui.ctl.Input.DropDown.Filtered({
 		        id: "InvoiceAddress",
 				formatFunction: function( type ) { return type.title; },
 				changeFunction: function() { me.modified(); },
 		        required: false
 		    });
-			
+
+			me.invoiceAddress.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation( function( isFinal, dataMap ) {
+
+					if (me.invoiceAddress.text.value === "")
+						return;
+
+					if (me.invoiceAddress.indexSelected === -1)
+						this.setInvalid("Please select the correct Invoice Address.");
+				});
+
 			me.serviceLocation = new ui.ctl.Input.DropDown.Filtered({
 		        id: "ServiceLocation",
 				formatFunction: function(type) {
@@ -774,6 +801,7 @@ ii.Class({
 			if (me.invoice.printed)
 				return false;
 
+			me.billTo.focused = true;
 			me.validator.forceBlur();
 
 			// Check to see if the data entered is valid
