@@ -135,6 +135,7 @@ var getCurrentHcmHouseCode = function() {
 };
 
 pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$modal', function ($scope, EmpActions, $filter, $sce, $modal) {
+
 	$scope.authorizations = [];
 	$scope.states = [];
     $scope.ptoYears = [];
@@ -145,8 +146,8 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         return ($scope.loadingCount > 0 || $scope.pageLoading);
     };
     $scope.mainViewHeight = $(window).height() - 100;
-    $scope.employeeGridHeight = $(window).height() - 525;
-	$scope.employeeViewHeight = $(window).height() - 550;
+    $scope.employeeGridHeight = $(window).height() - 535;
+	$scope.employeeViewHeight = $(window).height() - 560;
 	$scope.initialize = true;
 	$scope.ptoYearId = 0;
 	$scope.dashboard = {};
@@ -154,7 +155,12 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
     $scope.dashboard.houseCodeId = typeof getCurrentHcmHouseCode() === "undefined" ? null : getCurrentHcmHouseCode();
     $scope.previousTabSelected = "Unit Dashboard";
     $scope.currentTabSelected = "";
-
+	$scope.orderByField = "firstName";
+	$scope.reverseSort = false;
+	$scope.selectedPlanAssignment = null;
+	$scope.selectedEmployee = null;
+	$scope.selectedPTOType = null;
+		
     var getCurrentHouseCodeId = function(callback) {
         EmpActions.getCurrentHouseCodeId(function(response) {
             callback(response);
@@ -281,6 +287,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
         $scope.planAssignments = [];
         $scope.employees = [];
 		$scope.empPTOBalanceHours = [];
+		$scope.selectedPlanAssignment = null;
 		$scope.selectedEmployee = null;
 		$scope.selectedPTOType = null;
         $scope.loadingTitle = " Loading...";
@@ -294,6 +301,18 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
 		EmpActions.getEmployees($scope.dashboard.houseCodeId, $scope.ptoYearId, 0, 0, 1, function(employees) {
 			$scope.employees = employees;
             setStatus("Normal");
+        });
+    };
+
+	$scope.onPlanAssignmentSelected = function(item) {
+        $scope.selectedPlanAssignment = item;
+        $scope.employees = [];
+        $scope.loadingTitle = " Loading...";
+        setStatus("Loading");
+
+        EmpActions.getEmployees($scope.dashboard.houseCodeId, $scope.ptoYearId, $scope.selectedPlanAssignment.ptoPlanId, 0, 1, function(employees) {
+			$scope.employees = employees;
+			setStatus("Normal");
         });
     };
 
@@ -317,7 +336,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
 		return "Employee #: " + item.employeeNumber + "\nStatus: " + item.status + "\nUnion: " + item.union + "\nEnrolled Plans: " + item.enrolledPlans;
     };
 
-	$scope.printPDFItem = function() {
+	$scope.unitRosterItem = function() {
 		var reportURL = "";
 		var parametersList = "";
 
@@ -527,7 +546,7 @@ pto.factory('EmpActions', ["$http", "$filter", '$rootScope', function($http, $fi
             }
         }).success(function(result) {
             callback(result);
-            $rootScope.loadingCount--;
+			$rootScope.loadingCount--;
             if (top.ii !== undefined) {
                 top.ii.Session.singleton.ajaxComplete();
                 top.ii.Session.singleton.ajaxStop();

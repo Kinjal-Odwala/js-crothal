@@ -60,7 +60,7 @@
 		                                </tr>
 		                            </thead>
 		                            <tbody style="width: 100%; height: 150px;">
-		                                <tr ng-repeat="item in planAssignments">
+		                                <tr ng-repeat="item in planAssignments" ng-click="onPlanAssignmentSelected(item)" ng-class="{'warning':selectedPlanAssignment == item};">
 		                                    <td style="width:5%;text-align:center;line-height:normal">{{$index + 1}}</td>
 		                                    <td style="width:39%;text-align:left;line-height:normal">{{item.ptoPlanTitle}}</td>
 		                                    <td style="width:15%;text-align:left;line-height:normal">{{item.ptoTypeTitle}}</td>
@@ -70,20 +70,38 @@
 		                        </table>
 								<div class="row">
 									<label class="col-md-1">Employees:</label>
+										<div class="col-sm-6" style="float:right;">
+										<input type="text" class="form-control" placeholder="Filter by Employee First Name/Last Name..." ng-model="searchEmployee">
+									</div>
 								</div>
 								<table class="table-scroll table table-striped table-bordered table-hover" style="font-size:12px;width:100%;">
 		                            <thead>
 		                                <tr class="heading" role="row">
 		                                    <th style="text-align:center;width:5%">#</th>
 											<th style="text-align:center;width:5%">&nbsp;</th>
-		                                    <th style="text-align:center;width:22%">First Name</th>
-		                                    <th style="text-align:center;width:22%">Last Name</th>
-		                                    <th style="text-align:center;width:45%">Job Title</th>
+											<th width="22%" style="text-align:center">
+							                    <a href="#" ng-click="orderByField='firstName'; reverseSort = !reverseSort">First Name
+							                    	<span ng-show="orderByField == 'firstName' && !reverseSort">&#9660;</span>
+							                    	<span ng-show="orderByField == 'firstName' && reverseSort">&#9650;</span>
+							                    </a>
+							                </th>
+											<th width="22%" style="text-align:center">
+												<a href="#" ng-click="orderByField='lastName'; reverseSort = !reverseSort">Last Name
+							                    	<span ng-show="orderByField == 'lastName' && !reverseSort">&#9660;</span>
+							                    	<span ng-show="orderByField == 'lastName' && reverseSort">&#9650;</span>
+							                    </a>
+							                </th>
+											<th width="45%" style="text-align:center">
+							                    <a href="#" ng-click="orderByField='jobTitle'; reverseSort = !reverseSort">Job Title
+							                    	<span ng-show="orderByField == 'jobTitle' && !reverseSort">&#9660;</span>
+							                    	<span ng-show="orderByField == 'jobTitle' && reverseSort">&#9650;</span>
+							                    </a>
+							                </th>
 		                                    <th width="1%"></th>
 		                               </tr>
 		                            </thead>
 		                            <tbody style="width: 100%;" ng-style="{'height': employeeGridHeight + 'px'}">
-										<tr ng-repeat="item in employees" title={{showTitle(item)}} ng-click="onEmployeeSelected(item)" ng-class="{'warning':selectedEmployee == item};">
+										<tr ng-repeat="item in employees | filter: searchEmployee | orderBy:orderByField:reverseSort" title={{showTitle(item)}} ng-click="onEmployeeSelected(item)" ng-class="{'warning':selectedEmployee == item};">
 		                                    <td style="width:4.8%;text-align:center;line-height:normal">{{$index + 1}}</td>
 											<td style="width:4.8%;text-align:center;line-height:normal"><center><img ng-show="{{item.status === 'Active'}}" src='/fin/cmn/usr/media/Common/green.png'><img ng-show="{{item.status !== 'Active'}}" src='/fin/cmn/usr/media/Common/yellow.png'></center></td>
 		                                    <td style="width:21.9%;text-align:left;line-height:normal">{{item.firstName}}</td>
@@ -116,7 +134,7 @@
 			                            </tr>
 			                        </tbody>
 			                    </table>
-								<div class="row" style="padding-bottom:32px;"></div>
+								<div class="row" style="padding-bottom:42px;"></div>
 								<div id="employeeView" ng-style="{'min-height': employeeViewHeight + 'px'}">
 									<div class="row">
 				                    	<label class="col-md-2 control-label">Employee #:</label>
@@ -137,7 +155,7 @@
 								</div>
 								<div class="row" style="padding-bottom:25px;"></div>
 		                        <div>
-		                            <a class="btn btn-primary" ng-click="printPDFItem()">Print PDF</a>&nbsp;&nbsp;
+		                            <a class="btn btn-primary" ng-click="unitRosterItem()">Unit Roster</a>&nbsp;&nbsp;
 		                            <a class="btn btn-primary" ng-click="ptoStubItem()" ng-disabled="selectedEmployee === null || selectedPTOType === null">PTO Stub</a>
 		                        </div>
 			                </div>

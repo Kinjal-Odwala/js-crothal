@@ -236,6 +236,15 @@ li {
     height:300px !important;
 }
 
+a {
+	color: #FFFFFF;
+}
+
+a:hover, a:focus {
+    color: #FFFFFF;
+    text-decoration: none;
+}
+
 #mainView, #employeeView {
     border: 1px solid rgba(0,0,0,.175);
     clear: both;
