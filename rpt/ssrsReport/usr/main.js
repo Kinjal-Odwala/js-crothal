@@ -1982,7 +1982,7 @@ ii.Class({
 	                path = me.authorizer.authorizations[authIndex];
 					fullPath = me.hirNodes[index].fullPath;
 
-					if (path.indexOf(fullPath) != -1) {
+					if (path.indexOf(fullPath) != -1 && me.hirNodes[index].active) {
 						me.reportNodes.push(me.hirNodes[index]);
 	                    break;
 	                }

@@ -37,6 +37,7 @@ ii.init.register( function() {
 		, nodeParentId: {type: Number, required:false, defaultValue: 0}
 		, childNodeCount: {type: Number, required:false, defaultValue: 0}
 		, fullPath: {type: String, required: false, defaultValue: ""}
+		, active: {type: Boolean, required: false, defaultValue: false}
 	};
 
 	fin.rpt.ssrs.fiscalYearArgs = {
