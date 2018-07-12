@@ -598,6 +598,7 @@ ii.Class({
 			//Financial
 			if ($("iframe")[2].contentWindow.fin != undefined && me.financialNeedUpdate == false) {
 				financialUIControls = $("iframe")[2].contentWindow.fin.hcmFinancialUi;
+				financialUIControls.chargebackGrid.body.deselectAll();
 
 				me.houseCodeDetails[0].shippingAddress1 = financialUIControls.shippingAddress1.getValue();
 				me.houseCodeDetails[0].shippingAddress2 = financialUIControls.shippingAddress2.getValue();
@@ -706,6 +707,28 @@ ii.Class({
 			if (me.houseCodeDetails[0].contractTypeId <= 0) {
 				alert("[Contract Type] is a required field. Please select it on Financial Tab.");
 				return false;
+			}
+
+			if (financialUIControls !== undefined && financialUIControls.chargebackGrid.activeRowIndex >= 0) {
+                alert("In order to save, the errors on the page must be corrected. Please verify the data on Financial tab.");
+                return false;
+            }
+
+			if (financialUIControls !== undefined && me.financialNeedUpdate == false) {
+				for (var index = 0; index < financialUIControls.chargebackGrid.data.length; index++) {
+					var chargebackItem = financialUIControls.chargebackGrid.data[index];
+
+					if ((chargebackItem.modified || chargebackItem.id === 0) && chargebackItem.active) {
+						if ($(financialUIControls.chargebackGrid.rows[index].getElement("chargebackRateId")).text() === "TeamLead" && (chargebackItem.module === null || chargebackItem.module.id < 0)) {
+							alert("[Module] is a required field for active application. Please verify the data on Financial tab - Application Chargebacks grid.");
+                			return false;
+						}
+						else if (chargebackItem.startDate === undefined || chargebackItem.startDate === "" || chargebackItem.endDate === undefined || chargebackItem.endDate === "") {
+							alert("[Start Date and End Date] is a required field for active application. Please verify the data on Financial tab - Application Chargebacks grid.");
+                			return false;
+						}
+					}
+				}
 			}
 
 			if (me.houseCodeDetails[0].defaultLunchBreak  == "" && me.houseCodeDetails[0].timeAndAttendance == true) {
@@ -1048,6 +1071,28 @@ ii.Class({
 				}		
 			}
 
+			//Financial - Application Chargebacks
+			if ($("iframe")[2].contentWindow.fin != undefined && me.financialNeedUpdate == false) {
+				var financialUIControls = $("iframe")[2].contentWindow.fin.hcmFinancialUi;
+
+				for (var index = 0; index < financialUIControls.chargebackGrid.data.length; index++) {
+					var chargebackItem = financialUIControls.chargebackGrid.data[index];
+					if (chargebackItem.modified || chargebackItem.id === 0) {
+						xml += '<appChargeback';
+						xml += ' id="' + chargebackItem.id + '"';
+						xml += ' houseCodeId="' + chargebackItem.houseCodeId + '"';
+						xml += ' yearId="' + chargebackItem.yearId + '"';
+						xml += ' chargebackRateId="' + chargebackItem.chargebackRateId + '"';
+						xml += ' active="' + chargebackItem.active + '"';
+						xml += ' chargeAmount="' + chargebackItem.chargeAmount + '"';
+						xml += ' module="' + (chargebackItem.module === null ? -1 : chargebackItem.module.id) + '"';
+						xml += ' startDate="' + (chargebackItem.startDate === undefined || chargebackItem.startDate === "" ? "" : ui.cmn.text.date.format(new Date(chargebackItem.startDate), "mm/dd/yyyy")) + '"';
+						xml += ' endDate="' + (chargebackItem.endDate === undefined || chargebackItem.endDate === "" ? "" : ui.cmn.text.date.format(new Date(chargebackItem.endDate), "mm/dd/yyyy")) + '"';
+						xml += '/>';
+					}
+				}
+			}
+
 			//Payroll - Ceridian Company Options
 			if ($("iframe")[3].contentWindow.fin != undefined && me.payrollNeedUpdate == false) {
 				var payrollUIControls = $("iframe")[3].contentWindow.fin.hcmPayrollCodeUi;
@@ -1163,6 +1208,21 @@ ii.Class({
 							if ($("iframe")[5].contentWindow.fin != undefined) {
 								$("iframe")[5].contentWindow.fin.hcmUnionSetupUi.updateUnionDeduction(parseInt($(this).attr("id"), 10));
 							}
+
+							break;
+							
+						case "appChargeback":
+						    var financialUIControls = $("iframe")[2].contentWindow.fin.hcmFinancialUi;
+							var id = parseInt($(this).attr("id"), 10);
+
+	                        for (var index = 0; index < financialUIControls.appChargebacks.length; index++) {
+	                            if (financialUIControls.appChargebacks[index].modified || financialUIControls.appChargebacks[index].id === 0) {
+	                                if (financialUIControls.appChargebacks[index].id === 0)
+	                                    financialUIControls.appChargebacks[index].id = id;
+	                                financialUIControls.appChargebacks[index].modified = false;
+	                                break;
+	                            }
+	                        }
 
 							break;
 					}

@@ -1,7 +1,8 @@
 ii.Import( "ii.krn.sys.ajax" );
 ii.Import( "ii.krn.sys.session" );
-ii.Import( "fin.cmn.usr.util" );
 ii.Import( "ui.ctl.usr.input" );
+ii.Import( "ui.ctl.usr.grid" );
+ii.Import( "fin.cmn.usr.util" );
 ii.Import( "ui.cmn.usr.text" );
 ii.Import( "fin.hcm.financial.usr.defs" );
 
@@ -10,8 +11,8 @@ ii.Style( "fin.cmn.usr.common", 2 );
 ii.Style( "fin.cmn.usr.statusBar", 3 );
 ii.Style( "fin.cmn.usr.input", 4 );
 ii.Style( "fin.cmn.usr.grid", 5 );
-ii.Style( "fin.cmn.usr.dropDown", 7 );
-ii.Style( "fin.cmn.usr.dateDropDown", 8 );
+ii.Style( "fin.cmn.usr.dropDown", 6 );
+ii.Style( "fin.cmn.usr.dateDropDown", 7 );
 
 ii.Class({
     Name: "fin.hcm.financial.UserInterface",
@@ -27,6 +28,7 @@ ii.Class({
 			
 			me.defineFormControls();
 			me.configureCommunications();
+			me.typesLoaded();
 			
 			me.authorizer = new ii.ajax.Authorizer( me.gateway );
 			me.authorizePath = "\\crothall\\chimes\\fin\\HouseCodeSetup\\HouseCodes";
@@ -39,6 +41,7 @@ ii.Class({
 			me.session = new ii.Session(me.cache);
 
 			$("#pageBody").show();
+			me.chargebackGrid.setHeight(300);
 			$(window).bind("resize", me, me.resize );
 			$(document).bind("keydown", me, me.controlKeyProcessor);
 		},
@@ -55,7 +58,10 @@ ii.Class({
 				parent.fin.hcmMasterUi.setLoadCount();
 				me.shippingState.fetchingData();
 				me.bankState.fetchingData();
+				me.year.fetchingData();
 				me.stateTypeStore.fetch("userId:[user]", me.stateTypesLoaded, me);
+				me.fiscalYearStore.fetch("userId:[user]", me.fiscalYearsLoaded, me);
+				me.applicationStore.fetch("userId:[user]", me.applicationsLoaded, me);
 			}				
 			else
 				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
@@ -601,6 +607,140 @@ ii.Class({
 				changeFunction: function() { parent.fin.hcmMasterUi.modified(); } 
 		    });
 
+			me.year = new ui.ctl.Input.DropDown.Filtered({
+                id: "Year",
+                formatFunction: function( type ) { return type.title; },
+                changeFunction: function() { me.yearChanged(); },
+                required: false
+            });
+
+            me.year.makeEnterTab()
+                .setValidationMaster( me.validator )
+                .addValidation( ui.ctl.Input.Validation.required )
+                .addValidation( function( isFinal, dataMap ) {
+
+                    if (me.year.indexSelected === -1)
+                        this.setInvalid("Please select correct Year.");
+                });
+
+			me.chargebackGrid = new ui.ctl.Grid({
+				id: "ChargebackGrid",
+				appendToId: "divForm",
+				allowAdds: false,
+				selectFunction: function(index) { me.itemSelect(index); },
+				deleteFunction: function() { return true; }
+			});
+
+			me.chargeAmount = new ui.ctl.Input.Text({
+				id: "ChargeAmount",
+				maxLength: 13,
+				appendToId: "ChargebackGridControlHolder",
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
+			});
+			
+			me.chargeAmount.makeEnterTab()
+                .setValidationMaster(me.validator)
+                .addValidation(ui.ctl.Input.Validation.required)
+                .addValidation(function(isFinal, dataMap) {
+
+                    var enteredText = me.chargeAmount.getValue();
+
+                    if (enteredText === "")
+                        return;
+
+                    if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,10}(\\.\\d{1,2})?$")))
+                        this.setInvalid("Please enter valid amount. Example: 99.99");
+                });
+				
+			me.module = new ui.ctl.Input.DropDown.Filtered({
+		        id: "Module",
+				appendToId: "ChargebackGridControlHolder",
+		        formatFunction: function( type ) { return type.name; },
+				changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
+		    });			
+			
+			me.module.makeEnterTab()
+				.setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+				.addValidation(function(isFinal, dataMap) {
+					if (me.chargebackGrid.activeRowIndex !== -1 && $("#activeInputCheck" + me.chargebackGrid.activeRowIndex)[0].checked
+						&& $(me.chargebackGrid.rows[me.chargebackGrid.activeRowIndex].getElement("chargebackRateId")).text() === "TeamLead") {
+						if (me.module.indexSelected <= 0)
+							this.setInvalid("Please select the correct Module.");
+					}
+					else
+						this.valid = true;
+				});
+				
+			me.startDate = new ui.ctl.Input.Date({
+				id: "StartDate",
+				appendToId: "ChargebackGridControlHolder",
+                formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); },
+                changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
+            });
+
+            me.startDate.makeEnterTab()
+                .setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+                .addValidation( function( isFinal, dataMap ) {
+                    var enteredText = me.startDate.text.value;
+
+					if (me.chargebackGrid.activeRowIndex !== -1) {
+						if ($("#activeInputCheck" + me.chargebackGrid.activeRowIndex)[0].checked) {
+							if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
+	                        	this.setInvalid("Please enter valid date.");
+						}
+						else
+							this.valid = true;
+					}
+                });
+
+			me.endDate = new ui.ctl.Input.Date({
+				id: "EndDate",
+				appendToId: "ChargebackGridControlHolder",
+                formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); },
+                changeFunction: function() { parent.fin.hcmMasterUi.modified(); }
+            });
+
+            me.endDate.makeEnterTab()
+                .setValidationMaster(me.validator)
+				.addValidation(ui.ctl.Input.Validation.required)
+                .addValidation( function( isFinal, dataMap ) {
+                    var enteredText = me.endDate.text.value;
+
+					if (me.chargebackGrid.activeRowIndex !== -1) {
+						if ($("#activeInputCheck" + me.chargebackGrid.activeRowIndex)[0].checked) {
+							if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
+	                        	this.setInvalid("Please enter valid date.");
+						}
+						else
+							this.valid = true;
+					}
+                });
+
+			me.chargebackGrid.addColumn("chargebackRateId", "chargebackRateId", "Application", "Application", null, function(id) {
+				return me.getApplicationTitle(id);
+			});
+            me.chargebackGrid.addColumn("active", "active", "active", "active", 80, function(active) {
+                var rowNumber = me.chargebackGrid.rows.length - 1;
+                return "<center><input type=\"checkbox\" id=\"activeInputCheck" + rowNumber + "\" class=\"iiInputCheck\" onchange=\"fin.hcmFinancialUi.actionClickItem(this);\" " + (active ? checked='checked' : '') + "/></center>";
+            });
+			me.chargebackGrid.addColumn("chargeAmount", "chargeAmount", "Charge Amount", "Charge Amount", 190, null, me.chargeAmount);
+			me.chargebackGrid.addColumn("module", "module", "Modules", "Modules", 190, function(type) { 
+				if (type.id === -1)
+					return "";
+				else
+					return type.name; 
+			}, me.module);
+			me.chargebackGrid.addColumn("startDate", "startDate", "Start Date", "Start Date", 190, null, me.startDate);
+			me.chargebackGrid.addColumn("endDate", "endDate", "End Date", "End Date", 190, null, me.endDate);
+			me.chargebackGrid.capColumns();
+
+			me.chargeAmount.active = false;
+            me.module.active = false;
+            me.startDate.active = false;
+            me.endDate.active = false;
+
 			me.company.text.readOnly = true;
 			me.remitToTitle.text.readOnly = true;
 			me.remitToAddress1.text.readOnly = true;
@@ -642,8 +782,9 @@ ii.Class({
 			me.budgetTemplate.text.tabIndex = 31;
 			me.budgetLaborCalcMethod.text.tabIndex = 32;
 			me.budgetComputerRelatedCharge.check.tabIndex = 33;
-		},		
-		
+			me.year.text.tabIndex = 34;
+		},
+
 		resizeControls: function() {
 			var me = this;
 			
@@ -686,6 +827,7 @@ ii.Class({
 			me.invoiceLogo.resizeText();
 			me.budgetTemplate.resizeText();
 			me.budgetLaborCalcMethod.resizeText();
+			me.year.resizeText();
 			me.resize();
 		},
 	
@@ -764,6 +906,48 @@ ii.Class({
 				itemConstructorArgs: fin.hcm.financial.budgetLaborCalcMethodArgs,
 				injectionArray: me.budgetLaborCalcMethods
 			});
+
+			me.fiscalYears = [];
+            me.fiscalYearStore = me.cache.register({
+                storeId: "fiscalYears",
+                itemConstructor: fin.hcm.financial.FiscalYear,
+                itemConstructorArgs: fin.hcm.financial.fiscalYearArgs,
+                injectionArray: me.fiscalYears
+            });
+
+			me.applications = [];
+            me.applicationStore = me.cache.register({
+                storeId: "applications",
+                itemConstructor: fin.hcm.financial.Application,
+                itemConstructorArgs: fin.hcm.financial.applicationArgs,
+                injectionArray: me.applications
+            });
+
+			me.modules = [];
+//            me.moduleStore = me.cache.register({
+//                storeId: "modules",
+//                itemConstructor: fin.hcm.financial.Module,
+//                itemConstructorArgs: fin.hcm.financial.moduleArgs,
+//                injectionArray: me.modules
+//            });
+
+			me.chargebackRates = [];
+            me.chargebackRateStore = me.cache.register({
+                storeId: "chargebackRates",
+                itemConstructor: fin.hcm.financial.ChargebackRate,
+                itemConstructorArgs: fin.hcm.financial.chargebackRateArgs,
+                injectionArray: me.chargebackRates,
+				lookupSpec: {application: me.applications}
+            });
+
+			me.appChargebacks = [];
+			me.appChargebackStore = me.cache.register({
+				storeId: "appChargebacks",
+				itemConstructor: fin.hcm.financial.AppChargeback,
+				itemConstructorArgs: fin.hcm.financial.appChargebackArgs,
+				injectionArray: me.appChargebacks,
+				lookupSpec: {module: me.modules}
+			});
 		},
 
 		controlKeyProcessor: function ii_ui_Layouts_ListItem_controlKeyProcessor() {
@@ -794,7 +978,19 @@ ii.Class({
 				return false;
 			}
 		},
-		
+
+		typesLoaded: function() {
+            var me = this;
+
+		    me.modules.push(new fin.hcm.financial.Module(-1, "***Select Module***"));
+            me.modules.push(new fin.hcm.financial.Module(0, "Not Used"));
+            me.modules.push(new fin.hcm.financial.Module(1, "1"));
+			me.modules.push(new fin.hcm.financial.Module(2, "2"));
+			me.modules.push(new fin.hcm.financial.Module(3, "3"));
+			me.modules.push(new fin.hcm.financial.Module(4, "4"));
+            me.module.setData(me.modules);
+        },
+
 		stateTypesLoaded: function(me,activeId) {
 
 			me.stateTypes.unshift(new fin.hcm.financial.StateType({ id: 0, name: "None" }));
@@ -805,7 +1001,7 @@ ii.Class({
 			me.bankState.setData(me.stateTypes);
 			
 			me.remitTo.fetchingData();
-			me.contractType.fetchingData();			
+			me.contractType.fetchingData();
 			me.termsOfContract.fetchingData();
 			me.billingCycleFrequency.fetchingData();
 			me.invoiceLogo.fetchingData();
@@ -937,7 +1133,71 @@ ii.Class({
 				parent.fin.hcmMasterUi.setStatus("Edit");
 			me.resizeControls();
 		},
+
+		fiscalYearsLoaded: function(me, activeId) {
+
+            me.year.setData(me.fiscalYears);
+            me.year.select(0, me.year.focused);
+			me.yearChanged();
+        },
+
+		applicationsLoaded: function(me, activeId) {
+
+        },
+
+		chargebacksLoaded: function(me, activeId) {
+
+			me.appChargebackStore.fetch("userId:[user],houseCodeId:" + parent.parent.fin.appUI.houseCodeId + ",yearId:" + me.fiscalYears[me.year.indexSelected].id, me.appChargebacksLoaded, me);
+        },
 		
+		appChargebacksLoaded: function(me, activeId) {
+
+			for (var index = 0; index < me.chargebackRates.length; index++) {
+	            var result = $.grep(me.appChargebacks, function(item) { return item.chargebackRateId === me.chargebackRates[index].id; });
+	            if (result.length === 0) {
+					var item = new fin.hcm.financial.AppChargeback(0
+						, parent.parent.fin.appUI.houseCodeId
+						, me.fiscalYears[me.year.indexSelected].id
+						, me.chargebackRates[index].id
+						, false
+						, me.chargebackRates[index].periodCharge
+						, me.modules[0]
+						, ""
+						, ""
+						);
+					me.appChargebacks.push(item);
+				}
+      		}
+
+			me.chargebackGrid.setData(me.appChargebacks);
+			parent.fin.hcmMasterUi.checkLoadCount();
+		},
+
+		yearChanged: function() {
+            var me = this;
+
+            if (me.year.indexSelected === -1)
+                return;
+
+			if (me.chargebackGrid.activeRowIndex !== -1)
+                me.chargebackGrid.body.deselect(me.chargebackGrid.activeRowIndex, true);
+			parent.fin.hcmMasterUi.setLoadCount();
+            me.chargebackRateStore.fetch("userId:[user],yearId:" + me.fiscalYears[me.year.indexSelected].id, me.chargebacksLoaded, me);
+        },
+
+		getApplicationTitle: function(id) {
+			var me = this;
+
+			for (var index = 0; index < me.chargebackRates.length; index++) {
+				if (me.chargebackRates[index].id === id) {
+					for (var iIndex = 0; iIndex < me.applications.length; iIndex++) {
+						if (me.chargebackRates[index].application.id === me.applications[iIndex].id)
+							return me.applications[iIndex].title;
+					}
+				}
+			}
+		},
+
 		remitToChanged: function() {
 			var me = this;
 			var index = me.remitTo.indexSelected;
@@ -960,6 +1220,53 @@ ii.Class({
 				me.remitToCity.setValue("");
 				me.remitToZip.setValue("");
 				me.remitToState.setValue("");
+			}
+		},
+		
+		itemSelect: function() {
+	        var args = ii.args(arguments, {
+	            index: {type: Number}
+	        });
+            var me = this;
+            var index = args.index;
+			var id =  me.chargebackGrid.data[index].chargebackRateId;
+			var title = "";
+			
+			outerLoop:
+			for (var index = 0; index < me.chargebackRates.length; index++) {
+				if (me.chargebackRates[index].id === id) {
+					for (var iIndex = 0; iIndex < me.applications.length; iIndex++) {
+						if (me.chargebackRates[index].application.id === me.applications[iIndex].id) {
+							title = me.applications[iIndex].title;
+							break outerLoop;
+						}
+					}
+				}
+			}
+
+			me.chargebackGrid.data[index].modified = true;
+			if (title !== "TeamLead")
+				$("#Module").hide();
+        },
+		
+		actionClickItem: function(objCheckBox) {
+			var me = this;
+			var rowNumber = parseInt(objCheckBox.id.replace("activeInputCheck", ""), 10);
+    		var title = $(me.chargebackGrid.rows[rowNumber].getElement("chargebackRateId")).text();
+
+			parent.fin.hcmMasterUi.modified();
+			me.appChargebacks[rowNumber].active = objCheckBox.checked;
+			if (objCheckBox.checked) {
+				for (var index = 0; index < me.appChargebacks.length; index++) {
+					if (index !== rowNumber) {
+						var tempTitle = $(me.chargebackGrid.rows[index].getElement("chargebackRateId")).text();
+						if ((title === "TeamFin and TeamCoach" || title === "TeamCoach Only") && (tempTitle === "TeamFin and TeamCoach" || tempTitle === "TeamCoach Only") && $("#activeInputCheck" + index)[0].checked) {
+							$("#activeInputCheck" + index)[0].checked = false;
+							me.appChargebacks[index].active = false;
+							me.appChargebacks[index].modified = true;
+						}
+					}
+				}
 			}
 		}
 	}

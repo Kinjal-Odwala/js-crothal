@@ -60,6 +60,41 @@ ii.init.register( function() {
 		, name: {type: String}
 	};
 
+	fin.hcm.financial.fiscalYearArgs = {
+        id: {type: Number}
+        , title: {type: String}
+    };
+
+	fin.hcm.financial.applicationArgs = {
+        id: {type: Number}
+        , title: {type: String}
+    };
+
+	fin.hcm.financial.moduleArgs = {
+		id: {type: Number}
+		, name: {type: String, required: false, defaultValue: ""}
+	};
+
+	fin.hcm.financial.chargebackRateArgs = {
+        id: {type: Number, required: false, defaultValue: 0}
+		, yearId: {type: Number, required: false, defaultValue: 0}
+		, application: {type: fin.hcm.financial.Application, required: false}
+        , periodCharge: {type: String, required: false, defaultValue: ""}
+    };
+
+	fin.hcm.financial.appChargebackArgs = {
+		id: {type: Number}
+		, houseCodeId: {type: Number, required: false, defaultValue: 0}
+		, yearId: {type: Number, required: false, defaultValue: 0}
+		, chargebackRateId: {type: Number, required: false, defaultValue: 0}
+		, active: {type: Boolean, required: false, defaultValue: false}
+		, chargeAmount: {type: String, required: false, defaultValue: ""}
+		, module: {type: fin.hcm.financial.Module, required: false, defaultValue: null}
+		, startDate: {type: String, required: false, defaultValue: ""}
+		, endDate: {type: String, required: false, defaultValue: ""}
+		, modified: {type: Boolean, required: false, defaultValue: false}
+	};
+
 }, 2);
 
 ii.Class({
@@ -147,6 +182,57 @@ ii.Class({
 	Definition: {
 		init: function() {
 			var args = ii.args(arguments, fin.hcm.financial.budgetLaborCalcMethodArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+    Name: "fin.hcm.financial.FiscalYear",
+    Definition: {
+        init: function() {
+            var args = ii.args(arguments, fin.hcm.financial.fiscalYearArgs);
+            $.extend(this, args);
+        }
+    }
+});
+
+
+ii.Class({
+    Name: "fin.hcm.financial.Application",
+    Definition: {
+        init: function() {
+            var args = ii.args(arguments, fin.hcm.financial.applicationArgs);
+            $.extend(this, args);
+        }
+    }
+});
+
+ii.Class({
+	Name: "fin.hcm.financial.Module",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.hcm.financial.moduleArgs);
+			$.extend(this, args);
+		}
+	}
+});
+
+ii.Class({
+    Name: "fin.hcm.financial.ChargebackRate",
+    Definition: {
+        init: function() {
+            var args = ii.args(arguments, fin.hcm.financial.chargebackRateArgs);
+            $.extend(this, args);
+        }
+    }
+});
+
+ii.Class({
+	Name: "fin.hcm.financial.AppChargeback",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.hcm.financial.appChargebackArgs);
 			$.extend(this, args);
 		}
 	}

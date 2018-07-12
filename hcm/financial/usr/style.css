@@ -40,3 +40,11 @@
 .iiInputText {
 	width: 172px;
 }
+
+#ChargebackGridContainer {
+	width: 1200px;
+}
+
+#chargeAmountBodyColumn {
+	text-align: right;	
+}
