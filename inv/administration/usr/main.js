@@ -48,7 +48,7 @@ ii.Class({
 			me.pageCurrent = 1;
 
 			//Set the xmlTimeout period to 10 minutes to generate inventory list without timeout error.
-			$.ajaxSetup({timeout: 600000});
+			$.ajaxSetup({timeout: 1800000});
 
 			me.gateway = ii.ajax.addGateway("inv", ii.config.xmlProvider);
 			me.cache = new ii.ajax.Cache(me.gateway);
