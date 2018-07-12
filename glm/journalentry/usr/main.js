@@ -79,6 +79,7 @@ ii.Class({
             var me = this;
 
             me.isAuthorized = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath);
+			me.readOnly = me.authorizer.isAuthorized(me.authorizePath + "\\Read");
             me.cancelApproved = me.authorizer.isAuthorized(me.authorizePath + "\\CancelApproved");
 
             if (me.isAuthorized) {
@@ -94,6 +95,9 @@ ii.Class({
                 ii.timer.timing("Page displayed");
                 me.session.registerFetchNotify(me.sessionLoaded,me);
                 me.accountStore.fetch("userId:[user],moduleId:journalEntry", me.accountsLoaded, me);
+				if (me.readOnly) {
+					$("#AnchorNew").hide();
+				}
             }
             else
                 window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
