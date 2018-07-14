@@ -65,6 +65,12 @@ ii.init.register( function() {
         , title: {type: String}
     };
 
+	fin.hcm.financial.fiscalPeriodArgs = {
+		id: {type: Number, required: false}
+		, startDate: {type: Date, required: false}
+		, endDate: {type: Date, required: false}
+	};
+
 	fin.hcm.financial.applicationArgs = {
         id: {type: Number}
         , title: {type: String}
@@ -197,6 +203,15 @@ ii.Class({
     }
 });
 
+ii.Class({
+	Name: "fin.hcm.financial.FiscalPeriod",
+	Definition: {
+		init: function() {
+			var args = ii.args(arguments, fin.hcm.financial.fiscalPeriodArgs);
+			$.extend(this, args);
+		}
+	}
+});
 
 ii.Class({
     Name: "fin.hcm.financial.Application",

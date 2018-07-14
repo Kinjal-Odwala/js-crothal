@@ -714,7 +714,12 @@ ii.Class({
                 return false;
             }
 
-			if (financialUIControls !== undefined && me.financialNeedUpdate == false) {
+			if (financialUIControls !== undefined && me.financialNeedUpdate == false && !financialUIControls.ssChargebackGridReadOnly) {
+				if (financialUIControls.chargebackGrid.activeRowIndex >= 0) {
+	                alert("In order to save, the errors on the page must be corrected. Please verify the data on Financial tab.");
+	                return false;
+	            }
+
 				for (var index = 0; index < financialUIControls.chargebackGrid.data.length; index++) {
 					var chargebackItem = financialUIControls.chargebackGrid.data[index];
 
@@ -1075,20 +1080,22 @@ ii.Class({
 			if ($("iframe")[2].contentWindow.fin != undefined && me.financialNeedUpdate == false) {
 				var financialUIControls = $("iframe")[2].contentWindow.fin.hcmFinancialUi;
 
-				for (var index = 0; index < financialUIControls.chargebackGrid.data.length; index++) {
-					var chargebackItem = financialUIControls.chargebackGrid.data[index];
-					if (chargebackItem.modified || chargebackItem.id === 0) {
-						xml += '<appChargeback';
-						xml += ' id="' + chargebackItem.id + '"';
-						xml += ' houseCodeId="' + chargebackItem.houseCodeId + '"';
-						xml += ' yearId="' + chargebackItem.yearId + '"';
-						xml += ' chargebackRateId="' + chargebackItem.chargebackRateId + '"';
-						xml += ' active="' + chargebackItem.active + '"';
-						xml += ' chargeAmount="' + chargebackItem.chargeAmount + '"';
-						xml += ' module="' + (chargebackItem.module === null ? -1 : chargebackItem.module.id) + '"';
-						xml += ' startDate="' + (chargebackItem.startDate === undefined || chargebackItem.startDate === "" ? "" : ui.cmn.text.date.format(new Date(chargebackItem.startDate), "mm/dd/yyyy")) + '"';
-						xml += ' endDate="' + (chargebackItem.endDate === undefined || chargebackItem.endDate === "" ? "" : ui.cmn.text.date.format(new Date(chargebackItem.endDate), "mm/dd/yyyy")) + '"';
-						xml += '/>';
+				if (!financialUIControls.ssChargebackGridReadOnly) {
+					for (var index = 0; index < financialUIControls.chargebackGrid.data.length; index++) {
+						var chargebackItem = financialUIControls.chargebackGrid.data[index];
+						if (chargebackItem.modified || chargebackItem.id === 0) {
+							xml += '<appChargeback';
+							xml += ' id="' + chargebackItem.id + '"';
+							xml += ' houseCodeId="' + chargebackItem.houseCodeId + '"';
+							xml += ' yearId="' + chargebackItem.yearId + '"';
+							xml += ' chargebackRateId="' + chargebackItem.chargebackRateId + '"';
+							xml += ' active="' + chargebackItem.active + '"';
+							xml += ' chargeAmount="' + chargebackItem.chargeAmount + '"';
+							xml += ' module="' + (chargebackItem.module === null ? -1 : chargebackItem.module.id) + '"';
+							xml += ' startDate="' + (chargebackItem.startDate === undefined || chargebackItem.startDate === "" ? "" : ui.cmn.text.date.format(new Date(chargebackItem.startDate), "mm/dd/yyyy")) + '"';
+							xml += ' endDate="' + (chargebackItem.endDate === undefined || chargebackItem.endDate === "" ? "" : ui.cmn.text.date.format(new Date(chargebackItem.endDate), "mm/dd/yyyy")) + '"';
+							xml += '/>';
+						}
 					}
 				}
 			}

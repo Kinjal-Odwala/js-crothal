@@ -85,7 +85,11 @@ ii.Class({
 			me.sectionFinancialShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\TabFinancial\\SectionFinancial");
 			me.sectionFinancialWrite = me.authorizer.isAuthorized(me.authorizePath + "\\TabFinancial\\SectionFinancial\\Write");
 			me.sectionFinancialReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\TabFinancial\\SectionFinancial\\Read");
-
+			//SectionChargebacks
+			me.sectionChargebacksShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\TabFinancial\\SectionChargebacks");
+			me.sectionChargebacksWrite = me.authorizer.isAuthorized(me.authorizePath + "\\TabFinancial\\SectionChargebacks\\Write");
+			me.sectionChargebacksReadOnly = me.authorizer.isAuthorized(me.authorizePath + "\\TabFinancial\\SectionChargebacks\\Read");
+			
 			//ss=SectionShipping
 			me.ssCompanyShow = me.isCtrlVisible(me.authorizePath + "\\TabFinancial\\SectionShipping\\Company", me.sectionShippingShow, (me.sectionShippingWrite || me.sectionShippingReadOnly));
 			me.ssAddress1Show = me.isCtrlVisible(me.authorizePath + "\\TabFinancial\\SectionShipping\\Address1", me.sectionShippingShow, (me.sectionShippingWrite || me.sectionShippingReadOnly));
@@ -161,6 +165,9 @@ ii.Class({
 			me.sfBudgetLaborCalcMethodReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabFinancial\\SectionFinancial\\BudgetLaborCalcMethod\\Read", me.sectionFinancialWrite, me.sectionFinancialReadOnly);
 			me.sfBudgetComputerRelatedChargeReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabFinancial\\SectionFinancial\\BudgetComputerRelatedCharge\\Read", me.sectionFinancialWrite, me.sectionFinancialReadOnly);
 
+			//sc=SectionChargebacks
+			me.ssChargebackGridShow = me.isCtrlVisible(me.authorizePath + "\\TabFinancial\\SectionChargebacks\\ChargebackGrid", me.sectionChargebacksShow, (me.sectionChargebacksWrite || me.sectionChargebacksReadOnly));
+			me.ssChargebackGridReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\TabFinancial\\SectionFinancial\\ChargebackGrid\\Read", me.sectionChargebacksWrite, me.sectionChargebacksReadOnly);
 			me.resetUIElements();
 			
 			$("#pageLoading").hide();
@@ -270,6 +277,11 @@ ii.Class({
 			me.setControlState("BudgetTemplate", me.sfBudgetTemplateReadOnly, me.sfBudgetTemplateShow);
 			me.setControlState("BudgetLaborCalcMethod", me.sfBudgetLaborCalcMethodReadOnly, me.sfBudgetLaborCalcMethodShow);
 			me.setControlState("BudgetComputerRelatedCharge", me.sfBudgetComputerRelatedChargeReadOnly, me.sfBudgetComputerRelatedChargeShow, "Check", "BudgetComputerRelatedChargeCheck");
+
+			if (!me.ssChargebackGridShow)
+				$("#ChargebackGridContainer").hide();
+			else if (me.ssChargebackGridReadOnly)
+				me.createReadOnlyGrid();
 		},
 		
 		setControlState: function(){
@@ -689,6 +701,10 @@ ii.Class({
 						if ($("#activeInputCheck" + me.chargebackGrid.activeRowIndex)[0].checked) {
 							if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
 	                        	this.setInvalid("Please enter valid date.");
+							else if (new Date(enteredText) < me.periodStartDate || new Date(enteredText) > me.periodEndDate)
+								this.setInvalid("Start Date should be between Fiscal Year Start and End Date.");
+							else if (new Date(enteredText) < new Date(parent.fin.hcmMasterUi.houseCodeDetails[0].startDate))
+								this.setInvalid("Start Date should not be less than House Code Start Date.");
 						}
 						else
 							this.valid = true;
@@ -712,6 +728,10 @@ ii.Class({
 						if ($("#activeInputCheck" + me.chargebackGrid.activeRowIndex)[0].checked) {
 							if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
 	                        	this.setInvalid("Please enter valid date.");
+							else if (new Date(enteredText) < new Date(me.startDate.text.value))
+								this.setInvalid("End Date should not be less than Start Date.");
+							else if (new Date(enteredText) < me.periodStartDate || new Date(enteredText) > me.periodEndDate)
+								this.setInvalid("End Date should be between Fiscal Year Start and End Date.");
 						}
 						else
 							this.valid = true;
@@ -783,6 +803,38 @@ ii.Class({
 			me.budgetLaborCalcMethod.text.tabIndex = 32;
 			me.budgetComputerRelatedCharge.check.tabIndex = 33;
 			me.year.text.tabIndex = 34;
+		},
+
+		createReadOnlyGrid: function() {
+			var me = this;
+			
+			$("#ChargebackGrid").html("");
+			
+			me.chargebackGrid = new ui.ctl.Grid({
+				id: "ChargebackGrid",
+				appendToId: "divForm",
+				allowAdds: false,
+				deleteFunction: function() { return true; }
+			});
+			
+			me.chargebackGrid.addColumn("chargebackRateId", "chargebackRateId", "Application", "Application", null, function(id) {
+				return me.getApplicationTitle(id);
+			});
+            me.chargebackGrid.addColumn("active", "active", "active", "active", 80, function(active) {
+                var rowNumber = me.chargebackGrid.rows.length - 1;
+                return "<center><input type=\"checkbox\" id=\"activeInputCheck" + rowNumber + "\" class=\"iiInputCheck\" disabled " + (active ? checked='checked' : '') + "/></center>";
+            });
+			me.chargebackGrid.addColumn("chargeAmount", "chargeAmount", "Charge Amount", "Charge Amount", 190);
+			me.chargebackGrid.addColumn("module", "module", "Modules", "Modules", 190, function(type) {
+				if (type.id === -1)
+					return "";
+				else
+					return type.name;
+			});
+			me.chargebackGrid.addColumn("startDate", "startDate", "Start Date", "Start Date", 190);
+			me.chargebackGrid.addColumn("endDate", "endDate", "End Date", "End Date", 190);
+			me.chargebackGrid.capColumns();
+			me.chargebackGrid.setHeight(300);
 		},
 
 		resizeControls: function() {
@@ -914,6 +966,14 @@ ii.Class({
                 itemConstructorArgs: fin.hcm.financial.fiscalYearArgs,
                 injectionArray: me.fiscalYears
             });
+
+			me.fiscalPeriods = [];
+			me.fiscalPeriodStore = me.cache.register({
+				storeId: "fiscalPeriods",
+				itemConstructor: fin.hcm.financial.FiscalPeriod,
+				itemConstructorArgs: fin.hcm.financial.fiscalPeriodArgs,
+				injectionArray: me.fiscalPeriods
+			});
 
 			me.applications = [];
             me.applicationStore = me.cache.register({
@@ -1182,8 +1242,17 @@ ii.Class({
 			if (me.chargebackGrid.activeRowIndex !== -1)
                 me.chargebackGrid.body.deselect(me.chargebackGrid.activeRowIndex, true);
 			parent.fin.hcmMasterUi.setLoadCount();
+			me.fiscalPeriodStore.fetch("userId:[user],fiscalYearId:" + me.fiscalYears[me.year.indexSelected].id, me.fiscalPeriodsLoaded, me);
             me.chargebackRateStore.fetch("userId:[user],yearId:" + me.fiscalYears[me.year.indexSelected].id, me.chargebacksLoaded, me);
         },
+
+		fiscalPeriodsLoaded: function(me, activeId) {
+
+			if (me.fiscalPeriods.length > 0) {
+				me.periodStartDate = me.fiscalPeriods[0].startDate;
+				me.periodEndDate = me.fiscalPeriods[me.fiscalPeriods.length - 1].endDate;
+			}
+		},
 
 		getApplicationTitle: function(id) {
 			var me = this;
