@@ -75,6 +75,7 @@ ii.init.register( function() {
         , contractedProductivity: {type: String, required: false, defaultValue: ""}
         , supportedByNPC: {type: Number, required: false, defaultValue: 0}
         , thirdPartySatisfaction: {type: Number, required: false, defaultValue: 0}
+        , employeeProductiveHoursPerWeekStandard: {type: String, required: false, defaultValue: ""}
         , taskManagementSystem: {type: Number, required: false, defaultValue: 0}
         , taskManagementSystemOther: {type: String, required: false, defaultValue: ""}
         , serviceLinePT: {type: String, required: false, defaultValue: ""}
@@ -107,6 +108,7 @@ ii.init.register( function() {
         , period10: {type: String, required: false, defaultValue: ""}
         , period11: {type: String, required: false, defaultValue: ""}
         , period12: {type: String, required: false, defaultValue: ""}
+        , staffManagementRatio: {type: Boolean, required: false, defaultValue: false}
     };
 
     fin.hcm.evsMetric.textDetailArgs = {
@@ -156,7 +158,7 @@ ii.init.register( function() {
         , modified: {type: Boolean, required: false, defaultValue: false}
     };
 
-    fin.hcm.evsMetric.evsHCAHPSArgs = {
+    fin.hcm.evsMetric.qualityAssuranceArgs = {
         id: {type: Number, required: false, defaultValue: 0}
         , evsMetricId: {type: Number, required: false, defaultValue: 0}
         , evsMetricType: {type: fin.hcm.evsMetric.MetricType, required: false}
@@ -239,6 +241,27 @@ ii.init.register( function() {
         , period10: {type: String, required: false, defaultValue: ""}
         , period11: {type: String, required: false, defaultValue: ""}
         , period12: {type: String, required: false, defaultValue: ""}
+        , modified: {type: Boolean, required: false, defaultValue: false}
+    };
+
+    fin.hcm.evsMetric.managementStaffArgs = {
+        id: {type: Number, required: false, defaultValue: 0}
+        , evsMetricId: {type: Number, required: false, defaultValue: 0}
+        , evsMetricType: {type: fin.hcm.evsMetric.MetricType, required: false}
+        , evsMetricTypeTitle: {type: String, required: false, defaultValue: ""}
+        , period1: {type: String, required: false, defaultValue: ""}
+        , period2: {type: String, required: false, defaultValue: ""}
+        , period3: {type: String, required: false, defaultValue: ""}
+        , period4: {type: String, required: false, defaultValue: ""}
+        , period5: {type: String, required: false, defaultValue: ""}
+        , period6: {type: String, required: false, defaultValue: ""}
+        , period7: {type: String, required: false, defaultValue: ""}
+        , period8: {type: String, required: false, defaultValue: ""}
+        , period9: {type: String, required: false, defaultValue: ""}
+        , period10: {type: String, required: false, defaultValue: ""}
+        , period11: {type: String, required: false, defaultValue: ""}
+        , period12: {type: String, required: false, defaultValue: ""}
+        , staffManagementRatio: {type: Boolean, required: false, defaultValue: false}
         , modified: {type: Boolean, required: false, defaultValue: false}
     };
 
@@ -365,10 +388,10 @@ ii.Class({
 });
 
 ii.Class({
-    Name: "fin.hcm.evsMetric.EVSHCAHPS",
+    Name: "fin.hcm.evsMetric.QualityAssurance",
     Definition: {
         init: function() {
-            var args = ii.args(arguments, fin.hcm.evsMetric.evsHCAHPSArgs);
+            var args = ii.args(arguments, fin.hcm.evsMetric.qualityAssuranceArgs);
             $.extend(this, args);
         }
     }
@@ -419,6 +442,16 @@ ii.Class({
     Definition: {
         init: function() {
             var args = ii.args(arguments, fin.hcm.evsMetric.evsStatisticArgs);
+            $.extend(this, args);
+        }
+    }
+});
+
+ii.Class({
+    Name: "fin.hcm.evsMetric.ManagementStaff",
+    Definition: {
+        init: function() {
+            var args = ii.args(arguments, fin.hcm.evsMetric.managementStaffArgs);
             $.extend(this, args);
         }
     }

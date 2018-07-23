@@ -105,6 +105,7 @@ ii.Class({
             me.qualityAssuranceShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\QualityAssurance");
             me.adminObjectivesShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\AdminObjectives");
             me.evsStatisticShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\EVSStatistcs");
+            me.managementStaffShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\ManagementStaff");
 
             if (me.hospitalContractShow)
                 $("#TabHospitalContract").show();
@@ -118,6 +119,8 @@ ii.Class({
                 $("#TabAdminObjectives").show();
             if (me.evsStatisticShow)
                 $("#TabEVSStatistics").show();
+            if (me.managementStaffShow)
+                $("#TabManagementStaff").show();
 
             if (me.hospitalContractShow)
                 me.activeFrameId = 1;
@@ -131,6 +134,8 @@ ii.Class({
                 me.activeFrameId = 5;
             else if (me.evsStatisticShow)
                 me.activeFrameId = 6;
+            else if (me.managementStaffShow)
+                me.activeFrameId = 7;
 
             setTimeout(function() {
                 $("#container-1").tabs(me.activeFrameId);
@@ -154,9 +159,10 @@ ii.Class({
             $("#QualityAssuranceContainer").height($(window).height() - offset);
             $("#AdminObjectiveContainer").height($(window).height() - offset);
             $("#EVSStatisticContainer").height($(window).height() - offset);
+            $("#ManagementStaffContainer").height($(window).height() - offset);
 
-            if ($("#EVSHCAHPSGridContainer").width() < 2600) {
-                $("#EVSHCAHPSGrid").width(2600);
+            if ($("#QualityAssuranceGridContainer").width() < 2600) {
+                $("#QualityAssuranceGrid").width(2600);
             }
             if ($("#EVSStatisticGridContainer").width() < 2500) {
                 $("#EVSStatisticGrid").width(2500);
@@ -165,19 +171,26 @@ ii.Class({
             else {
                 me.evsStatisticGrid.setHeight($(window).height() - 143);
             }
+            if ($("#ManagementStaffGridContainer").width() < 2800) {
+                $("#ManagementStaffGrid").width(2800);
+                me.managementStaffGrid.setHeight($(window).height() - 168);
+            }
+            else {
+                me.managementStaffGrid.setHeight($(window).height() - 143);
+            }
 
             me.strategicInitiativeGrid.setHeight($(window).height() - 145);
-            me.evsHCAHPSGrid.setHeight(150);
+            me.qualityAssuranceGrid.setHeight(150);
             me.qualityPartnershipGrid.setHeight(150);
             me.auditScoreGrid.setHeight(150);
             me.competencyTrainingGrid.setHeight(150);
             me.adminObjectiveGrid.setHeight($(window).height() - 145);
 
-            var divLaborControlGridWidth = $(window).width() - 258;
-            var divLaborControlGridHeight = 190;
+            var divLaborControlGridWidth = $(window).width() - 248;
+            var divLaborControlGridHeight = 330;
             $("#divLaborControlGrid").css({"width" : divLaborControlGridWidth + "px", "height" : divLaborControlGridHeight + "px"});
 
-            var divCommentsGridWidth = $(window).width() - 258;
+            var divCommentsGridWidth = $(window).width() - 248;
             var divCommentsGridHeight = 50;
             $("#divCommentsGrid").css({"width" : divCommentsGridWidth + "px", "height" : divCommentsGridHeight + "px"});
 
@@ -424,7 +437,7 @@ ii.Class({
             me.supportedByNPC = new ui.ctl.Input.DropDown.Filtered({
                 id: "SupportedByNPC",
                 formatFunction: function(type) { return type.title; },
-                changeFunction: function() { me.modified();	}
+                changeFunction: function() { me.modified(); }
             });
 
             me.supportedByNPC.makeEnterTab()
@@ -444,12 +457,12 @@ ii.Class({
                 id: "ThirdPartySatisfaction",
                 formatFunction: function(type) { return type.title; },
                 changeFunction: function() {
-					me.modified();
-					if (me.thirdPartySatisfaction.indexSelected === -1)
-						$("#spnThirdPartySatisfaction").html("");
-					else
-						$("#spnThirdPartySatisfaction").html(me.thirdPartySatisfaction.lastBlurValue);
-				}
+                    me.modified();
+                    if (me.thirdPartySatisfaction.indexSelected === -1)
+                        $("#spnThirdPartySatisfaction").html("");
+                    else
+                        $("#spnThirdPartySatisfaction").html(me.thirdPartySatisfaction.lastBlurValue);
+                }
             });
 
             me.thirdPartySatisfaction.makeEnterTab()
@@ -464,6 +477,24 @@ ii.Class({
                     if (me.thirdPartySatisfaction.indexSelected === -1)
                         this.setInvalid("Please select the correct Third Party Satisfaction");
             });
+
+            me.employeeProductiveHoursPerWeekStandard = new ui.ctl.Input.Text({
+                id: "EmployeeProductiveHoursPerWeekStandard",
+                maxLength: 19,
+                changeFunction: function() { me.modified(); }
+            });
+
+            me.employeeProductiveHoursPerWeekStandard
+                .setValidationMaster( me.validator )
+                .addValidation( function( isFinal, dataMap ) {
+                    var enteredText = me.employeeProductiveHoursPerWeekStandard.getValue();
+
+                    if (enteredText === "")
+                        return;
+
+                    if (!(/^\d{1,16}(\.\d{1,2})?$/.test(enteredText)))
+                        this.setInvalid("Please enter valid number.");
+                });
 
             me.taskManagementSystem = new ui.ctl.Input.DropDown.Filtered({
                 id: "TaskManagementSystem",
@@ -693,200 +724,200 @@ ii.Class({
             me.strategicInitiativeGrid.addColumn("departmentIntiative", "departmentIntiative", "Department Intiative", "Department Intiative", 400, null, me.departmentIntiative);
             me.strategicInitiativeGrid.capColumns();
 
-            me.evsHCAHPSGrid = new ui.ctl.Grid({
-                id: "EVSHCAHPSGrid",
+            me.qualityAssuranceGrid = new ui.ctl.Grid({
+                id: "QualityAssuranceGrid",
                 appendToId: "divForm",
-                selectFunction: function( index ) { me.evsHCAHPSItemSelect(index); },
+                selectFunction: function( index ) { me.qualityAssuranceItemSelect(index); },
                 deleteFunction: function() { return true; }
             });
 
-            me.evsHCAHPSMetricTypeTitle = new ui.ctl.Input.Text({
-                id: "EVSHCAHPMetricTypeTitle",
-                appendToId: "EVSHCAHPSGridControlHolder"
+            me.qaMetricTypeTitle = new ui.ctl.Input.Text({
+                id: "QAMetricTypeTitle",
+                appendToId: "QualityAssuranceGridControlHolder"
             });
 
-            me.evsPeriod1 = new ui.ctl.Input.Text({
-                id: "EVSPeriod1",
-				maxLength: 19,
-                appendToId: "EVSHCAHPSGridControlHolder",
+            me.qaPeriod1 = new ui.ctl.Input.Text({
+                id: "QAPeriod1",
+                maxLength: 19,
+                appendToId: "QualityAssuranceGridControlHolder",
                 changeFunction: function() { me.modified(); }
             });
 
-            me.evsPeriod1.makeEnterTab()
+            me.qaPeriod1.makeEnterTab()
                 .setValidationMaster( me.validator )
                 .addValidation( function( isFinal, dataMap ) {
 
-                    me.validateControl(me.evsPeriod1, me.evsHCAHPSGrid);
+                    me.validateControl(me.qaPeriod1, me.qualityAssuranceGrid);
                 });
 
-            me.evsPeriod2 = new ui.ctl.Input.Text({
-                id: "EVSPeriod2",
-				maxLength: 19,
-                appendToId: "EVSHCAHPSGridControlHolder",
+            me.qaPeriod2 = new ui.ctl.Input.Text({
+                id: "QAPeriod2",
+                maxLength: 19,
+                appendToId: "QualityAssuranceGridControlHolder",
                 changeFunction: function() { me.modified(); }
             });
 
-            me.evsPeriod2.makeEnterTab()
+            me.qaPeriod2.makeEnterTab()
                 .setValidationMaster( me.validator )
                 .addValidation( function( isFinal, dataMap ) {
 
-                    me.validateControl(me.evsPeriod2, me.evsHCAHPSGrid);
+                    me.validateControl(me.qaPeriod2, me.qualityAssuranceGrid);
                 });
 
-            me.evsPeriod3 = new ui.ctl.Input.Text({
-                id: "EVSPeriod3",
-				maxLength: 19,
-                appendToId: "EVSHCAHPSGridControlHolder",
+            me.qaPeriod3 = new ui.ctl.Input.Text({
+                id: "QAPeriod3",
+                maxLength: 19,
+                appendToId: "QualityAssuranceGridControlHolder",
                 changeFunction: function() { me.modified(); }
             });
 
-            me.evsPeriod3.makeEnterTab()
+            me.qaPeriod3.makeEnterTab()
                 .setValidationMaster( me.validator )
                 .addValidation( function( isFinal, dataMap ) {
 
-                    me.validateControl(me.evsPeriod3, me.evsHCAHPSGrid);
+                    me.validateControl(me.qaPeriod3, me.qualityAssuranceGrid);
                 });
 
-            me.evsPeriod4 = new ui.ctl.Input.Text({
-                id: "EVSPeriod4",
-				maxLength: 19,
-                appendToId: "EVSHCAHPSGridControlHolder",
+            me.qaPeriod4 = new ui.ctl.Input.Text({
+                id: "QAPeriod4",
+                maxLength: 19,
+                appendToId: "QualityAssuranceGridControlHolder",
                 changeFunction: function() { me.modified(); }
             });
 
-            me.evsPeriod4.makeEnterTab()
+            me.qaPeriod4.makeEnterTab()
                 .setValidationMaster( me.validator )
                 .addValidation( function( isFinal, dataMap ) {
 
-                    me.validateControl(me.evsPeriod4, me.evsHCAHPSGrid);
+                    me.validateControl(me.qaPeriod4, me.qualityAssuranceGrid);
                 });
 
-            me.evsPeriod5 = new ui.ctl.Input.Text({
-                id: "EVSPeriod5",
-				maxLength: 19,
-                appendToId: "EVSHCAHPSGridControlHolder",
+            me.qaPeriod5 = new ui.ctl.Input.Text({
+                id: "QAPeriod5",
+                maxLength: 19,
+                appendToId: "QualityAssuranceGridControlHolder",
                 changeFunction: function() { me.modified(); }
             });
 
-            me.evsPeriod5.makeEnterTab()
+            me.qaPeriod5.makeEnterTab()
                 .setValidationMaster( me.validator )
                 .addValidation( function( isFinal, dataMap ) {
 
-                    me.validateControl(me.evsPeriod5, me.evsHCAHPSGrid);
+                    me.validateControl(me.qaPeriod5, me.qualityAssuranceGrid);
                 });
 
-            me.evsPeriod6 = new ui.ctl.Input.Text({
-                id: "EVSPeriod6",
-				maxLength: 19,
-                appendToId: "EVSHCAHPSGridControlHolder",
+            me.qaPeriod6 = new ui.ctl.Input.Text({
+                id: "QAPeriod6",
+                maxLength: 19,
+                appendToId: "QualityAssuranceGridControlHolder",
                 changeFunction: function() { me.modified(); }
             });
 
-            me.evsPeriod6.makeEnterTab()
+            me.qaPeriod6.makeEnterTab()
                 .setValidationMaster( me.validator )
                 .addValidation( function( isFinal, dataMap ) {
 
-                    me.validateControl(me.evsPeriod6, me.evsHCAHPSGrid);
+                    me.validateControl(me.qaPeriod6, me.qualityAssuranceGrid);
                 });
 
-            me.evsPeriod7 = new ui.ctl.Input.Text({
-                id: "EVSPeriod7",
-				maxLength: 19,
-                appendToId: "EVSHCAHPSGridControlHolder",
+            me.qaPeriod7 = new ui.ctl.Input.Text({
+                id: "QAPeriod7",
+                maxLength: 19,
+                appendToId: "QualityAssuranceGridControlHolder",
                 changeFunction: function() { me.modified(); }
             });
 
-            me.evsPeriod7.makeEnterTab()
+            me.qaPeriod7.makeEnterTab()
                 .setValidationMaster( me.validator )
                 .addValidation( function( isFinal, dataMap ) {
 
-                    me.validateControl(me.evsPeriod7, me.evsHCAHPSGrid);
+                    me.validateControl(me.qaPeriod7, me.qualityAssuranceGrid);
                 });
 
-            me.evsPeriod8 = new ui.ctl.Input.Text({
-                id: "EVSPeriod8",
-				maxLength: 19,
-                appendToId: "EVSHCAHPSGridControlHolder",
+            me.qaPeriod8 = new ui.ctl.Input.Text({
+                id: "QAPeriod8",
+                maxLength: 19,
+                appendToId: "QualityAssuranceGridControlHolder",
                 changeFunction: function() { me.modified(); }
             });
 
-            me.evsPeriod8.makeEnterTab()
+            me.qaPeriod8.makeEnterTab()
                 .setValidationMaster( me.validator )
                 .addValidation( function( isFinal, dataMap ) {
 
-                    me.validateControl(me.evsPeriod8, me.evsHCAHPSGrid);
+                    me.validateControl(me.qaPeriod8, me.qualityAssuranceGrid);
                 });
 
-            me.evsPeriod9 = new ui.ctl.Input.Text({
-                id: "EVSPeriod9",
-				maxLength: 19,
-                appendToId: "EVSHCAHPSGridControlHolder",
+            me.qaPeriod9 = new ui.ctl.Input.Text({
+                id: "QAPeriod9",
+                maxLength: 19,
+                appendToId: "QualityAssuranceGridControlHolder",
                 changeFunction: function() { me.modified(); }
             });
 
-            me.evsPeriod9.makeEnterTab()
+            me.qaPeriod9.makeEnterTab()
                 .setValidationMaster( me.validator )
                 .addValidation( function( isFinal, dataMap ) {
 
-                    me.validateControl(me.evsPeriod9, me.evsHCAHPSGrid);
+                    me.validateControl(me.qaPeriod9, me.qualityAssuranceGrid);
                 });
 
-            me.evsPeriod10 = new ui.ctl.Input.Text({
-                id: "EVSPeriod10",
-				maxLength: 19,
-                appendToId: "EVSHCAHPSGridControlHolder",
+            me.qaPeriod10 = new ui.ctl.Input.Text({
+                id: "QAPeriod10",
+                maxLength: 19,
+                appendToId: "QualityAssuranceGridControlHolder",
                 changeFunction: function() { me.modified(); }
             });
 
-            me.evsPeriod10.makeEnterTab()
+            me.qaPeriod10.makeEnterTab()
                 .setValidationMaster( me.validator )
                 .addValidation( function( isFinal, dataMap ) {
 
-                    me.validateControl(me.evsPeriod10, me.evsHCAHPSGrid);
+                    me.validateControl(me.qaPeriod10, me.qualityAssuranceGrid);
                 });
 
-            me.evsPeriod11 = new ui.ctl.Input.Text({
-                id: "EVSPeriod11",
-				maxLength: 19,
-                appendToId: "EVSHCAHPSGridControlHolder",
+            me.qaPeriod11 = new ui.ctl.Input.Text({
+                id: "QAPeriod11",
+                maxLength: 19,
+                appendToId: "QualityAssuranceGridControlHolder",
                 changeFunction: function() { me.modified(); }
             });
 
-            me.evsPeriod11.makeEnterTab()
+            me.qaPeriod11.makeEnterTab()
                 .setValidationMaster( me.validator )
                 .addValidation( function( isFinal, dataMap ) {
 
-                    me.validateControl(me.evsPeriod11, me.evsHCAHPSGrid);
+                    me.validateControl(me.qaPeriod11, me.qualityAssuranceGrid);
                 });
 
-            me.evsPeriod12 = new ui.ctl.Input.Text({
-                id: "EVSPeriod12",
-				maxLength: 19,
-                appendToId: "EVSHCAHPSGridControlHolder",
+            me.qaPeriod12 = new ui.ctl.Input.Text({
+                id: "QAPeriod12",
+                maxLength: 19,
+                appendToId: "QualityAssuranceGridControlHolder",
                 changeFunction: function() { me.modified(); }
             });
 
-            me.evsPeriod12.makeEnterTab()
+            me.qaPeriod12.makeEnterTab()
                 .setValidationMaster( me.validator )
                 .addValidation( function( isFinal, dataMap ) {
 
-                    me.validateControl(me.evsPeriod12, me.evsHCAHPSGrid);
+                    me.validateControl(me.qaPeriod12, me.qualityAssuranceGrid);
                 });
 
-            me.evsHCAHPSGrid.addColumn("evsHCAHPSMetricTypeTitle", "evsMetricTypeTitle", "", "", null, null, me.evsHCAHPSMetricTypeTitle);
-            me.evsHCAHPSGrid.addColumn("evsPeriod1", "period1", "Period 1", "Period 1", 200, null, me.evsPeriod1);
-            me.evsHCAHPSGrid.addColumn("evsPeriod2", "period2", "Period 2", "Period 2", 200, null, me.evsPeriod2);
-            me.evsHCAHPSGrid.addColumn("evsPeriod3", "period3", "Period 3", "Period 3", 200, null, me.evsPeriod3);
-            me.evsHCAHPSGrid.addColumn("evsPeriod4", "period4", "Period 4", "Period 4", 200, null, me.evsPeriod4);
-            me.evsHCAHPSGrid.addColumn("evsPeriod5", "period5", "Period 5", "Period 5", 200, null, me.evsPeriod5);
-            me.evsHCAHPSGrid.addColumn("evsPeriod6", "period6", "Period 6", "Period 6", 200, null, me.evsPeriod6);
-            me.evsHCAHPSGrid.addColumn("evsPeriod7", "period7", "Period 7", "Period 7", 200, null, me.evsPeriod7);
-            me.evsHCAHPSGrid.addColumn("evsPeriod8", "period8", "Period 8", "Period 8", 200, null, me.evsPeriod8);
-            me.evsHCAHPSGrid.addColumn("evsPeriod9", "period9", "Period 9", "Period 9", 200, null, me.evsPeriod9);
-            me.evsHCAHPSGrid.addColumn("evsPeriod10", "period10", "Period 10", "Period 10", 200, null, me.evsPeriod10);
-            me.evsHCAHPSGrid.addColumn("evsPeriod11", "period11", "Period 11", "Period 11", 200, null, me.evsPeriod11);
-            me.evsHCAHPSGrid.addColumn("evsPeriod12", "period12", "Period 12", "Period 12", 200, null, me.evsPeriod12);
-            me.evsHCAHPSGrid.capColumns();
+            me.qualityAssuranceGrid.addColumn("qaMetricTypeTitle", "evsMetricTypeTitle", "", "", null, null, me.qaMetricTypeTitle);
+            me.qualityAssuranceGrid.addColumn("qaPeriod1", "period1", "Period 1", "Period 1", 200, null, me.qaPeriod1);
+            me.qualityAssuranceGrid.addColumn("qaPeriod2", "period2", "Period 2", "Period 2", 200, null, me.qaPeriod2);
+            me.qualityAssuranceGrid.addColumn("qaPeriod3", "period3", "Period 3", "Period 3", 200, null, me.qaPeriod3);
+            me.qualityAssuranceGrid.addColumn("qaPeriod4", "period4", "Period 4", "Period 4", 200, null, me.qaPeriod4);
+            me.qualityAssuranceGrid.addColumn("qaPeriod5", "period5", "Period 5", "Period 5", 200, null, me.qaPeriod5);
+            me.qualityAssuranceGrid.addColumn("qaPeriod6", "period6", "Period 6", "Period 6", 200, null, me.qaPeriod6);
+            me.qualityAssuranceGrid.addColumn("qaPeriod7", "period7", "Period 7", "Period 7", 200, null, me.qaPeriod7);
+            me.qualityAssuranceGrid.addColumn("qaPeriod8", "period8", "Period 8", "Period 8", 200, null, me.qaPeriod8);
+            me.qualityAssuranceGrid.addColumn("qaPeriod9", "period9", "Period 9", "Period 9", 200, null, me.qaPeriod9);
+            me.qualityAssuranceGrid.addColumn("qaPeriod10", "period10", "Period 10", "Period 10", 200, null, me.qaPeriod10);
+            me.qualityAssuranceGrid.addColumn("qaPeriod11", "period11", "Period 11", "Period 11", 200, null, me.qaPeriod11);
+            me.qualityAssuranceGrid.addColumn("qaPeriod12", "period12", "Period 12", "Period 12", 200, null, me.qaPeriod12);
+            me.qualityAssuranceGrid.capColumns();
 
             me.qualityPartnershipGrid = new ui.ctl.Grid({
                 id: "QualityPartnershipGrid",
@@ -1207,8 +1238,8 @@ ii.Class({
             });
 
             me.evssPeriod1 = new ui.ctl.Input.Text({
-                id: "PTSPeriod1",
-				maxLength: 19,
+                id: "EVSSPeriod1",
+                maxLength: 19,
                 appendToId: "EVSStatisticGridControlHolder",
                 changeFunction: function () { me.modified(); }
             });
@@ -1221,8 +1252,8 @@ ii.Class({
                 });
 
             me.evssPeriod2 = new ui.ctl.Input.Text({
-                id: "PTSPeriod2",
-				maxLength: 19,
+                id: "EVSsPeriod2",
+                maxLength: 19,
                 appendToId: "EVSStatisticGridControlHolder",
                 changeFunction: function () { me.modified(); }
             });
@@ -1235,8 +1266,8 @@ ii.Class({
                 });
 
             me.evssPeriod3 = new ui.ctl.Input.Text({
-                id: "PTSPeriod3",
-				maxLength: 19,
+                id: "EVSSPeriod3",
+                maxLength: 19,
                 appendToId: "EVSStatisticGridControlHolder",
                 changeFunction: function () { me.modified(); }
             });
@@ -1249,8 +1280,8 @@ ii.Class({
                 });
 
             me.evssPeriod4 = new ui.ctl.Input.Text({
-                id: "PTSPeriod4",
-				maxLength: 19,
+                id: "EVSSPeriod4",
+                maxLength: 19,
                 appendToId: "EVSStatisticGridControlHolder",
                 changeFunction: function () { me.modified(); }
             });
@@ -1263,8 +1294,8 @@ ii.Class({
                 });
 
             me.evssPeriod5 = new ui.ctl.Input.Text({
-                id: "PTSPeriod5",
-				maxLength: 19,
+                id: "EVSSPeriod5",
+                maxLength: 19,
                 appendToId: "EVSStatisticGridControlHolder",
                 changeFunction: function () { me.modified(); }
             });
@@ -1277,8 +1308,8 @@ ii.Class({
                 });
 
             me.evssPeriod6 = new ui.ctl.Input.Text({
-                id: "PTSPeriod6",
-				maxLength: 19,
+                id: "EVSSPeriod6",
+                maxLength: 19,
                 appendToId: "EVSStatisticGridControlHolder",
                 changeFunction: function () { me.modified(); }
             });
@@ -1291,8 +1322,8 @@ ii.Class({
                 });
 
             me.evssPeriod7 = new ui.ctl.Input.Text({
-                id: "PTSPeriod7",
-				maxLength: 19,
+                id: "EVSSPeriod7",
+                maxLength: 19,
                 appendToId: "EVSStatisticGridControlHolder",
                 changeFunction: function () { me.modified(); }
             });
@@ -1305,8 +1336,8 @@ ii.Class({
                 });
 
             me.evssPeriod8 = new ui.ctl.Input.Text({
-                id: "PTSPeriod8",
-				maxLength: 19,
+                id: "EVSSPeriod8",
+                maxLength: 19,
                 appendToId: "EVSStatisticGridControlHolder",
                 changeFunction: function () { me.modified(); }
             });
@@ -1319,8 +1350,8 @@ ii.Class({
                 });
 
             me.evssPeriod9 = new ui.ctl.Input.Text({
-                id: "PTSPeriod9",
-				maxLength: 19,
+                id: "EVSSPeriod9",
+                maxLength: 19,
                 appendToId: "EVSStatisticGridControlHolder",
                 changeFunction: function () { me.modified(); }
             });
@@ -1333,8 +1364,8 @@ ii.Class({
                 });
 
             me.evssPeriod10 = new ui.ctl.Input.Text({
-                id: "PTSPeriod10",
-				maxLength: 19,
+                id: "EVSSPeriod10",
+                maxLength: 19,
                 appendToId: "EVSStatisticGridControlHolder",
                 changeFunction: function () { me.modified(); }
             });
@@ -1347,8 +1378,8 @@ ii.Class({
                 });
 
             me.evssPeriod11 = new ui.ctl.Input.Text({
-                id: "PTSPeriod11",
-				maxLength: 19,
+                id: "EVSSPeriod11",
+                maxLength: 19,
                 appendToId: "EVSStatisticGridControlHolder",
                 changeFunction: function () { me.modified(); }
             });
@@ -1361,8 +1392,8 @@ ii.Class({
                 });
 
             me.evssPeriod12 = new ui.ctl.Input.Text({
-                id: "PTSPeriod12",
-				maxLength: 19,
+                id: "EVSSPeriod12",
+                maxLength: 19,
                 appendToId: "EVSStatisticGridControlHolder",
                 changeFunction: function () { me.modified(); }
             });
@@ -1388,6 +1419,210 @@ ii.Class({
             me.evsStatisticGrid.addColumn("evssPeriod11", "period11", "Period 11", "Period 11", 180, null, me.evssPeriod11);
             me.evsStatisticGrid.addColumn("evssPeriod12", "period12", "Period 12", "Period 12", 180, null, me.evssPeriod12);
             me.evsStatisticGrid.capColumns();
+
+            me.managementStaffGrid = new ui.ctl.Grid({
+                id: "ManagementStaffGrid",
+                appendToId: "divForm",
+                selectFunction: function (index) { me.managementStaffItemSelect(index); },
+                deselectFunction: function() { me.managementStaffItemDeSelect(); },
+                deleteFunction: function () { return true; }
+            });
+
+            me.msMetricTypeTitle = new ui.ctl.Input.Text({
+                id: "MSMetricTypeTitle",
+                appendToId: "ManagementStaffGridControlHolder"
+            });
+
+            me.staffManagementRatio = new ui.ctl.Input.Check({
+                id: "StaffManagementRatio",
+                appendToId: "ManagementStaffGridControlHolder",
+                className: "iiInputCheckSMRatio",
+                changeFunction: function() { me.modified(); }
+            });
+
+            me.msPeriod1 = new ui.ctl.Input.Text({
+                id: "MSPeriod1",
+                maxLength: 9,
+                appendToId: "ManagementStaffGridControlHolder",
+                changeFunction: function () { me.modified(); }
+            });
+
+            me.msPeriod1.makeEnterTab()
+                .setValidationMaster(me.validator)
+                .addValidation(function (isFinal, dataMap) {
+
+                    me.validateControl(me.msPeriod1, me.managementStaffGrid);
+                });
+
+            me.msPeriod2 = new ui.ctl.Input.Text({
+                id: "MSPeriod2",
+                maxLength: 9,
+                appendToId: "ManagementStaffGridControlHolder",
+                changeFunction: function () { me.modified(); }
+            });
+
+            me.msPeriod2.makeEnterTab()
+                .setValidationMaster(me.validator)
+                .addValidation(function (isFinal, dataMap) {
+
+                    me.validateControl(me.msPeriod2, me.managementStaffGrid);
+                });
+
+            me.msPeriod3 = new ui.ctl.Input.Text({
+                id: "MSPeriod3",
+                maxLength: 9,
+                appendToId: "ManagementStaffGridControlHolder",
+                changeFunction: function () { me.modified(); }
+            });
+
+            me.msPeriod3.makeEnterTab()
+                .setValidationMaster(me.validator)
+                .addValidation(function (isFinal, dataMap) {
+
+                    me.validateControl(me.msPeriod3, me.managementStaffGrid);
+                });
+
+            me.msPeriod4 = new ui.ctl.Input.Text({
+                id: "MSPeriod4",
+                maxLength: 9,
+                appendToId: "ManagementStaffGridControlHolder",
+                changeFunction: function () { me.modified(); }
+            });
+
+            me.msPeriod4.makeEnterTab()
+                .setValidationMaster(me.validator)
+                .addValidation(function (isFinal, dataMap) {
+
+                    me.validateControl(me.msPeriod4, me.managementStaffGrid);
+                });
+
+            me.msPeriod5 = new ui.ctl.Input.Text({
+                id: "MSPeriod5",
+                maxLength: 9,
+                appendToId: "ManagementStaffGridControlHolder",
+                changeFunction: function () { me.modified(); }
+            });
+
+            me.msPeriod5.makeEnterTab()
+                .setValidationMaster(me.validator)
+                .addValidation(function (isFinal, dataMap) {
+
+                    me.validateControl(me.msPeriod5, me.managementStaffGrid);
+                });
+
+            me.msPeriod6 = new ui.ctl.Input.Text({
+                id: "MSPeriod6",
+                maxLength: 9,
+                appendToId: "ManagementStaffGridControlHolder",
+                changeFunction: function () { me.modified(); }
+            });
+
+            me.msPeriod6.makeEnterTab()
+                .setValidationMaster(me.validator)
+                .addValidation(function (isFinal, dataMap) {
+
+                    me.validateControl(me.msPeriod6, me.managementStaffGrid);
+                });
+
+            me.msPeriod7 = new ui.ctl.Input.Text({
+                id: "MSPeriod7",
+                maxLength: 9,
+                appendToId: "ManagementStaffGridControlHolder",
+                changeFunction: function () { me.modified(); }
+            });
+
+            me.msPeriod7.makeEnterTab()
+                .setValidationMaster(me.validator)
+                .addValidation(function (isFinal, dataMap) {
+
+                    me.validateControl(me.msPeriod7, me.managementStaffGrid);
+                });
+
+            me.msPeriod8 = new ui.ctl.Input.Text({
+                id: "MSPeriod8",
+                maxLength: 9,
+                appendToId: "ManagementStaffGridControlHolder",
+                changeFunction: function () { me.modified(); }
+            });
+
+            me.msPeriod8.makeEnterTab()
+                .setValidationMaster(me.validator)
+                .addValidation(function (isFinal, dataMap) {
+
+                    me.validateControl(me.msPeriod8, me.managementStaffGrid);
+                });
+
+            me.msPeriod9 = new ui.ctl.Input.Text({
+                id: "MSPeriod9",
+                maxLength: 9,
+                appendToId: "ManagementStaffGridControlHolder",
+                changeFunction: function () { me.modified(); }
+            });
+
+            me.msPeriod9.makeEnterTab()
+                .setValidationMaster(me.validator)
+                .addValidation(function (isFinal, dataMap) {
+
+                    me.validateControl(me.msPeriod9, me.managementStaffGrid);
+                });
+
+            me.msPeriod10 = new ui.ctl.Input.Text({
+                id: "MSPeriod10",
+                maxLength: 9,
+                appendToId: "ManagementStaffGridControlHolder",
+                changeFunction: function () { me.modified(); }
+            });
+
+            me.msPeriod10.makeEnterTab()
+                .setValidationMaster(me.validator)
+                .addValidation(function (isFinal, dataMap) {
+
+                    me.validateControl(me.msPeriod10, me.managementStaffGrid);
+                });
+
+            me.msPeriod11 = new ui.ctl.Input.Text({
+                id: "MSPeriod11",
+                maxLength: 9,
+                appendToId: "ManagementStaffGridControlHolder",
+                changeFunction: function () { me.modified(); }
+            });
+
+            me.msPeriod11.makeEnterTab()
+                .setValidationMaster(me.validator)
+                .addValidation(function (isFinal, dataMap) {
+
+                    me.validateControl(me.msPeriod11, me.managementStaffGrid);
+                });
+
+            me.msPeriod12 = new ui.ctl.Input.Text({
+                id: "MSPeriod12",
+                maxLength: 9,
+                appendToId: "ManagementStaffGridControlHolder",
+                changeFunction: function () { me.modified(); }
+            });
+
+            me.msPeriod12.makeEnterTab()
+                .setValidationMaster(me.validator)
+                .addValidation(function (isFinal, dataMap) {
+
+                    me.validateControl(me.msPeriod12, me.managementStaffGrid);
+                });
+
+            me.managementStaffGrid.addColumn("msMetricTypeTitle", "evsMetricTypeTitle", "", "", null, null, me.msMetricTypeTitle);
+            me.managementStaffGrid.addColumn("staffManagementRatio", "staffManagementRatio", "Include in Staff to Management Ratio", "Include in Staff to Management Ratio", 300, function(staffManagementRatio) { return (staffManagementRatio === true ? "Yes" : "No"); }, me.staffManagementRatio);
+            me.managementStaffGrid.addColumn("msPeriod1", "period1", "Period 1", "Period 1", 180, null, me.msPeriod1);
+            me.managementStaffGrid.addColumn("msPeriod2", "period2", "Period 2", "Period 2", 180, null, me.msPeriod2);
+            me.managementStaffGrid.addColumn("msPeriod3", "period3", "Period 3", "Period 3", 180, null, me.msPeriod3);
+            me.managementStaffGrid.addColumn("msPeriod4", "period4", "Period 4", "Period 4", 180, null, me.msPeriod4);
+            me.managementStaffGrid.addColumn("msPeriod5", "period5", "Period 5", "Period 5", 180, null, me.msPeriod5);
+            me.managementStaffGrid.addColumn("msPeriod6", "period6", "Period 6", "Period 6", 180, null, me.msPeriod6);
+            me.managementStaffGrid.addColumn("msPeriod7", "period7", "Period 7", "Period 7", 180, null, me.msPeriod7);
+            me.managementStaffGrid.addColumn("msPeriod8", "period8", "Period 8", "Period 8", 180, null, me.msPeriod8);
+            me.managementStaffGrid.addColumn("msPeriod9", "period9", "Period 9", "Period 9", 180, null, me.msPeriod9);
+            me.managementStaffGrid.addColumn("msPeriod10", "period10", "Period 10", "Period 10", 180, null, me.msPeriod10);
+            me.managementStaffGrid.addColumn("msPeriod11", "period11", "Period 11", "Period 11", 180, null, me.msPeriod11);
+            me.managementStaffGrid.addColumn("msPeriod12", "period12", "Period 12", "Period 12", 180, null, me.msPeriod12);
+            me.managementStaffGrid.capColumns();
         },
 
         configureCommunications: function() {
@@ -1511,12 +1746,12 @@ ii.Class({
                 lookupSpec: { evsMetricType: me.metricTypes }
             });
 
-            me.evsHCAHPS = [];
-            me.evsHCAHPSStore = me.cache.register({
-                storeId: "evsEVSHCAHPS",
-                itemConstructor: fin.hcm.evsMetric.EVSHCAHPS,
-                itemConstructorArgs: fin.hcm.evsMetric.evsHCAHPSArgs,
-                injectionArray: me.evsHCAHPS,
+            me.qualityAssurances = [];
+            me.qualityAssuranceStore = me.cache.register({
+                storeId: "qualityAssurances",
+                itemConstructor: fin.hcm.evsMetric.QualityAssurance,
+                itemConstructorArgs: fin.hcm.evsMetric.qualityAssuranceArgs,
+                injectionArray: me.qualityAssurances,
                 lookupSpec: { evsMetricType: me.metricTypes }
             });
 
@@ -1535,6 +1770,15 @@ ii.Class({
                 itemConstructor: fin.hcm.evsMetric.EVSStatistic,
                 itemConstructorArgs: fin.hcm.evsMetric.evsStatisticArgs,
                 injectionArray: me.evsStatistics,
+                lookupSpec: { evsMetricType: me.metricTypes }
+            });
+
+            me.managementStaffs = [];
+            me.managementStaffStore = me.cache.register({
+                storeId: "managementStaffs",
+                itemConstructor: fin.hcm.evsMetric.ManagementStaff,
+                itemConstructorArgs: fin.hcm.evsMetric.managementStaffArgs,
+                injectionArray: me.managementStaffs,
                 lookupSpec: { evsMetricType: me.metricTypes }
             });
         },
@@ -1557,6 +1801,8 @@ ii.Class({
                     me.activeFrameId = 5;
                 else if (this.id === "TabEVSStatistics")
                     me.activeFrameId = 6;
+                else if (this.id === "TabManagementStaff")
+                    me.activeFrameId = 7;
 
                 $("#container-1").tabs(me.activeFrameId);
                 $("#container-1").triggerTab(me.activeFrameId);
@@ -1628,20 +1874,21 @@ ii.Class({
             me.contractedProductivity.text.tabIndex = 13;
             me.supportedByNPC.text.tabIndex = 14;
             me.thirdPartySatisfaction.text.tabIndex = 15;
-            me.taskManagementSystem.text.tabIndex = 16;
-            me.taskManagementSystemOther.text.tabIndex = 17;
-            me.serviceLinePT.text.tabIndex = 18;
-            me.serviceLineLaundry.text.tabIndex = 19;
-            me.serviceLinePOM.text.tabIndex = 20;
-            me.serviceLineCES.text.tabIndex = 21;
-            me.uvManufacturer.text.tabIndex = 22;
-            me.hygiena.text.tabIndex = 23;
-            me.wanda.text.tabIndex = 24;
-            me.union.text.tabIndex = 25;
-            me.microFiber.text.tabIndex = 26;
-            me.mop.text.tabIndex = 27;
-            me.cartManufacturer.text.tabIndex = 28;
-            me.notes.tabIndex = 29;
+            me.employeeProductiveHoursPerWeekStandard.text.tabIndex = 16;
+            me.taskManagementSystem.text.tabIndex = 17;
+            me.taskManagementSystemOther.text.tabIndex = 18;
+            me.serviceLinePT.text.tabIndex = 19;
+            me.serviceLineLaundry.text.tabIndex = 20;
+            me.serviceLinePOM.text.tabIndex = 21;
+            me.serviceLineCES.text.tabIndex = 22;
+            me.uvManufacturer.text.tabIndex = 23;
+            me.hygiena.text.tabIndex = 24;
+            me.wanda.text.tabIndex = 25;
+            me.union.text.tabIndex = 26;
+            me.microFiber.text.tabIndex = 27;
+            me.mop.text.tabIndex = 28;
+            me.cartManufacturer.text.tabIndex = 29;
+            me.notes.tabIndex = 30;
         },
 
         laborControlGridScroll: function() {
@@ -1659,7 +1906,7 @@ ii.Class({
         qualityAssuranceGridScroll: function() {
             var me = fin.hcmEVSMetricUi;
 
-            me.evsHCAHPSGrid.setHeight(150);
+            me.qualityAssuranceGrid.setHeight(150);
             me.qualityPartnershipGrid.setHeight(150);
             me.auditScoreGrid.setHeight(150);
             me.competencyTrainingGrid.setHeight(150);
@@ -1684,6 +1931,7 @@ ii.Class({
                 me.contractedProductivity.resizeText();
                 me.supportedByNPC.resizeText();
                 me.thirdPartySatisfaction.resizeText();
+                me.employeeProductiveHoursPerWeekStandard.resizeText();
                 me.taskManagementSystem.resizeText();
                 me.taskManagementSystemOther.resizeText();
                 me.serviceLinePT.resizeText();
@@ -1702,10 +1950,10 @@ ii.Class({
                 me.strategicInitiativeGrid.setHeight($(window).height() - 145);
             }
             else if (selectedTab === 4) {
-                if ($("#EVSHCAHPSGridContainer").width() < 2600) {
-                    $("#EVSHCAHPSGrid").width(2600);
+                if ($("#QualityAssuranceGridContainer").width() < 2600) {
+                    $("#QualityAssuranceGrid").width(2600);
                 }
-                me.evsHCAHPSGrid.setHeight(150);
+                me.qualityAssuranceGrid.setHeight(150);
                 me.qualityPartnershipGrid.setHeight(150);
                 me.auditScoreGrid.setHeight(150);
                 me.competencyTrainingGrid.setHeight(150);
@@ -1720,6 +1968,15 @@ ii.Class({
                 }
                 else {
                     me.evsStatisticGrid.setHeight($(window).height() - 143);
+                }
+            }
+            else if (selectedTab === 7) {
+                if ($("#ManagementStaffGridContainer").width() < 2800) {
+                    $("#ManagementStaffGrid").width(2800);
+                    me.managementStaffGrid.setHeight($(window).height() - 168);
+                }
+                else {
+                    me.managementStaffGrid.setHeight($(window).height() - 143);
                 }
             }
         },
@@ -1743,6 +2000,7 @@ ii.Class({
             me.contractedProductivity.setValue("");
             me.supportedByNPC.reset();
             me.thirdPartySatisfaction.reset();
+            me.employeeProductiveHoursPerWeekStandard.setValue("");
             me.taskManagementSystem.reset();
             me.taskManagementSystemOther.setValue("");
             me.serviceLinePT.setValue("");
@@ -1761,8 +2019,8 @@ ii.Class({
 
             if (me.strategicInitiativeGrid.activeRowIndex !== - 1)
                 me.strategicInitiativeGrid.body.deselect(me.strategicInitiativeGrid.activeRowIndex, true);
-            if (me.evsHCAHPSGrid.activeRowIndex !== - 1)
-                me.evsHCAHPSGrid.body.deselect(me.evsHCAHPSGrid.activeRowIndex, true);
+            if (me.qualityAssuranceGrid.activeRowIndex !== - 1)
+                me.qualityAssuranceGrid.body.deselect(me.qualityAssuranceGrid.activeRowIndex, true);
             if (me.qualityPartnershipGrid.activeRowIndex !== - 1)
                 me.qualityPartnershipGrid.body.deselect(me.qualityPartnershipGrid.activeRowIndex, true);
             if (me.auditScoreGrid.activeRowIndex !== - 1)
@@ -1773,14 +2031,17 @@ ii.Class({
                 me.adminObjectiveGrid.body.deselect(me.adminObjectiveGrid.activeRowIndex, true);
             if (me.evsStatisticGrid.activeRowIndex !== -1)
                 me.evsStatisticGrid.body.deselect(me.evsStatisticGrid.activeRowIndex, true);
+            if (me.managementStaffGrid.activeRowIndex !== -1)
+                me.managementStaffGrid.body.deselect(me.managementStaffGrid.activeRowIndex, true);
 
             me.strategicInitiativeGrid.setData([]);
-            me.evsHCAHPSGrid.setData([]);
+            me.qualityAssuranceGrid.setData([]);
             me.qualityPartnershipGrid.setData([]);
             me.auditScoreGrid.setData([]);
             me.competencyTrainingGrid.setData([]);
             me.adminObjectiveGrid.setData([]);
             me.evsStatisticGrid.setData([]);
+            me.managementStaffGrid.setData([]);
 
             me.numericDetailStore.reset();
             me.textDetailStore.reset();
@@ -1821,7 +2082,7 @@ ii.Class({
             me.types.push(new fin.hcm.evsMetric.Type(0, "No"));
             me.supportedByNPC.setData(me.types);
             me.hygiena.setData(me.types);
-			me.union.setData(me.types);
+            me.union.setData(me.types);
         },
 
         metricTypesLoaded: function(me, activeId) {
@@ -1912,7 +2173,8 @@ ii.Class({
                 itemIndex = ii.ajax.util.findIndexById(me.metrics[0].thirdPartySatisfaction.toString(), me.thirdPartySatisfaction.data);
                 if (itemIndex !== null && itemIndex >= 0)
                     me.thirdPartySatisfaction.select(itemIndex, me.thirdPartySatisfaction.focused);
-				$("#spnThirdPartySatisfaction").html(me.thirdPartySatisfaction.lastBlurValue);
+                $("#spnThirdPartySatisfaction").html(me.thirdPartySatisfaction.lastBlurValue);
+                me.employeeProductiveHoursPerWeekStandard.setValue(me.metrics[0].employeeProductiveHoursPerWeekStandard);
                 itemIndex = ii.ajax.util.findIndexById(me.metrics[0].taskManagementSystem.toString(), me.taskManagementSystem.data);
                 if (itemIndex !== null && itemIndex >= 0)
                     me.taskManagementSystem.select(itemIndex, me.taskManagementSystem.focused);
@@ -1956,7 +2218,7 @@ ii.Class({
                 me.adminObjectiveStore.fetch("userId:[user],evsMetricId:" + me.evsMetricId, me.adminObjectivesLoaded, me);
             }
             else {
-				$("#spnThirdPartySatisfaction").html("");
+                $("#spnThirdPartySatisfaction").html("");
                 me.evsMetricId = 0;
                 me.setGridData();
                 me.checkLoadCount();
@@ -2034,11 +2296,12 @@ ii.Class({
         setGridData: function() {
             var me = this;
             var item = null;
-			var index = 0;
+            var index = 0;
 
             me.laborControls = [];
-            me.evsHCAHPS = [];
+            me.qualityAssurances = [];
             me.evsStatistics = [];
+            me.managementStaffs = [];
 
             if (me.numericDetails.length === 0) {
                 for (index = 0; index < me.metricTypes.length; index++) {
@@ -2046,9 +2309,9 @@ ii.Class({
                         item = new fin.hcm.evsMetric.LaborControl(0, me.evsMetricId, me.metricTypes[index], me.metricTypes[index].title);
                         me.laborControls.push(item);
                     }
-                    else if (me.metricTypes[index].subType === "Quality Assurance - EVS HCAHPS") {
-                        item = new fin.hcm.evsMetric.EVSHCAHPS(0, me.evsMetricId, me.metricTypes[index], me.metricTypes[index].title);
-                        me.evsHCAHPS.push(item);
+                    else if (me.metricTypes[index].subType === "Quality Assurance") {
+                        item = new fin.hcm.evsMetric.QualityAssurance(0, me.evsMetricId, me.metricTypes[index], me.metricTypes[index].title);
+                        me.qualityAssurances.push(item);
                     }
                     else if (me.metricTypes[index].subType === "Quality Partnership") {
                         item = new fin.hcm.evsMetric.QualityPartnership(0, me.evsMetricId, me.metricTypes[index], me.metricTypes[index].title);
@@ -2069,6 +2332,10 @@ ii.Class({
                     else if (me.metricTypes[index].subType === "EVS Statistics") {
                         item = new fin.hcm.evsMetric.EVSStatistic(0, me.evsMetricId, me.metricTypes[index], me.metricTypes[index].title);
                         me.evsStatistics.push(item);
+                    }
+                    else if (me.metricTypes[index].subType === "Management Staff") {
+                        item = new fin.hcm.evsMetric.ManagementStaff(0, me.evsMetricId, me.metricTypes[index], me.metricTypes[index].title);
+                        me.managementStaffs.push(item);
                     }
                 }
 
@@ -2101,8 +2368,8 @@ ii.Class({
                             );
                         me.laborControls.push(item);
                     }
-                    else if (me.numericDetails[index].evsMetricType.subType === "Quality Assurance - EVS HCAHPS") {
-                        item = new fin.hcm.evsMetric.EVSHCAHPS(
+                    else if (me.numericDetails[index].evsMetricType.subType === "Quality Assurance") {
+                        item = new fin.hcm.evsMetric.QualityAssurance(
                             me.numericDetails[index].id
                             , me.numericDetails[index].evsMetricId
                             , me.numericDetails[index].evsMetricType
@@ -2120,7 +2387,7 @@ ii.Class({
                             , me.numericDetails[index].period11
                             , me.numericDetails[index].period12
                             );
-                        me.evsHCAHPS.push(item);
+                        me.qualityAssurances.push(item);
                     }
                     else if (me.numericDetails[index].evsMetricType.subType === "EVS Statistics") {
                         item = new fin.hcm.evsMetric.EVSStatistic(
@@ -2142,6 +2409,28 @@ ii.Class({
                             , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? me.numericDetails[index].period12 : (me.numericDetails[index].period12 === "" ? "" : parseInt(me.numericDetails[index].period12, 10)))
                             );
                         me.evsStatistics.push(item);
+                    }
+                    else if (me.numericDetails[index].evsMetricType.subType === "Management Staff") {
+                        item = new fin.hcm.evsMetric.ManagementStaff(
+                            me.numericDetails[index].id
+                            , me.numericDetails[index].evsMetricId
+                            , me.numericDetails[index].evsMetricType
+                            , me.numericDetails[index].evsMetricType.title
+                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? me.numericDetails[index].period1 : (me.numericDetails[index].period1 === "" ? "" : parseInt(me.numericDetails[index].period1, 10)))
+                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? me.numericDetails[index].period2 : (me.numericDetails[index].period2 === "" ? "" : parseInt(me.numericDetails[index].period2, 10)))
+                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? me.numericDetails[index].period3 : (me.numericDetails[index].period3 === "" ? "" : parseInt(me.numericDetails[index].period3, 10)))
+                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? me.numericDetails[index].period4 : (me.numericDetails[index].period4 === "" ? "" : parseInt(me.numericDetails[index].period4, 10)))
+                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? me.numericDetails[index].period5 : (me.numericDetails[index].period5 === "" ? "" : parseInt(me.numericDetails[index].period5, 10)))
+                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? me.numericDetails[index].period6 : (me.numericDetails[index].period6 === "" ? "" : parseInt(me.numericDetails[index].period6, 10)))
+                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? me.numericDetails[index].period7 : (me.numericDetails[index].period7 === "" ? "" : parseInt(me.numericDetails[index].period7, 10)))
+                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? me.numericDetails[index].period8 : (me.numericDetails[index].period8 === "" ? "" : parseInt(me.numericDetails[index].period8, 10)))
+                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? me.numericDetails[index].period9 : (me.numericDetails[index].period9 === "" ? "" : parseInt(me.numericDetails[index].period9, 10)))
+                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? me.numericDetails[index].period10 : (me.numericDetails[index].period10 === "" ? "" : parseInt(me.numericDetails[index].period10, 10)))
+                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? me.numericDetails[index].period11 : (me.numericDetails[index].period11 === "" ? "" : parseInt(me.numericDetails[index].period11, 10)))
+                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? me.numericDetails[index].period12 : (me.numericDetails[index].period12 === "" ? "" : parseInt(me.numericDetails[index].period12, 10)))
+                            , me.numericDetails[index].staffManagementRatio
+                            );
+                        me.managementStaffs.push(item);
                     }
                 }
 
@@ -2167,8 +2456,8 @@ ii.Class({
                             );
                         me.laborControls.push(item);
                     }
-                    else if (me.textDetails[index].evsMetricType.subType === "Quality Assurance - EVS HCAHPS") {
-                        item = new fin.hcm.evsMetric.EVSHCAHPS(
+                    else if (me.textDetails[index].evsMetricType.subType === "Quality Assurance") {
+                        item = new fin.hcm.evsMetric.QualityAssurance(
                             me.textDetails[index].id
                             , me.textDetails[index].evsMetricId
                             , me.textDetails[index].evsMetricType
@@ -2186,7 +2475,7 @@ ii.Class({
                             , me.textDetails[index].period11
                             , me.textDetails[index].period12
                             );
-                        me.evsHCAHPS.push(item);
+                        me.qualityAssurances.push(item);
                     }
                 }
 
@@ -2199,10 +2488,10 @@ ii.Class({
                 }
 
                 for (index = 0; index < me.metricTypes.length; index++) {
-                    if (me.metricTypes[index].subType === "Quality Assurance - EVS HCAHPS") {
-                        var result = $.grep(me.evsHCAHPS, function(item) { return item.evsMetricType.id === me.metricTypes[index].id; });
+                    if (me.metricTypes[index].subType === "Quality Assurance") {
+                        var result = $.grep(me.qualityAssurances, function(item) { return item.evsMetricType.id === me.metricTypes[index].id; });
                         if (result.length === 0)
-                            me.evsHCAHPS.push(new fin.hcm.evsMetric.EVSHCAHPS(0, me.evsMetricId, me.metricTypes[index], me.metricTypes[index].title));
+                            me.qualityAssurances.push(new fin.hcm.evsMetric.QualityAssurance(0, me.evsMetricId, me.metricTypes[index], me.metricTypes[index].title));
                     }
                 }
 
@@ -2213,11 +2502,20 @@ ii.Class({
                             me.evsStatistics.push(new fin.hcm.evsMetric.EVSStatistic(0, me.evsMetricId, me.metricTypes[index], me.metricTypes[index].title));
                     }
                 }
+
+                for (index = 0; index < me.metricTypes.length; index++) {
+                    if (me.metricTypes[index].subType === "Management Staff") {
+                        var result = $.grep(me.managementStaffs, function (item) { return item.evsMetricType.id === me.metricTypes[index].id; });
+                        if (result.length === 0)
+                            me.managementStaffs.push(new fin.hcm.evsMetric.ManagementStaff(0, me.evsMetricId, me.metricTypes[index], me.metricTypes[index].title));
+                    }
+                }
             }
 
-            me.evsHCAHPS.sort(me.customSort);
-            me.evsHCAHPSGrid.setData(me.evsHCAHPS);
+            me.qualityAssurances.sort(me.customSort);
+            me.qualityAssuranceGrid.setData(me.qualityAssurances);
             me.evsStatisticGrid.setData(me.evsStatistics);
+            me.managementStaffGrid.setData(me.managementStaffs);
             me.setLaborControlGrids();
             if (me.reloadData) {
                 me.reloadData = false;
@@ -2230,7 +2528,7 @@ ii.Class({
 
         setLaborControlGrids: function() {
             var me = this;
-            var index =0;
+            var index = 0;
             var iIndex = 0;
             var rowIndex = 0;
             var total = 0;
@@ -2246,8 +2544,7 @@ ii.Class({
                     laborControlRow = laborControlRowTemplate;
                     laborControlRow = laborControlRow.replace("RowStyle", ((rowIndex % 2) ? "gridRow" : "alternateGridRow"));
                     laborControlRow = laborControlRow.replace(/RowCount/g, index);
-                    if (me.laborControls[index].evsMetricType.brief === "Budget")
-                        $("#LaborControlGridBody").append(laborControlRow);
+                    $("#LaborControlGridBody").append(laborControlRow);
                     $("#tdTitle" + index).html(me.laborControls[index].evsMetricTypeTitle);
                     $("#tdTitle" + index).addClass((rowIndex % 2) ? "gridRow" : "alternateGridRow");
                     rowIndex++;
@@ -2258,18 +2555,32 @@ ii.Class({
                     $("#tdComments").addClass("gridRow");
                 }
 
-                if (index === 3 || index === 7) {
+                if (index === 3 || index === 5 || index === 9 || index === 11) {
                     laborControlRow = laborControlRowTotalTemplate;
                     laborControlRow = laborControlRow.replace(/RowCount/g, index);
                     laborControlRow = laborControlRow.replace("RowStyle", "totalGridRow");
-                    if (index === 3 || index === 7)
-                        $("#LaborControlGridBody").append(laborControlRow);
+                    $("#LaborControlGridBody").append(laborControlRow);
 
                     if (index === 3)
-                        $("#tdTitleTotal" + index).html("Paid Total Hours");
-                    else if (index === 7)
-                        $("#tdTitleTotal" + index).html("Paid Total Dollars");
-
+                        $("#tdTitleTotal" + index).html("Total Productive Hours");
+                    else if (index === 5) {
+                        $("#tdTitleTotal" + index).html("Total Non-Productive Hours");
+                        laborControlRow = laborControlRowTotalTemplate;
+                        laborControlRow = laborControlRow.replace(/RowCount/g, "Paid" + index);
+                        laborControlRow = laborControlRow.replace("RowStyle", "grandTotalGridRow");
+                        $("#LaborControlGridBody").append(laborControlRow);
+                        $("#tdTitleTotalPaid" + index).html("Paid Total Hours");
+                    }
+                    else if (index === 9)
+                        $("#tdTitleTotal" + index).html("Total Productive Dollars");
+                    else if (index === 11) {
+                        $("#tdTitleTotal" + index).html("Total Non-Productive Dollars");
+                        laborControlRow = laborControlRowTotalTemplate;
+                        laborControlRow = laborControlRow.replace(/RowCount/g, "Paid" + index);
+                        laborControlRow = laborControlRow.replace("RowStyle", "grandTotalGridRow");
+                        $("#LaborControlGridBody").append(laborControlRow);
+                        $("#tdTitleTotalPaid" + index).html("Paid Total Dollars");
+                    }
                     $("#tdTitleTotal" + index).addClass("totalGridRow");
                     $("#tdTitleTotalPaid" + index).addClass("grandTotalGridRow");
                 }
@@ -2298,7 +2609,7 @@ ii.Class({
                     }
                 }
 
-                if (index === 3 || index === 7) {
+                if (index === 3 || index === 9) {
                     for (iIndex = 1; iIndex <= 12; iIndex++) {
                         total = ($("#txtPeriod" + iIndex + "Budget" + (index - 3)).val() === "" ? 0 : parseFloat($("#txtPeriod" + iIndex + "Budget" + (index - 3)).val()))
                             + ($("#txtPeriod" + iIndex + "Budget" + (index - 1)).val() === "" ? 0 : parseFloat($("#txtPeriod" + iIndex + "Budget" + (index - 1)).val()));
@@ -2306,6 +2617,18 @@ ii.Class({
                         total = ($("#txtPeriod" + iIndex + "Actual" + (index - 3)).val() === "" ? 0 : parseFloat($("#txtPeriod" + iIndex + "Actual" + (index - 3)).val()))
                             + ($("#txtPeriod" + iIndex + "Actual" + (index - 1)).val() === "" ? 0 : parseFloat($("#txtPeriod" + iIndex + "Actual" + (index - 1)).val()));
                         $("#spnPeriod" + iIndex + "Actual" + index).html(total.toFixed(2));
+                    }
+                }
+                else if (index === 5 || index === 11) {
+                    for (iIndex = 1; iIndex <= 12; iIndex++) {
+                        total = ($("#txtPeriod" + iIndex + "Budget" + (index - 1)).val() === "" ? 0 : parseFloat($("#txtPeriod" + iIndex + "Budget" + (index - 1)).val()));
+                        $("#spnPeriod" + iIndex + "Budget" + index).html(total.toFixed(2));
+                        total = ($("#txtPeriod" + iIndex + "Actual" + (index - 1)).val() === "" ? 0 : parseFloat($("#txtPeriod" + iIndex + "Actual" + (index - 1)).val()));
+                        $("#spnPeriod" + iIndex + "Actual" + index).html(total.toFixed(2));
+                        total = parseFloat($("#spnPeriod" + iIndex + "Budget" + (index - 2)).html()) + parseFloat($("#spnPeriod" + iIndex + "Budget" + index).html());
+                        $("#spnPeriod" + iIndex + "BudgetPaid" + index).html(total.toFixed(2));
+                        total = parseFloat($("#spnPeriod" + iIndex + "Actual" + (index - 2)).html()) + parseFloat($("#spnPeriod" + iIndex + "Actual" + index).html());
+                        $("#spnPeriod" + iIndex + "ActualPaid" + index).html(total.toFixed(2));
                     }
                 }
             }
@@ -2342,15 +2665,15 @@ ii.Class({
                 me.laborControls[rowCount].modified = true;
                 me.modified();
 
-				if (objInput.value !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(objInput.value))) {
-					$("#" + objInput.id).attr("title", "Please enter numeric value. Example 99.99");
-					$("#" + objInput.id).addClass("invalid");
-					return;
-				}
-				else {
-					$("#" + objInput.id).attr("title", "");
-					$("#" + objInput.id).removeClass("invalid");
-				}
+                if (objInput.value !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(objInput.value))) {
+                    $("#" + objInput.id).attr("title", "Please enter numeric value. Example 99.99");
+                    $("#" + objInput.id).addClass("invalid");
+                    return;
+                }
+                else {
+                    $("#" + objInput.id).attr("title", "");
+                    $("#" + objInput.id).removeClass("invalid");
+                }
 
                 if (rowCount === 0 || rowCount === 2) {
                     startRowNumber = 0;
@@ -2362,20 +2685,57 @@ ii.Class({
                     endRowNumber = 3;
                     totalRowNumber = 3;
                 }
-                else if (rowCount === 4 || rowCount === 6) {
+                else if (rowCount === 4) {
                     startRowNumber = 4;
-                    endRowNumber = 6;
-                    totalRowNumber = 7;
+                    endRowNumber = 4;
+                    totalRowNumber = 5;
                 }
-                else if (rowCount === 5 || rowCount === 7) {
+                else if (rowCount === 5) {
                     startRowNumber = 5;
-                    endRowNumber = 7;
-                    totalRowNumber = 7;
+                    endRowNumber = 5;
+                    totalRowNumber = 5;
+                }
+                else if (rowCount === 6 || rowCount === 8) {
+                    startRowNumber = 6;
+                    endRowNumber = 8;
+                    totalRowNumber = 9;
+                }
+                else if (rowCount === 7 || rowCount === 9) {
+                    startRowNumber = 7;
+                    endRowNumber = 9;
+                    totalRowNumber = 9;
+                }
+                else if (rowCount === 10) {
+                    startRowNumber = 10;
+                    endRowNumber = 10;
+                    totalRowNumber = 11;
+                }
+                else if (rowCount === 11) {
+                    startRowNumber = 11;
+                    endRowNumber = 11;
+                    totalRowNumber = 11;
                 }
 
-                total = (me.laborControls[startRowNumber]["period" + period] === "" ? 0 : parseFloat(me.laborControls[startRowNumber]["period" + period]))
-                    + (me.laborControls[endRowNumber]["period" + period] === "" ? 0 : parseFloat(me.laborControls[endRowNumber]["period" + period]));
-                $("#spnPeriod" + period + type + totalRowNumber).html(total.toFixed(2));
+                if ((rowCount >= 0 && rowCount <= 3) || (rowCount >= 6 && rowCount <= 9)) {
+                    total = (me.laborControls[startRowNumber]["period" + period] === "" ? 0 : parseFloat(me.laborControls[startRowNumber]["period" + period])) +
+                    (me.laborControls[endRowNumber]["period" + period] === "" ? 0 : parseFloat(me.laborControls[endRowNumber]["period" + period]));
+                    $("#spnPeriod" + period + type + totalRowNumber).html(total.toFixed(2));
+                }
+                else if (rowCount === 4 || rowCount === 5 || rowCount === 10 || rowCount === 11) {
+                    total = (me.laborControls[startRowNumber]["period" + period] === "" ? 0 : parseFloat(me.laborControls[startRowNumber]["period" + period]));
+                    $("#spnPeriod" + period + type + totalRowNumber).html(total.toFixed(2));
+                }
+
+                if (rowCount >= 0 && rowCount <= 5) {
+                    total = ($("#spnPeriod" + period + type + "3").html() === "" ? 0 : parseFloat($("#spnPeriod" + period + type + "3").html()))
+                        + ($("#spnPeriod" + period + type + "5").html() === "" ? 0 : parseFloat($("#spnPeriod" + period + type + "5").html()));
+                    $("#spnPeriod" + period + type + "Paid5").html(total.toFixed(2));
+                }
+                else if (rowCount >= 6 && rowCount <= 11) {
+                    total = ($("#spnPeriod" + period + type + "9").html() === "" ? 0 : parseInt($("#spnPeriod" + period + type + "9").html(), 10))
+                        + ($("#spnPeriod" + period + type + "11").html() === "" ? 0 : parseInt($("#spnPeriod" + period + type + "11").html(), 10));
+                    $("#spnPeriod" + period + type + "Paid11").html(total.toFixed(2));
+                }
             }
         },
 
@@ -2383,9 +2743,9 @@ ii.Class({
             var me = this;
             var period = objInput.id.replace("txtPeriod", "");
 
-            if (objInput.value !== me.laborControls[8]["period" + period]) {
-                me.laborControls[8]["period" + period] = objInput.value;
-                me.laborControls[8].modified = true;
+            if (objInput.value !== me.laborControls[12]["period" + period]) {
+                me.laborControls[12]["period" + period] = objInput.value;
+                me.laborControls[12].modified = true;
                 me.modified();
             }
         },
@@ -2393,9 +2753,9 @@ ii.Class({
         // This is a comparison function that will result in data being sorted in display order.
         customSort: function(a, b) {
             if (a.evsMetricType.displayOrder > b.evsMetricType.displayOrder)
-				return 1;
+                return 1;
             if (a.evsMetricType.displayOrder < b.evsMetricType.displayOrder)
-				return -1;
+                return -1;
             return 0;
         },
 
@@ -2410,35 +2770,33 @@ ii.Class({
                 if (!(/^\d{1,16}(\.\d{1,2})?$/.test(enteredText)))
                     control.setInvalid("Please enter numeric value.");
             }
-            else if (dataType === "Integer") {
-                if (!(/^\d{1,9}$/.test(enteredText)))
-                    control.setInvalid("Please enter valid number.");
-            }
+            else if ((dataType === "Integer") && !(/^\d{1,9}$/.test(enteredText)))
+            	control.setInvalid("Please enter valid number.");
         },
 
-		validateLaborControl: function() {
-			var me = this;
+        validateLaborControl: function() {
+            var me = this;
 
-			 for (var index = 0; index < me.laborControls.length; index++) {
-			 	if (me.laborControls[index].evsMetricType.dataType === "Decimal") {
-			 		if (me.laborControls[index].period1 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.laborControls[index].period1))
-						|| me.laborControls[index].period2 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.laborControls[index].period2))
-						|| me.laborControls[index].period3 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.laborControls[index].period3))
-						|| me.laborControls[index].period4 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.laborControls[index].period4))
-						|| me.laborControls[index].period5 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.laborControls[index].period5))
-						|| me.laborControls[index].period6 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.laborControls[index].period6))
-						|| me.laborControls[index].period7 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.laborControls[index].period7))
-						|| me.laborControls[index].period8 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.laborControls[index].period8))
-						|| me.laborControls[index].period9 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.laborControls[index].period9))
-						|| me.laborControls[index].period10 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.laborControls[index].period10))
-						|| me.laborControls[index].period11 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.laborControls[index].period11))
-						|| me.laborControls[index].period12 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.laborControls[index].period12))) {
-			 			return false;
-			 		}
-			 	}
-			}
-			return true;
-		},
+             for (var index = 0; index < me.laborControls.length; index++) {
+                if (me.laborControls[index].evsMetricType.dataType === "Decimal") {
+                    if (me.laborControls[index].period1 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.laborControls[index].period1))
+                        || me.laborControls[index].period2 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.laborControls[index].period2))
+                        || me.laborControls[index].period3 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.laborControls[index].period3))
+                        || me.laborControls[index].period4 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.laborControls[index].period4))
+                        || me.laborControls[index].period5 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.laborControls[index].period5))
+                        || me.laborControls[index].period6 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.laborControls[index].period6))
+                        || me.laborControls[index].period7 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.laborControls[index].period7))
+                        || me.laborControls[index].period8 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.laborControls[index].period8))
+                        || me.laborControls[index].period9 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.laborControls[index].period9))
+                        || me.laborControls[index].period10 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.laborControls[index].period10))
+                        || me.laborControls[index].period11 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.laborControls[index].period11))
+                        || me.laborControls[index].period12 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.laborControls[index].period12))) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        },
 
         strategicInitiativeItemSelect: function() {
             var args = ii.args(arguments, {
@@ -2452,18 +2810,18 @@ ii.Class({
             }
         },
 
-        evsHCAHPSItemSelect: function() {
+        qualityAssuranceItemSelect: function() {
             var args = ii.args(arguments, {
                 index: {type: Number}
             });
             var me = this;
             var index = args.index;
 
-            if (me.evsHCAHPSGrid.data[index] !== undefined) {
-                me.evsHCAHPSGrid.data[index].modified = true;
-                me.evsPeriod1.text.select();
-                me.evsPeriod1.text.focus();
-                me.evsHCAHPSMetricTypeTitle.text.readOnly = true;
+            if (me.qualityAssuranceGrid.data[index] !== undefined) {
+                me.qualityAssuranceGrid.data[index].modified = true;
+                me.qaPeriod1.text.select();
+                me.qaPeriod1.text.focus();
+                me.qaMetricTypeTitle.text.readOnly = true;
             }
         },
 
@@ -2534,6 +2892,30 @@ ii.Class({
             }
         },
 
+        managementStaffItemSelect: function () {
+            var args = ii.args(arguments, {
+                index: { type: Number }
+            });
+            var me = this;
+            var index = args.index;
+
+            if (me.managementStaffGrid.data[index] !== undefined) {
+                me.managementStaffGrid.data[index].modified = true;
+                me.msPeriod1.text.select();
+                me.msPeriod1.text.focus();
+                me.msMetricTypeTitle.text.readOnly = true;
+            }
+        },
+
+        managementStaffItemDeSelect: function() {
+            var me = this;
+            var index = me.managementStaffGrid.selectedRows[0];
+
+            if (index >= 0) {
+                $(me.managementStaffGrid.rows[index].getElement("staffManagementRatio")).text(me.staffManagementRatio.check.checked ? "Yes" : "No");
+            }
+        },
+
         actionUndoItem: function() {
             var me = this;
 
@@ -2549,12 +2931,13 @@ ii.Class({
 
             // Check to see if the data entered is valid
             me.strategicInitiativeGrid.body.deselectAll();
-            me.evsHCAHPSGrid.body.deselectAll();
+            me.qualityAssuranceGrid.body.deselectAll();
             me.qualityPartnershipGrid.body.deselectAll();
             me.auditScoreGrid.body.deselectAll();
             me.competencyTrainingGrid.body.deselectAll();
             me.adminObjectiveGrid.body.deselectAll();
             me.evsStatisticGrid.body.deselectAll();
+            me.managementStaffGrid.body.deselectAll();
 
             me.validator.forceBlur();
             me.validator.queryValidity(true);
@@ -2568,7 +2951,8 @@ ii.Class({
                 if (!me.chiefExecutiveOfficer.valid || !me.chiefFinancialOfficer.valid || !me.chiefOperatingOfficer.valid
                     || !me.chiefNursingOfficer.valid || !me.contractStartDate.valid || !me.contractRenewalDate.valid
                     || !me.cpiDueDate.valid || !me.cpiCap.valid || !me.hourlyFTEVacancies.valid || !me.fullTimePartTimeRatio.valid
-                    || !me.vacantPositions || !me.budgetedProductivity || !me.contractedProductivity || !me.supportedByNPC || !me.thirdPartySatisfaction
+                    || !me.vacantPositions.valid || !me.budgetedProductivity.valid || !me.contractedProductivity.valid 
+                    || !me.supportedByNPC.valid || !me.thirdPartySatisfaction.valid || !me.employeeProductiveHoursPerWeekStandard.valid
                     || !me.serviceLinePT.valid || !me.serviceLineLaundry.valid
                     || !me.serviceLinePOM.valid || !me.serviceLineCES.valid || !me.uvManufacturer.valid || !me.hygiena.valid || !me.wanda.valid
                     || !me.union.valid || !me.microFiber.valid || !me.mop.valid || !me.cartManufacturer.valid
@@ -2578,7 +2962,7 @@ ii.Class({
                 }
             }
 
-			if (me.laborControlShow && !me.validateLaborControl()) {
+            if (me.laborControlShow && !me.validateLaborControl()) {
                 alert("In order to save, the errors on the page must be corrected. Please verify the data on Labor Control tab.");
                 return false;
             }
@@ -2588,7 +2972,7 @@ ii.Class({
                 return false;
             }
 
-            if (me.qualityAssuranceShow && (me.evsHCAHPSGrid.activeRowIndex >= 0 || me.qualityPartnershipGrid.activeRowIndex >= 0 || me.auditScoreGrid.activeRowIndex >= 0 || me.competencyTrainingGrid.activeRowIndex >= 0)) {
+            if (me.qualityAssuranceShow && (me.qualityAssuranceGrid.activeRowIndex >= 0 || me.qualityPartnershipGrid.activeRowIndex >= 0 || me.auditScoreGrid.activeRowIndex >= 0 || me.competencyTrainingGrid.activeRowIndex >= 0)) {
                 alert("In order to save, the errors on the page must be corrected. Please verify the data on Quality Assurance tab.");
                 return false;
             }
@@ -2600,6 +2984,11 @@ ii.Class({
 
             if (me.evsStatisticShow && me.evsStatisticGrid.activeRowIndex >= 0) {
                 alert("In order to save, the errors on the page must be corrected. Please verify the data on EVS Statistics tab.");
+                return false;
+            }
+
+            if (me.managementStaffShow && me.managementStaffGrid.activeRowIndex >= 0) {
+                alert("In order to save, the errors on the page must be corrected. Please verify the data on Management Staff tab.");
                 return false;
             }
 
@@ -2622,6 +3011,7 @@ ii.Class({
                 , me.contractedProductivity.getValue()
                 , (me.supportedByNPC.indexSelected >= 0 ? me.supportedByNPC.data[me.supportedByNPC.indexSelected].id : -1)
                 , (me.thirdPartySatisfaction.indexSelected >= 0 ? me.thirdPartySatisfaction.data[me.thirdPartySatisfaction.indexSelected].id : 0)
+                , me.employeeProductiveHoursPerWeekStandard.getValue()
                 , (me.taskManagementSystem.indexSelected >= 0 ? me.taskManagementSystems[me.taskManagementSystem.indexSelected].id : 0)
                 , me.taskManagementSystemOther.getValue()
                 , me.serviceLinePT.getValue()
@@ -2662,10 +3052,10 @@ ii.Class({
             });
             var me = this;
             var item = args.item;
-			var index = 0;
+            var index = 0;
             var xml = "";
 
-            if (me.hospitalContractShow || me.laborControlShow || me.strategicInitiativesShow || me.qualityAssuranceShow || me.adminObjectivesShow || me.evsStatisticShow) {
+            if (me.hospitalContractShow || me.laborControlShow || me.strategicInitiativesShow || me.qualityAssuranceShow || me.adminObjectivesShow || me.evsStatisticShow || me.managementStaffShow) {
                 xml += '<evsMetric';
                 xml += ' id="' + item.id + '"';
                 xml += ' houseCodeId="' + item.houseCodeId + '"';
@@ -2685,6 +3075,7 @@ ii.Class({
                 xml += ' contractedProductivity="' + item.contractedProductivity + '"';
                 xml += ' supportedByNPC="' + item.supportedByNPC + '"';
                 xml += ' thirdPartySatisfaction="' + item.thirdPartySatisfaction + '"';
+                xml += ' employeeProductiveHoursPerWeekStandard="' + item.employeeProductiveHoursPerWeekStandard + '"';
                 xml += ' taskManagementSystem="' + item.taskManagementSystem + '"';
                 xml += ' taskManagementSystemOther="' + ui.cmn.text.xml.encode(item.taskManagementSystemOther) + '"';
                 xml += ' serviceLinePT="' + ui.cmn.text.xml.encode(item.serviceLinePT) + '"';
@@ -2748,30 +3139,30 @@ ii.Class({
             }
 
             if (me.qualityAssuranceShow) {
-                for (index = 0; index < me.evsHCAHPS.length; index++) {
-                    if (me.evsHCAHPS[index].modified || me.evsHCAHPS[index].id === 0) {
-                        me.evsHCAHPS[index].modified = false;
-                        if (me.evsHCAHPS[index].id === 0)
+                for (index = 0; index < me.qualityAssurances.length; index++) {
+                    if (me.qualityAssurances[index].modified || me.qualityAssurances[index].id === 0) {
+                        me.qualityAssurances[index].modified = false;
+                        if (me.qualityAssurances[index].id === 0)
                             me.reloadData = true;
-                        if (me.evsHCAHPS[index].evsMetricType.dataType === "Decimal")
+                        if (me.qualityAssurances[index].evsMetricType.dataType === "Decimal")
                             xml += '<evsMetricNumericDetail';
                         else
                             xml += '<evsMetricTextDetail';
-                        xml += ' id="' + me.evsHCAHPS[index].id + '"';
+                        xml += ' id="' + me.qualityAssurances[index].id + '"';
                         xml += ' evsMetricId="' + me.evsMetricId + '"';
-                        xml += ' evsMetricTypeId="' + me.evsHCAHPS[index].evsMetricType.id + '"';
-                        xml += ' period1="' + ui.cmn.text.xml.encode(me.evsHCAHPS[index].period1) + '"';
-                        xml += ' period2="' + ui.cmn.text.xml.encode(me.evsHCAHPS[index].period2) + '"';
-                        xml += ' period3="' + ui.cmn.text.xml.encode(me.evsHCAHPS[index].period3) + '"';
-                        xml += ' period4="' + ui.cmn.text.xml.encode(me.evsHCAHPS[index].period4) + '"';
-                        xml += ' period5="' + ui.cmn.text.xml.encode(me.evsHCAHPS[index].period5) + '"';
-                        xml += ' period6="' + ui.cmn.text.xml.encode(me.evsHCAHPS[index].period6) + '"';
-                        xml += ' period7="' + ui.cmn.text.xml.encode(me.evsHCAHPS[index].period7) + '"';
-                        xml += ' period8="' + ui.cmn.text.xml.encode(me.evsHCAHPS[index].period8) + '"';
-                        xml += ' period9="' + ui.cmn.text.xml.encode(me.evsHCAHPS[index].period9) + '"';
-                        xml += ' period10="' + ui.cmn.text.xml.encode(me.evsHCAHPS[index].period10) + '"';
-                        xml += ' period11="' + ui.cmn.text.xml.encode(me.evsHCAHPS[index].period11) + '"';
-                        xml += ' period12="' + ui.cmn.text.xml.encode(me.evsHCAHPS[index].period12) + '"';
+                        xml += ' evsMetricTypeId="' + me.qualityAssurances[index].evsMetricType.id + '"';
+                        xml += ' period1="' + ui.cmn.text.xml.encode(me.qualityAssurances[index].period1) + '"';
+                        xml += ' period2="' + ui.cmn.text.xml.encode(me.qualityAssurances[index].period2) + '"';
+                        xml += ' period3="' + ui.cmn.text.xml.encode(me.qualityAssurances[index].period3) + '"';
+                        xml += ' period4="' + ui.cmn.text.xml.encode(me.qualityAssurances[index].period4) + '"';
+                        xml += ' period5="' + ui.cmn.text.xml.encode(me.qualityAssurances[index].period5) + '"';
+                        xml += ' period6="' + ui.cmn.text.xml.encode(me.qualityAssurances[index].period6) + '"';
+                        xml += ' period7="' + ui.cmn.text.xml.encode(me.qualityAssurances[index].period7) + '"';
+                        xml += ' period8="' + ui.cmn.text.xml.encode(me.qualityAssurances[index].period8) + '"';
+                        xml += ' period9="' + ui.cmn.text.xml.encode(me.qualityAssurances[index].period9) + '"';
+                        xml += ' period10="' + ui.cmn.text.xml.encode(me.qualityAssurances[index].period10) + '"';
+                        xml += ' period11="' + ui.cmn.text.xml.encode(me.qualityAssurances[index].period11) + '"';
+                        xml += ' period12="' + ui.cmn.text.xml.encode(me.qualityAssurances[index].period12) + '"';
                         xml += '/>';
                     }
                 }
@@ -2867,6 +3258,37 @@ ii.Class({
                 }
             }
 
+            if (me.managementStaffShow) {
+                for (index = 0; index < me.managementStaffs.length; index++) {
+                    if (me.managementStaffs[index].modified || me.managementStaffs[index].id === 0) {
+                        me.managementStaffs[index].modified = false;
+                        if (me.managementStaffs[index].id === 0)
+                            me.reloadData = true;
+                        if (me.managementStaffs[index].evsMetricType.dataType === "Decimal" || me.managementStaffs[index].evsMetricType.dataType === "Integer")
+                            xml += '<evsMetricNumericDetail';
+                        else
+                            xml += '<evsMetricTextDetail';
+                        xml += ' id="' + me.managementStaffs[index].id + '"';
+                        xml += ' evsMetricId="' + me.evsMetricId + '"';
+                        xml += ' evsMetricTypeId="' + me.managementStaffs[index].evsMetricType.id + '"';
+                        xml += ' staffManagementRatio="' + me.managementStaffs[index].staffManagementRatio + '"';
+                        xml += ' period1="' + ui.cmn.text.xml.encode(me.managementStaffs[index].period1) + '"';
+                        xml += ' period2="' + ui.cmn.text.xml.encode(me.managementStaffs[index].period2) + '"';
+                        xml += ' period3="' + ui.cmn.text.xml.encode(me.managementStaffs[index].period3) + '"';
+                        xml += ' period4="' + ui.cmn.text.xml.encode(me.managementStaffs[index].period4) + '"';
+                        xml += ' period5="' + ui.cmn.text.xml.encode(me.managementStaffs[index].period5) + '"';
+                        xml += ' period6="' + ui.cmn.text.xml.encode(me.managementStaffs[index].period6) + '"';
+                        xml += ' period7="' + ui.cmn.text.xml.encode(me.managementStaffs[index].period7) + '"';
+                        xml += ' period8="' + ui.cmn.text.xml.encode(me.managementStaffs[index].period8) + '"';
+                        xml += ' period9="' + ui.cmn.text.xml.encode(me.managementStaffs[index].period9) + '"';
+                        xml += ' period10="' + ui.cmn.text.xml.encode(me.managementStaffs[index].period10) + '"';
+                        xml += ' period11="' + ui.cmn.text.xml.encode(me.managementStaffs[index].period11) + '"';
+                        xml += ' period12="' + ui.cmn.text.xml.encode(me.managementStaffs[index].period12) + '"';
+                        xml += '/>';
+                    }
+                }
+            }
+
             return xml;
         },
 
@@ -2879,7 +3301,7 @@ ii.Class({
             var me = transaction.referenceData.me;
             var item = transaction.referenceData.item;
             var status = $(args.xmlNode).attr("status");
-			var id = 0;
+            var id = 0;
 
             if (status === "success") {
                 me.modified(false);
@@ -2934,7 +3356,7 @@ ii.Class({
                             }
                             break;
 
-                        case "evsMetriCompetencyTraining":
+                        case "evsMetricCompetencyTraining":
                             id = parseInt($(this).attr("id"), 10);
 
                             for (var index = 0; index < me.competencyTrainingGrid.data.length; index++) {

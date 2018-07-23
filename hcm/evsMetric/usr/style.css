@@ -100,6 +100,10 @@
 	background-color: pink;
 }
 
+.iiInputCheckSMRatio {
+	padding-left: 135px;
+}
+
 #Notes {
 	float: left;
 	width: 620px;
@@ -108,11 +112,11 @@
 	color: black;
 }
 
-#GridLaborControl, #StrategicInitiativeGrid, #GridQualityAssurance, #AdminObjectiveGrid, #GridEVSStatistic {
+#GridLaborControl, #StrategicInitiativeGrid, #GridQualityAssurance, #AdminObjectiveGrid, #GridEVSStatistic, #GridManagementStaff {
 	margin: 10px;
 }
 
-#LaborControlGridContainer, #EVSHCAHPSGridContainer, #EVSStatisticGridContainer {
+#LaborControlGridContainer, #QualityAssuranceGridContainer, #EVSStatisticGridContainer, #ManagementStaffGridContainer {
 	float: left;
 	width: 100%;
 	position: relative;
@@ -124,4 +128,8 @@
 	position: relative;
 	overflow-x: hidden;
 	overflow-y: auto;
+}
+
+#staffManagementRatioBodyColumn {
+	text-align: center;	
 }
