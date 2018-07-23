@@ -104,7 +104,6 @@ ii.Class({
 			me.qualityControlShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\QualityControl");
 			me.qualityAssuranceShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\QualityAssurance");
 			me.adminObjectivesShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\AdminObjectives");
-			me.administrativeShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\Administrative");
 			me.ptStatisticShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\PTStatistcs");
 						
 			if (me.hospitalContractShow)
@@ -119,8 +118,6 @@ ii.Class({
 				$("#TabQualityAssurance").show();
 			if (me.adminObjectivesShow)
 				$("#TabAdminObjectives").show();
-			if (me.administrativeShow)
-			    $("#TabAdministrative").show();
 			if (me.ptStatisticShow)
 			    $("#TabPTStatistics").show();
 
@@ -136,10 +133,8 @@ ii.Class({
 			    me.activeFrameId = 5;
 			else if (me.adminObjectivesShow)
 			    me.activeFrameId = 6;
-			else if (me.administrativeShow)
-			    me.activeFrameId = 7;
 			else if (me.ptStatisticShow)
-			    me.activeFrameId = 8;
+			    me.activeFrameId = 7;
 
 			setTimeout(function() {
 				$("#container-1").tabs(me.activeFrameId);
@@ -164,16 +159,8 @@ ii.Class({
 		    $("#QualityControlContainer").height($(window).height() - offset);
 			$("#QualityAssuranceContainer").height($(window).height() - offset);
 			$("#AdminObjectiveContainer").height($(window).height() - offset);
-			$("#AdministrativeContainer").height($(window).height() - offset);
 			$("#PTStatisticContainer").height($(window).height() - offset);
 
-//			if ($("#LaborControlGridContainer").width() < 2650) {
-//				$("#LaborControlGrid").width(2650);
-//				me.laborControlGrid.setHeight($(window).height() - 168);
-//			}
-//			else {
-//				me.laborControlGrid.setHeight($(window).height() - 143);
-//			}
 			if ($("#QualityControlGridContainer").width() < 2600) {
 				$("#QualityControlGrid").width(2600);
 				me.qualityControlGrid.setHeight($(window).height() - 168);
@@ -186,12 +173,6 @@ ii.Class({
 			}
 			if ($("#EVSHCAHPSGridContainer").width() < 2600) {
 				$("#EVSHCAHPSGrid").width(2600);
-			}
-			if ($("#InHouseStandardMetricGridContainer").width() < 1800) {
-				$("#InHouseStandardMetricGrid").width(1800);
-			}
-			if ($("#ThirdPartyStandardMetricGridContainer").width() < 1800) {
-				$("#ThirdPartyStandardMetricGrid").width(1800);
 			}
 			if ($("#PTStatisticGridContainer").width() < 2500) {
 			    $("#PTStatisticGrid").width(2500);
@@ -207,8 +188,6 @@ ii.Class({
 			me.qualityPartnershipGrid.setHeight(150);
 			me.auditScoreGrid.setHeight(150);
 			me.adminObjectiveGrid.setHeight($(window).height() - 145);
-			me.inHouseStandardMetricGrid.setHeight(200);
-			me.thirdPartyStandardMetricGrid.setHeight(200);
 
 		    var divPFCGridWidth = $(window).width() - 258;
 			var divPFCGridHeight = 190;
@@ -1579,536 +1558,6 @@ ii.Class({
 			me.adminObjectiveGrid.addColumn("aoQuarter4", "quarter4", "Quarter 4", "Quarter 4", 300, function(objective) { return objective.name; }, me.aoQuarter4);
 			me.adminObjectiveGrid.capColumns();
 
-			me.inHouseStandardMetricGrid = new ui.ctl.Grid({
-				id: "InHouseStandardMetricGrid",
-				appendToId: "divForm",
-				selectFunction: function( index ) { me.inHouseStandardMetricItemSelect(index); },
-				deleteFunction: function() { return true; }
-			});
-
-			me.ihMetricTypeTitle = new ui.ctl.Input.Text({
-		        id: "IHMetricTypeTitle",
-				appendToId: "InHouseStandardMetricGridControlHolder"
-		    });
-
-			me.ihOnTimeScheduled = new ui.ctl.Input.Text({
-				id: "IHOnTimeScheduled",
-				maxLength: 19,
-				appendToId: "InHouseStandardMetricGridControlHolder",
-				changeFunction: function() { me.modified(); }
-			});
-
-			me.ihOnTimeScheduled.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( function( isFinal, dataMap ){
-
-					var enteredText = me.ihOnTimeScheduled.getValue();
-
-					if (enteredText == "")
-						return;
-
-					var newValue = parseFloat(enteredText).toFixed(3);
-
-					if (!(/^\d{1,15}(\.\d{1,3})?$/.test(newValue)))
-						this.setInvalid("Please enter numeric value.");
-					else if (newValue != enteredText)
-						me.ihOnTimeScheduled.setValue(newValue);
-				});
-
-			me.ihRTA10 = new ui.ctl.Input.Text({
-				id: "IHRTA10",
-				maxLength: 19,
-				appendToId: "InHouseStandardMetricGridControlHolder",
-				changeFunction: function() { me.modified(); }
-			});
-
-			me.ihRTA10.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( function( isFinal, dataMap ){
-
-					var enteredText = me.ihRTA10.getValue();
-
-					if (enteredText == "")
-						return;
-
-					var newValue = parseFloat(enteredText).toFixed(3);
-
-					if (!(/^\d{1,15}(\.\d{1,3})?$/.test(newValue)))
-						this.setInvalid("Please enter numeric value.");
-					else if (newValue != enteredText)
-						me.ihRTA10.setValue(newValue);
-				});
-
-			me.ihDTC20 = new ui.ctl.Input.Text({
-				id: "IHDTC20",
-				maxLength: 19,
-				appendToId: "InHouseStandardMetricGridControlHolder",
-				changeFunction: function() { me.modified(); }
-			});
-
-			me.ihDTC20.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( function( isFinal, dataMap ){
-
-					var enteredText = me.ihDTC20.getValue();
-
-					if (enteredText == "")
-						return;
-
-					var newValue = parseFloat(enteredText).toFixed(3);
-
-					if (!(/^\d{1,15}(\.\d{1,3})?$/.test(newValue)))
-						this.setInvalid("Please enter numeric value.");
-					else if (newValue != enteredText)
-						me.ihDTC20.setValue(newValue);
-				});
-
-			me.ihRTC30 = new ui.ctl.Input.Text({
-				id: "IHRTC30",
-				maxLength: 19,
-				appendToId: "InHouseStandardMetricGridControlHolder",
-				changeFunction: function() { me.modified(); }
-			});
-
-			me.ihRTC30.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( function( isFinal, dataMap ){
-
-					var enteredText = me.ihRTC30.getValue();
-
-					if (enteredText == "")
-						return;
-
-					var newValue = parseFloat(enteredText).toFixed(3);
-
-					if (!(/^\d{1,15}(\.\d{1,3})?$/.test(newValue)))
-						this.setInvalid("Please enter numeric value.");
-					else if (newValue != enteredText)
-						me.ihRTC30.setValue(newValue);
-				});
-
-			me.ihTPPH = new ui.ctl.Input.Text({
-				id: "IHTPPH",
-				maxLength: 19,
-				appendToId: "InHouseStandardMetricGridControlHolder",
-				changeFunction: function() { me.modified(); }
-			});
-
-			me.ihTPPH.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( function( isFinal, dataMap ){
-
-					var enteredText = me.ihTPPH.getValue();
-
-					if (enteredText == "")
-						return;
-
-					var newValue = parseFloat(enteredText).toFixed(3);
-
-					if (!(/^\d{1,15}(\.\d{1,3})?$/.test(newValue)))
-						this.setInvalid("Please enter numeric value.");
-					else if (newValue != enteredText)
-						me.ihTPPH.setValue(newValue);
-				});
-
-			me.ihTPPD = new ui.ctl.Input.Text({
-				id: "IHTPPD",
-				maxLength: 19,
-				appendToId: "InHouseStandardMetricGridControlHolder",
-				changeFunction: function() { me.modified(); }
-			});
-
-			me.ihTPPD.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( function( isFinal, dataMap ){
-
-					var enteredText = me.ihTPPD.getValue();
-
-					if (enteredText == "")
-						return;
-
-					var newValue = parseFloat(enteredText).toFixed(3);
-
-					if (!(/^\d{1,15}(\.\d{1,3})?$/.test(newValue)))
-						this.setInvalid("Please enter numeric value.");
-					else if (newValue != enteredText)
-						me.ihTPPD.setValue(newValue);
-				});
-
-			me.ihITPPD = new ui.ctl.Input.Text({
-				id: "IHITPPD",
-				maxLength: 19,
-				appendToId: "InHouseStandardMetricGridControlHolder",
-				changeFunction: function() { me.modified(); }
-			});
-
-			me.ihITPPD.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( function( isFinal, dataMap ){
-
-					var enteredText = me.ihITPPD.getValue();
-
-					if (enteredText == "")
-						return;
-
-					var newValue = parseFloat(enteredText).toFixed(3);
-
-					if (!(/^\d{1,15}(\.\d{1,3})?$/.test(newValue)))
-						this.setInvalid("Please enter numeric value.");
-					else if (newValue != enteredText)
-						me.ihITPPD.setValue(newValue);
-				});
-
-			me.ihCancellation = new ui.ctl.Input.Text({
-				id: "IHCancellation",
-				maxLength: 19,
-				appendToId: "InHouseStandardMetricGridControlHolder",
-				changeFunction: function() { me.modified(); }
-			});
-
-			me.ihCancellation.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( function( isFinal, dataMap ){
-
-					var enteredText = me.ihCancellation.getValue();
-
-					if (enteredText == "")
-						return;
-
-					var newValue = parseFloat(enteredText).toFixed(3);
-
-					if (!(/^\d{1,15}(\.\d{1,3})?$/.test(newValue)))
-						this.setInvalid("Please enter numeric value.");
-					else if (newValue != enteredText)
-						me.ihCancellation.setValue(newValue);
-				});
-
-			me.ihDelay = new ui.ctl.Input.Text({
-				id: "IHDelay",
-				maxLength: 19,
-				appendToId: "InHouseStandardMetricGridControlHolder",
-				changeFunction: function() { me.modified(); }
-			});
-
-			me.ihDelay.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( function( isFinal, dataMap ){
-
-					var enteredText = me.ihDelay.getValue();
-
-					if (enteredText == "")
-						return;
-
-					var newValue = parseFloat(enteredText).toFixed(3);
-
-					if (!(/^\d{1,15}(\.\d{1,3})?$/.test(newValue)))
-						this.setInvalid("Please enter numeric value.");
-					else if (newValue != enteredText)
-						me.ihDelay.setValue(newValue);
-				});
-
-			me.ihDischarges = new ui.ctl.Input.Text({
-				id: "IHDischarges",
-				maxLength: 19,
-				appendToId: "InHouseStandardMetricGridControlHolder",
-				changeFunction: function() { me.modified(); }
-			});
-
-			me.ihDischarges.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( function( isFinal, dataMap ){
-
-					var enteredText = me.ihDischarges.getValue();
-
-					if (enteredText == "")
-						return;
-
-					var newValue = parseFloat(enteredText).toFixed(3);
-
-					if (!(/^\d{1,15}(\.\d{1,3})?$/.test(newValue)))
-						this.setInvalid("Please enter numeric value.");
-					else if (newValue != enteredText)
-						me.ihDischarges.setValue(newValue);
-				});
-
-			me.inHouseStandardMetricGrid.addColumn("ptMetricTypeTitle", "ptMetricTypeTitle", "", "", null, null, me.ihMetricTypeTitle);
-			me.inHouseStandardMetricGrid.addColumn("ihOnTimeScheduled", "onTimeScheduled", "On Time Scheduled (%)", "On Time Scheduled (%)", 170, null, me.ihOnTimeScheduled);
-			me.inHouseStandardMetricGrid.addColumn("ihRTA10", "rta10", "RTA 10 (%)", "RTA 10 (%)", 150, null, me.ihRTA10);
-			me.inHouseStandardMetricGrid.addColumn("ihDTC20", "dtc20", "DTC 20 (%)", "DTC 20 (%)", 150, null, me.ihDTC20);
-			me.inHouseStandardMetricGrid.addColumn("ihRTC30", "rtc30", "RTC 30 (%)", "RTC 30 (%)", 150, null, me.ihRTC30);
-			me.inHouseStandardMetricGrid.addColumn("ihTPPH", "tpph", "TPPH", "TPPH", 150, null, me.ihTPPH);
-			me.inHouseStandardMetricGrid.addColumn("ihTPPD", "tppd", "TPPD", "TPPD", 150, null, me.ihTPPD);
-			me.inHouseStandardMetricGrid.addColumn("ihITPPD", "itppd", "ITPPD", "ITPPD", 150, null, me.ihITPPD);
-			me.inHouseStandardMetricGrid.addColumn("ihCancellation", "cancellation", "Cancellation (%)", "Cancellation (%)", 150, null, me.ihCancellation);
-			me.inHouseStandardMetricGrid.addColumn("ihDelay", "delay", "Delay (%)", "Delay (%)", 150, null, me.ihDelay);
-			me.inHouseStandardMetricGrid.addColumn("ihDischarges", "discharges", "Discharges (%)", "Discharges (%)", 150, null, me.ihDischarges);
-			me.inHouseStandardMetricGrid.capColumns();
-
-			me.thirdPartyStandardMetricGrid = new ui.ctl.Grid({
-				id: "ThirdPartyStandardMetricGrid",
-				appendToId: "divForm",
-				selectFunction: function( index ) { me.thirdPartyStandardMetricItemSelect(index); },
-				deleteFunction: function() { return true; }
-			});
-
-			me.tpMetricTypeTitle = new ui.ctl.Input.Text({
-		        id: "TPMetricTypeTitle",
-				appendToId: "ThirdPartyStandardMetricGridControlHolder"
-		    });
-
-			me.tpOnTimeScheduled = new ui.ctl.Input.Text({
-				id: "TPOnTimeScheduled",
-				maxLength: 19,
-				appendToId: "ThirdPartyStandardMetricGridControlHolder",
-				changeFunction: function() { me.modified(); }
-			});
-
-			me.tpOnTimeScheduled.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( function( isFinal, dataMap ){
-
-					var enteredText = me.tpOnTimeScheduled.getValue();
-
-					if (enteredText == "")
-						return;
-
-					var newValue = parseFloat(enteredText).toFixed(3);
-
-					if (!(/^\d{1,15}(\.\d{1,3})?$/.test(newValue)))
-						this.setInvalid("Please enter numeric value.");
-					else if (newValue != enteredText)
-						me.tpOnTimeScheduled.setValue(newValue);
-				});
-
-			me.tpRTA10 = new ui.ctl.Input.Text({
-				id: "TPRTA10",
-				maxLength: 19,
-				appendToId: "ThirdPartyStandardMetricGridControlHolder",
-				changeFunction: function() { me.modified(); }
-			});
-
-			me.tpRTA10.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( function( isFinal, dataMap ){
-
-					var enteredText = me.tpRTA10.getValue();
-
-					if (enteredText == "")
-						return;
-
-					var newValue = parseFloat(enteredText).toFixed(3);
-
-					if (!(/^\d{1,15}(\.\d{1,3})?$/.test(newValue)))
-						this.setInvalid("Please enter numeric value.");
-					else if (newValue != enteredText)
-						me.tpRTA10.setValue(newValue);
-				});
-
-			me.tpDTC20 = new ui.ctl.Input.Text({
-				id: "TPDTC20",
-				maxLength: 19,
-				appendToId: "ThirdPartyStandardMetricGridControlHolder",
-				changeFunction: function() { me.modified(); }
-			});
-
-			me.tpDTC20.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( function( isFinal, dataMap ){
-
-					var enteredText = me.tpDTC20.getValue();
-
-					if (enteredText == "")
-						return;
-
-					var newValue = parseFloat(enteredText).toFixed(3);
-
-					if (!(/^\d{1,15}(\.\d{1,3})?$/.test(newValue)))
-						this.setInvalid("Please enter numeric value.");
-					else if (newValue != enteredText)
-						me.tpDTC20.setValue(newValue);
-				});
-
-			me.tpRTC30 = new ui.ctl.Input.Text({
-				id: "TPRTC30",
-				maxLength: 19,
-				appendToId: "ThirdPartyStandardMetricGridControlHolder",
-				changeFunction: function() { me.modified(); }
-			});
-
-			me.tpRTC30.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( function( isFinal, dataMap ){
-
-					var enteredText = me.tpRTC30.getValue();
-
-					if (enteredText == "")
-						return;
-
-					var newValue = parseFloat(enteredText).toFixed(3);
-
-					if (!(/^\d{1,15}(\.\d{1,3})?$/.test(newValue)))
-						this.setInvalid("Please enter numeric value.");
-					else if (newValue != enteredText)
-						me.tpRTC30.setValue(newValue);
-				});
-
-			me.tpTPPH = new ui.ctl.Input.Text({
-				id: "TPTPPH",
-				maxLength: 19,
-				appendToId: "ThirdPartyStandardMetricGridControlHolder",
-				changeFunction: function() { me.modified(); }
-			});
-
-			me.tpTPPH.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( function( isFinal, dataMap ){
-
-					var enteredText = me.tpTPPH.getValue();
-
-					if (enteredText == "")
-						return;
-
-					var newValue = parseFloat(enteredText).toFixed(3);
-
-					if (!(/^\d{1,15}(\.\d{1,3})?$/.test(newValue)))
-						this.setInvalid("Please enter numeric value.");
-					else if (newValue != enteredText)
-						me.tpTPPH.setValue(newValue);
-				});
-
-			me.tpTPPD = new ui.ctl.Input.Text({
-				id: "TPTPPD",
-				maxLength: 19,
-				appendToId: "ThirdPartyStandardMetricGridControlHolder",
-				changeFunction: function() { me.modified(); }
-			});
-
-			me.tpTPPD.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( function( isFinal, dataMap ){
-
-					var enteredText = me.tpTPPD.getValue();
-
-					if (enteredText == "")
-						return;
-
-					var newValue = parseFloat(enteredText).toFixed(3);
-
-					if (!(/^\d{1,15}(\.\d{1,3})?$/.test(newValue)))
-						this.setInvalid("Please enter numeric value.");
-					else if (newValue != enteredText)
-						me.tpTPPD.setValue(newValue);
-				});
-
-			me.tpITPPD = new ui.ctl.Input.Text({
-				id: "TPITPPD",
-				maxLength: 19,
-				appendToId: "ThirdPartyStandardMetricGridControlHolder",
-				changeFunction: function() { me.modified(); }
-			});
-
-			me.tpITPPD.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( function( isFinal, dataMap ){
-
-					var enteredText = me.tpITPPD.getValue();
-
-					if (enteredText == "")
-						return;
-
-					var newValue = parseFloat(enteredText).toFixed(3);
-
-					if (!(/^\d{1,15}(\.\d{1,3})?$/.test(newValue)))
-						this.setInvalid("Please enter numeric value.");
-					else if (newValue != enteredText)
-						me.tpITPPD.setValue(newValue);
-				});
-
-			me.tpCancellation = new ui.ctl.Input.Text({
-				id: "TPCancellation",
-				maxLength: 19,
-				appendToId: "ThirdPartyStandardMetricGridControlHolder",
-				changeFunction: function() { me.modified(); }
-			});
-
-			me.tpCancellation.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( function( isFinal, dataMap ){
-
-					var enteredText = me.tpCancellation.getValue();
-
-					if (enteredText == "")
-						return;
-
-					var newValue = parseFloat(enteredText).toFixed(3);
-
-					if (!(/^\d{1,15}(\.\d{1,3})?$/.test(newValue)))
-						this.setInvalid("Please enter numeric value.");
-					else if (newValue != enteredText)
-						me.tpCancellation.setValue(newValue);
-				});
-
-			me.tpDelay = new ui.ctl.Input.Text({
-				id: "TPDelay",
-				maxLength: 19,
-				appendToId: "ThirdPartyStandardMetricGridControlHolder",
-				changeFunction: function() { me.modified(); }
-			});
-
-			me.tpDelay.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( function( isFinal, dataMap ){
-
-					var enteredText = me.tpDelay.getValue();
-
-					if (enteredText == "")
-						return;
-
-					var newValue = parseFloat(enteredText).toFixed(3);
-
-					if (!(/^\d{1,15}(\.\d{1,3})?$/.test(newValue)))
-						this.setInvalid("Please enter numeric value.");
-					else if (newValue != enteredText)
-						me.tpDelay.setValue(newValue);
-				});
-
-			me.tpDischarges = new ui.ctl.Input.Text({
-				id: "TPDischarges",
-				maxLength: 19,
-				appendToId: "ThirdPartyStandardMetricGridControlHolder",
-				changeFunction: function() { me.modified(); }
-			});
-
-			me.tpDischarges.makeEnterTab()
-				.setValidationMaster( me.validator )
-				.addValidation( function( isFinal, dataMap ){
-
-					var enteredText = me.tpDischarges.getValue();
-
-					if (enteredText == "")
-						return;
-
-					var newValue = parseFloat(enteredText).toFixed(3);
-
-					if (!(/^\d{1,15}(\.\d{1,3})?$/.test(newValue)))
-						this.setInvalid("Please enter numeric value.");
-					else if (newValue != enteredText)
-						me.tpDischarges.setValue(newValue);
-				});
-
-			me.thirdPartyStandardMetricGrid.addColumn("tpMetricTypeTitle", "ptMetricTypeTitle", "", "", null, null, me.tpMetricTypeTitle);
-			me.thirdPartyStandardMetricGrid.addColumn("tpOnTimeScheduled", "onTimeScheduled", "On Time Scheduled (%)", "On Time Scheduled (%)", 170, null, me.tpOnTimeScheduled);
-			me.thirdPartyStandardMetricGrid.addColumn("tpRTA10", "rta10", "RTA 10 (%)", "RTA 10 (%)", 150, null, me.tpRTA10);
-			me.thirdPartyStandardMetricGrid.addColumn("tpDTC20", "dtc20", "DTC 20 (%)", "DTC 20 (%)", 150, null, me.tpDTC20);
-			me.thirdPartyStandardMetricGrid.addColumn("tpRTC30", "rtc30", "RTC 30 (%)", "RTC 30 (%)", 150, null, me.tpRTC30);
-			me.thirdPartyStandardMetricGrid.addColumn("tpTPPH", "tpph", "TPPH", "TPPH", 150, null, me.tpTPPH);
-			me.thirdPartyStandardMetricGrid.addColumn("tpTPPD", "tppd", "TPPD", "TPPD", 150, null, me.tpTPPD);
-			me.thirdPartyStandardMetricGrid.addColumn("tpITPPD", "itppd", "ITPPD", "ITPPD", 150, null, me.tpITPPD);
-			me.thirdPartyStandardMetricGrid.addColumn("tpCancellation", "cancellation", "Cancellation (%)", "Cancellation (%)", 150, null, me.tpCancellation);
-			me.thirdPartyStandardMetricGrid.addColumn("tpDelay", "delay", "Delay (%)", "Delay (%)", 150, null, me.tpDelay);
-			me.thirdPartyStandardMetricGrid.addColumn("tpDischarges", "discharges", "Discharges (%)", "Discharges (%)", 150, null, me.tpDischarges);
-			me.thirdPartyStandardMetricGrid.capColumns();
-			
 			me.ptStatisticGrid = new ui.ctl.Grid({
 			    id: "PTStatisticGrid",
 			    appendToId: "divForm",
@@ -2478,21 +1927,16 @@ ii.Class({
 					me.activeFrameId = 5;
 				else if (this.id == "TabAdminObjectives")
 					me.activeFrameId = 6;
-				else if (this.id == "TabAdministrative")
-				    me.activeFrameId = 7;
 				else if (this.id == "TabPTStatistics")
-				    me.activeFrameId = 8;
+				    me.activeFrameId = 7;
 					
 				$("#container-1").tabs(me.activeFrameId);
 				$("#container-1").triggerTab(me.activeFrameId);
 				setTimeout(function() {
 					me.resizeControls(me.activeFrameId);
-				}, 100)
+				}, 100);
 				
-				if (me.activeFrameId == 7)
-					$("#HouseCode").hide();
-				else
-					$("#HouseCode").show();
+				$("#HouseCode").show();
 			});
 
 			$("#QualityAssuranceContainer").bind("scroll", me.qualityAssuranceGridScroll);
@@ -2624,15 +2068,6 @@ ii.Class({
 				me.metricStandard.resizeText();
 				me.supportedByNPC.resizeText();
 			}
-//			else if (selectedTab == 2) {
-//				if ($("#LaborControlGridContainer").width() < 2650) {
-//					$("#LaborControlGrid").width(2650);
-//					me.laborControlGrid.setHeight($(window).height() - 168);
-//				}
-//				else {
-//					me.laborControlGrid.setHeight($(window).height() - 143);
-//				}
-//			}
 			else if (selectedTab == 3) {
 				me.strategicInitiativeGrid.setHeight($(window).height() - 145);
 			}
@@ -2661,16 +2096,6 @@ ii.Class({
 				me.adminObjectiveGrid.setHeight($(window).height() - 145);
 			}
 			else if (selectedTab == 7) {
-				if ($("#InHouseStandardMetricGridContainer").width() < 1800) {
-					$("#InHouseStandardMetricGrid").width(1800);
-				}
-				if ($("#ThirdPartyStandardMetricGridContainer").width() < 1800) {
-					$("#ThirdPartyStandardMetricGrid").width(1800);
-				}
-				me.inHouseStandardMetricGrid.setHeight(200);
-				me.thirdPartyStandardMetricGrid.setHeight(200);
-			}
-			else if (selectedTab == 8) {			   
 			    if ($("#PTStatisticGridContainer").width() < 2500) {
 			        $("#PTStatisticGrid").width(2500);
 			        me.ptStatisticGrid.setHeight($(window).height() - 168);
@@ -2710,8 +2135,6 @@ ii.Class({
 			me.notes.value = "";
 			$("#TMSOtherContainer").hide();
 
-//			if (me.laborControlGrid.activeRowIndex != - 1)
-//				me.laborControlGrid.body.deselect(me.laborControlGrid.activeRowIndex, true);
 			if (me.strategicInitiativeGrid.activeRowIndex != - 1)
 				me.strategicInitiativeGrid.body.deselect(me.strategicInitiativeGrid.activeRowIndex, true);
 			if (me.qualityControlGrid.activeRowIndex != - 1)
@@ -2729,7 +2152,6 @@ ii.Class({
 			if (me.ptStatisticGrid.activeRowIndex != -1)
 			    me.ptStatisticGrid.body.deselect(me.ptStatisticGrid.activeRowIndex, true);
 
-//			me.laborControlGrid.setData([]);
 			me.strategicInitiativeGrid.setData([]);
 			me.qualityControlGrid.setData([]);
 			me.ptPressGaneyGrid.setData([]);
@@ -2881,104 +2303,6 @@ ii.Class({
 			}, 100);
 		},
 		
-		standardMetricsLoaded: function(me, activeId) {
-		
-			me.inHouseStandardMetrics = [];
-			me.thirdPartyStandardMetrics = [];
-			
-			if (me.inHouseStandardMetricGrid.activeRowIndex != - 1)
-				me.inHouseStandardMetricGrid.body.deselect(me.inHouseStandardMetricGrid.activeRowIndex, true);
-			if (me.thirdPartyStandardMetricGrid.activeRowIndex != - 1)
-				me.thirdPartyStandardMetricGrid.body.deselect(me.thirdPartyStandardMetricGrid.activeRowIndex, true);
-			
-			if (me.standardMetrics.length == 0) {
-				for (var index = 0; index < me.metricTypes.length; index++) {
-					if (me.metricTypes[index].subType == "Thresholds - In House") {
-						var item = new fin.hcm.ptMetric.InHouseStandardMetric(0
-							, me.fiscalYears[me.year.indexSelected].id
-							, me.metricTypes[index]
-							, me.metricTypes[index].title
-							)
-						me.inHouseStandardMetrics.push(item);
-					}
-					else if (me.metricTypes[index].subType == "Thresholds - Third Party") {
-						var item = new fin.hcm.ptMetric.ThirdPartyStandardMetric(0
-							, me.fiscalYears[me.year.indexSelected].id
-							, me.metricTypes[index]
-							, me.metricTypes[index].title
-							)
-						me.thirdPartyStandardMetrics.push(item);
-					}
-				}
-			}
-			else {
-				for (var index = 0; index < me.standardMetrics.length; index++) {
-					if (me.standardMetrics[index].ptMetricType.subType == "Thresholds - In House") {
-						var item = new fin.hcm.ptMetric.InHouseStandardMetric(me.standardMetrics[index].id
-							, me.standardMetrics[index].yearId
-							, me.standardMetrics[index].ptMetricType
-							, me.standardMetrics[index].ptMetricType.title
-							, me.standardMetrics[index].onTimeScheduled
-							, me.standardMetrics[index].rta10
-							, me.standardMetrics[index].dtc20
-							, me.standardMetrics[index].rtc30
-							, me.standardMetrics[index].tpph
-							, me.standardMetrics[index].tppd
-							, me.standardMetrics[index].itppd
-							, me.standardMetrics[index].cancellation
-							, me.standardMetrics[index].delay
-							, me.standardMetrics[index].discharges
-							)
-						
-						me.inHouseStandardMetrics.push(item);
-					}
-					else if (me.standardMetrics[index].ptMetricType.subType == "Thresholds - Third Party") {
-						var item = new fin.hcm.ptMetric.ThirdPartyStandardMetric(me.standardMetrics[index].id
-							, me.standardMetrics[index].yearId
-							, me.standardMetrics[index].ptMetricType
-							, me.standardMetrics[index].ptMetricType.title
-							, me.standardMetrics[index].onTimeScheduled
-							, me.standardMetrics[index].rta10
-							, me.standardMetrics[index].dtc20
-							, me.standardMetrics[index].rtc30
-							, me.standardMetrics[index].tpph
-							, me.standardMetrics[index].tppd
-							, me.standardMetrics[index].itppd
-							, me.standardMetrics[index].cancellation
-							, me.standardMetrics[index].delay
-							, me.standardMetrics[index].discharges
-							)
-						
-						me.thirdPartyStandardMetrics.push(item);
-					}
-				}
-				
-				for (var index = 0; index < me.metricTypes.length; index++) {
-					if (me.metricTypes[index].subType == "Thresholds - In House") {
-						var result = $.grep(me.standardMetrics, function(item) { return item.ptMetricType.id == me.metricTypes[index].id; });
-						if (result.length == 0)
-                        	me.inHouseStandardMetrics.push(new fin.hcm.ptMetric.InHouseStandardMetric(0
-								, me.fiscalYears[me.year.indexSelected].id
-								, me.metricTypes[index]
-								, me.metricTypes[index].title
-								));
-					}
-					else if (me.metricTypes[index].subType == "Thresholds - Third Party") {
-						var result = $.grep(me.standardMetrics, function(item) { return item.ptMetricType.id == me.metricTypes[index].id; });
-						if (result.length == 0)
-                        	me.thirdPartyStandardMetrics.push(new fin.hcm.ptMetric.ThirdPartyStandardMetric(0
-								, me.fiscalYears[me.year.indexSelected].id
-								, me.metricTypes[index]
-								, me.metricTypes[index].title
-								));
-					}
-				}
-			}
-			
-			me.inHouseStandardMetricGrid.setData(me.inHouseStandardMetrics);
-			me.thirdPartyStandardMetricGrid.setData(me.thirdPartyStandardMetrics);
-		},
-
 		numericDetailsLoaded: function(me, activeId) {
 			
 			me.textDetailStore.fetch("userId:[user],ptMetricId:" + me.ptMetricId, me.textDetailsLoaded, me);
@@ -3260,13 +2584,8 @@ ii.Class({
 							, me.textDetails[index].period10
 							, me.textDetails[index].period11
 							, me.textDetails[index].period12
-							)
+							);
 
-//						if (me.textDetails[index].ptMetricType.title == "Total Paid Labor Comments")
-//							me.laborControls.splice(2, 0, item);
-//						else if (me.textDetails[index].ptMetricType.title == "Total Hours Labor Comments")
-//							me.laborControls.splice(5, 0, item);
-//						else
 							me.laborControls.push(item);
 					}
 					else if (me.textDetails[index].ptMetricType.subType == "Quality Assurance - PT Press Ganey") {
@@ -3358,7 +2677,6 @@ ii.Class({
 
 			me.ptPressGaneys.sort(me.customSort);
 			me.evsHCAHPS.sort(me.customSort);
-//			me.laborControlGrid.setData(me.laborControls);
 			me.qualityControlGrid.setData(me.qualityControls);
 			me.ptPressGaneyGrid.setData(me.ptPressGaneys);
 			me.evsHCAHPSGrid.setData(me.evsHCAHPS);
@@ -3646,22 +2964,7 @@ ii.Class({
 			}
 		},
 
-//		laborControlItemSelect: function() { 
-//			var args = ii.args(arguments, {
-//				index: {type: Number}  // The index of the data subItem to select
-//			});
-//			var me = this;
-//			var index = args.index;
-//						
-//			if (me.laborControlGrid.data[index] != undefined) {
-//				me.laborControlGrid.data[index].modified = true;
-//				me.period1.text.select();
-//				me.period1.text.focus();
-//				me.metricTypeTitle.text.readOnly = true;
-//			}
-//		},
-		
-		strategicInitiativeItemSelect: function() { 
+		strategicInitiativeItemSelect: function() {
 			var args = ii.args(arguments, {
 				index: {type: Number}  // The index of the data subItem to select
 			});
@@ -3757,36 +3060,6 @@ ii.Class({
 			}
 		},
 		
-		inHouseStandardMetricItemSelect: function() { 
-			var args = ii.args(arguments, {
-				index: {type: Number}  // The index of the data subItem to select
-			});
-			var me = this;
-			var index = args.index;
-						
-			if (me.inHouseStandardMetricGrid.data[index] != undefined) {
-				me.inHouseStandardMetricGrid.data[index].modified = true;
-				me.ihOnTimeScheduled.text.select();
-				me.ihOnTimeScheduled.text.focus();
-				me.ihMetricTypeTitle.text.readOnly = true;
-			}
-		},
-
-		thirdPartyStandardMetricItemSelect: function() { 
-			var args = ii.args(arguments, {
-				index: {type: Number}  // The index of the data subItem to select
-			});
-			var me = this;
-			var index = args.index;
-						
-			if (me.thirdPartyStandardMetricGrid.data[index] != undefined) {
-				me.thirdPartyStandardMetricGrid.data[index].modified = true;
-				me.tpOnTimeScheduled.text.select();
-				me.tpOnTimeScheduled.text.focus();
-				me.tpMetricTypeTitle.text.readOnly = true;
-			}
-		},
-
 		ptStatisticItemSelect: function () {
 		    var args = ii.args(arguments, {
 		        index: { type: Number }  // The index of the data subItem to select
@@ -3818,7 +3091,6 @@ ii.Class({
 			var item = [];
 
 			// Check to see if the data entered is valid
-//			me.laborControlGrid.body.deselectAll();
 			me.strategicInitiativeGrid.body.deselectAll();
 			me.qualityControlGrid.body.deselectAll();
 			me.ptPressGaneyGrid.body.deselectAll();
@@ -3826,8 +3098,6 @@ ii.Class({
 			me.qualityPartnershipGrid.body.deselectAll();
 			me.auditScoreGrid.body.deselectAll();
 			me.adminObjectiveGrid.body.deselectAll();
-			me.inHouseStandardMetricGrid.body.deselectAll();
-			me.thirdPartyStandardMetricGrid.body.deselectAll();
 			me.ptStatisticGrid.body.deselectAll();
 
 			me.validator.forceBlur();
@@ -3851,11 +3121,6 @@ ii.Class({
 				}
 			}
 
-//			if (me.laborControlShow && me.laborControlGrid.activeRowIndex >= 0) {
-//				alert("In order to save, the errors on the page must be corrected. Please verify the data on Labor Control tab.");
-//				return false;
-//			}
-
 			if (me.strategicInitiativesShow && me.strategicInitiativeGrid.activeRowIndex >= 0) {
 				alert("In order to save, the errors on the page must be corrected. Please verify the data on Strategic Initiatives tab.");
 				return false;
@@ -3874,11 +3139,6 @@ ii.Class({
 			
 			if (me.adminObjectivesShow && me.adminObjectiveGrid.activeRowIndex >= 0) {
 				alert("In order to save, the errors on the page must be corrected. Please verify the data on Admin Objectives tab.");
-				return false;
-			}
-			
-			if (me.administrativeShow && (me.inHouseStandardMetricGrid.activeRowIndex >= 0 || me.thirdPartyStandardMetricGrid.activeRowIndex >= 0)) {
-				alert("In order to save, the errors on the page must be corrected. Please verify the data on Administrative tab.");
 				return false;
 			}
 
@@ -4146,54 +3406,6 @@ ii.Class({
 						xml += ' quarter2="' + ((me.adminObjectives[index].quarter2 == null || me.adminObjectives[index].quarter2 == undefined) ? "0" : me.adminObjectives[index].quarter2.id) + '"';
 						xml += ' quarter3="' + ((me.adminObjectives[index].quarter3 == null || me.adminObjectives[index].quarter3 == undefined) ? "0" : me.adminObjectives[index].quarter3.id) + '"';
 						xml += ' quarter4="' + ((me.adminObjectives[index].quarter4 == null || me.adminObjectives[index].quarter4 == undefined) ? "0" : me.adminObjectives[index].quarter4.id) + '"';
-						xml += '/>';
-					}
-				}
-			}
-
-			if (me.administrativeShow) {
-				for (var index = 0; index < me.inHouseStandardMetrics.length; index++) {
-					if (me.inHouseStandardMetrics[index].modified || me.inHouseStandardMetrics[index].id == 0) {
-						me.inHouseStandardMetrics[index].modified = false;
-						if (me.inHouseStandardMetrics[index].id == 0)
-							me.reloadData = true;
-						xml += '<ptStandardMetric';
-						xml += ' id="' + me.inHouseStandardMetrics[index].id + '"';
-						xml += ' yearId="' + me.inHouseStandardMetrics[index].yearId + '"';
-						xml += ' ptMetricTypeId="' + me.inHouseStandardMetrics[index].ptMetricType.id + '"';
-						xml += ' onTimeScheduled="' + me.inHouseStandardMetrics[index].onTimeScheduled + '"';
-						xml += ' rta10="' + me.inHouseStandardMetrics[index].rta10 + '"';
-						xml += ' dtc20="' + me.inHouseStandardMetrics[index].dtc20 + '"';
-						xml += ' rtc30="' + me.inHouseStandardMetrics[index].rtc30 + '"';
-						xml += ' tpph="' + me.inHouseStandardMetrics[index].tpph + '"';
-						xml += ' tppd="' + me.inHouseStandardMetrics[index].tppd + '"';
-						xml += ' itppd="' + me.inHouseStandardMetrics[index].itppd + '"';
-						xml += ' cancellation="' + me.inHouseStandardMetrics[index].cancellation + '"';
-						xml += ' delay="' + me.inHouseStandardMetrics[index].delay + '"';
-						xml += ' discharges="' + me.inHouseStandardMetrics[index].discharges + '"';
-						xml += '/>';
-					}
-				}
-				
-				for (var index = 0; index < me.thirdPartyStandardMetrics.length; index++) {
-					if (me.thirdPartyStandardMetrics[index].modified || me.thirdPartyStandardMetrics[index].id == 0) {
-						me.thirdPartyStandardMetrics[index].modified = false;
-						if (me.thirdPartyStandardMetrics[index].id == 0)
-							me.reloadData = true;
-						xml += '<ptStandardMetric';
-						xml += ' id="' + me.thirdPartyStandardMetrics[index].id + '"';
-						xml += ' yearId="' + me.thirdPartyStandardMetrics[index].yearId + '"';
-						xml += ' ptMetricTypeId="' + me.thirdPartyStandardMetrics[index].ptMetricType.id + '"';
-						xml += ' onTimeScheduled="' + me.thirdPartyStandardMetrics[index].onTimeScheduled + '"';
-						xml += ' rta10="' + me.thirdPartyStandardMetrics[index].rta10 + '"';
-						xml += ' dtc20="' + me.thirdPartyStandardMetrics[index].dtc20 + '"';
-						xml += ' rtc30="' + me.thirdPartyStandardMetrics[index].rtc30 + '"';
-						xml += ' tpph="' + me.thirdPartyStandardMetrics[index].tpph + '"';
-						xml += ' tppd="' + me.thirdPartyStandardMetrics[index].tppd + '"';
-						xml += ' itppd="' + me.thirdPartyStandardMetrics[index].itppd + '"';
-						xml += ' cancellation="' + me.thirdPartyStandardMetrics[index].cancellation + '"';
-						xml += ' delay="' + me.thirdPartyStandardMetrics[index].delay + '"';
-						xml += ' discharges="' + me.thirdPartyStandardMetrics[index].discharges + '"';
 						xml += '/>';
 					}
 				}

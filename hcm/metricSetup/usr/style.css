@@ -1,0 +1,53 @@
+﻿.fragment {
+	border: 0;
+	border: solid #AAAAAA thin;
+	border-width: 1px;
+}
+
+.groupHeader {
+    height: 30px;
+    font-family: Verdana;
+    font-size: 14px;
+    font-weight: bold;
+    color: #2C2F50;
+	padding-left: 10px;
+}
+
+.labelTextYear {
+	float: left;
+	width: 50px;
+	font-family: Verdana;
+	font-size: 12px;
+	font-weight: bold;
+	color: #032D23;
+	padding: 5px 0px 0px 10px;
+}
+
+.inputTextSmall {
+	float: left; 
+	width: 120px; 
+	padding-top: 2px;
+	padding-bottom: 1px;
+	padding-right: 5px;	
+}
+
+.iiGridHeaderColumn {
+	font-size: 8pt;
+	font-style: normal;
+}
+
+.iiGridBodyColumn {
+	font-size: 8pt;
+}
+
+#GridPTSetup, #GridEVSSetup {
+	margin: 10px;
+}
+
+#PTNonTeleTrackingGridContainer, #PTTeleTrackingGridContainer, #EVSNonTeleTrackingGridContainer, #EVSTeleTrackingGridContainer {
+	float: left;
+	width: 100%;
+	position: relative;
+	overflow-x: auto;
+	overflow-y: hidden;
+}
