@@ -1890,16 +1890,7 @@ ii.Class({
 				lookupSpec: { ptMetricType: me.metricTypes, quarter1: me.administratorObjectives, quarter2: me.administratorObjectives, quarter3: me.administratorObjectives, quarter4: me.administratorObjectives }
 			});
 
-			me.standardMetrics = [];
-			me.standardMetricStore = me.cache.register({
-				storeId: "ptStandardMetrics",
-				itemConstructor: fin.hcm.ptMetric.StandardMetric,
-				itemConstructorArgs: fin.hcm.ptMetric.standardMetricArgs,
-				injectionArray: me.standardMetrics,
-				lookupSpec: { ptMetricType: me.metricTypes }
-			});
-
-			me.ptStatistics = [];			
+			me.ptStatistics = [];
 			me.ptStatisticStore = me.cache.register({               
 			    storeId: "ptStaticstics",
 			    itemConstructor: fin.hcm.ptMetric.PTStatistic,
@@ -2240,9 +2231,7 @@ ii.Class({
 
 			me.setLoadCount();
 			me.metricStore.reset();
-			me.standardMetricStore.reset();
 			me.metricStore.fetch("userId:[user],houseCodeId:" + parent.fin.appUI.houseCodeId + ",yearId:" + me.fiscalYears[me.year.indexSelected].id, me.metricsLoaded, me);
-			me.standardMetricStore.fetch("userId:[user],yearId:" + me.fiscalYears[me.year.indexSelected].id, me.standardMetricsLoaded, me);
 		},
 
 		metricsLoaded: function(me, activeId) {
@@ -3537,9 +3526,7 @@ ii.Class({
 			else {
 				me.numericDetailStore.reset();
 				me.textDetailStore.reset();
-				me.standardMetricStore.reset();
 				me.numericDetailStore.fetch("userId:[user],ptMetricId:" + me.ptMetricId, me.numericDetailsLoaded, me);
-				me.standardMetricStore.fetch("userId:[user],yearId:" + me.fiscalYears[me.year.indexSelected].id, me.standardMetricsLoaded, me);
 			}
 		}
 	}
