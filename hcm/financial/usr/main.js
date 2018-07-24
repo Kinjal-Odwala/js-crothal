@@ -1313,6 +1313,19 @@ ii.Class({
 				}
 			}
 
+			if (me.appChargebacks[index].startDate === "") {
+				if (new Date(me.periodStartDate) >= new Date(parent.fin.hcmMasterUi.houseCodeDetails[0].startDate))
+					me.startDate.setValue(ui.cmn.text.date.format(new Date(me.periodStartDate), "mm/dd/yyyy"));
+				else
+					me.startDate.setValue(ui.cmn.text.date.format(new Date(parent.fin.hcmMasterUi.houseCodeDetails[0].startDate), "mm/dd/yyyy"));
+			}
+			if (me.appChargebacks[index].endDate === "") {
+				if (parent.fin.hcmMasterUi.houseCodeDetails[0].closedDate === "")
+					me.endDate.setValue(ui.cmn.text.date.format(new Date(me.periodEndDate), "mm/dd/yyyy"));
+				else if (new Date(me.periodEndDate) >= new Date(parent.fin.hcmMasterUi.houseCodeDetails[0].closedDate))
+					me.endDate.setValue(ui.cmn.text.date.format(new Date(parent.fin.hcmMasterUi.houseCodeDetails[0].closedDate), "mm/dd/yyyy"));
+			}
+
 			me.chargebackGrid.data[index].modified = true;
 			if (title !== "TeamLead")
 				$("#Module").hide();
