@@ -596,6 +596,7 @@ ii.Class({
                 me.amount.text.readOnly = true;
                 me.justification.text.readOnly = true;
                 me.assignment.text.readOnly = true;
+				me.glCreditAccounts = [];
 
                 for (var index = 0; index < me.accounts.length; index++) {
                     if (me.accounts[index].id !== me.glDebitAccounts[me.glCodeDebit.indexSelected].id) {
