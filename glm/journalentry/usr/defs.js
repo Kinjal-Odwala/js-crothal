@@ -31,6 +31,7 @@ ii.init.register( function() {
         id: {type: Number}
         , code: {type: String}
         , name: {type: String}
+		, journalEntry: {type: Boolean, required: false, defaultValue: false}
     };
 
     fin.glm.journalEntry.statusTypeArgs = {

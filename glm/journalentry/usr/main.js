@@ -93,8 +93,7 @@ ii.Class({
                 $("#pageLoading").fadeIn("slow");
 
                 ii.timer.timing("Page displayed");
-                me.session.registerFetchNotify(me.sessionLoaded,me);
-                me.accountStore.fetch("userId:[user],moduleId:journalEntry", me.accountsLoaded, me);
+                me.session.registerFetchNotify(me.sessionLoaded, me);
 				if (me.readOnly) {
 					$("#AnchorNew").hide();
 				}
@@ -407,20 +406,10 @@ ii.Class({
             me.statusType.select(1, me.statusType.focused);
         },
 
-        accountsLoaded: function(me, activeId) {
-
-            for (var index = 0; index < me.accounts.length; index++) {
-                var item = new fin.glm.journalEntry.Account(me.accounts[index].id, me.accounts[index].code, me.accounts[index].name);
-                me.glDebitAccounts.push(item);
-            }
-            me.glCodeDebit.setData(me.glDebitAccounts);
-            me.loadJournalEntries();
-        },
-
         actionSearchItem: function() {
             var me = this;
 
-            me.loadJournalEntries();
+            me.loadAccounts();
         },
 
         houseCodesLoaded: function(me, activeId) {
@@ -435,12 +424,34 @@ ii.Class({
 
             me.houseCodeGlobalParametersUpdate(false);
             me.resizeControls();
+			me.loadAccounts();
         },
 
         houseCodeChanged: function() {
             var me = this;
 
             me.lastSelectedRowIndex = -1;
+            me.loadAccounts();
+        },
+
+		loadAccounts: function() {
+			var me = this;
+			var houseCodeId = $("#houseCodeText").val() !== "" ? parent.fin.appUI.houseCodeId : 0;
+
+			me.setLoadCount();
+			me.accountStore.fetch("userId:[user],moduleId:JournalEntry,houseCodeId:" + houseCodeId, me.accountsLoaded, me);
+		},
+
+		accountsLoaded: function(me, activeId) {
+
+			me.glDebitAccounts = [];
+            for (var index = 0; index < me.accounts.length; index++) {
+				if (me.accounts[index].journalEntry) {
+					var item = new fin.glm.journalEntry.Account(me.accounts[index].id, me.accounts[index].code, me.accounts[index].name);
+                	me.glDebitAccounts.push(item);
+				}
+            }
+            me.glCodeDebit.setData(me.glDebitAccounts);
             me.loadJournalEntries();
         },
 
@@ -457,7 +468,6 @@ ii.Class({
             me.journalEntryId = 0;
             me.lastSelectedRowIndex = -1;
             me.status = "";
-            me.setLoadCount();
             me.journalEntryStore.reset();
             me.journalEntryStore.fetch("userId:[user],journalEntryId:0,houseCodeId:" + houseCodeId + ",statusType:" + statusType, me.journalEntriesLoaded, me);
         },
@@ -598,9 +608,9 @@ ii.Class({
                 me.assignment.text.readOnly = true;
 				me.glCreditAccounts = [];
 
-                for (var index = 0; index < me.accounts.length; index++) {
-                    if (me.accounts[index].id !== me.glDebitAccounts[me.glCodeDebit.indexSelected].id) {
-                        var item = new fin.glm.journalEntry.Account(me.accounts[index].id, me.accounts[index].code, me.accounts[index].name);
+                for (var index = 0; index < me.glDebitAccounts.length; index++) {
+                    if (me.glDebitAccounts[index].id !== me.glDebitAccounts[me.glCodeDebit.indexSelected].id) {
+                        var item = new fin.glm.journalEntry.Account(me.glDebitAccounts[index].id, me.glDebitAccounts[index].code, me.glDebitAccounts[index].name);
                         me.glCreditAccounts.push(item);
                     }
                 }
