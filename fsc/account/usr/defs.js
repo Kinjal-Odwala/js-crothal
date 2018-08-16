@@ -47,6 +47,8 @@ ii.init.register( function() {
         , wor: {type: Boolean}
         , otherRevenue: {type: Boolean}
         , poCapitalRequisition: {type: Boolean}
+		, journalEntry: {type: Boolean}
+		, chargebackRate: {type: Boolean}
 		, balanceSheet: {type: Boolean}
 		, profitAndLoss: {type: Boolean}
 		, blockDeletion: {type: Boolean}

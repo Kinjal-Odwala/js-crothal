@@ -298,6 +298,16 @@ ii.Class({
 			    changeFunction: function() { me.modified(); }
 			});
 
+			me.journalEntry = new ui.ctl.Input.Check({
+			    id: "JournalEntry",
+			    changeFunction: function() { me.modified(); }
+			});
+
+			me.chargebackRate = new ui.ctl.Input.Check({
+			    id: "ChargebackRate",
+			    changeFunction: function() { me.modified(); }
+			});
+
 			me.balanceSheet = new ui.ctl.Input.Check({
 			    id: "BalanceSheet"
 			});
@@ -443,6 +453,8 @@ ii.Class({
 	        me.wor.setValue("false");
 	        me.otherRevenue.setValue("false");
 	        me.poCapitalRequisition.setValue("false");
+			me.journalEntry.setValue("false");
+			me.chargebackRate.setValue("false");
 			me.balanceSheet.setValue("false");
 			me.profitAndLoss.setValue("false");
 			me.blockDeletion.setValue("false");
@@ -532,6 +544,8 @@ ii.Class({
 				$("#SuppliesCheck").attr("disabled", true);
 				$("#WORCheck").attr("disabled", true);
 				$("#POCapitalRequisitionCheck").attr("disabled", true);
+				$("#JournalEntryCheck").attr("disabled", true);
+				$("#ChargebackRateCheck").attr("disabled", true);
 				$("#actionMenu").hide();
 				$(".footer").hide();
 			}
@@ -641,6 +655,8 @@ ii.Class({
 	        me.wor.setValue(item.wor.toString());
 	        me.otherRevenue.setValue(item.otherRevenue.toString());
 	        me.poCapitalRequisition.setValue(item.poCapitalRequisition.toString());
+			me.journalEntry.setValue(item.journalEntry.toString());
+			me.chargebackRate.setValue(item.chargebackRate.toString());
 			me.balanceSheet.setValue(item.balanceSheet.toString());
 			me.profitAndLoss.setValue(item.profitAndLoss.toString());
 			me.blockDeletion.setValue(item.blockDeletion.toString());
@@ -716,6 +732,8 @@ ii.Class({
 		        , me.wor.check.checked
 		        , me.otherRevenue.check.checked
                 , me.poCapitalRequisition.check.checked
+				, me.journalEntry.check.checked
+				, me.chargebackRate.check.checked
 				, me.balanceSheet.check.checked
 				, me.profitAndLoss.check.checked
 				, me.blockDeletion.check.checked
@@ -767,6 +785,8 @@ ii.Class({
 	        xml += ' wor="' + item.wor + '"';
 	        xml += ' otherRevenue="' + item.otherRevenue + '"';
 	        xml += ' poCapitalRequisition="' + item.poCapitalRequisition + '"';
+			xml += ' journalEntry="' + item.journalEntry + '"';
+			xml += ' chargebackRate="' + item.chargebackRate + '"';
 			xml += '/>';
 
 			return xml;
