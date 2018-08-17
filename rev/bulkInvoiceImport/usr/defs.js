@@ -24,7 +24,6 @@ ii.init.register( function() {
 		, taxableService: {type: String, required: false, defaultValue: ""}
 		, accountCode: {type: String, required: false, defaultValue: ""}
 		, invoiceDate: {type: String, required: false, defaultValue: ""}
-		, dueDate: {type: String, required: false, defaultValue: ""}
 		, periodStartDate: {type: String, required: false, defaultValue: ""}
 		, periodEndDate: {type: String, required: false, defaultValue: ""}
 		, poNumber: {type: String, required: false, defaultValue: ""}

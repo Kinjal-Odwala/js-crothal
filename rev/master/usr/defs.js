@@ -117,6 +117,7 @@ ii.init.register( function() {
 		, taxId: {type: String, required: false, defaultValue: "0"}
 		, sapCustomerNumber: {type: String, required: false, defaultValue: ""}
 		, sendMethodType: {type: String, required: false, defaultValue: ""}
+		, dueDays: {type: Number, required: false, defaultValue: 0}
 	};
 	
 	fin.rev.master.exportArgs = {

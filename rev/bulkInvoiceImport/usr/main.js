@@ -611,7 +611,6 @@ ii.Class({
 				me.buildDropDown("selTaxableService" + index, me.taxableServices, me.invoices[index].taxableService);
 				$("#txtAccountCode" + index).val(me.invoices[index].accountCode);
 				$("#txtInvoiceDate" + index).val(me.invoices[index].invoiceDate);
-				$("#txtDueDate" + index).val(me.invoices[index].dueDate);
 				$("#txtStartDate" + index).val(me.invoices[index].periodStartDate);
 				$("#txtEndDate" + index).val(me.invoices[index].periodEndDate);
 				$("#txtPONumber" + index).val(me.invoices[index].poNumber);
@@ -761,17 +760,7 @@ ii.Class({
 						$("#txtInvoiceDate" + index).attr("title", "");
 						$("#txtInvoiceDate" + index).css("background-color", me.cellColorValid);
 					}
-						
-					if (ui.cmn.text.validate.generic($("#txtDueDate" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
-						rowValid = false;
-						$("#txtDueDate" + index).attr("title", "Invalid Due Date.");
-						$("#txtDueDate" + index).css("background-color", me.cellColorInvalid);
-					}
-					else {
-						$("#txtDueDate" + index).attr("title", "");
-						$("#txtDueDate" + index).css("background-color", me.cellColorValid);						
-					}
-						
+
 					if (ui.cmn.text.validate.generic($("#txtStartDate" + index).val(), "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$") == false) {
 						rowValid = false;
 						$("#txtStartDate" + index).attr("title", "Invalid Start Date.");
@@ -858,7 +847,6 @@ ii.Class({
 					$("#txtSequence" + index).attr("title", "");
 					$("#txtTaxExemptId" + index).attr("title", "");
 					$("#txtInvoiceDate" + index).attr("title", "");
-					$("#txtDueDate" + index).attr("title", "");
 					$("#txtStartDate" + index).attr("title", "");
 					$("#txtEndDate" + index).attr("title", "");
 					$("#txtStatus" + index).attr("title", "");
@@ -866,7 +854,6 @@ ii.Class({
 					$("#txtSequence" + index).css("background-color", me.cellColorValid);
 					$("#txtTaxExemptId" + index).css("background-color", me.cellColorValid);
 					$("#txtInvoiceDate" + index).css("background-color", me.cellColorValid);
-					$("#txtDueDate" + index).css("background-color", me.cellColorValid);
 					$("#txtStartDate" + index).css("background-color", me.cellColorValid);
 					$("#txtEndDate" + index).css("background-color", me.cellColorValid);
 					$("#txtStatus" + index).css("background-color", me.cellColorValid);
@@ -1185,7 +1172,6 @@ ii.Class({
 				xml += ' jobCode="' + $("#txtJobCode" + index).val() + '"';
 				xml += ' taxableService="' + $("#selTaxableService" + index + " option:selected").text() + '"';
 				xml += ' invoiceDate="' + $("#txtInvoiceDate" + index).val() + '"';
-				xml += ' dueDate="' + $("#txtDueDate" + index).val() + '"';
 				xml += ' periodStartDate="' + $("#txtStartDate" + index).val() + '"';
 				xml += ' periodEndDate="' + $("#txtEndDate" + index).val() + '"';
 				xml += ' poNumber="' + ui.cmn.text.xml.encode($("#txtPONumber" + index).val()) + '"';

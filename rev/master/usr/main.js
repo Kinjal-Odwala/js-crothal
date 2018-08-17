@@ -373,18 +373,19 @@ ii.Class({
 					if (new Date(enteredText) < new Date(me.startDate.text.value)) 
 						this.setInvalid("The End Date should not be less than Start Date.");
 				});
-			
+
 			me.invoiceDate = new ui.ctl.Input.Date({
 		        id: "InvoiceDate",
 				formatFunction: function(type) { return ui.cmn.text.date.format(type, "mm/dd/yyyy"); }
 		    });
-			
+
 			me.invoiceDate.makeEnterTab()
 				.setValidationMaster(me.validator)
 				.addValidation(ui.ctl.Input.Validation.required)
 				.addValidation( function( isFinal, dataMap ) {					
 					var enteredText = me.invoiceDate.text.value;
-					
+
+					me.setDueDate();
 					if (enteredText == "") 
 						return;
 
@@ -418,7 +419,10 @@ ii.Class({
 					if (new Date(enteredText) < new Date(me.invoiceDate.text.value)) 
 						this.setInvalid("The Due Date should not be less than Invoice Date.");
 				});
-			
+
+			me.dueDate.text.readOnly = true;
+			$("#DueDateAction").removeClass("iiInputAction");
+
 			me.billTo = new ui.ctl.Input.DropDown.Filtered({
 		        id: "BillTo",
 				formatFunction: function(type) { return type.billTo; },
@@ -1364,7 +1368,7 @@ ii.Class({
         },
 
         currentDate: function fin_rev_master_UserInterface_currentDate() {
-            var today = new Date();
+            var today = new Date(parent.fin.appUI.glbCurrentDate);
             var month = today.getMonth() + 1;
             var day = today.getDate();
             var year = today.getFullYear();
@@ -1506,6 +1510,7 @@ ii.Class({
 
 				$("#SAPCustomerNumber").html(me.billTo.data[index].sapCustomerNumber);
 				$("#SendMethodType").html(me.billTo.data[index].sendMethodType);
+				me.setDueDate();
                 me.company.setValue(me.billTo.data[index].company);
                 me.address1.setValue(me.billTo.data[index].address1);
                 me.address2.setValue(me.billTo.data[index].address2);
@@ -1519,6 +1524,7 @@ ii.Class({
             else {
 				$("#SAPCustomerNumber").html("");
 				$("#SendMethodType").html("");
+				me.dueDate.setValue("");
 				me.taxId.setValue("");
                 me.company.setValue("");
                 me.address1.setValue("");
@@ -1544,16 +1550,20 @@ ii.Class({
             stateId = me.stateTypes[me.state.indexSelected].id;
         },
 
+		setDueDate: function() {
+			var me = this;
+
+			if (me.billTo.indexSelected >= 0 && me.invoiceDate.valid) {
+				var date = new Date(me.invoiceDate.lastBlurValue);
+				date.setDate(date.getDate() + me.billTo.data[me.billTo.indexSelected].dueDays);
+				me.dueDate.setValue((date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear());
+			}
+			else
+				me.dueDate.setValue("");
+		},
+
         taxRatesLoaded: function(me, activeId) {
 
-            var date = new Date();
-			var currentDate = "";
-			var dueDate = "";
-			
-			currentDate = (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
-			date.setDate(date.getDate() + 25);
-			dueDate = (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
-			
 			me.taxExempt.resizeText();
 			me.taxId.resizeText();
 			me.startDate.resizeText();
@@ -1575,8 +1585,8 @@ ii.Class({
 			
 			me.startDate.setValue(me.weekPeriodYears[0].periodStartDate);
 			me.endDate.setValue(me.weekPeriodYears[0].periodEndDate);
-			me.invoiceDate.setValue(currentDate);
-			me.dueDate.setValue(dueDate);
+			me.invoiceDate.setValue(me.currentDate());
+			me.dueDate.setValue("");
 
 			me.billTo.reset();
 			me.state.reset();
@@ -1613,10 +1623,12 @@ ii.Class({
 				}
 
 				if (me.billTo.indexSelected !== -1) {
+					me.setDueDate();
 					$("#SAPCustomerNumber").html(me.billTo.data[me.billTo.indexSelected].sapCustomerNumber);
 					$("#SendMethodType").html(me.billTo.data[me.billTo.indexSelected].sendMethodType);
 				}
 				else {
+					me.dueDate.setValue("");
 					$("#SAPCustomerNumber").html("");
 					$("#SendMethodType").html("");
 				}

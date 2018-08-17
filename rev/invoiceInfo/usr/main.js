@@ -196,6 +196,7 @@ ii.Class({
 				.addValidation( function( isFinal, dataMap ) {					
 					var enteredText = me.invoiceDate.text.value;
 					
+					me.setDueDate();
 					if (enteredText == "") 
 						return;
 
@@ -229,7 +230,10 @@ ii.Class({
 					if (new Date(enteredText) < new Date(me.invoiceDate.text.value)) 
 						this.setInvalid("The Due Date should not be less than Invoice Date.");
 				});
-			
+
+			me.dueDate.text.readOnly = true;
+			$("#DueDateAction").removeClass("iiInputAction");
+
 			me.billTo = new ui.ctl.Input.DropDown.Filtered({
 		        id: "BillTo",
 				formatFunction: function(type) { return type.billTo; },
@@ -576,6 +580,18 @@ ii.Class({
 			stateId = me.stateTypes[me.state.indexSelected].id;	
 		},
 
+		setDueDate: function() {
+			var me = this;
+
+			if (me.billTo.indexSelected >= 0 && me.invoiceDate.valid) {
+				var date = new Date(me.invoiceDate.lastBlurValue);
+				date.setDate(date.getDate() + me.billTo.data[me.billTo.indexSelected].dueDays);
+				me.dueDate.setValue((date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear());
+			}
+			else
+				me.dueDate.setValue("");
+		},
+
 		invoiceBillTosLoaded: function(me, activeId) {
 
 			if (parent.fin.revMasterUi.invoicingReadOnly) {
@@ -635,6 +651,7 @@ ii.Class({
 
 				$("#SAPCustomerNumber").html(me.invoiceBillTos[index].sapCustomerNumber);
 				$("#SendMethodType").html(me.invoiceBillTos[index].sendMethodType);
+				me.setDueDate();
 				me.company.setValue(me.invoiceBillTos[index].company);
 				me.address1.setValue(me.invoiceBillTos[index].address1);
 				me.address2.setValue(me.invoiceBillTos[index].address2);
@@ -648,6 +665,7 @@ ii.Class({
 			else {
 				$("#SAPCustomerNumber").html("");
 				$("#SendMethodType").html("");
+				me.dueDate.setValue("");
 				me.company.setValue("");
 				me.address1.setValue("");
 				me.address2.setValue("");
