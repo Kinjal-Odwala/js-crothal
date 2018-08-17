@@ -34,3 +34,11 @@
 #amountBodyColumn, #collectedBodyColumn, #creditedBodyColumn {
 	text-align: right;	
 }
+
+#InvoiceGridContainer {
+	float: left;
+	width: 100%;
+	position: relative;
+	overflow-x: auto;
+	overflow-y: hidden;
+}

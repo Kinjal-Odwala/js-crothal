@@ -78,7 +78,14 @@ ii.Class({
 			if (!fin.invoiceSearchUi)
 				return;
 
-		    fin.invoiceSearchUi.invoiceGrid.setHeight($(window).height() - 130);
+			if ($("#InvoiceGridContainer").width() < 1850) {
+                $("#InvoiceGrid").width(1850);
+                fin.invoiceSearchUi.invoiceGrid.setHeight($(window).height() - 150);
+            }
+            else {
+				$("#InvoiceGrid").width($("#InvoiceGridContainer").width() - 5);
+                fin.invoiceSearchUi.invoiceGrid.setHeight($(window).height() - 130);
+            }
 		},
 
 		defineFormControls: function() {
@@ -207,6 +214,7 @@ ii.Class({
 			me.invoiceGrid.addColumn("documentNumber", "documentNumber", "Document #", "Document #", 100);
 			me.invoiceGrid.addColumn("amount", "amount", "Amount", "Amount", 110);
 			me.invoiceGrid.addColumn("billTo", "billTo", "Customer", "Customer", null);
+			me.invoiceGrid.addColumn("sapCustomerNumber", "sapCustomerNumber", "SAP Customer #", "SAP Customer #", 120);
 			me.invoiceGrid.addColumn("houseCodeBrief", "houseCodeBrief", "House Code", "House Code", 110);
 			me.invoiceGrid.addColumn("companyCode", "companyCode", "Company Code", "Company Code", 120);
 			me.invoiceGrid.addColumn("invoiceDate", "invoiceDate", "Invoice Date", "Invoice Date", 110);
@@ -215,7 +223,7 @@ ii.Class({
 			me.invoiceGrid.addColumn("lastPrinted", "lastPrinted", "Last Printed", "Last Printed", 120);
 			me.invoiceGrid.addColumn("serviceLocation", "serviceLocation", "Service Location", "Service Location", 250);
 			me.invoiceGrid.addColumn("poNumber", "poNumber", "PO Number", "PO Number", 100);
-			me.invoiceGrid.addColumn("workOrderNumber", "workOrderNumber", "Work Order #", "Work Order #", 100);
+			me.invoiceGrid.addColumn("workOrderNumber", "workOrderNumber", "Work Order #", "Work Order #", 110);
 			me.invoiceGrid.capColumns();
 
 			$("#InvoiceNumberText").bind("keydown", me, me.actionSearchItem);

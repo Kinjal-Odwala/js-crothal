@@ -68,6 +68,7 @@ ii.init.register( function() {
 		, version: {type: Number, required: false, defaultValue: 0}
 		, active: {type: Boolean, required: false, defaultValue: true}
 		, workOrderNumber: {type: String, required: false, defaultValue: ""}
+		, sapCustomerNumber: {type: String, required: false, defaultValue: ""}
 	};
 
 }, 2);
