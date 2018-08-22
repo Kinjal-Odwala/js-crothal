@@ -179,6 +179,14 @@ ii.Class({
 				title: "Click here to view the existing Vendors"
 			});
 
+			me.viewReactivateVendorsLink = new ui.ctl.buttons.Simple({
+				id: "ViewReactivateVendorsLink",
+				className: "linkButton",
+				clickFunction: function() { me.actionVendorSearch(7); },
+				hasHotState: true,
+				title: "Click here to view the existing Vendors"
+			});
+
 			me.vendorGrid = new ui.ctl.Grid({
 				id: "VendorsGrid",
 				appendToId: "divForm",
@@ -819,6 +827,14 @@ ii.Class({
 
 			if (me.recordCounts[0].recordCount > 0)
 				$("#Notification").show();
+
+			me.recordCountStore.fetch("userId:[user],type:reActivateVendors", me.reActivateVendorsCountLoaded, me);
+		},
+
+		reActivateVendorsCountLoaded: function(me, activeId) {
+
+			if (me.recordCounts[0].recordCount > 0)
+				$("#ReactivateVendors").show();
 			me.checkLoadCount();
 		},
 
@@ -851,7 +867,7 @@ ii.Class({
 
 			if (me.statusType === 0)
 				$("#StatusContainer").show();
-			else if (me.statusType === 2)
+			else if (me.statusType === 2 || me.statusType === 7)
 				$("#StatusContainer").hide();
 		},
 
@@ -1111,15 +1127,11 @@ ii.Class({
 				$(args.xmlNode).find("*").each(function() {
 					switch (this.tagName) {
 						case "purVendor":
-							if (item.statusType === 2) {
+							if (item.statusType === 2 || item.statusType === 7) {
 								me.resetControls();
 								me.vendors.splice(me.lastSelectedRowIndex, 1);
 								me.vendorGrid.setData(me.vendors);
 								me.lastSelectedRowIndex = -1;
-								if (me.vendors.length === 0) {
-									$("#Notification").hide();
-									me.actionVendorSearch(0);
-								}
 							}
 							else {
 								me.vendors[me.lastSelectedRowIndex] = item;

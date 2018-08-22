@@ -84,7 +84,7 @@
 	height: 40px;
 }
 
-#Notification {
+#Notification, #ReactivateVendors {
 	display: none;
 }
 
@@ -100,7 +100,7 @@
 	padding: 15px 0px 0px 10px;
 }
 
-#ViewNewVendorsLink, #ViewCurrentVendorsLink {
+#ViewNewVendorsLink, #ViewCurrentVendorsLink, #ViewReactivateVendorsLink {
 	float: left;
 	color: blue;
 	font-family: Verdana;
