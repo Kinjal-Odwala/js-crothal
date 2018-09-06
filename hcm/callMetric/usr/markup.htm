@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>EVS Metrics</title>
+		<script type="text/javascript">
+			var globalContext = "/net/crothall/chimes/fin/hcm/act";
+			var js = document.createElement("script");
+			js.id = "loader";
+			js.type = "text/javascript";
+			js.src = "/fin/ii/framework/core/krn/sys/cycligent.js";
+			document.getElementsByTagName("head")[0].appendChild(js);
+		</script>
+	</head>
+
+	<!-- onload is necessary to overcome jQuery/IE7 $(document).ready bug when page loaded into an IFrame -->
+	<body id="appBody">
+		<div id="pageLoading" style="position: absolute; top: 0px; left: 0px; z-index: 5000; width: 100%; height: 100%; background-color: white;">
+		    <div style="position: absolute; width: 66; height: 100;top: 50%; left: 50%; margin-top: -50px; margin-left: -33px">
+		        <img id="imgLoading" src="/fin/cmn/usr/media/Common/loading.gif" alt="Loading"/>
+		        <div id="messageToUser" style="font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; margin-top:5px; text-align:center;">Loading</div>    
+		    </div>
+		</div>
+		<div class="pageHeader">
+	        <div id="actionMenu" title="Menu of actions that you can perform.">Actions<span>&nbsp;</span></div>
+			<div id="HouseCode">
+				<div id="LabelTextAreaLeftHeader">House Code:</div>
+				<div id="DropDownRightHouseCode">
+					<div id="houseCodeContainer" class="HouseCodeContainer"></div>
+				</div>
+			</div>
+			<div class="labelTextYear">Year:</div>
+			<div class="inputTextSmall">
+				<div id="Year"></div>
+			</div>
+        </div>
+		<div style="clear:both;"></div>
+		<div id="itemStatusDiv">
+			<div id="itemStatusImage" class="itemStatusImage"></div>
+			<div id="itemModifiedImage" class="itemModifiedImage"></div>
+			<div id="itemStatusText">Loading, please wait...</div>
+		</div>
+		<div style="clear:both;"></div>
+		<div class="pageBody">
+			<div class="body">
+				<div id="CallMetricGrid"></div>
+			<!--	<div id="CallMetricReadOnlyGrid"></div> -->
+				<div style="clear:both; height:10px;"></div>
+				<div id="AnchorSave"></div>
+				<div id="AnchorUndo"></div>
+			</div>
+		</div>
+		<div id="iiInputValidationMaster"></div>
+	</body>
+</html>
