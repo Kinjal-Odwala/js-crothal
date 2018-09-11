@@ -112,24 +112,10 @@
 	color: black;
 }
 
-#GridLaborControl, #StrategicInitiativeGrid, #GridQualityAssurance, #AdminObjectiveGrid, #GridEVSStatistic, #GridManagementStaff {
-	margin: 10px;
-}
-
-#LaborControlGridContainer, #QualityAssuranceGridContainer, #EVSStatisticGridContainer, #ManagementStaffGridContainer {
+#CallMetricGrid {
 	float: left;
 	width: 100%;
 	position: relative;
 	overflow-x: auto;
-	overflow-y: hidden;
-}
 
-#HospitalContractContainer, #LaborControlContainer, #QualityAssuranceContainer {
-	position: relative;
-	overflow-x: hidden;
-	overflow-y: auto;
-}
-
-#staffManagementRatioBodyColumn {
-	text-align: center;	
 }

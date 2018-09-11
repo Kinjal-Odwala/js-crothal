@@ -116,8 +116,8 @@ ii.Class({
             me.actionMenu
                 .addAction({
                     id: "saveAction",
-                    brief: "Save EVS Metric (Ctrl+S)",
-                    title: "Save the current EVS metric details.",
+                    brief: "Save Call Metric (Ctrl+S)",
+                    title: "Save the current Call metric details.",
                     actionFunction: function() { me.actionSaveItem(); }
                 })
                 .addAction({
@@ -343,36 +343,19 @@ ii.Class({
 
 
             me.callMetricGrid.addColumn("callMetricTypeTitle", "callMetricTypeTitle", "Metric Type", "Metric Type", null,null,me.callMetricTypeTitle);
-            me.callMetricGrid.addColumn("period1", "period1", "Period1", "Period1", 120, null, me.period1);
-            me.callMetricGrid.addColumn("period2", "period2", "Period2", "Period2", 120, null, me.period2);
-            me.callMetricGrid.addColumn("period3", "period3", "Period3", "Period3", 120, null, me.period3);
-            me.callMetricGrid.addColumn("period4", "period4", "Period4", "Period4", 120, null, me.period4);
-            me.callMetricGrid.addColumn("period5", "period5", "Period5", "Period5", 120, null, me.period5);
-            me.callMetricGrid.addColumn("period6", "period6", "Period6", "Period6", 120, null, me.period6);
-            me.callMetricGrid.addColumn("period7", "period7", "Period7", "Period7", 120, null, me.period7);
-            me.callMetricGrid.addColumn("period8", "period8", "Period8", "Period8", 120, null, me.period8);
-            me.callMetricGrid.addColumn("period9", "period9", "Period9", "Period9", 120, null, me.period9);
-            me.callMetricGrid.addColumn("period10", "period10", "Period10", "Period10", 120, null, me.period10);
-            me.callMetricGrid.addColumn("period11", "period11", "Period11", "Period11", 120, null, me.period11);
-            me.callMetricGrid.addColumn("period12", "period12", "Period12", "Period12", 120, null, me.period12);
+            me.callMetricGrid.addColumn("period1", "period1", "Period 1", "Period 1", 120, null, me.period1);
+            me.callMetricGrid.addColumn("period2", "period2", "Period 2", "Period 2", 120, null, me.period2);
+            me.callMetricGrid.addColumn("period3", "period3", "Period 3", "Period 3", 120, null, me.period3);
+            me.callMetricGrid.addColumn("period4", "period4", "Period 4", "Period 4", 120, null, me.period4);
+            me.callMetricGrid.addColumn("period5", "period5", "Period 5", "Period 5", 120, null, me.period5);
+            me.callMetricGrid.addColumn("period6", "period6", "Period 6", "Period 6", 120, null, me.period6);
+            me.callMetricGrid.addColumn("period7", "period7", "Period 7", "Period 7", 120, null, me.period7);
+            me.callMetricGrid.addColumn("period8", "period8", "Period 8", "Period 8", 120, null, me.period8);
+            me.callMetricGrid.addColumn("period9", "period9", "Period 9", "Period 9", 120, null, me.period9);
+            me.callMetricGrid.addColumn("period10", "period10", "Period 10", "Period 10", 120, null, me.period10);
+            me.callMetricGrid.addColumn("period11", "period11", "Period 11", "Period 11", 120, null, me.period11);
+            me.callMetricGrid.addColumn("period12", "period12", "Period 12", "Period 12", 120, null, me.period12);
             me.callMetricGrid.capColumns();
-
-
-           /* me.callMetricTypeTitle.active = false;
-            me.period1.active = false;
-            me.period2.active = false;
-            me.period3.active = false;
-            me.period4.active = false;
-            me.period5.active = false;
-            me.period6.active = false;
-            me.period7.active = false;
-            me.period8.active = false;
-            me.period9.active = false;
-            me.period10.active = false;
-            me.period11.active = false;
-            me.period12.active = false;*/
-
-
 
         },
 
@@ -390,6 +373,31 @@ ii.Class({
             else if ((dataType === "Integer") && !(/^\d{1,9}$/.test(enteredText)))
                 control.setInvalid("Please enter valid number.");
         },
+
+        validateCallMetricControl: function() {
+            var me = this;
+
+            for (var index = 0; index < me.callMetrics.length; index++) {
+                if (me.callMetrics[index].callMetricType.dataType === "Decimal") {
+                    if (me.callMetrics[index].period1 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.callMetrics[index].period1))
+                        || me.callMetrics[index].period2 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.callMetrics[index].period2))
+                        || me.callMetrics[index].period3 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.callMetrics[index].period3))
+                        || me.callMetrics[index].period4 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.callMetrics[index].period4))
+                        || me.callMetrics[index].period5 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.callMetrics[index].period5))
+                        || me.callMetrics[index].period6 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.callMetrics[index].period6))
+                        || me.callMetrics[index].period7 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.callMetrics[index].period7))
+                        || me.callMetrics[index].period8 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.callMetrics[index].period8))
+                        || me.callMetrics[index].period9 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.callMetrics[index].period9))
+                        || me.callMetrics[index].period10 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.callMetrics[index].period10))
+                        || me.callMetrics[index].period11 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.callMetrics[index].period11))
+                        || me.callMetrics[index].period12 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.callMetrics[index].period12))) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        },
+
 
         configureCommunications: function fin_app_laundry_UserInterface_configureCommunications() {
             var args = ii.args(arguments, {});
@@ -432,7 +440,8 @@ ii.Class({
                 storeId: "callMetricNumericDetails",
                 itemConstructor: fin.hcm.callMetric.CallMetricNumericDetail,
                 itemConstructorArgs: fin.hcm.callMetric.callMetricNumericDetailArgs,
-                injectionArray: me.callMetrics
+                injectionArray: me.callMetrics,
+                lookupSpec: { callMetricType: me.callMetricTypes }
             });
         },
 
@@ -595,10 +604,15 @@ ii.Class({
             me.callMetricGrid.body.deselectAll();
             me.validator.forceBlur();
 
-            if (me.year.indexSelected == -1 || (!me.validator.queryValidity(true) && me.callMetricGrid.activeRowIndex >= 0)) {
+
+            if (me.year.indexSelected == -1 || ( !me.validator.queryValidity(true) && me.callMetricGrid.activeRowIndex >= 0) ){
                 alert("In order to save, the errors on the page must be corrected.");
                 return false;
             }
+
+
+
+
 
             for (var index = 0; index < me.callMetrics.length; index++) {
                 if (me.callMetrics[index].modified || me.callMetrics[index].id == 0) {
