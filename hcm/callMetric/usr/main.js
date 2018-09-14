@@ -103,6 +103,10 @@ ii.Class({
         resize: function() {
             var me = fin.callMetricUi;
             me.callMetricGrid.setHeight($(window).height() - 150);
+            if ($("#CallMetricGridContainer").width()<1800)
+            {
+                $("#CallMetricGrid").width(1800);
+            }
 
         },
 
@@ -122,8 +126,8 @@ ii.Class({
                 })
                 .addAction({
                     id: "cancelAction",
-                    brief: "Undo current changes to EVS Metric (Ctrl+U)",
-                    title: "Undo the changes to EVS metric being edited.",
+                    brief: "Undo current changes to Call Metric (Ctrl+U)",
+                    title: "Undo the changes to Call metric being edited.",
                     actionFunction: function() { me.actionUndoItem(); }
                 });
 
@@ -374,31 +378,6 @@ ii.Class({
                 control.setInvalid("Please enter valid number.");
         },
 
-        validateCallMetricControl: function() {
-            var me = this;
-
-            for (var index = 0; index < me.callMetrics.length; index++) {
-                if (me.callMetrics[index].callMetricType.dataType === "Decimal") {
-                    if (me.callMetrics[index].period1 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.callMetrics[index].period1))
-                        || me.callMetrics[index].period2 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.callMetrics[index].period2))
-                        || me.callMetrics[index].period3 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.callMetrics[index].period3))
-                        || me.callMetrics[index].period4 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.callMetrics[index].period4))
-                        || me.callMetrics[index].period5 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.callMetrics[index].period5))
-                        || me.callMetrics[index].period6 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.callMetrics[index].period6))
-                        || me.callMetrics[index].period7 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.callMetrics[index].period7))
-                        || me.callMetrics[index].period8 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.callMetrics[index].period8))
-                        || me.callMetrics[index].period9 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.callMetrics[index].period9))
-                        || me.callMetrics[index].period10 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.callMetrics[index].period10))
-                        || me.callMetrics[index].period11 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.callMetrics[index].period11))
-                        || me.callMetrics[index].period12 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.callMetrics[index].period12))) {
-                        return false;
-                    }
-                }
-            }
-            return true;
-        },
-
-
         configureCommunications: function fin_app_laundry_UserInterface_configureCommunications() {
             var args = ii.args(arguments, {});
             var me = this;
@@ -492,6 +471,11 @@ ii.Class({
         resizeControls: function() {
             var me = this;
 
+            me.callMetricGrid.setHeight($(window).height() - 150);
+            if ($("#CallMetricGridContainer").width()<1800)
+            {
+                $("#CallMetricGrid").width(1800);
+            }
             me.year.resizeText();
             me.resize();
         },

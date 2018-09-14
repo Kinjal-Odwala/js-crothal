@@ -112,7 +112,16 @@
 	color: black;
 }
 
-#CallMetricGrid {
+/*#CallMetricGrid {
+	float: left;
+	width: 100%;
+	position: relative;
+	overflow-x: auto;
+	overflow-y: hidden;
+
+}*/
+
+#CallMetricGridContainer {
 	float: left;
 	width: 100%;
 	position: relative;
