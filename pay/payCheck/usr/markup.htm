@@ -27,8 +27,7 @@
 		</div>
 		<div class="pageHeader">
 			<div id="actionHeader">
-		        <div id="actionMenu" title="Menu of actions that you can perform.">Actions<span>&nbsp;</span></div>
-				<div id="pageHeader">Payroll Check Request Form</div>
+				<div id="pageHeader">Payroll Check Request</div>
 	        </div>
 		</div>
 		<div style="clear:both;"></div>
@@ -40,7 +39,7 @@
 		<div style="clear:both;"></div>
 		<div class="pageBody">
 			<div class="contentArea">
-				<div id="SearchContainer" style="display:none;">
+				<div id="SearchContainer">
 					<div class="labelTextSearch">Filter:</div>		
 					<div class="inputTextArea">
 						<div id="FilterType"></div>
@@ -68,16 +67,16 @@
 					<div class="contentAreaLeft">						
 						<div id="TableEditArea">
 							<div class="labelTextArea">
-								<span class="requiredFieldIndicator">&#149;</span>House Code:
+								<span id="nonRequiredFieldIndicator">Cost Center:</span>
 							</div>
 							<div class="inputTextArea">
-								<div id="houseCodeContainer" class="HouseCodeContainer"></div>
+								<div id="HouseCodeTitle"></div>
 							</div>
 							<div style="clear:both;"></div>
 						</div>
 						<div id="TableEditArea">
 							<div class="labelTextArea">
-								<span class="requiredFieldIndicator">&#149;</span>Requested Date:
+								<span id="nonRequiredFieldIndicator">Requested Date:</span>
 							</div>
 							<div class="inputTextArea">
 								<div id="RequestedDate"></div>
@@ -86,7 +85,7 @@
 						</div>
 						<div id="TableEditArea">
 							<div class="labelTextArea">
-								<span class="requiredFieldIndicator">&#149;</span>Employee #:
+								<span id="nonRequiredFieldIndicator">Employee #:</span>
 							</div>
 							<div class="inputTextArea">
 								<div id="EmployeeNumber"></div>
@@ -95,7 +94,7 @@
 						</div>
 					</div>
 					<div class="contentAreaLeft">
-						<div id="CheckRequestNumberInfo">
+						<div id="TableEditArea">
 							<div class="labelTextArea">
 								<span id="nonRequiredFieldIndicator">Check Request Number:</span>
 							</div>
@@ -104,14 +103,9 @@
 							</div>
 							<div style="clear:both;"></div>
 						</div>
-						<div id="EmptyArea">
-							<div class="labelTextArea"></div>
-							<div class="inputTextArea"></div>
-							<div style="clear:both;"></div>
-						</div>
 						<div id="TableEditArea">
 							<div class="labelTextArea">
-								<span class="requiredFieldIndicator">&#149;</span>Delivery Date:
+								<span id="nonRequiredFieldIndicator">Delivery Date:</span>
 							</div>
 							<div class="inputTextArea">
 								<div id="DeliveryDate"></div>
@@ -120,7 +114,7 @@
 						</div>
 						<div id="TableEditArea">
 							<div class="labelTextArea">
-								<span class="requiredFieldIndicator">&#149;</span>Employee Name:
+								<span id="nonRequiredFieldIndicator">Employee Name:</span>
 							</div>
 							<div class="inputTextArea">
 								<div id="EmployeeName"></div>
@@ -131,7 +125,7 @@
 					<div style="clear:both;"></div>
 					<div id="TableEditArea">
 						<div class="labelTextArea">
-							<span class="requiredFieldIndicator">&#149;</span>Reason for Request:
+							<span id="nonRequiredFieldIndicator">Reason for Request:</span>
 						</div>
 						<div class="inputTextAreaLarge">
 							<div id="ReasonForRequest"></div>
@@ -141,7 +135,7 @@
 					<div class="contentAreaLeft">
 						<div id="TableEditArea">
 							<div class="labelTextArea">
-								<span id="nonRequiredFieldIndicator">Term Request:</span>
+								<span id="nonRequiredFieldIndicator">Termination Request:</span>
 							</div>
 							<div class="inputTextArea">
 								<div id="TermRequestRadio">
@@ -152,15 +146,6 @@
 										<input type="radio" id="TermRequestNo" name="TermRequest" checked="true" value="false" /><span class="labelRadio">No</span>
 									</div>
 								</div>
-							</div>
-							<div style="clear:both;"></div>
-						</div>
-						<div id="TableEditArea">
-							<div class="labelTextArea" id="LabelTerminationDate">
-								<span id="nonRequiredFieldIndicator">Termination Date:</span>
-							</div>
-							<div class="inputTextArea">
-								<div id="TerminationDate"></div>
 							</div>
 							<div style="clear:both;"></div>
 						</div>
@@ -183,27 +168,11 @@
 					</div>
 					<div class="contentAreaLeft">
 						<div id="TableEditArea">
-							<div class="labelTextArea" id="LabelState">
-								<span id="nonRequiredFieldIndicator">State:</span>
-							</div>
-							<div class="inputTextArea">
-								<div id="State"></div>
-							</div>
-							<div style="clear:both;"></div>
-						</div>
-						<div id="TableEditArea">
 							<div class="labelTextArea">
-								<span class="requiredFieldIndicator">&#149;</span>Meal Break Compliance:
+								<span id="nonRequiredFieldIndicator">Termination Date:</span>
 							</div>
 							<div class="inputTextArea">
-								<div id="MealBreakComplianceRadio">
-									<div class="radioButton">
-										<input type="radio" id="MealBreakComplianceYes" name="MealBreakCompliance" value="true" /><span class="labelRadio">Yes</span>
-									</div>
-									<div class="radioButton">
-										<input type="radio" id="MealBreakComplianceNo" name="MealBreakCompliance" value="false" /><span class="labelRadio">No</span>
-									</div>
-								</div>
+								<div id="TerminationDate"></div>
 							</div>
 							<div style="clear:both;"></div>
 						</div>
@@ -217,7 +186,7 @@
 								<span id="nonRequiredFieldIndicator">UPS Delivery to Unit:</span>
 							</div>
 							<div class="inputTextArea">
-								<div id="SubcontractedRadio">
+								<div id="UPSDeliveryToUnitRadio">
 									<div class="radioButton">
 										<input type="radio" id="UPSDeliveryToUnitYes" name="UPSDeliveryToUnit" value="true" /><span class="labelRadio">Yes</span>
 									</div>
@@ -229,11 +198,11 @@
 							<div style="clear:both;"></div>
 						</div>
 						<div id="TableEditArea">
-							<div class="labelTextArea" id="LabelUnit">
-								<span id="nonRequiredFieldIndicator">Unit (House Code):</span>
+							<div class="labelTextArea">
+								<span id="nonRequiredFieldIndicator">Unit (Cost Center):</span>
 							</div>
-							<div class="inputTextAreaHouseCode">
-								<div id="houseCodeTemplateContainer" class="HouseCodeContainer"></div>
+							<div class="inputTextArea">
+								<div id="UnitTitle"></div>
 							</div>
 							<div style="clear:both;"></div>
 						</div>
@@ -244,7 +213,7 @@
 								<span id="nonRequiredFieldIndicator">Saturday Delivery:</span>
 							</div>
 							<div class="inputTextArea">
-								<div id="CommissionableRadio">
+								<div id="SaturdayDeliveryUnitRadio">
 									<div class="radioButton">
 										<input type="radio" id="SaturdayDeliveryUnitYes" name="SaturdayDeliveryUnit" value="true" /><span class="labelRadio">Yes</span>
 									</div>
@@ -263,8 +232,8 @@
 					</div>
 					<div style="clear:both;"></div>
 					<div id="TableEditArea">
-						<div class="labelTextArea" id="LabelUnitAddress">
-							<span id="nonRequiredFieldIndicator">Unit (House Code) Address:</span>
+						<div class="labelTextArea">
+							<span id="nonRequiredFieldIndicator">Unit (Cost Center) Address:</span>
 						</div>
 						<div class="inputTextAreaLarge">
 							<div id="UnitAddress"></div>
@@ -288,7 +257,7 @@
 								<span id="nonRequiredFieldIndicator">UPS Delivery to Home:</span>
 							</div>
 							<div class="inputTextArea">
-								<div id="SubcontractedRadio">
+								<div id="UPSDeliveryToHomeRadio">
 									<div class="radioButton">
 										<input type="radio" id="UPSDeliveryToHomeYes" name="UPSDeliveryToHome" value="true" /><span class="labelRadio">Yes</span>
 									</div>
@@ -306,7 +275,7 @@
 								<span id="nonRequiredFieldIndicator">Saturday Delivery:</span>
 							</div>
 							<div class="inputTextArea">
-								<div id="CommissionableRadio">
+								<div id="SaturdayDeliveryHomeRadio">
 									<div class="radioButton">
 										<input type="radio" id="SaturdayDeliveryHomeYes" name="SaturdayDeliveryHome" value="true" /><span class="labelRadio">Yes</span>
 									</div>
@@ -319,7 +288,7 @@
 					</div>
 					<div style="clear:both;"></div>
 					<div id="TableEditArea">
-						<div class="labelTextArea" id="LabelHome">
+						<div class="labelTextArea">
 							<span id="nonRequiredFieldIndicator">Home Address:</span>
 						</div>
 						<div class="inputTextAreaLarge">
@@ -334,7 +303,6 @@
 					<div style="clear:both;"></div>
 					<div id="WageTypeGrid">
 						<div id="WageTypeDetailGrid"></div>
-						<div id="WageTypeDetailReadOnlyGrid" style="display:none;"></div>
 						<div id="TotalRow">							
 				            <table cellpadding="0" cellspacing="0" style="width: 100%">
 		                        <tr>
@@ -344,13 +312,13 @@
 		                                    <tr class="gridFooter">
 		                                    	<td style="width:379px; text-align:right;">TOTAL:&nbsp;</td>
 												<td class="borderVertical"></td>
+												<td style="width:119px;">&nbsp;</td>
+												<td class="borderVertical"></td>
 												<td id="TotalHours" style="width:115px; text-align:right; padding-right: 4px;">&nbsp;</td>
 												<td class="borderVertical"></td>
 												<td style="width:119px;">&nbsp;</td>
 												<td class="borderVertical"></td>
 												<td id="TotalEarnings" style="width:115px; text-align:right; padding-right: 4px;">&nbsp;</td>
-												<td class="borderVertical"></td>
-												<td style="width:179px;">&nbsp;</td>
 												<td class="borderVertical"></td>
 												<td>&nbsp;</td>
 		                                    </tr>
@@ -367,7 +335,7 @@
 					<div class="contentAreaLeft">						
 						<div id="TableEditArea">
 							<div class="labelTextArea">
-								<span class="requiredFieldIndicator">&#149;</span>Requested By:
+								<span id="nonRequiredFieldIndicator">Requested By:</span>
 							</div>
 							<div class="inputTextArea">
 								<div id="RequestorName"></div>
@@ -376,7 +344,7 @@
 						</div>
 						<div id="TableEditArea">
 							<div class="labelTextArea">
-								<span class="requiredFieldIndicator">&#149;</span>Requestor Phone:
+								<span id="nonRequiredFieldIndicator">Requestor Phone:</span>
 							</div>
 							<div class="inputTextArea">
 								<div id="RequestorPhone"></div>
@@ -385,7 +353,7 @@
 						</div>
 						<div id="TableEditArea">
 							<div class="labelTextArea">
-								<span class="requiredFieldIndicator">&#149;</span>Manager Name:
+								<span id="nonRequiredFieldIndicator">Manager Name:</span>
 							</div>
 							<div class="inputTextArea">
 								<div id="ManagerName"></div>
@@ -396,7 +364,7 @@
 					<div class="contentAreaLeft">						
 						<div id="TableEditArea">
 							<div class="labelTextArea">
-								<span class="requiredFieldIndicator">&#149;</span>Requestor Email:
+								<span id="nonRequiredFieldIndicator">Requestor Email:</span>
 							</div>
 							<div class="inputTextArea">
 								<div id="RequestorEmail"></div>
@@ -410,7 +378,7 @@
 						</div>
 						<div id="TableEditArea">
 							<div class="labelTextArea">
-								<span class="requiredFieldIndicator">&#149;</span>Manager Email:
+								<span id="nonRequiredFieldIndicator">Manager Email:</span>
 							</div>
 							<div class="inputTextArea">
 								<div id="ManagerEmail"></div>
@@ -420,17 +388,374 @@
 					</div>
 				</div>
 			</div>
-			<div style="clear:both;"></div>
+			<div style="clear:both;height:5px;"></div>
 			<div class="contentArea">
 				<div id="AnchorNew"></div>
-				<div id="AnchorSendRequest"></div>
 				<div id="AnchorResendRequest"></div>
-				<div id="AnchorUndo"></div>
 				<div id="AnchorCancel"></div>
 				<div id="AnchorApprove"></div>
 				<div id="AnchorReExport"></div>
 			</div>
 			<div style="clear:both;"></div>
+		</div>
+		<div id="checkRequestPopup">
+			<div class="contentArea">
+				<div class="header" id="Header"></div>
+			</div>
+			<div class="contentArea" id="popupContainer">
+				<div id="EmployeeInfo">
+					<div class="contentAreaLeft">
+						<div id="TableEditArea">
+	                        <div class="labelTextArea">
+	                        	<span class="requiredFieldIndicator">&#149;</span>Employee #:
+	                        </div>
+	                        <div class="inputTextArea">
+	                            <div id="EmployeeNumberPopup"></div>
+	                        </div>
+	                    </div>
+						<div style="clear:both;"></div>
+						<div id="TableEditArea">
+	                        <div class="labelTextArea">
+	                        	<span class="requiredFieldIndicator">&#149;</span>Employee Name:
+	                        </div>
+	                        <div class="inputTextArea">
+	                            <div id="EmployeeNamePopup"></div>
+	                        </div>
+	                    </div>
+						<div style="clear:both;"></div>
+						<div id="TableEditArea">
+	                        <div class="labelTextArea">
+	                        	<span class="requiredFieldIndicator">&#149;</span>Cost Center:
+	                        </div>
+							<div class="inputTextArea">
+								<div id="houseCodeContainer" class="HouseCodeContainer"></div>
+							</div>
+	                    </div>
+						<div style="clear:both;"></div>
+					</div>
+				</div>
+				<div style="clear:both;"></div> 	
+				<div id="RequestInfo" style="display:none;">
+					<div id="TableEditArea">
+						<div class="labelTextArea">
+							<span class="requiredFieldIndicator">&#149;</span>Reason for Request:
+						</div>
+						<div class="inputTextAreaLarge">
+							<div id="ReasonForRequestPopup"></div>
+						</div>
+						<div style="clear:both;"></div>
+					</div>					
+					<div class="contentAreaLeft">
+						<div id="TableEditArea">
+							<div class="labelTextArea">
+								<span class="requiredFieldIndicator">&#149;</span>Termination Request:
+							</div>
+							<div class="inputTextArea">
+								<div id="TermRequestRadio">
+									<div class="radioButton">
+										<input type="radio" id="TermRequestYesPopup" name="TermRequestPopup" value="true" /><span class="labelRadio">Yes</span>
+									</div>
+									<div class="radioButton">
+										<input type="radio" id="TermRequestNoPopup" name="TermRequestPopup" checked="true" value="false" /><span class="labelRadio">No</span>
+									</div>
+								</div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+						<div id="TableEditArea">
+							<div class="labelTextArea" id="LabelTerminationDate">
+								<span id="nonRequiredFieldIndicator">Termination Date:</span>
+							</div>
+							<div class="inputTextArea">
+								<div id="TerminationDatePopup"></div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+                	</div>
+				</div>
+				<div id="PaymentInfo" style="display:none;">
+					<div id="TableEditArea">
+						<div class="labelTextArea">
+							<span class="requiredFieldIndicator">&#149;</span>Payment Method:
+						</div>
+						<div class="inputTextAreaMedium">
+							<div id="PaymentMethodRadioPopup">
+								<div class="radioButtonMedium">
+									<input type="radio" id="PaymentMethodElectronicPopup" name="PaymentMethodPopup" value="Electronic" /><span class="labelRadio">Electronic Pay</span>
+								</div>
+								<div class="radioButtonMedium">
+									<input type="radio" id="PaymentMethodPaperPopup" name="PaymentMethodPopup" value="Paper" /><span class="labelRadio">Paper Check</span>
+								</div>
+							</div>
+						</div>
+						<div style="clear:both;"></div>
+					</div>
+					<div id="DeliveryToContainer" style="display:none;">
+						<div class="labelTextArea">
+							<span class="requiredFieldIndicator">&#149;</span>Delivery to:
+						</div>
+						<div class="inputTextAreaMedium">
+							<div id="DeliveryToRadioPopup">
+								<div class="radioButtonMedium">
+									<input type="radio" id="DeliveryToUnitPopup" name="DeliveryToPopup" value="true" /><span class="labelRadio">Unit</span>
+								</div>
+								<div class="radioButtonMedium">
+									<input type="radio" id="DeliveryToHomePopup" name="DeliveryToPopup" value="false" /><span class="labelRadio">Employee Home</span>
+								</div>
+							</div>
+						</div>
+						<div style="clear:both;"></div>
+					</div>
+					<div id="DeliveryInfoContainer" style="display:none;">
+						<div class="contentAreaLeft">
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>Delivery Date:
+								</div>
+								<div class="inputTextArea">
+									<div id="DeliveryDatePopup"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+						</div>
+						<div class="contentAreaLeft">
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>Saturday Delivery:
+								</div>
+								<div class="inputTextArea">
+									<div id="radioButtonMedium">
+										<div class="radioButton">
+											<input type="radio" id="SaturdayDeliveryYesPopup" name="SaturdayDeliveryPopup" value="true" /><span class="labelRadio">Yes</span>
+										</div>
+										<div class="radioButton">
+											<input type="radio" id="SaturdayDeliveryNoPopup" name="SaturdayDeliveryPopup" checked="true" value="false" /><span class="labelRadio">No</span>
+										</div>
+									</div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+						</div>
+					</div>
+					<div style="clear:both;"></div>
+					<div id="UnitContainer" style="display:none;">
+						<div id="TableEditArea">
+							<div class="labelTextArea">
+								<span class="requiredFieldIndicator">&#149;</span>Unit (Cost Center):
+							</div>
+							<div class="inputTextAreaHouseCode">
+								<div id="houseCodeTemplateContainer" class="HouseCodeContainer"></div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+						<div id="TableEditArea">
+							<div class="labelTextArea">
+								<span class="requiredFieldIndicator">&#149;</span>Unit (Cost Center) Address:
+							</div>
+							<div class="inputTextAreaLarge">
+								<div id="UnitAddressPopup"></div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+						<div id="TableEditArea">
+							<div class="labelTextArea">
+								<span class="requiredFieldIndicator">&#149;</span>UPS Package Attention to:
+							</div>
+							<div class="inputTextAreaLarge">
+								<div id="UPSPackageAttentionToPopup"></div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+					</div>
+					<div id="EmployeeContainer" style="display:none;">
+						<div class="contentAreaLeft">						
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>First Name:
+								</div>
+								<div class="inputTextArea">
+									<div id="FirstNamePopup"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span id="nonRequiredFieldIndicator">Middle Initial:</span>
+								</div>
+								<div class="inputTextArea">
+									<div id="MiddleInitialPopup"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>Last Name:
+								</div>
+								<div class="inputTextArea">
+									<div id="LastNamePopup"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+						</div>
+						<div class="contentAreaLeft">						
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>Address 1:
+								</div>
+								<div class="inputTextArea">
+									<div id="Address1Popup"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span id="nonRequiredFieldIndicator">Address 2:</span>
+								</div>
+								<div class="inputTextArea">
+									<div id="Address2Popup"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>City:
+								</div>
+								<div class="inputTextArea">
+									<div id="CityPopup"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>State:
+								</div>
+								<div class="inputTextArea">
+									<div id="StatePopup"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>Postal Code:
+								</div>
+								<div class="inputTextArea">
+									<div id="PostalCodePopup"></div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div id="WageInfo" style="display: none;">
+					<table cellpadding="10" cellspacing="0" width="100%" height="100%">
+					    <tr>
+					        <td>
+					            <table cellpadding="0" cellspacing="0">
+			                        <tr><td class="borderHorizontal" colspan="3"></td></tr>
+			                        <tr>
+			                            <td class="borderVertical"></td>
+			                            <td><div id="divWage" style="width: 600px; height: 400px; position: relative; overflow: auto;">
+												<table id="tblWageHeader" cellpadding="0" cellspacing="0" style="width: 100%; height: 100%;"></table>
+											</div>
+			                            </td>
+			                            <td class="borderVertical"></td>
+			                        </tr>
+									<tr><td class="borderHorizontal" colspan="3"></td></tr>
+									<tr>
+			                            <td class="borderVertical"></td>
+			                            <td>
+			                                <div style="height: 25px; width: 100%; position: relative; z-index: 11; overflow: hidden">
+			                                    <table id="tblGrandTotalHeader" cellpadding="0" cellspacing="0" style="position: absolute; z-index: 9; width: 1500px;">
+		                                            <tr>
+														<td class="gridHeaderCell" width="200px"><select id="selWeekType" style="width: 180px;"></select>
+														&nbsp;<img id="imgWeekDaysAdd" src="/fin/cmn/usr/media/Common/add.png" style="cursor: pointer" alt="Add week days" title="Add week days" />
+														</td>
+														<td class="gridHeaderCell" width="100px">&nbsp;</td>												
+		                                                <td class="gridHeaderCell" width="250px" style="text-align: right;">Grand Total:&nbsp;</td>
+														<td class="gridHeaderCell" width="100px" style="text-align: right; padding-right: 10px;"><span id="spnGrandTotalDay1"></span></td>
+														<td class="gridHeaderCell" width="100px" style="text-align: right; padding-right: 10px;"><span id="spnGrandTotalDay2"></span></td>
+														<td class="gridHeaderCell" width="100px" style="text-align: right; padding-right: 10px;"><span id="spnGrandTotalDay3"></span></td>
+														<td class="gridHeaderCell" width="100px" style="text-align: right; padding-right: 10px;"><span id="spnGrandTotalDay4"></span></td>
+														<td class="gridHeaderCell" width="100px" style="text-align: right; padding-right: 10px;"><span id="spnGrandTotalDay5"></span></td>
+														<td class="gridHeaderCell" width="100px" style="text-align: right; padding-right: 10px;"><span id="spnGrandTotalDay6"></span></td>
+														<td class="gridHeaderCell" width="100px" style="text-align: right; padding-right: 10px;"><span id="spnGrandTotalDay7"></span></td>
+														<td class="gridHeaderCell" width="100px" style="text-align: right; padding-right: 10px;"><span id="spnGrandTotal"></span></td>
+														<td class="gridHeaderCellRight" width="12px">&nbsp;</td>
+		                                            </tr>
+			                                    </table>
+			                                </div>
+			                            </td>
+			                            <td class="borderVertical"></td>
+			                        </tr>
+			                        <tr><td class="borderHorizontal" colspan="3"></td></tr>
+			                    </table>
+					        </td>
+					    </tr>
+					</table>
+				</div>
+				<div id="RequestorInfo" style="display:none;">
+					<div class="contentAreaLeft">						
+						<div id="TableEditArea">
+							<div class="labelTextArea">
+								<span class="requiredFieldIndicator">&#149;</span>Requested By:
+							</div>
+							<div class="inputTextArea">
+								<div id="RequestorNamePopup"></div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+						<div id="TableEditArea">
+							<div class="labelTextArea">
+								<span class="requiredFieldIndicator">&#149;</span>Requestor Phone:
+							</div>
+							<div class="inputTextArea">
+								<div id="RequestorPhonePopup"></div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+						<div id="TableEditArea">
+							<div class="labelTextArea">
+								<span class="requiredFieldIndicator">&#149;</span>Manager Name:
+							</div>
+							<div class="inputTextArea">
+								<div id="ManagerNamePopup"></div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+					</div>
+					<div class="contentAreaLeft">						
+						<div id="TableEditArea">
+							<div class="labelTextArea">
+								<span class="requiredFieldIndicator">&#149;</span>Requestor Email:
+							</div>
+							<div class="inputTextArea">
+								<div id="RequestorEmailPopup"></div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+						<div id="TableEditArea">
+							<div class="labelTextArea"></div>
+							<div class="inputTextArea"></div>
+							<div style="clear:both;"></div>
+						</div>
+						<div id="TableEditArea">
+							<div class="labelTextArea">
+								<span class="requiredFieldIndicator">&#149;</span>Manager Email:
+							</div>
+							<div class="inputTextArea">
+								<div id="ManagerEmailPopup"></div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="anchorAlign">
+				<div id="AnchorPopupCancel"></div>
+				<div id="AnchorPrev"></div>
+				<div id="AnchorNext"></div>
+				<div id="AnchorSendRequest"></div>
+			</div>
 		</div>
 		<div id="EmployeePopup">
 			<div class="contentArea">
@@ -482,6 +807,62 @@
 					<div style="clear:both;"></div>
 				</div>
 			</div>
+		</div>
+		<div style="display: none">
+			<table>
+	        	<thead id="tblWageHeaderTemplate">
+					<tr id="trWageHeaderRowCount" class="gridHeader" style="height: 25px;">
+						<td class="gridHeaderCell" width="200px">Week:&nbsp;<span id="weekDaysRowCount"></span></td>
+						<td class="gridHeaderCell" width="100px">Pay Rate</td>
+						<td class="gridHeaderCell" width="250px">Wage Type</td>
+						<td class="gridHeaderCell" width="100px"><span id="spnDay1RowCount"></span></td>
+						<td class="gridHeaderCell" width="100px"><span id="spnDay2RowCount"></span></td>
+						<td class="gridHeaderCell" width="100px"><span id="spnDay3RowCount"></span></td>
+						<td class="gridHeaderCell" width="100px"><span id="spnDay4RowCount"></span></td>
+						<td class="gridHeaderCell" width="100px"><span id="spnDay5RowCount"></span></td>
+						<td class="gridHeaderCell" width="100px"><span id="spnDay6RowCount"></span></td>
+						<td class="gridHeaderCell" width="100px"><span id="spnDay7RowCount"></span></td>
+						<td class="gridHeaderCell" width="100px">Earnings</td>
+						<td class="gridHeaderCellRight" width="12px">&nbsp;</td>
+					</tr>
+	            </thead>
+			</table>
+			<table>
+	        	<tbody id="tblWageFooterTemplate">
+					<tr id="trWageFooterRowCount" class="gridHeader" style="height: 25px;">
+						<td class="gridHeaderCell" width="200px">&nbsp;</span></td>
+						<td class="gridHeaderCell" width="100px">&nbsp;</td>
+						<td class="gridHeaderCell" width="250px" style="text-align: right;">Total Hours:&nbsp;</td>
+						<td class="gridHeaderCell" width="100px" style="text-align: right; padding-right: 10px;"><span id="spnTotalDay1RowCount"></span></td>
+						<td class="gridHeaderCell" width="100px" style="text-align: right; padding-right: 10px;"><span id="spnTotalDay2RowCount"></span></td>
+						<td class="gridHeaderCell" width="100px" style="text-align: right; padding-right: 10px;"><span id="spnTotalDay3RowCount"></span></td>
+						<td class="gridHeaderCell" width="100px" style="text-align: right; padding-right: 10px;" ><span id="spnTotalDay4RowCount"></span></td>
+						<td class="gridHeaderCell" width="100px" style="text-align: right; padding-right: 10px;"><span id="spnTotalDay5RowCount"></span></td>
+						<td class="gridHeaderCell" width="100px" style="text-align: right; padding-right: 10px;"><span id="spnTotalDay6RowCount"></span></td>
+						<td class="gridHeaderCell" width="100px" style="text-align: right; padding-right: 10px;"><span id="spnTotalDay7RowCount"></span></td>
+						<td class="gridHeaderCell" width="100px" style="text-align: right; padding-right: 10px;"><span id="spnTotalRowCount"></span></td>
+						<td class="gridHeaderCellRight" width="12px">&nbsp;</td>
+					</tr>
+	            </tbody>
+			</table>
+			<table>
+	            <tbody id="tblWageDetailTemplate">
+	                <tr id="trPayRowCount" height="20px;" class="RowStyle">
+	                    <td class="gridCell" style="width: 200px">&nbsp;ImageAdd</td>
+						<td class="gridCell" style="width: 100px" align="center"><input type="text" id="txtPayRateRowCount" class="inputText" maxlength="5" value="PayRateValue"/></td>
+	                    <td class="gridCell" style="width: 250px" align="center"><select id="selPCRowCount" style="width: 246px;"></select></td>
+	                    <td class="gridCell" style="width: 100px" align="center"><input type="text" id="txtD1RowCount" class="inputText" maxlength="5" value="D1Value"/></td>
+	                    <td class="gridCell" style="width: 100px" align="center"><input type="text" id="txtD2RowCount" class="inputText" maxlength="5" value="D2Value"/></td>
+	                    <td class="gridCell" style="width: 100px" align="center"><input type="text" id="txtD3RowCount" class="inputText" maxlength="5" value="D3Value"/></td>
+	                    <td class="gridCell" style="width: 100px" align="center"><input type="text" id="txtD4RowCount" class="inputText" maxlength="5" value="D4Value"/></td>
+	                    <td class="gridCell" style="width: 100px" align="center"><input type="text" id="txtD5RowCount" class="inputText" maxlength="5" value="D5Value"/></td>
+	                    <td class="gridCell" style="width: 100px" align="center"><input type="text" id="txtD6RowCount" class="inputText" maxlength="5" value="D6Value"/></td>
+	                    <td class="gridCell" style="width: 100px" align="center"><input type="text" id="txtD7RowCount" class="inputText" maxlength="5" value="D7Value"/></td>
+	                    <td class="gridCell" style="width: 100px" align="center"><input type="text" id="txtEarningsRowCount" class="inputText" maxlength="11" value="EarningsValue"/></td>
+						<td class="gridCellRight" width="12px">&nbsp;</td>
+	                </tr>
+	            </tbody>
+			</table>
 		</div>
 		<div id="backgroundPopup"></div>
 	    <div id="iiInputValidationMaster"></div>

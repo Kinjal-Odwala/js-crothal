@@ -59,7 +59,7 @@
 
 .inputTextAreaMedium {
 	float: left;
-	width: 240px;
+	width: 260px;
 }
 
 .inputTextAreaLarge {
@@ -100,7 +100,18 @@
 
 .radioButtonMedium {
 	float: left;
-	width: 120px;
+	width: 130px;
+}
+
+.inputText {
+	width: 96px;
+	text-align: right;
+	border: solid #AAAAAA thin;	
+    padding: 0px 3px !important;
+}
+
+.invalid {
+	background-color: pink;
 }
 
 .iiInputText.Loading {
@@ -132,13 +143,14 @@
 	border-width: 1px;
 	padding: 5px;
 	margin: 5px 1px 1px 1px;
+	overflow: auto;
 }
 
 #WageTypeGrid {
 	margin: 10px;
 }
 
-#hoursBodyColumn, #earningsBodyColumn, #alternateBaseRateBodyColumn {
+#hoursBodyColumn, #earningsBodyColumn, #payRateBodyColumn {
 	text-align: right;	
 }
 
@@ -158,22 +170,10 @@
 	margin: 5px 0px 10px 10px;
 }
 
-#AnchorSendRequest {
-	float: left;
-	width: 128px;
-	margin: 10px 0px 10px 10px;
-}
-
 #AnchorResendRequest {
 	float: left;
 	width: 144px;
 	margin: 10px 0px 10px 10px;
-}
-
-#AnchorUndo {
-	float: left;
-	width: 70px;
-	margin: 5px 0px 10px 5px;
 }
 
 #AnchorCancel {
@@ -212,8 +212,51 @@
 	padding: 5px 0px 0px 10px;
 }
 
+#AnchorPopupCancel {
+	float: left;
+	width: 80px;
+	margin: 5px 0px 0px 20px;
+}
+
+#AnchorPrev {
+	float: left;
+	width: 66px;
+	margin: 5px 0px 0px 10px;
+}
+
+#AnchorNext {
+	float: left;
+	width: 68px;
+	margin: 5px 0px 0px 10px;
+}
+
+#AnchorSendRequest {
+	float: left;
+	width: 128px;
+	margin: 5px 0px 0px 10px;
+}
+
 #TotalRow {
 	margin-left: 1px;
+}
+
+#checkRequestPopup {
+	width: 800px; 
+	height: 400px;
+	position: absolute;
+	z-index: 5025;
+	background-color: white;
+	display: none;
+}
+
+#popupContainer {
+	height: 385px;
+	border: solid #AAAAAA thin;
+	border-width: 1px;
+	margin: 10px;
+	padding: 10px 10px 3px 12px;
+	overflow-x: hidden;
+	overflow-y: auto;
 }
 
 #EmployeePopup {
