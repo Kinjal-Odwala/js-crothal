@@ -402,11 +402,11 @@ ii.Class({
                 allowAdds: false
             });
 
+			me.employeeGrid.addColumn("employeeNumber", "employeeNumber", "Employee #", "Employee #", 200);
             me.employeeGrid.addColumn("firstName", "firstName", "First Name", "First Name", 200);
             me.employeeGrid.addColumn("lastName", "lastName", "Last Name", "Last Name", 200);
             me.employeeGrid.addColumn("brief", "brief", "Brief", "Brief", null);
-            me.employeeGrid.addColumn("houseCode", "houseCode", "House Code", "House Code", 100);
-            me.employeeGrid.addColumn("employeeNumber", "employeeNumber", "Employee #", "Employee #", 100);
+            me.employeeGrid.addColumn("houseCode", "houseCode", "Cost Center", "Cost Center", 200);
             me.employeeGrid.capColumns();
 
             me.totalWageTypeGrid = new ui.ctl.Grid({
@@ -2512,6 +2512,7 @@ ii.Class({
                 xml += ' id="' + item.id + '"';
                 xml += ' houseCodeId="' + item.houseCodeId + '"';
                 xml += ' personId="' + me.personId + '"';
+				xml += ' employeeId="' + me.employee.employeeId + '"';
                 xml += ' houseCodeTitle="' + ui.cmn.text.xml.encode(item.houseCodeTitle) + '"';
                 xml += ' checkRequestNumber="' + item.checkRequestNumber + '"';
                 xml += ' requestedDate="' + item.requestedDate + '"';

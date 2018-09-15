@@ -61,6 +61,7 @@ ii.init.register(function() {
         id: { type: Number }
         , houseCodeId: { type: Number, required: false, defaultValue: 0 }
         , houseCode: { type: String, required: false, defaultValue: "" }
+		, employeeId: { type: Number, required: false, defaultValue: 0 }
         , employeeNumber: { type: String, required: false, defaultValue: "" }
         , firstName: { type: String }
         , lastName: { type: String, required: false, defaultValue: "" }
