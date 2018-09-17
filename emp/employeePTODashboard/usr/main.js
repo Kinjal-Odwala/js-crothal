@@ -148,6 +148,8 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
     $scope.mainViewHeight = $(window).height() - 100;
     $scope.employeeGridHeight = $(window).height() - 535;
 	$scope.employeeViewHeight = $(window).height() - 560;
+	$scope.employeeModalHeight = $(window).height() - 100;
+	$scope.employeeTableHeight = $scope.employeeModalHeight - 200;
 	$scope.initialize = true;
 	$scope.ptoYearId = 0;
 	$scope.dashboard = {};
@@ -307,6 +309,7 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
 	$scope.onPlanAssignmentSelected = function(item) {
         $scope.selectedPlanAssignment = item;
         $scope.employees = [];
+		$scope.empPTOBalanceHours = [];
         $scope.loadingTitle = " Loading...";
         setStatus("Loading");
 
@@ -434,6 +437,38 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
 
 			setStatus("Normal");
 		});
+    };
+
+	$scope.showUnassignedEmployees = function () {
+        $scope.unAssignedEmployees = [];       
+        $scope.loadingTitle = " Loading...";
+        $scope.pageStatus = "Loading, Please Wait...";
+        setStatus("Loading");
+
+        if ($scope.selectedPlanAssignment != "") {
+            EmpActions.getEmployees($scope.dashboard.houseCodeId, $scope.ptoYearId, $scope.selectedPlanAssignment.ptoPlanId, 0, 0, function(employees) {
+                $scope.unAssignedEmployees = employees;
+
+                var ptoModalInstance = $modal.open({
+                    templateUrl: 'unAssignedEmployee.htm',
+                    controller: 'modalInstanceCtrl',
+                    title: "Unassigned Employees",
+                    size: 'lg',
+                    backdrop: 'static',
+                    keyboard: false,
+                    scope: $scope
+                });
+
+                $scope.pageLoading = false;
+                $scope.pageStatus = "Normal";
+                setStatus("Normal");
+            });
+        }
+        else {
+            $scope.pageLoading = false;
+            $scope.pageStatus = "Normal";
+            setStatus("Normal");
+        }
     };
 }])
 .directive('ptoTypeahead', ['$filter', function($filter) {

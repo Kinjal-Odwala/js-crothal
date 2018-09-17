@@ -156,7 +156,8 @@
 								<div class="row" style="padding-bottom:25px;"></div>
 		                        <div>
 		                            <a class="btn btn-primary" ng-click="unitRosterItem()">Unit Roster</a>&nbsp;&nbsp;
-		                            <a class="btn btn-primary" ng-click="ptoStubItem()" ng-disabled="selectedEmployee === null || selectedPTOType === null">PTO Stub</a>
+		                            <a class="btn btn-primary" ng-click="ptoStubItem()" ng-disabled="selectedEmployee === null || selectedPTOType === null">PTO Stub</a>&nbsp;&nbsp;
+                    				<a class="btn btn-primary" ng-click="showUnassignedEmployees()" ng-disabled="selectedPlanAssignment === null">UnAssigned Employees</a>
 		                        </div>
 			                </div>
 		            	</div>
@@ -175,7 +176,7 @@
 <script type="text/ng-template" id="ptoDates.htm">
     <form name="datesInfoForm">
 	    <div id="dateModal" class="modal-content" style="width:600px;max-height:600px;min-height:600px;">
-		<div class="row" style="padding-bottom:10px;"></div>
+			<div class="row" style="padding-bottom:10px;"></div>
 	        <div style="font-weight:bold;font-size: 18px;text-align: center;font-family: Verdana;">PTO Taken</div>
 	        <div class="modal-body" id="dateTable" style="padding-bottom:0px">
 	        	<table class="table-scroll table table-striped table-bordered table-hover" style="width:600px;">
@@ -195,6 +196,37 @@
 			             </tr>
 			        </tbody>
 	    		</table>
+	    	</div>
+	        <div class="modal-footer">
+	            <button type="button" class="btn btn-primary" ng-click="cancel()">Close</button>
+	        </div>
+	    </div>
+	</form>
+</script>
+<script type="text/ng-template" id="unAssignedEmployee.htm">
+    <form name="employeesInfoForm">
+	    <div id="employeeModal" class="modal-content" style="width:900px;" ng-style="{'min-height': employeeModalHeight + 'px'}">
+	        <div style="font-weight:bold;font-size: 18px;text-align: center;font-family: Verdana;">Unassigned Employees</div>
+	        <div class="modal-body" id="employeesTable" style="padding-bottom:0px">
+	        	<table class="table-scroll table table-striped table-bordered table-hover" style="font-size:12px;width:100%;">
+					<thead>
+					    <tr class="heading" role="row">
+					        <th width="5%" style="text-align:center">#</th>
+					        <th width="22%" style="text-align:center">First Name</th>
+					        <th width="22%" style="text-align:center">Last Name</th>
+					        <th width="50%" style="text-align:center">Job Title</th>
+					        <th width="1%"></th>
+					   </tr>
+					</thead>
+                    <tbody style="width:100%" ng-style="{'min-height': employeeTableHeight + 'px'}">
+                        <tr ng-repeat="item in unAssignedEmployees">
+                            <td width="4.9%" align="center">{{$index + 1}}</td>
+                            <td width="21.9%" align="left">{{item.firstName}}</td>
+                            <td width="21.9%" align="left">{{item.lastName}}</td>
+                            <td width="50%" align="left">{{item.jobTitle}}</td>
+                         </tr>
+                    </tbody>
+                </table>
 	    	</div>
 	        <div class="modal-footer">
 	            <button type="button" class="btn btn-primary" ng-click="cancel()">Close</button>
