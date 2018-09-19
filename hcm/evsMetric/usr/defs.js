@@ -89,6 +89,21 @@ ii.init.register( function() {
         , microFiber: {type: Number, required: false, defaultValue: 0}
         , mop: {type: Number, required: false, defaultValue: 0}
         , cartManufacturer: {type: Number, required: false, defaultValue: 0}
+        , managerName: {type: String, required: false, defaultValue: ""}
+        ,managerPhone:{type: String, required: false, defaultValue: ""}
+        ,managerFax:{type: String, required: false, defaultValue: ""}
+        ,managerCellPhone:{type: String, required: false, defaultValue: ""}
+        ,managerEmail:{type: String, required: false, defaultValue: ""}
+        ,managerPager:{type: String, required: false, defaultValue: ""}
+        ,managerAssistantName:{type: String, required: false, defaultValue: ""}
+        ,managerAssistantPhone:{type: String, required: false, defaultValue: ""}
+        ,clientFirstName:{type: String, required: false, defaultValue: ""}
+        ,clientLastName:{type: String, required: false, defaultValue: ""}
+        ,clientPhone:{type: String, required: false, defaultValue: ""}
+        ,clientFax:{type: String, required: false, defaultValue: ""}
+        ,clientTitle:{type: String, required: false, defaultValue: ""}
+        ,clientAssistantName:{type: String, required: false, defaultValue: ""}
+        ,clientAssistantPhone:{type: String, required: false, defaultValue: ""}
         , notes: {type: String, required: false, defaultValue: ""}
     };
 

@@ -146,7 +146,7 @@ ii.Class({
 
         sessionLoaded: function() {
 
-            ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
+            ii.trace("Session Loaded", ii.traceTypes.rmation, "Session");
         },
 
         resize: function() {
@@ -687,6 +687,245 @@ ii.Class({
                         this.setInvalid("Please select the correct Cart Manufacturer.");
             });
 
+            /********/
+            me.managerName = new ui.ctl.Input.Text({
+                id: "ManagerName",
+                maxLength: 100,
+                changeFunction: function() { me.modified(); }
+            });
+
+            me.managerEmail = new ui.ctl.Input.Text({
+                id: "ManagerEmail",
+                maxLength: 50,
+                changeFunction: function() { me.modified(); }
+            });
+
+            me.managerEmail.makeEnterTab()
+                .setValidationMaster( me.validator )
+                .addValidation( function( isFinal, dataMap ){
+
+                    var enteredText = me.managerEmail.getValue();
+
+                    if (enteredText === "")
+                        return;
+
+                    if (/^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/.test(enteredText) == false)
+                        this.setInvalid("Please enter valid Email Address.");
+                });
+
+            me.managerPhone = new ui.ctl.Input.Text({
+                id: "ManagerPhone",
+                maxLength: 14,
+                changeFunction: function() { me.modified(); }
+            });
+
+            me.managerPhone.makeEnterTab()
+                .setValidationMaster( me.validator )
+                .addValidation( function( isFinal, dataMap ) {
+
+                    var enteredText = me.managerPhone.text.value;
+
+                    if (enteredText == "")
+                        return;
+
+                    me.managerPhone.text.value = fin.cmn.text.mask.phone(enteredText);
+                    enteredText = me.managerPhone.text.value;
+
+                    if (!(ui.cmn.text.validate.phone(enteredText)))
+                        this.setInvalid("Please enter valid phone number. Example: (999) 999-9999");
+                });
+
+            me.managerFax = new ui.ctl.Input.Text({
+                id: "ManagerFax",
+                maxLength: 14,
+                changeFunction: function() { me.modified(); }
+            });
+
+            me.managerFax.makeEnterTab()
+                .setValidationMaster( me.validator )
+                .addValidation( function( isFinal, dataMap ) {
+
+                    var enteredText = me.managerFax.text.value;
+
+                    if (enteredText == "")
+                        return;
+
+                    me.managerFax.text.value = fin.cmn.text.mask.phone(enteredText);
+                    enteredText = me.managerFax.text.value;
+
+                    if (!(ui.cmn.text.validate.phone(enteredText)))
+                        this.setInvalid("Please enter valid Fax number. Example: (999) 999-9999");
+                });
+
+            me.managerCellPhone = new ui.ctl.Input.Text({
+                id: "ManagerCellPhone",
+                maxLength: 14,
+                changeFunction: function() { me.modified(); }
+            });
+
+            me.managerCellPhone.makeEnterTab()
+                .setValidationMaster( me.validator )
+                .addValidation( function( isFinal, dataMap ) {
+
+                    var enteredText = me.managerCellPhone.text.value;
+
+                    if (enteredText == "")
+                        return;
+
+                    me.managerCellPhone.text.value = fin.cmn.text.mask.phone(enteredText);
+                    enteredText = me.managerCellPhone.text.value;
+
+                    if (!(ui.cmn.text.validate.phone(enteredText)))
+                        this.setInvalid("Please enter valid cell phone number. Example: (999) 999-9999");
+                });
+
+            me.managerPager = new ui.ctl.Input.Text({
+                id: "ManagerPager",
+                maxLength: 14,
+                changeFunction: function() { me.modified(); }
+            });
+
+            me.managerPager.makeEnterTab()
+                .setValidationMaster( me.validator )
+                .addValidation( function( isFinal, dataMap ) {
+
+                    var enteredText = me.managerPager.text.value;
+
+                    if (enteredText === "")
+                        return;
+
+                    me.managerPager.text.value = fin.cmn.text.mask.phone(enteredText);
+                    enteredText = me.managerPager.text.value;
+
+                    if (!(ui.cmn.text.validate.phone(enteredText)))
+                        this.setInvalid("Please enter valid pager number. Example: (999) 999-9999");
+                });
+
+            me.managerAssistantName = new ui.ctl.Input.Text({
+                id: "ManagerAssistantName",
+                maxLength: 100,
+                changeFunction: function() { me.modified(); }
+            });
+
+            me.managerAssistantPhone = new ui.ctl.Input.Text({
+                id: "ManagerAssistantPhone",
+                maxLength: 14,
+                changeFunction: function() { me.modified(); }
+            });
+
+            me.managerAssistantPhone.makeEnterTab()
+                .setValidationMaster( me.validator )
+                .addValidation( function( isFinal, dataMap ) {
+
+                    var enteredText = me.managerAssistantPhone.text.value;
+
+                    if (enteredText === "")
+                        return;
+
+                    me.managerAssistantPhone.text.value = fin.cmn.text.mask.phone(enteredText);
+                    enteredText = me.managerAssistantPhone.text.value;
+
+                    if (!(ui.cmn.text.validate.phone(enteredText)))
+                        this.setInvalid("Please enter valid phone number. Example: (999) 999-9999");
+                });
+
+            me.clientFirstName = new ui.ctl.Input.Text({
+                id: "ClientFirstName",
+                maxLength: 100,
+                changeFunction: function() { me.modified(); }
+            });
+
+            me.clientLastName = new ui.ctl.Input.Text({
+                id: "ClientLastName",
+                maxLength: 100,
+                changeFunction: function() { me.modified(); }
+            });
+
+            me.clientTitle = new ui.ctl.Input.Text({
+                id: "ClientTitle",
+                maxLength: 50,
+                changeFunction: function() { me.modified(); }
+            });
+
+            me.clientPhone = new ui.ctl.Input.Text({
+                id: "ClientPhone",
+                maxLength: 14,
+                changeFunction: function() { me.modified(); }
+            });
+
+            me.clientPhone.makeEnterTab()
+                .setValidationMaster( me.validator )
+                .addValidation( function( isFinal, dataMap ) {
+
+                    var enteredText = me.clientPhone.text.value;
+
+                    if (enteredText == "")
+                        return;
+
+                    me.clientPhone.text.value = fin.cmn.text.mask.phone(enteredText);
+                    enteredText = me.clientPhone.text.value;
+
+                    if (!(ui.cmn.text.validate.phone(enteredText)))
+                        this.setInvalid("Please enter valid phone number. Example: (999) 999-9999");
+                });
+
+            me.clientFax = new ui.ctl.Input.Text({
+                id: "ClientFax",
+                maxLength: 14,
+                changeFunction: function() { me.modified(); }
+            });
+
+            me.clientFax.makeEnterTab()
+                .setValidationMaster( me.validator )
+                .addValidation( function( isFinal, dataMap ) {
+
+                    var enteredText = me.clientFax.text.value;
+
+                    if (enteredText == "")
+                        return;
+
+                    me.clientFax.text.value = fin.cmn.text.mask.phone(enteredText);
+                    enteredText = me.clientFax.text.value;
+
+                    if (!(ui.cmn.text.validate.phone(enteredText)))
+                        this.setInvalid("Please enter valid Fax number. Example: (999) 999-9999");
+                });
+
+            me.clientAssistantName = new ui.ctl.Input.Text({
+                id: "ClientAssistantName",
+                maxLength: 100,
+                changeFunction: function() { me.modified(); }
+            });
+
+            me.clientAssistantPhone = new ui.ctl.Input.Text({
+                id: "ClientAssistantPhone",
+                maxLength: 14,
+                changeFunction: function() { me.modified(); }
+            });
+
+            me.clientAssistantPhone.makeEnterTab()
+                .setValidationMaster( me.validator )
+                .addValidation( function( isFinal, dataMap ) {
+
+                    var enteredText = me.clientAssistantPhone.text.value;
+
+                    if (enteredText === "")
+                        return;
+
+                    me.clientAssistantPhone.text.value = fin.cmn.text.mask.phone(enteredText);
+                    enteredText = me.clientAssistantPhone.text.value;
+
+                    if (!(ui.cmn.text.validate.phone(enteredText)))
+                        this.setInvalid("Please enter valid phone number. Example: (999) 999-9999");
+                });
+
+
+
+
+
+
+
+            /***********/
             me.notes = $("#Notes")[0];
 
             $("#Notes").height(100);
@@ -1888,7 +2127,23 @@ ii.Class({
             me.microFiber.text.tabIndex = 27;
             me.mop.text.tabIndex = 28;
             me.cartManufacturer.text.tabIndex = 29;
-            me.notes.tabIndex = 30;
+            me.managerName.text.tabIndex=30;
+            me.managerEmail.text.tabIndex=31;
+            me.managerPhone.text.tabIndex=32;
+            me.managerFax.text.tabIndex=33;
+            me.managerCellPhone.text.tabIndex=34;
+            me.managerPager.text.tabIndex=35;
+            me.managerAssistantName.text.tabIndex=36;
+            me.managerAssistantPhone.text.tabIndex=37;
+            me.clientFirstName.text.tabIndex=38;
+            me.clientLastName.text.tabIndex=39;
+            me.clientTitle.text.tabIndex=40;
+            me.clientPhone.text.tabIndex=41;
+            me.clientFax.text.tabIndex=42;
+            me.clientAssistantName.text.tabIndex=43;
+            me.clientAssistantPhone.text.tabIndex=44;
+
+            me.notes.tabIndex = 45;
         },
 
         laborControlGridScroll: function() {
@@ -1945,6 +2200,21 @@ ii.Class({
                 me.microFiber.resizeText();
                 me.mop.resizeText();
                 me.cartManufacturer.resizeText();
+                me.managerName.resizeText();
+                me.managerPhone.resizeText();
+                me.managerFax.resizeText();
+                me.managerCellPhone.resizeText();
+                me.managerEmail.resizeText();
+                me.managerPager.resizeText();
+                me.managerAssistantName.resizeText();
+                me.managerAssistantPhone.resizeText();
+                me.clientFirstName.resizeText();
+                me.clientLastName.resizeText();
+                me.clientPhone.resizeText();
+                me.clientFax.resizeText();
+                me.clientTitle.resizeText();
+                me.clientAssistantName.resizeText();
+                me.clientAssistantPhone.resizeText();
             }
             else if (selectedTab === 3) {
                 me.strategicInitiativeGrid.setHeight($(window).height() - 145);
@@ -2014,7 +2284,24 @@ ii.Class({
             me.microFiber.reset();
             me.mop.reset();
             me.cartManufacturer.reset();
+            me.managerName.setValue("");
+            me.managerPhone.setValue("");
+            me.managerFax.setValue("");
+            me.managerCellPhone.setValue("");
+            me.managerEmail.setValue("");
+            me.managerPager.setValue("");
+            me.managerAssistantName.setValue("");
+            me.managerAssistantPhone.setValue("");
+            me.clientFirstName.setValue("");
+            me.clientLastName.setValue("");
+            me.clientPhone.setValue("");
+            me.clientFax.setValue("");
+            me.clientTitle.setValue("");
+            me.clientAssistantName.setValue("");
+            me.clientAssistantPhone.setValue("");
             me.notes.value = "";
+            //TODO: set value for new fields
+
             $("#TMSOtherContainer").hide();
 
             if (me.strategicInitiativeGrid.activeRowIndex !== - 1)
@@ -2208,7 +2495,25 @@ ii.Class({
                 itemIndex = ii.ajax.util.findIndexById(me.metrics[0].cartManufacturer.toString(), me.cartManufacturer.data);
                 if (itemIndex !== null && itemIndex >= 0)
                     me.cartManufacturer.select(itemIndex, me.cartManufacturer.focused);
+
+                me.managerName.setValue(me.metrics[0].managerName);
+                me.managerPhone.setValue(me.metrics[0].managerPhone);
+                me.managerFax.setValue(me.metrics[0].managerFax);
+                me.managerCellPhone.setValue(me.metrics[0].managerCellPhone);
+                me.managerEmail.setValue(me.metrics[0].managerEmail);
+                me.managerPager.setValue(me.metrics[0].managerPager);
+                me.managerAssistantName.setValue(me.metrics[0].managerAssistantName);
+                me.managerAssistantPhone.setValue(me.metrics[0].managerAssistantPhone);
+                me.clientFirstName.setValue(me.metrics[0].clientFirstName);
+                me.clientLastName.setValue(me.metrics[0].clientLastName);
+                me.clientPhone.setValue(me.metrics[0].clientPhone);
+                me.clientFax.setValue(me.metrics[0].clientFax);
+                me.clientTitle.setValue(me.metrics[0].clientTitle);
+                me.clientAssistantName.setValue(me.metrics[0].clientAssistantName);
+                me.clientAssistantPhone.setValue(me.metrics[0].clientAssistantPhone);
                 me.notes.value = me.metrics[0].notes;
+
+                //TODO: set value for new fields
 
                 me.numericDetailStore.fetch("userId:[user],evsMetricId:" + me.evsMetricId, me.numericDetailsLoaded, me);
                 me.strategicInitiativeStore.fetch("userId:[user],evsMetricId:" + me.evsMetricId, me.strategicInitiativesLoaded, me);
@@ -2957,6 +3262,8 @@ ii.Class({
                     || !me.serviceLinePOM.valid || !me.serviceLineCES.valid || !me.uvManufacturer.valid || !me.hygiena.valid || !me.wanda.valid
                     || !me.union.valid || !me.microFiber.valid || !me.mop.valid || !me.cartManufacturer.valid
                     || !me.taskManagementSystem.valid || !me.taskManagementSystemOther.valid) {
+
+                    //TODO: do we need to add the fields to validation
                     alert("In order to save, the errors on the page must be corrected. Please verify the data on Hospital & Contract tab.");
                     return false;
                 }
@@ -3025,6 +3332,21 @@ ii.Class({
                 , (me.microFiber.indexSelected >= 0 ? me.microFiber.data[me.microFiber.indexSelected].id : 0)
                 , (me.mop.indexSelected >= 0 ? me.mop.data[me.mop.indexSelected].id : 0)
                 , (me.cartManufacturer.indexSelected >= 0 ? me.cartManufacturer.data[me.cartManufacturer.indexSelected].id : 0)
+                ,me.managerName.getValue()
+                ,me.managerPhone.getValue()
+                ,me.managerFax.getValue()
+                ,me.managerCellPhone.getValue()
+                ,me.managerEmail.getValue()
+                ,me.managerPager.getValue()
+                ,me.managerAssistantName.getValue()
+                ,me.managerAssistantPhone.getValue()
+                ,me.clientFirstName.getValue()
+                ,me.clientLastName.getValue()
+                ,me.clientPhone.getValue()
+                ,me.clientFax.getValue()
+                ,me.clientTitle.getValue()
+                ,me.clientAssistantName.getValue()
+                ,me.clientAssistantPhone.getValue()
                 , me.notes.value
                 );
 
@@ -3056,6 +3378,7 @@ ii.Class({
             var xml = "";
 
             if (me.hospitalContractShow || me.laborControlShow || me.strategicInitiativesShow || me.qualityAssuranceShow || me.adminObjectivesShow || me.evsStatisticShow || me.managementStaffShow) {
+               //TODO: add new fields
                 xml += '<evsMetric';
                 xml += ' id="' + item.id + '"';
                 xml += ' houseCodeId="' + item.houseCodeId + '"';
@@ -3089,6 +3412,21 @@ ii.Class({
                 xml += ' microFiber="' + item.microFiber + '"';
                 xml += ' mop="' + item.mop + '"';
                 xml += ' cartManufacturer="' + item.cartManufacturer + '"';
+                xml += ' managerName="' + ui.cmn.text.xml.encode(item.managerName) + '"';
+                xml += ' managerPhone="' + ui.cmn.text.xml.encode(item.managerPhone) + '"';
+                xml += ' managerFax="' + ui.cmn.text.xml.encode(item.managerFax) + '"';
+                xml += ' managerCellPhone="' + ui.cmn.text.xml.encode(item.managerCellPhone) + '"';
+                xml += ' managerEmail="' + ui.cmn.text.xml.encode(item.managerEmail) + '"';
+                xml += ' managerPager="' + ui.cmn.text.xml.encode(item.managerPager) + '"';
+                xml += ' managerAssistantName="' + ui.cmn.text.xml.encode(item.managerAssistantName) + '"';
+                xml += ' managerAssistantPhone="' + ui.cmn.text.xml.encode(item.managerAssistantPhone) + '"';
+                xml += ' clientFirstName="' + ui.cmn.text.xml.encode(item.clientFirstName) + '"';
+                xml += ' clientLastName="' + ui.cmn.text.xml.encode(item.clientLastName) + '"';
+                xml += ' clientPhone="' + ui.cmn.text.xml.encode(item.clientPhone) + '"';
+                xml += ' clientFax="' + ui.cmn.text.xml.encode(item.clientFax) + '"';
+                xml += ' clientTitle="' + ui.cmn.text.xml.encode(item.clientTitle) + '"';
+                xml += ' clientAssistantName="' + ui.cmn.text.xml.encode(item.clientAssistantName) + '"';
+                xml += ' clientAssistantPhone="' + ui.cmn.text.xml.encode(item.clientAssistantPhone) + '"';
                 xml += ' notes="' + ui.cmn.text.xml.encode(item.notes) + '"';
                 xml += '/>';
             }

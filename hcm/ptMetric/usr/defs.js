@@ -87,6 +87,21 @@ ii.init.register( function() {
 		, taskManagementSystemOther: {type: String, required: false, defaultValue: ""}
 		, metricStandard: {type: Number, required: false, defaultValue: 0}
 		, supportedByNPC: {type: Number, required: false,defualtValue: -1}
+        , managerName: {type: String, required: false, defaultValue: ""}
+        ,managerPhone:{type: String, required: false, defaultValue: ""}
+        ,managerFax:{type: String, required: false, defaultValue: ""}
+        ,managerCellPhone:{type: String, required: false, defaultValue: ""}
+        ,managerEmail:{type: String, required: false, defaultValue: ""}
+        ,managerPager:{type: String, required: false, defaultValue: ""}
+        ,managerAssistantName:{type: String, required: false, defaultValue: ""}
+        ,managerAssistantPhone:{type: String, required: false, defaultValue: ""}
+        ,clientFirstName:{type: String, required: false, defaultValue: ""}
+        ,clientLastName:{type: String, required: false, defaultValue: ""}
+        ,clientPhone:{type: String, required: false, defaultValue: ""}
+        ,clientFax:{type: String, required: false, defaultValue: ""}
+        ,clientTitle:{type: String, required: false, defaultValue: ""}
+        ,clientAssistantName:{type: String, required: false, defaultValue: ""}
+        ,clientAssistantPhone:{type: String, required: false, defaultValue: ""}
 		, notes: {type: String, required: false, defaultValue: ""}
 	};
 	
