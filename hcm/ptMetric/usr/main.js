@@ -153,7 +153,7 @@ ii.Class({
 			var me = fin.hcmPTMetricUi;
 			var offset = 100;
 
-		    $("#HospitalContractContainer").height($(window).height() - offset);
+		    $("#HospitalContractContainer").height($(window).height() - 75);
 		    $("#LaborControlContainer").height($(window).height() - offset);
 		    $("#StrategicInitiativeContainer").height($(window).height() - offset);
 		    $("#QualityControlContainer").height($(window).height() - offset);
