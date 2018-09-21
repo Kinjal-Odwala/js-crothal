@@ -124,6 +124,7 @@ ii.init.register(function() {
         , managerEmail: { type: String, required: false, defaultValue: "" }
         , approvedDate: { type: String, required: false, defaultValue: "" }
         , completedDate: { type: String, required: false, defaultValue: "" }
+		, assigned: {type: Boolean, required: false, defaultValue: false}
     };
 
     fin.pay.payCheck.wageTypeDetailArgs = {

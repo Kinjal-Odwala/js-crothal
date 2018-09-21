@@ -25,6 +25,9 @@
 				</tr>
 			</table>
 		</div>
+		<div style="display:none;">
+			<iframe id="iFrameUpload" src="/net/crothall/chimes/fin/app/act/FileUpload.aspx" frameborder="0" width="100%" height="30"></iframe>
+		</div>
 		<div class="pageHeader">
 			<div id="actionHeader">
 				<div id="pageHeader">Payroll Check Request</div>
@@ -104,12 +107,8 @@
 							<div style="clear:both;"></div>
 						</div>
 						<div id="TableEditArea">
-							<div class="labelTextArea">
-								<span id="nonRequiredFieldIndicator">Delivery Date:</span>
-							</div>
-							<div class="inputTextArea">
-								<div id="DeliveryDate"></div>
-							</div>
+							<div class="labelTextArea"></div>
+							<div class="inputTextArea"></div>
 							<div style="clear:both;"></div>
 						</div>
 						<div id="TableEditArea">
@@ -149,6 +148,20 @@
 							</div>
 							<div style="clear:both;"></div>
 						</div>
+					</div>
+					<div class="contentAreaLeft">
+						<div id="TableEditArea">
+							<div class="labelTextArea">
+								<span id="nonRequiredFieldIndicator">Termination Date:</span>
+							</div>
+							<div class="inputTextArea">
+								<div id="TerminationDate"></div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+					</div>
+					<div style="clear:both;"></div>
+					<div class="contentAreaLeft">
 						<div id="TableEditArea">
 							<div class="labelTextArea">
 								<span id="nonRequiredFieldIndicator">Payment Method:</span>
@@ -166,37 +179,56 @@
 							<div style="clear:both;"></div>
 						</div>
 					</div>
-					<div class="contentAreaLeft">
-						<div id="TableEditArea">
-							<div class="labelTextArea">
-								<span id="nonRequiredFieldIndicator">Termination Date:</span>
+					<div style="clear:both;"></div>
+					<div id="DeliveryInfoContainer" style="display:none;">
+						<div class="labelTextArea">
+							<span id="nonRequiredFieldIndicator">Delivery to:</span>
+						</div>
+						<div class="inputTextAreaMedium">
+							<div id="DeliveryToRadio">
+								<div class="radioButtonMedium">
+									<input type="radio" id="DeliveryToUnit" name="DeliveryTo" value="true" /><span class="labelRadio">Unit</span>
+								</div>
+								<div class="radioButtonMedium">
+									<input type="radio" id="DeliveryToHome" name="DeliveryTo" value="false" /><span class="labelRadio">Employee Home</span>
+								</div>
 							</div>
-							<div class="inputTextArea">
-								<div id="TerminationDate"></div>
+						</div>
+						<div style="clear:both;"></div>
+						<div class="contentAreaLeft">
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span id="nonRequiredFieldIndicator">Delivery Date:</span>
+								</div>
+								<div class="inputTextArea">
+									<div id="DeliveryDate"></div>
+								</div>
+								<div style="clear:both;"></div>
 							</div>
-							<div style="clear:both;"></div>
+						</div>
+						<div class="contentAreaLeft">
+							<div id="TableEditArea">
+								<div class="labelTextArea">
+									<span class="requiredFieldIndicator">&#149;</span>Saturday Delivery:
+								</div>
+								<div class="inputTextArea">
+									<div id="radioButtonMedium">
+										<div class="radioButton">
+											<input type="radio" id="SaturdayDeliveryYes" name="SaturdayDelivery" value="true" /><span class="labelRadio">Yes</span>
+										</div>
+										<div class="radioButton">
+											<input type="radio" id="SaturdayDeliveryNo" name="SaturdayDelivery" checked="true" value="false" /><span class="labelRadio">No</span>
+										</div>
+									</div>
+								</div>
+								<div style="clear:both;"></div>
+							</div>
 						</div>
 					</div>
 					<div style="clear:both;"></div>
-					<div class="subHeader">Unit (Location/Account) Delivery Information</div>
-					<div style="clear:both;"></div>
-					<div class="contentAreaLeft">
-						<div id="TableEditArea">
-							<div class="labelTextArea">
-								<span id="nonRequiredFieldIndicator">UPS Delivery to Unit:</span>
-							</div>
-							<div class="inputTextArea">
-								<div id="UPSDeliveryToUnitRadio">
-									<div class="radioButton">
-										<input type="radio" id="UPSDeliveryToUnitYes" name="UPSDeliveryToUnit" value="true" /><span class="labelRadio">Yes</span>
-									</div>
-									<div class="radioButton">
-										<input type="radio" id="UPSDeliveryToUnitNo" name="UPSDeliveryToUnit" checked="true" value="false" /><span class="labelRadio">No</span>
-									</div>
-								</div>
-							</div>
-							<div style="clear:both;"></div>
-						</div>
+					<div id="UnitContainer" style="display:none;">
+						<div class="subHeader">Unit (Location/Account) Delivery Information</div>
+						<div style="clear:both;"></div>
 						<div id="TableEditArea">
 							<div class="labelTextArea">
 								<span id="nonRequiredFieldIndicator">Unit (Cost Center):</span>
@@ -206,98 +238,41 @@
 							</div>
 							<div style="clear:both;"></div>
 						</div>
-					</div>
-					<div class="contentAreaLeft">
+						<div style="clear:both;"></div>
 						<div id="TableEditArea">
 							<div class="labelTextArea">
-								<span id="nonRequiredFieldIndicator">Saturday Delivery:</span>
+								<span id="nonRequiredFieldIndicator">Unit (Cost Center) Address:</span>
 							</div>
-							<div class="inputTextArea">
-								<div id="SaturdayDeliveryUnitRadio">
-									<div class="radioButton">
-										<input type="radio" id="SaturdayDeliveryUnitYes" name="SaturdayDeliveryUnit" value="true" /><span class="labelRadio">Yes</span>
-									</div>
-									<div class="radioButton">
-										<input type="radio" id="SaturdayDeliveryUnitNo" name="SaturdayDeliveryUnit" checked="true" value="false" /><span class="labelRadio">No</span>
-									</div>
-								</div>
+							<div class="inputTextAreaLarge">
+								<div id="UnitAddress"></div>
 							</div>
 							<div style="clear:both;"></div>
 						</div>
 						<div id="TableEditArea">
-							<div class="labelTextArea"></div>
-							<div class="inputTextArea"></div>
-							<div style="clear:both;"></div>
-						</div>
-					</div>
-					<div style="clear:both;"></div>
-					<div id="TableEditArea">
-						<div class="labelTextArea">
-							<span id="nonRequiredFieldIndicator">Unit (Cost Center) Address:</span>
-						</div>
-						<div class="inputTextAreaLarge">
-							<div id="UnitAddress"></div>
-						</div>
-						<div style="clear:both;"></div>
-					</div>
-					<div id="TableEditArea">
-						<div class="labelTextArea">
-							<span id="nonRequiredFieldIndicator">UPS Package Attention to:</span>
-						</div>
-						<div class="inputTextAreaLarge">
-							<div id="UPSPackageAttentionTo"></div>
-						</div>
-						<div style="clear:both;"></div>
-					</div>
-	        		<div class="subHeader">Employee Home Delivery Information</div>
-					<div style="clear:both;"></div>
-					<div class="contentAreaLeft">
-						<div id="TableEditArea">
 							<div class="labelTextArea">
-								<span id="nonRequiredFieldIndicator">UPS Delivery to Home:</span>
+								<span id="nonRequiredFieldIndicator">UPS Package Attention to:</span>
 							</div>
-							<div class="inputTextArea">
-								<div id="UPSDeliveryToHomeRadio">
-									<div class="radioButton">
-										<input type="radio" id="UPSDeliveryToHomeYes" name="UPSDeliveryToHome" value="true" /><span class="labelRadio">Yes</span>
-									</div>
-									<div class="radioButton">
-										<input type="radio" id="UPSDeliveryToHomeNo" name="UPSDeliveryToHome" checked="true" value="false" /><span class="labelRadio">No</span>
-									</div>
-								</div>
+							<div class="inputTextAreaLarge">
+								<div id="UPSPackageAttentionTo"></div>
 							</div>
 							<div style="clear:both;"></div>
 						</div>
 					</div>
-					<div class="contentAreaLeft">
+					<div id="EmployeeContainer" style="display:none;">
+	        			<div class="subHeader">Employee Home Delivery Information</div>
+						<div style="clear:both;"></div>
 						<div id="TableEditArea">
 							<div class="labelTextArea">
-								<span id="nonRequiredFieldIndicator">Saturday Delivery:</span>
+								<span id="nonRequiredFieldIndicator">Home Address:</span>
 							</div>
-							<div class="inputTextArea">
-								<div id="SaturdayDeliveryHomeRadio">
-									<div class="radioButton">
-										<input type="radio" id="SaturdayDeliveryHomeYes" name="SaturdayDeliveryHome" value="true" /><span class="labelRadio">Yes</span>
-									</div>
-									<div class="radioButton">
-										<input type="radio" id="SaturdayDeliveryHomeNo" name="SaturdayDeliveryHome" checked="true" value="false" /><span class="labelRadio">No</span>
-									</div>
-								</div>
-							</div>							
-						</div>
-					</div>
-					<div style="clear:both;"></div>
-					<div id="TableEditArea">
-						<div class="labelTextArea">
-							<span id="nonRequiredFieldIndicator">Home Address:</span>
-						</div>
-						<div class="inputTextAreaLarge">
-							<div id="HomeAddress"></div>
+							<div class="inputTextAreaLarge">
+								<div id="HomeAddress"></div>
+							</div>
+							<div style="clear:both;"></div>
 						</div>
 						<div style="clear:both;"></div>
+						<div class="labelHeaderSmall">* All checks sent to the employee's home; you must include their complete address (street, city, state and zip).</div>
 					</div>
-					<div style="clear:both;"></div>
-					<div class="labelHeaderSmall">* All checks sent to the employee's home; you must include their complete address (street, city, state and zip).</div>
 					<div style="clear:both;"></div>
 					<div class="subHeader">Wage Type Information</div>
 					<div style="clear:both;"></div>
@@ -395,6 +370,7 @@
 				<div id="AnchorCancel"></div>
 				<div id="AnchorApprove"></div>
 				<div id="AnchorReExport"></div>
+				<div id="AnchorExport"></div>
 			</div>
 			<div style="clear:both;"></div>
 		</div>
@@ -462,6 +438,8 @@
 							</div>
 							<div style="clear:both;"></div>
 						</div>
+					</div>
+					<div class="contentAreaLeft">
 						<div id="TableEditArea">
 							<div class="labelTextArea" id="LabelTerminationDate">
 								<span id="nonRequiredFieldIndicator">Termination Date:</span>
@@ -473,6 +451,7 @@
 						</div>
                 	</div>
 				</div>
+				<div style="clear:both;"></div>
 				<div id="PaymentInfo" style="display:none;">
 					<div id="TableEditArea">
 						<div class="labelTextArea">
@@ -490,7 +469,7 @@
 						</div>
 						<div style="clear:both;"></div>
 					</div>
-					<div id="DeliveryToContainer" style="display:none;">
+					<div id="DeliveryToPopupContainer" style="display:none;">
 						<div class="labelTextArea">
 							<span class="requiredFieldIndicator">&#149;</span>Delivery to:
 						</div>
@@ -506,7 +485,7 @@
 						</div>
 						<div style="clear:both;"></div>
 					</div>
-					<div id="DeliveryInfoContainer" style="display:none;">
+					<div id="DeliveryInfoPopupContainer" style="display:none;">
 						<div class="contentAreaLeft">
 							<div id="TableEditArea">
 								<div class="labelTextArea">
@@ -538,7 +517,7 @@
 						</div>
 					</div>
 					<div style="clear:both;"></div>
-					<div id="UnitContainer" style="display:none;">
+					<div id="UnitPopupContainer" style="display:none;">
 						<div id="TableEditArea">
 							<div class="labelTextArea">
 								<span class="requiredFieldIndicator">&#149;</span>Unit (Cost Center):
@@ -567,7 +546,7 @@
 							<div style="clear:both;"></div>
 						</div>
 					</div>
-					<div id="EmployeeContainer" style="display:none;">
+					<div id="EmployeePopupContainer" style="display:none;">
 						<div class="contentAreaLeft">						
 							<div id="TableEditArea">
 								<div class="labelTextArea">
