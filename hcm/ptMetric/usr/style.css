@@ -102,7 +102,7 @@
 	margin: 10px;
 }
 
-#LaborControlGridContainer, #QualityControlGridContainer, #PTPressGaneyGridContainer, #EVSHCAHPSGridContainer, #InHouseStandardMetricGridContainer, #ThirdPartyStandardMetricGridContainer, #PTStatisticGridContainer {
+#LaborControlGridContainer, #QualityControlGridContainer, #PTPressGaneyGridContainer, #EVSHCAHPSGridContainer, #InHouseStandardMetricGridContainer, #ThirdPartyStandardMetricGridContainer, #PTStatisticGridContainer,#HospitalContractContainer {
 	float: left;
 	width: 100%;
 	position: relative;
@@ -110,7 +110,7 @@
 	overflow-y: hidden;
 }
 
-#LaborControlContainer, #QualityAssuranceContainer,#HospitalContractContainer{
+#LaborControlContainer, #QualityAssuranceContainer{
 	position: relative;
 	overflow-x: hidden;
 	overflow-y: auto;

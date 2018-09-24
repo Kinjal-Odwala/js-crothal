@@ -3427,20 +3427,20 @@ ii.Class({
 				, (me.metricStandard.indexSelected >= 0 ? me.metricStandards[me.metricStandard.indexSelected].id : 0)
 				, (me.supportedByNPC.indexSelected >= 0 ? me.supportedByNPCTypes[me.supportedByNPC.indexSelected].id : -1)
                 ,me.managerName.getValue()
-                ,me.managerPhone.getValue()
-                ,me.managerFax.getValue()
-                ,me.managerCellPhone.getValue()
+                ,fin.cmn.text.mask.phone(me.managerPhone.getValue(),true)
+                ,fin.cmn.text.mask.phone(me.managerFax.getValue(),true)
+                ,fin.cmn.text.mask.phone(me.managerCellPhone.getValue(),true)
                 ,me.managerEmail.getValue()
-                ,me.managerPager.getValue()
+                ,fin.cmn.text.mask.phone(me.managerPager.getValue(),true)
                 ,me.managerAssistantName.getValue()
-                ,me.managerAssistantPhone.getValue()
+                ,fin.cmn.text.mask.phone(me.managerAssistantPhone.getValue(),true)
                 ,me.clientFirstName.getValue()
                 ,me.clientLastName.getValue()
-                ,me.clientPhone.getValue()
-                ,me.clientFax.getValue()
+                ,fin.cmn.text.mask.phone(me.clientPhone.getValue(),true)
+                ,fin.cmn.text.mask.phone(me.clientFax.getValue(),true)
                 ,me.clientTitle.getValue()
                 ,me.clientAssistantName.getValue()
-                ,me.clientAssistantPhone.getValue()
+                ,fin.cmn.text.mask.phone(me.clientAssistantPhone.getValue(),true)
 				, me.notes.value
 				);
 			
@@ -3508,7 +3508,7 @@ ii.Class({
                 xml += ' clientFirstName="' + ui.cmn.text.xml.encode(item.clientFirstName) + '"';
                 xml += ' clientLastName="' + ui.cmn.text.xml.encode(item.clientLastName) + '"';
                 xml += ' clientPhone="' + ui.cmn.text.xml.encode(item.clientPhone) + '"';
-                xml += ' clientFax="' + ui.cmn.text.xml.encode(item.clientFax) + '"';
+                xml += ' clientFax="' + ui.cmn.text.xml.encode(item.clientFax) + '"';  //mask.phone(me.customerPhone.getValue(), true)
                 xml += ' clientTitle="' + ui.cmn.text.xml.encode(item.clientTitle) + '"';
                 xml += ' clientAssistantName="' + ui.cmn.text.xml.encode(item.clientAssistantName) + '"';
                 xml += ' clientAssistantPhone="' + ui.cmn.text.xml.encode(item.clientAssistantPhone) + '"';
