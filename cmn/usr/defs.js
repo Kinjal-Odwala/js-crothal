@@ -38,7 +38,7 @@ ii.init.register( function fin_cmn_startup_init(){
 			if (message == "") {
 				if (status == "New")
 					message = "New";
-				else if (status == "Loading" || status == "Saving" || status == "Exporting" || status == "Importing" || status == "Validating" || status == "Uploading" || status == "Downloading" || status == "Generating")
+				else if (status == "Loading" || status == "Saving" || status == "Exporting" || status == "Importing" || status == "Validating" || status == "Uploading" || status == "Downloading" || status == "Generating" || status == "Sending")
 					message = status + ", please wait...";
 				else if (status == "Saved")
 					message = "Data saved successfully.";
@@ -46,6 +46,8 @@ ii.init.register( function fin_cmn_startup_init(){
 					message = "Data imported successfully.";
 				else if (status == "Exported")
 					message = "Data exported successfully.";
+				else if (status == "Sent")
+					message = "Data sent successfully.";
 				else if (status == "Locked")
 					message = "The current page is Readonly.";
 				else if (status == "Error")
@@ -64,7 +66,7 @@ ii.init.register( function fin_cmn_startup_init(){
 			else
 				me.$itemModifiedImage.removeClass("Modified");
 
-			if (status == "Edit" || status == "Loaded" || status == "Saved" || status == "Imported" || status == "Exported")
+			if (status == "Edit" || status == "Loaded" || status == "Saved" || status == "Imported" || status == "Exported" || status == "Sent")
 				status = "Normal";
 
 			me.$itemStatusImage.attr("class", "itemStatusImage " + status);
