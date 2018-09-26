@@ -543,10 +543,9 @@ ii.Class({
 
 function actionClickItem(objCheckBox) {
 	var me = fin.workOrderToInvoiceUi;
-	var index = 0;
-	
+	var index = parseInt(objCheckBox.id.replace("assignInputCheck", ""), 10);
+
 	me.modified();
-	index = objCheckBox.id.substring(objCheckBox.id.length - 1);
 	me.workOrders[index].assigned = objCheckBox.checked;
 	$("#spanInputCheck" + index).removeAttr("style")
 	$("#spanInputCheck" + index).attr("title", "");
