@@ -35,7 +35,10 @@ ii.init.register( function() {
 	
 	fin.pur.catalog.vendorArgs = {
 		id: {type: Number}
+		, vendorNumber: {type: String}
 		, title: {type: String}
+		, name: {type: String, required: false, defaultValue: ""}
+		, nameSelectBy: {type: String, required: false, defaultValue: ""}
 	};
 	
 	fin.pur.catalog.catalogArgs = {

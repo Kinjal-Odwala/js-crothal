@@ -397,7 +397,7 @@ ii.Class({
 			
 			me.vendor = new ui.ctl.Input.DropDown.Filtered({
 				id: "Vendor",
-				formatFunction: function(type) { return type.title; },
+				formatFunction: function(type) { return type.vendorNumber + " - " + (type.nameSelectBy === "PurVenTitle" ? (type.name === "" ? type.title : type.title + " - " + type.name) : type.title); },
 				changeFunction: function() { me.vendorChanged(); },
 				required: false
 			});
@@ -631,7 +631,7 @@ ii.Class({
 			});
 
 			me.purchaseOrderGrid.addColumn("houseCodeName", "houseCodeName", "House Code", "House Code", 300);
-			me.purchaseOrderGrid.addColumn("orderNumber", "", "Order #", "Order #", 80, function(order) {
+			me.purchaseOrderGrid.addColumn("orderNumber", "", "Order #", "Order #", 100, function(order) {
 				if (order.statusType == 1) {
 					var orderNumber = "";
 					for (var index = 0; index < order.orderNumber.toString().length; index++)
@@ -642,7 +642,7 @@ ii.Class({
 					return order.orderNumber;
             });
 			me.purchaseOrderGrid.addColumn("orderDate", "orderDate", "Date", "Order Date", 100, function(orderDate) { return ui.cmn.text.date.format(orderDate, "mm/dd/yyyy"); });
-			me.purchaseOrderGrid.addColumn("vendorName", "vendorName", "Vendor", "Vendor", null);
+			me.purchaseOrderGrid.addColumn("vendorName", "", "Vendor", "Vendor", null, function(item) { return item.vendorNumber + " - " + item.vendorName; });
 			me.purchaseOrderGrid.addColumn("orderAmount", "orderAmount", "Amount", "Order Amount", 120);
 			me.purchaseOrderGrid.addColumn("placedBy", "placedBy", "Placed By", "Placed By", 200);
 			me.purchaseOrderGrid.addColumn("requisitionNumber", "requisitionNumber", "Requisition #", "Requisition #", 120, function(requisitionNumber) {
@@ -1673,7 +1673,7 @@ ii.Class({
 			me.purchaseOrderItemStore.reset();
 			me.vendorName.resizeText();	
 			me.searchItem.resizeText();
-			me.vendorName.setValue(me.purchaseOrderGrid.data[me.purchaseOrderGrid.activeRowIndex].vendorName);
+			me.vendorName.setValue(me.purchaseOrderGrid.data[me.purchaseOrderGrid.activeRowIndex].vendorNumber + " - " + me.purchaseOrderGrid.data[me.purchaseOrderGrid.activeRowIndex].vendorName);
 			me.searchItem.setValue("");
 			me.account.fetchingData();
 			me.catalog.fetchingData();

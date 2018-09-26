@@ -173,6 +173,8 @@ ii.init.register( function() {
 		, contactName: {type: String, required: false, defaultValue: ""}
 		, email: {type: String, required: false, defaultValue: ""}	
 		, phoneNumber: {type: String, required: false, defaultValue: ""}
+		, name: {type: String, required: false, defaultValue: ""}
+		, nameSelectBy: {type: String, required: false, defaultValue: ""}
 	};
 
 	fin.pur.poRequisition.catalogArgs = {
