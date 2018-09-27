@@ -623,6 +623,7 @@ ii.Class({
 				if (me.invoices[index].invoiceByHouseCode == "" || me.invoices[index].invoiceByHouseCode.toUpperCase() == "Y")
 					$("#chkInvoiceByHouseCode" + index)[0].checked = true;
 				$("#txtServiceLocation" + index).val(me.invoices[index].serviceLocation);
+				$("#txtWorkOrderId" + index).val(me.invoices[index].workOrderId);
 				$("#tdInvoiceNumber" + index).hide();
 				//$("#chkTaxExempt" + index).change(function() { me.setTaxable(this); });
 			}
@@ -1185,6 +1186,7 @@ ii.Class({
 				xml += ' status="' + $("#txtStatus" + index).val() + '"';
 				xml += ' invoiceByHouseCode="' + $("#chkInvoiceByHouseCode" + index)[0].checked + '"';
 				xml += ' serviceLocation="' + $("#txtServiceLocation" + index).val() + '"';
+				xml += ' workOrderId="' + $("#txtWorkOrderId" + index).val() + '"';
 				xml += '/>';
 			}
 
