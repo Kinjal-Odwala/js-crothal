@@ -147,7 +147,7 @@ ii.Class({
             }, 100);
         },
 
-        resetUIElements(){
+        resetUIElements: function(){
             var me = this;
             me.setControlState("ManagerPhone", me.ManagerPhoneReadOnly, true);
             me.setControlState("ManagerFax", me.FaxReadOnly, true);
