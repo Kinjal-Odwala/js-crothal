@@ -140,7 +140,6 @@ ii.Class({
 			else if (me.ptStatisticShow)
 			    me.activeFrameId = 7;
 
-			me.resetUIElements();
 			setTimeout(function() {
 				$("#container-1").tabs(me.activeFrameId);
 				$("#container-1").triggerTab(me.activeFrameId);
@@ -148,45 +147,7 @@ ii.Class({
 			}, 100)
 		},
 
-
-        resetUIElements: function(){
-            var me = this;
-            me.setControlState("ManagerPhone", me.ManagerPhoneReadOnly, true);
-            me.setControlState("ManagerFax", me.FaxReadOnly, true);
-            me.setControlState("ManagerCellPhone", me.CellPhoneReadOnly, true);
-
-        },
-
-        setControlState: function() {
-            var args = ii.args(arguments, {
-                ctrlName: {type: String},
-                ctrlReadOnly: {type: Boolean},
-                ctrlShow: {type: Boolean, required: false, defaultValue: false},
-                ctrlType: {type: String, required: false, defaultValue: ""}, //DropList, Date, Text, Radio
-                ctrlDiv: {type: String, required: false} //parent Div name for Radio button
-            });
-            var me = this;
-
-            if (args.ctrlReadOnly && args.ctrlType != "Radio") {
-                $("#" + args.ctrlName + "Text").attr('disabled', true);
-                $("#" + args.ctrlName + "Action").removeClass("iiInputAction");
-            }
-            if (!args.ctrlShow && args.ctrlType != "Radio") {
-                $("#" + args.ctrlName).hide();
-                $("#" + args.ctrlName + "Text").hide(); //not required for DropList
-            }
-            if (args.ctrlReadOnly && args.ctrlType == "Radio") {
-                $("#" + args.ctrlName + "Yes").attr('disabled', true);
-                $("#" + args.ctrlName + "No").attr('disabled', true);
-            }
-            if (!args.ctrlShow && args.ctrlType == "Radio") {
-                $("#" + args.ctrlDiv).hide();
-            }
-
-        },
-
-
-        sessionLoaded: function() {
+		sessionLoaded: function() {
 
 			ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
 		},
@@ -2199,7 +2160,11 @@ ii.Class({
 					
 				$("#container-1").tabs(me.activeFrameId);
 				$("#container-1").triggerTab(me.activeFrameId);
-				setTimeout(function() {
+				me.managerPhone.text.disabled = true;
+                me.managerFax.text.disabled = true;
+                me.managerCellPhone.text.disabled = true;
+
+                setTimeout(function() {
 					me.resizeControls(me.activeFrameId);
 				}, 100);
 				

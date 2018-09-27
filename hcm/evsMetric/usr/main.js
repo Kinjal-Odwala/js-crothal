@@ -139,50 +139,12 @@ ii.Class({
                 me.activeFrameId = 6;
             else if (me.managementStaffShow)
                 me.activeFrameId = 7;
-            me.resetUIElements();
             setTimeout(function() {
                 $("#container-1").tabs(me.activeFrameId);
                 $("#container-1").triggerTab(me.activeFrameId);
                 me.resizeControls(me.activeFrameId);
             }, 100);
         },
-
-        resetUIElements: function(){
-            var me = this;
-            me.setControlState("ManagerPhone", me.ManagerPhoneReadOnly, true);
-            me.setControlState("ManagerFax", me.FaxReadOnly, true);
-            me.setControlState("ManagerCellPhone", me.CellPhoneReadOnly, true);
-
-        },
-
-        setControlState: function() {
-            var args = ii.args(arguments, {
-                ctrlName: {type: String},
-                ctrlReadOnly: {type: Boolean},
-                ctrlShow: {type: Boolean, required: false, defaultValue: false},
-                ctrlType: {type: String, required: false, defaultValue: ""}, //DropList, Date, Text, Radio
-                ctrlDiv: {type: String, required: false} //parent Div name for Radio button
-            });
-            var me = this;
-
-            if (args.ctrlReadOnly && args.ctrlType != "Radio") {
-                $("#" + args.ctrlName + "Text").attr('disabled', true);
-                $("#" + args.ctrlName + "Action").removeClass("iiInputAction");
-            }
-            if (!args.ctrlShow && args.ctrlType != "Radio") {
-                $("#" + args.ctrlName).hide();
-                $("#" + args.ctrlName + "Text").hide(); //not required for DropList
-            }
-            if (args.ctrlReadOnly && args.ctrlType == "Radio") {
-                $("#" + args.ctrlName + "Yes").attr('disabled', true);
-                $("#" + args.ctrlName + "No").attr('disabled', true);
-            }
-            if (!args.ctrlShow && args.ctrlType == "Radio") {
-                $("#" + args.ctrlDiv).hide();
-            }
-
-        },
-
 
         sessionLoaded: function() {
 
@@ -2093,6 +2055,11 @@ ii.Class({
             $("#divLaborControlGrid").bind("scroll", me.laborControlGridScroll);
             $("#divCommentsGrid").bind("scroll", me.commentsGridScroll);
             $("#QualityAssuranceContainer").bind("scroll", me.qualityAssuranceGridScroll);
+
+            me.managerPhone.text.disabled = true;
+            me.managerFax.text.disabled = true;
+            me.managerCellPhone.text.disabled = true;
+
         },
 
         setStatus: function(status) {
