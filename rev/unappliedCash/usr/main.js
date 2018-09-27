@@ -16,256 +16,250 @@ ii.Style( "fin.cmn.usr.button", 6 );
 
 ii.Class({
     Name: "fin.rev.UserInterface",
-	Extends: "ui.lay.HouseCodeSearch",
+    Extends: "ui.lay.HouseCodeSearch",
     Definition: {
 
-		init: function() {
-			var args = ii.args(arguments, {});
-			var me = this;
+        init: function() {
+            var me = this;
 
-			me.loadCount = 0;
+            me.loadCount = 0;
 
-			me.gateway = ii.ajax.addGateway("rev", ii.config.xmlProvider);
-			me.cache = new ii.ajax.Cache(me.gateway);
-			me.validator = new ui.ctl.Input.Validation.Master();
-			me.session = new ii.Session(me.cache);
+            me.gateway = ii.ajax.addGateway("rev", ii.config.xmlProvider);
+            me.cache = new ii.ajax.Cache(me.gateway);
+            me.validator = new ui.ctl.Input.Validation.Master();
+            me.session = new ii.Session(me.cache);
 
-			me.authorizer = new ii.ajax.Authorizer( me.gateway );
-			me.authorizePath = "\\crothall\\chimes\\fin\\AccountsReceivable\\UnappliedCash";
-			me.authorizer.authorize([me.authorizePath],
-				function authorizationsLoaded() {
-					me.authorizationProcess.apply(me);
-				},
-				me);
+            me.authorizer = new ii.ajax.Authorizer( me.gateway );
+            me.authorizePath = "\\crothall\\chimes\\fin\\AccountsReceivable\\UnappliedCash";
+            me.authorizer.authorize([me.authorizePath],
+                function authorizationsLoaded() {
+                    me.authorizationProcess.apply(me);
+                },
+                me);
 
-			me.defineFormControls();
-			me.configureCommunications();
-			me.setStatus("Loading");
-			
-			$(window).bind("resize", me, me.resize);
-			
-			me.houseCodeSearch = new ui.lay.HouseCodeSearch();
-			if (!parent.fin.appUI.houseCodeId) parent.fin.appUI.houseCodeId = 0;	
-			if (parent.fin.appUI.houseCodeId == 0) //usually happens on pageLoad			
-				me.houseCodeStore.fetch("userId:[user],defaultOnly:true,", me.houseCodesLoaded, me);
-			else
-				me.houseCodesLoaded(me, 0);
+            me.defineFormControls();
+            me.configureCommunications();
+            me.setStatus("Loading");
 
-			ui.cmn.behavior.disableBackspaceNavigation();
-		},
-		
-		authorizationProcess: function fin_rev_unappliedCash_UserInterface_authorizationProcess() {
-			var args = ii.args(arguments,{});
-			var me = this;
+            $(window).bind("resize", me, me.resize);
 
-			me.isAuthorized = me.authorizer.isAuthorized(me.authorizePath);
+            me.houseCodeSearch = new ui.lay.HouseCodeSearch();
+            if (!parent.fin.appUI.houseCodeId)
+                parent.fin.appUI.houseCodeId = 0;
+            if (parent.fin.appUI.houseCodeId === 0)
+                me.houseCodeStore.fetch("userId:[user],defaultOnly:true,", me.houseCodesLoaded, me);
+            else
+                me.houseCodesLoaded(me, 0);
 
-			if (me.isAuthorized) {
-				$("#pageLoading").css({
-					"opacity": "0.5",
-					"background-color": "black"
-				});
-				$("#messageToUser").css({ "color": "white" });
-				$("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
-				ii.timer.timing("Page displayed");
-				me.session.registerFetchNotify(me.sessionLoaded, me);
-			}
-			else
-				window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
-		},	
+            ui.cmn.behavior.disableBackspaceNavigation();
+        },
 
-		sessionLoaded: function fin_rev_unappliedCash_UserInterface_sessionLoaded() {
-			var args = ii.args(arguments, {
-				me: {type: Object}
-			});
+        authorizationProcess: function() {
+            var me = this;
 
-			ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
-		},
+            me.isAuthorized = me.authorizer.isAuthorized(me.authorizePath);
 
-		resize: function() {
-			var args = ii.args(arguments,{});
+            if (me.isAuthorized) {
+                $("#pageLoading").css({
+                    "opacity": "0.5",
+                    "background-color": "black"
+                });
+                $("#messageToUser").css({ "color": "white" });
+                $("#imgLoading").attr("src", "/fin/cmn/usr/media/Common/loadingwhite.gif");
+                ii.timer.timing("Page displayed");
+                me.session.registerFetchNotify(me.sessionLoaded, me);
+            }
+            else
+                window.location = ii.contextRoot + "/app/usr/unAuthorizedUI.htm";
+        },
 
-			if (!fin.unappliedCashUi) return;
+        sessionLoaded: function() {
 
-		    fin.unappliedCashUi.unappliedCashGrid.setHeight($(window).height() - 110);
-		},
+            ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
+        },
 
-		defineFormControls: function() {			
-			var me = this;
+        resize: function() {
 
-			me.customer = new ui.ctl.Input.Text({
-				id: "Customer", 
-				required: false
-		    });
+            if (!fin.unappliedCashUi)
+                return;
 
-			me.customer.makeEnterTab()
-				.setValidationMaster(me.validator)
-				.addValidation( function( isFinal, dataMap ) {
+            fin.unappliedCashUi.unappliedCashGrid.setHeight($(window).height() - 110);
+        },
 
-					if ($("#SearchByCustomer")[0].checked && me.customer.getValue().length < 3)
-						this.setInvalid("Please enter Customer # or Title (minimum 3 characters).");
-				});
+        defineFormControls: function() {
+            var me = this;
 
-			me.anchorSearch = new ui.ctl.buttons.Sizeable({
-				id: "AnchorSearch",
-				className: "iiButton",
-				text: "<span>&nbsp;&nbsp;Search&nbsp;&nbsp;</span>",
-				clickFunction: function() { me.actionLoadUnappliedCashes(); },
-				hasHotState: true
-			});
+            me.customer = new ui.ctl.Input.Text({
+                id: "Customer",
+                required: false
+            });
 
-			me.unappliedCashGrid = new ui.ctl.Grid({
-				id: "UnappliedCashGrid",
-				appendToId: "divForm",
-				allowAdds: false
-			});
+            me.customer.makeEnterTab()
+                .setValidationMaster(me.validator)
+                .addValidation( function( isFinal, dataMap ) {
 
-			me.unappliedCashGrid.addColumn("houseCodeTitle", "houseCodeTitle", "House Code", "House Code", 200);
-			me.unappliedCashGrid.addColumn("customer", "customer", "Customer", "Customer", 200);
-			me.unappliedCashGrid.addColumn("documentNumber", "documentNumber", "Document Number", "Document Number", 140);
-			me.unappliedCashGrid.addColumn("receiptDate", "receiptDate", "Cash Receipt Date", "Cash Receipt Date", 140);
-			me.unappliedCashGrid.addColumn("grossAmount", "grossAmount", "Gross Amount", "Gross Amount", 120);
-			me.unappliedCashGrid.addColumn("openAmount", "openAmount", "Open Amount", "Open Amount", 120);
-			me.unappliedCashGrid.addColumn("receiptItems", "receiptItems", "Receipt Items", "Receipt Items", null);
-			me.unappliedCashGrid.capColumns();
+                    if ($("#SearchByCustomer")[0].checked && me.customer.getValue().length < 3)
+                        this.setInvalid("Please enter Customer # or Title (minimum 3 characters).");
+                });
 
-			$("#CustomerText").bind("keydown", me, me.actionSearchItem);
-			$("#SearchByHouseCode").click(function() {
-				me.validator.reset();
-				me.customer.setValue("");
-			});
-		},
+            me.anchorSearch = new ui.ctl.buttons.Sizeable({
+                id: "AnchorSearch",
+                className: "iiButton",
+                text: "<span>&nbsp;&nbsp;Search&nbsp;&nbsp;</span>",
+                clickFunction: function() { me.actionLoadUnappliedCashes(); },
+                hasHotState: true
+            });
+
+            me.unappliedCashGrid = new ui.ctl.Grid({
+                id: "UnappliedCashGrid",
+                appendToId: "divForm",
+                allowAdds: false
+            });
+
+            me.unappliedCashGrid.addColumn("houseCodeTitle", "houseCodeTitle", "House Code", "House Code", 200);
+            me.unappliedCashGrid.addColumn("customer", "customer", "Customer", "Customer", 200);
+            me.unappliedCashGrid.addColumn("documentNumber", "documentNumber", "Document Number", "Document Number", 140);
+            me.unappliedCashGrid.addColumn("receiptDate", "receiptDate", "Cash Receipt Date", "Cash Receipt Date", 140);
+            me.unappliedCashGrid.addColumn("grossAmount", "grossAmount", "Gross Amount", "Gross Amount", 120);
+            me.unappliedCashGrid.addColumn("openAmount", "openAmount", "Open Amount", "Open Amount", 120);
+            me.unappliedCashGrid.addColumn("receiptItems", "receiptItems", "Receipt Items", "Receipt Items", null);
+            me.unappliedCashGrid.capColumns();
+
+            $("#CustomerText").bind("keydown", me, me.actionSearchItem);
+            $("#SearchByHouseCode, #SearchByAll").click(function() {
+                me.validator.reset();
+                me.customer.setValue("");
+            });
+        },
+
+        configureCommunications: function() {
+            var me = this;
+
+            me.hirNodes = [];
+            me.hirNodeStore = me.cache.register({
+                storeId: "hirNodes",
+                itemConstructor: fin.rev.unappliedCash.HirNode,
+                itemConstructorArgs: fin.rev.unappliedCash.hirNodeArgs,
+                injectionArray: me.hirNodes
+            });
+
+            me.houseCodes = [];
+            me.houseCodeStore = me.cache.register({
+                storeId: "hcmHouseCodes",
+                itemConstructor: fin.rev.unappliedCash.HouseCode,
+                itemConstructorArgs: fin.rev.unappliedCash.houseCodeArgs,
+                injectionArray: me.houseCodes
+            });
+
+            me.unappliedCashes = [];
+            me.unappliedCashStore = me.cache.register({
+                storeId: "revUnappliedCashes",
+                itemConstructor: fin.rev.unappliedCash.UnappliedCash,
+                itemConstructorArgs: fin.rev.unappliedCash.unappliedCashArgs,
+                injectionArray: me.unappliedCashes
+            });
+        },
 
 		resizeControls: function() {
-			var me = this;
+            var me = this;
 
-			me.customer.resizeText();
-			me.resize();
-		},
+            me.customer.resizeText();
+            me.resize();
+        },
 
-		configureCommunications: function fin_rev_unappliedCash_configureCommunications() {
-			var args = ii.args(arguments, {});
-			var me = this;
+        setStatus: function(status) {
 
-			me.hirNodes = [];
-			me.hirNodeStore = me.cache.register({
-				storeId: "hirNodes",
-				itemConstructor: fin.rev.unappliedCash.HirNode,
-				itemConstructorArgs: fin.rev.unappliedCash.hirNodeArgs,
-				injectionArray: me.hirNodes
-			});
+            fin.cmn.status.setStatus(status);
+        },
 
-			me.houseCodes = [];
-			me.houseCodeStore = me.cache.register({
-				storeId: "hcmHouseCodes",
-				itemConstructor: fin.rev.unappliedCash.HouseCode,
-				itemConstructorArgs: fin.rev.unappliedCash.houseCodeArgs,
-				injectionArray: me.houseCodes
-			});
+        setLoadCount: function() {
+            var me = this;
 
-			me.unappliedCashes = [];
-			me.unappliedCashStore = me.cache.register({
-				storeId: "revUnappliedCashes",
-				itemConstructor: fin.rev.unappliedCash.UnappliedCash,
-				itemConstructorArgs: fin.rev.unappliedCash.unappliedCashArgs,
-				injectionArray: me.unappliedCashes
-			});			
-		},
+            me.loadCount++;
+            me.setStatus("Loading");
+            $("#messageToUser").text("Loading");
+            $("#pageLoading").fadeIn("slow");
+        },
 
-		setStatus: function(status) {
-			var me = this;
+        checkLoadCount: function() {
+            var me = this;
 
-			fin.cmn.status.setStatus(status);
-		},
+            me.loadCount--;
+            if (me.loadCount <= 0) {
+                me.setStatus("Loaded");
+                $("#pageLoading").fadeOut("slow");
+            }
+        },
 
-		setLoadCount: function(me, activeId) {
-			var me = this;
+        houseCodesLoaded: function(me, activeId) {
 
-			me.loadCount++;
-			me.setStatus("Loading");
-			$("#messageToUser").text("Loading");
-			$("#pageLoading").fadeIn("slow");
-		},
+            if (parent.fin.appUI.houseCodeId === 0) {
+                if (me.houseCodes.length <= 0) {
+                    return me.houseCodeSearchError();
+                }
+                me.houseCodeGlobalParametersUpdate(false, me.houseCodes[0]);
+            }
 
-		checkLoadCount: function() {
-			var me = this;
+            me.houseCodeGlobalParametersUpdate(false);
+            me.resizeControls();
+            me.actionLoadUnappliedCashes();
+        },
 
-			me.loadCount--;
-			if (me.loadCount <= 0) {
-				me.setStatus("Loaded");
-				$("#pageLoading").fadeOut("slow");
-			}
-		},
+        houseCodeChanged: function() {
+            var me = this;
 
-		houseCodesLoaded: function(me, activeId) {
+            if (parent.fin.appUI.houseCodeId <= 0)
+                return;
 
-			if (parent.fin.appUI.houseCodeId == 0) {
-				if (me.houseCodes.length <= 0) {				
-					return me.houseCodeSearchError();
-				}
-				me.houseCodeGlobalParametersUpdate(false, me.houseCodes[0]);
-			}
+            me.actionLoadUnappliedCashes();
+        },
 
-			me.houseCodeGlobalParametersUpdate(false);
-			me.resizeControls();	
-			me.actionLoadUnappliedCashes();
-		},
+        actionSearchItem: function() {
+            var args = ii.args(arguments, {
+                event: {type: Object}
+            });
+            var event = args.event;
+            var me = event.data;
 
-		houseCodeChanged: function() {
-			var args = ii.args(arguments,{});
-			var me = this;
+            if (event.keyCode === 13) {
+                me.actionLoadUnappliedCashes();
+            }
+        },
 
-			if (parent.fin.appUI.houseCodeId <= 0) return;
+        actionLoadUnappliedCashes: function() {
+            var me = this;
 
-			me.actionLoadUnappliedCashes();
-		},
+            me.validator.forceBlur();
 
-		actionSearchItem: function() {
-			var args = ii.args(arguments, {
-				event: {type: Object} // The (key) event object
-			});
-			var event = args.event;
-			var me = event.data;
+            // Check to see if the data entered is valid
+            if (!me.validator.queryValidity(true)) {
+                alert("In order to search, the errors on the page must be corrected.");
+                return false;
+            }
 
-			if (event.keyCode == 13) {
-				me.actionLoadUnappliedCashes();
-			}
-		},
-		
-		actionLoadUnappliedCashes: function() {
-			var me = this;
+            if ($("#SearchByHouseCode")[0].checked && ($("#houseCodeText").val() === "" || parent.fin.appUI.houseCodeId === 0)) {
+                alert("Please enter the House Code.");
+                return false;
+            }
 
-			me.validator.forceBlur();
+            me.setLoadCount();
+            me.unappliedCashStore.reset();
+            me.unappliedCashStore.fetch("userId:[user]"
+                + ",houseCodeId:" + ($("#SearchByHouseCode")[0].checked ? parent.fin.appUI.houseCodeId : "0")
+                + ",customer:" + ($("#SearchByCustomer")[0].checked ? me.customer.getValue() : "")
+                , me.unappliedCashLoaded, me);
+        },
 
-			// Check to see if the data entered is valid
-		    if (!me.validator.queryValidity(true)) {
-				alert("In order to search, the errors on the page must be corrected.");
-				return false;
-			}	
+        unappliedCashLoaded: function(me, activeId) {
 
-			if ($("#SearchByHouseCode")[0].checked && $("#houseCodeText").val() == "") {
-				alert("Please enter the House Code.")
-				return false;
-			}
-
-			me.setLoadCount();
-			me.unappliedCashStore.reset();
-			me.unappliedCashStore.fetch("userId:[user]"
-				+ ",houseCodeId:" + ($("#SearchByHouseCode")[0].checked ? parent.fin.appUI.houseCodeId : "0")
-				+ ",customer:" + ($("#SearchByCustomer")[0].checked ? me.customer.getValue() : "")
-				, me.unappliedCashLoaded, me);
-		},
-
-		unappliedCashLoaded: function(me, activeId) {
-
-			me.unappliedCashGrid.setData(me.unappliedCashes);
-			me.checkLoadCount();
-  		}
-	}
+            me.unappliedCashGrid.setData(me.unappliedCashes);
+            me.checkLoadCount();
+        }
+    }
 });
 
 function main() {
-	fin.unappliedCashUi = new fin.rev.UserInterface();
-	fin.unappliedCashUi.resize();
-	fin.houseCodeSearchUi = fin.unappliedCashUi;
+    fin.unappliedCashUi = new fin.rev.UserInterface();
+    fin.unappliedCashUi.resize();
+    fin.houseCodeSearchUi = fin.unappliedCashUi;
 }

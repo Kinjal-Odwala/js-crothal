@@ -37,6 +37,7 @@ ii.init.register( function() {
 		, status: {type: String, required: false, defaultValue: ""}
 		, invoiceByHouseCode: {type: String, required: false, defaultValue: ""}
 		, serviceLocation: {type: String, required: false, defaultValue: ""}
+		, workOrderId: {type: String, required: false, defaultValue: ""}
 		, imported: {type: Boolean, required: false, defaultValue: false}
 	};
 	

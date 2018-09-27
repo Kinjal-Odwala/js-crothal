@@ -54,7 +54,7 @@
 			    	<tr>
 			        	<td>				
 							<div style="height: 33px; width: 100%; position: relative; z-index: 3; overflow: hidden">
-								<table id="tblInvoiceGridHeader" border="0" cellpadding="0" cellspacing="0" style="position: absolute; z-index: 2; width: 2070px">
+								<table id="tblInvoiceGridHeader" border="0" cellpadding="0" cellspacing="0" style="position: absolute; z-index: 2; width: 2170px">
 									<thead id="InvoiceGridHead">
 										<tr>
 											<th class="gridHeaderCell" width="30px">#</th>
@@ -77,7 +77,8 @@
 											<th class="gridHeaderCell" width="70px">Price</th>
 											<th class="gridHeaderCell" width="70px">Status</th>
 											<th class="gridHeaderCell" width="70px">Invoice by House Code</th>
-											<th class="gridHeaderCellRight" width="80px">Service Location</th>
+											<th class="gridHeaderCell" width="80px">Service Location</th>
+											<th class="gridHeaderCellRight" width="100px">Work Order Id</th>
 										</tr>
 									</thead>
 								</table>
@@ -87,7 +88,7 @@
 					<tr>
 		                <td>
 		                    <div id="divInvoiceGrid" style="position: relative; overflow: auto;">                              
-		                        <table id="InvoiceGrid" border="0" cellpadding="0" cellspacing="0" style="position: absolute; z-index: 1; width: 2070px">
+		                        <table id="InvoiceGrid" border="0" cellpadding="0" cellspacing="0" style="position: absolute; z-index: 1; width: 2170px">
 		                            <tbody id="InvoiceGridBody"></tbody>
 		                        </table>
 		                    </div>
@@ -132,7 +133,8 @@
 					  	<td class="gridCell" style="width: 70px" align="center"><input type="text" maxlength="20" id="txtPriceRowCount" style="width: 66px; text-align: right;" /></td>
                     	<td class="gridCell" style="width: 70px" align="center"><input type="text" maxlength="7" id="txtStatusRowCount" style="width: 66px;" /></td>
 						<td class="gridCell" style="width: 70px" align="center"><input type="checkbox" id="chkInvoiceByHouseCodeRowCount" style="width: 66px;" /></td>
-						<td class="gridCellRight" style="width: 80px" align="center"><input type="text" maxlength="8" id="txtServiceLocationRowCount" style="width: 76px;" /></td>
+						<td class="gridCell" style="width: 80px" align="center"><input type="text" maxlength="8" id="txtServiceLocationRowCount" style="width: 76px;" /></td>
+						<td class="gridCellRight" style="width: 100px" align="center"><input type="text" maxlength="50" id="txtWorkOrderIdRowCount" style="width: 96px;" /></td>
 					</tr>
                 </tbody>
             </table>
