@@ -106,9 +106,7 @@ ii.Class({
 			me.adminObjectivesShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\AdminObjectives");
 			me.ptStatisticShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\PTStatistcs");
 
-            me.ManagerPhoneReadOnly = true;
-            me.FaxReadOnly = true;
-            me.CellPhoneReadOnly = true;
+
 						
 			if (me.hospitalContractShow)
 				$("#TabHospitalContract").show();
@@ -2160,16 +2158,17 @@ ii.Class({
 					
 				$("#container-1").tabs(me.activeFrameId);
 				$("#container-1").triggerTab(me.activeFrameId);
-				me.managerPhone.text.disabled = true;
-                me.managerFax.text.disabled = true;
-                me.managerCellPhone.text.disabled = true;
 
-                setTimeout(function() {
+				setTimeout(function() {
 					me.resizeControls(me.activeFrameId);
 				}, 100);
 				
 				$("#HouseCode").show();
 			});
+
+            me.managerPhone.text.disabled = true;
+            me.managerFax.text.disabled = true;
+            me.managerCellPhone.text.disabled = true;
 
 			$("#QualityAssuranceContainer").bind("scroll", me.qualityAssuranceGridScroll);
 			$("#divPFCGrid").bind("scroll", me.pfcGridScroll);
