@@ -460,10 +460,10 @@ ii.Class({
                 formatFunction: function(type) { return type.title; },
                 changeFunction: function() {
                     me.modified();
-                    if (me.thirdPartySatisfaction.indexSelected === -1)
-                        $("#spnThirdPartySatisfaction").html("");
+                    if (me.thirdPartySatisfaction.indexSelected > 0)
+						$("#spnThirdPartySatisfaction").html(" - " + me.thirdPartySatisfaction.lastBlurValue);
                     else
-                        $("#spnThirdPartySatisfaction").html(me.thirdPartySatisfaction.lastBlurValue);
+                        $("#spnThirdPartySatisfaction").html("");
                 }
             });
 
@@ -2403,6 +2403,7 @@ ii.Class({
                     me.cartManufacturerTypes.push(new fin.hcm.evsMetric.Type(me.metricTypes[index].id, me.metricTypes[index].title));
             }
 
+			me.thirdPartySatisfactionTypes.unshift(new fin.hcm.evsMetric.Type(0, "None"));
             me.thirdPartySatisfaction.setData(me.thirdPartySatisfactionTypes);
             me.uvManufacturer.setData(me.uvManufacturerTypes);
             me.wanda.setData(me.wandaTypes);
@@ -2467,7 +2468,10 @@ ii.Class({
                 itemIndex = ii.ajax.util.findIndexById(me.metrics[0].thirdPartySatisfaction.toString(), me.thirdPartySatisfaction.data);
                 if (itemIndex !== null && itemIndex >= 0)
                     me.thirdPartySatisfaction.select(itemIndex, me.thirdPartySatisfaction.focused);
-                $("#spnThirdPartySatisfaction").html(me.thirdPartySatisfaction.lastBlurValue);
+				if (me.thirdPartySatisfaction.indexSelected > 0)
+					$("#spnThirdPartySatisfaction").html(" - " + me.thirdPartySatisfaction.lastBlurValue);
+                else
+                    $("#spnThirdPartySatisfaction").html("");
                 me.employeeProductiveHoursPerWeekStandard.setValue(me.metrics[0].employeeProductiveHoursPerWeekStandard);
                 itemIndex = ii.ajax.util.findIndexById(me.metrics[0].taskManagementSystem.toString(), me.taskManagementSystem.data);
                 if (itemIndex !== null && itemIndex >= 0)
@@ -3324,7 +3328,7 @@ ii.Class({
                 , me.budgetedProductivity.getValue()
                 , me.contractedProductivity.getValue()
                 , (me.supportedByNPC.indexSelected >= 0 ? me.supportedByNPC.data[me.supportedByNPC.indexSelected].id : -1)
-                , (me.thirdPartySatisfaction.indexSelected >= 0 ? me.thirdPartySatisfaction.data[me.thirdPartySatisfaction.indexSelected].id : 0)
+                , (me.thirdPartySatisfaction.indexSelected >= 0 ? me.thirdPartySatisfaction.data[me.thirdPartySatisfaction.indexSelected].id : -1)
                 , me.employeeProductiveHoursPerWeekStandard.getValue()
                 , (me.taskManagementSystem.indexSelected >= 0 ? me.taskManagementSystems[me.taskManagementSystem.indexSelected].id : 0)
                 , me.taskManagementSystemOther.getValue()
