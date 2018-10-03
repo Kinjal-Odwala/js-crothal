@@ -78,7 +78,8 @@
 		                            <thead>
 		                                <tr class="heading" role="row">
 		                                    <th style="text-align:center;width:5%">#</th>
-											<th style="text-align:center;width:5%">&nbsp;</th>
+											<th style="text-align:center;width:4%">&nbsp;</th>
+											<th style="text-align:center;width:4%">&nbsp;</th>
 											<th width="22%" style="text-align:center">
 							                    <a href="#" ng-click="orderByField='firstName'; reverseSort = !reverseSort">First Name
 							                    	<span ng-show="orderByField == 'firstName' && !reverseSort">&#9660;</span>
@@ -91,7 +92,7 @@
 							                    	<span ng-show="orderByField == 'lastName' && reverseSort">&#9650;</span>
 							                    </a>
 							                </th>
-											<th width="45%" style="text-align:center">
+											<th width="42%" style="text-align:center">
 							                    <a href="#" ng-click="orderByField='jobTitle'; reverseSort = !reverseSort">Job Title
 							                    	<span ng-show="orderByField == 'jobTitle' && !reverseSort">&#9660;</span>
 							                    	<span ng-show="orderByField == 'jobTitle' && reverseSort">&#9650;</span>
@@ -103,10 +104,11 @@
 		                            <tbody style="width: 100%;" ng-style="{'height': employeeGridHeight + 'px'}">
 										<tr ng-repeat="item in employees | filter: searchEmployee | orderBy:orderByField:reverseSort" title={{showTitle(item)}} ng-click="onEmployeeSelected(item)" ng-class="{'warning':selectedEmployee == item};">
 		                                    <td style="width:4.8%;text-align:center;line-height:normal">{{$index + 1}}</td>
-											<td style="width:4.8%;text-align:center;line-height:normal"><center><img ng-show="{{item.status === 'Active'}}" src='/fin/cmn/usr/media/Common/green.png'><img ng-show="{{item.status !== 'Active'}}" src='/fin/cmn/usr/media/Common/yellow.png'></center></td>
-		                                    <td style="width:21.9%;text-align:left;line-height:normal">{{item.firstName}}</td>
+											<td style="width:3.8%;text-align:center;line-height:normal"><center><img ng-show="{{item.status === 'Active'}}" src='/fin/cmn/usr/media/Common/green.png'><img ng-show="{{item.status !== 'Active'}}" src='/fin/cmn/usr/media/Common/yellow.png'></center></td>
+		                                    <td style="width:3.8%;text-align:center;line-height:normal"><center><input type="checkbox" ng-model="item.assigned"/></center></td>
+										    <td style="width:21.9%;text-align:left;line-height:normal">{{item.firstName}}</td>
 		                                    <td style="width:21.8%;text-align:left;line-height:normal">{{item.lastName}}</td>
-		                                    <td style="width:45%;text-align:left;line-height:normal">{{item.jobTitle}}</td>
+		                                    <td style="width:42%;text-align:left;line-height:normal">{{item.jobTitle}}</td>
 		                                 </tr>
 		                            </tbody>
 		                        </table>

@@ -374,7 +374,18 @@ pto.controller('employeePTOCtrl', ['$scope', 'EmpActions', '$filter', '$sce', '$
 		if (reportURL === "")
 			return;
 
-		parametersList = "EmpEmployeeGeneral=" + $scope.selectedEmployee.id + "~EmpPTOYear=" + $scope.ptoYearId + "~EmpPTOType=" + $scope.selectedPTOType.ptoType;
+		for(var index = 0; index < $scope.employees.length; index++) {
+			if ($scope.employees[index].assigned !== undefined && $scope.employees[index].assigned) {
+				parametersList += "EmpEmployeeGeneral=" + $scope.employees[index].id + "~";
+			}
+		}
+
+		if (parametersList === "") {
+			alert("Plesae select atleast one employee.");
+			return;
+		}
+
+		parametersList += "EmpPTOYear=" + $scope.ptoYearId + "~EmpPTOType=" + $scope.selectedPTOType.ptoType;
 		$scope.generateReport(reportURL, parametersList);
     };
 
