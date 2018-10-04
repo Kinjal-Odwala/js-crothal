@@ -974,10 +974,13 @@ ii.Class({
 			if (item.statusType === 6) {
 				me.anchorSave.display(ui.cmn.behaviorStates.disabled);
 				me.anchorUndo.display(ui.cmn.behaviorStates.disabled);
+				$("#actionMenu").hide();
 			}
 			else {
 				me.anchorSave.display(ui.cmn.behaviorStates.enabled);
 				me.anchorUndo.display(ui.cmn.behaviorStates.enabled);
+				if (!me.vendorsReadOnly)
+					$("#actionMenu").show();
 			}
 
 			me.setStatus("Loaded");
@@ -1024,7 +1027,7 @@ ii.Class({
 		        }
 		    }
 
-			if (me.vendorsReadOnly || me.vendorGrid.activeRowIndex === -1)
+			if (me.vendorsReadOnly || me.vendorGrid.activeRowIndex === -1 || me.vendors[me.vendorGrid.activeRowIndex].statusType === 6)
 				return false;
 
 			me.validator.forceBlur();
