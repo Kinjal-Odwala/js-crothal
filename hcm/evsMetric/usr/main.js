@@ -159,8 +159,36 @@ ii.Class({
             $("#EVSStatisticContainer").height($(window).height() - offset);
             $("#ManagementStaffContainer").height($(window).height() - offset);
 
+			if ($("#StrategicInitiativeGridContainer").width() < 1200) {
+                $("#StrategicInitiativeGrid").width(1200);
+               	me.strategicInitiativeGrid.setHeight($(window).height() - 168);
+            }
+            else {
+				$("#StrategicInitiativeGrid").width($("#StrategicInitiativeGridContainer").width() - 5);
+                me.strategicInitiativeGrid.setHeight($(window).height() - 150);
+            }
             if ($("#QualityAssuranceGridContainer").width() < 2600) {
                 $("#QualityAssuranceGrid").width(2600);
+            }
+			if ($("#QualityPartnershipGridContainer").width() < 1000) {
+                $("#QualityPartnershipGrid").width(1000);
+            }
+            else {
+				$("#QualityPartnershipGrid").width($("#QualityPartnershipGridContainer").width() - 5);
+            }
+			if ($("#CompetencyTrainingGridContainer").width() < 1000) {
+                $("#CompetencyTrainingGrid").width(1000);
+            }
+            else {
+				$("#CompetencyTrainingGrid").width($("#CompetencyTrainingGridContainer").width() - 5);
+            }
+			if ($("#AdminObjectiveGridContainer").width() < 1500) {
+                $("#AdminObjectiveGrid").width(1500);
+               	me.adminObjectiveGrid.setHeight($(window).height() - 168);
+            }
+            else {
+				$("#AdminObjectiveGrid").width($("#AdminObjectiveGridContainer").width() - 5);
+                me.adminObjectiveGrid.setHeight($(window).height() - 150);
             }
             if ($("#EVSStatisticGridContainer").width() < 2500) {
                 $("#EVSStatisticGrid").width(2500);
@@ -177,12 +205,10 @@ ii.Class({
                 me.managementStaffGrid.setHeight($(window).height() - 143);
             }
 
-            me.strategicInitiativeGrid.setHeight($(window).height() - 145);
             me.qualityAssuranceGrid.setHeight(150);
             me.qualityPartnershipGrid.setHeight(150);
             me.auditScoreGrid.setHeight(150);
             me.competencyTrainingGrid.setHeight(150);
-            me.adminObjectiveGrid.setHeight($(window).height() - 145);
 
             var divLaborControlGridWidth = $(window).width() - 248;
             var divLaborControlGridHeight = 330;
@@ -2218,19 +2244,45 @@ ii.Class({
                 me.clientAssistantPhone.resizeText();
             }
             else if (selectedTab === 3) {
-                me.strategicInitiativeGrid.setHeight($(window).height() - 145);
+                if ($("#StrategicInitiativeGridContainer").width() < 1200) {
+	                $("#StrategicInitiativeGrid").width(1200);
+	               	me.strategicInitiativeGrid.setHeight($(window).height() - 168);
+	            }
+	            else {
+					$("#StrategicInitiativeGrid").width($("#StrategicInitiativeGridContainer").width() - 5);
+	                me.strategicInitiativeGrid.setHeight($(window).height() - 150);
+	            }
             }
             else if (selectedTab === 4) {
                 if ($("#QualityAssuranceGridContainer").width() < 2600) {
                     $("#QualityAssuranceGrid").width(2600);
                 }
+				if ($("#QualityPartnershipGridContainer").width() < 1000) {
+	                $("#QualityPartnershipGrid").width(1000);
+	            }
+	            else {
+					$("#QualityPartnershipGrid").width($("#QualityPartnershipGridContainer").width() - 5);
+	            }
+				if ($("#CompetencyTrainingGridContainer").width() < 1000) {
+	                $("#CompetencyTrainingGrid").width(1000);
+	            }
+	            else {
+					$("#CompetencyTrainingGrid").width($("#CompetencyTrainingGridContainer").width() - 5);
+	            }
                 me.qualityAssuranceGrid.setHeight(150);
                 me.qualityPartnershipGrid.setHeight(150);
                 me.auditScoreGrid.setHeight(150);
                 me.competencyTrainingGrid.setHeight(150);
             }
             else if (selectedTab === 5) {
-                me.adminObjectiveGrid.setHeight($(window).height() - 145);
+				if ($("#AdminObjectiveGridContainer").width() < 1500) {
+	                $("#AdminObjectiveGrid").width(1500);
+					me.adminObjectiveGrid.setHeight($(window).height() - 168);
+	            }
+	            else {
+					$("#AdminObjectiveGrid").width($("#AdminObjectiveGridContainer").width() - 5);
+	                me.adminObjectiveGrid.setHeight($(window).height() - 150);
+	            }
             }
             else if (selectedTab === 6) {
                 if ($("#EVSStatisticGridContainer").width() < 2500) {

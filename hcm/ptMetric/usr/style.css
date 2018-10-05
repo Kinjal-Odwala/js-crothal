@@ -98,11 +98,12 @@
 	color: black;
 }
 
-#GridLaborControl, #StrategicInitiativeGrid, #GridQualityControl, #GridQualityAssurance, #AdminObjectiveGrid, #GridAdministrative, #GridPTStatistic {
+#GridLaborControl, #GridStrategicInitiative, #GridQualityControl, #GridQualityAssurance, #GridAdminObjective, #GridPTStatistic {
 	margin: 10px;
 }
 
-#LaborControlGridContainer, #QualityControlGridContainer, #PTPressGaneyGridContainer, #EVSHCAHPSGridContainer, #InHouseStandardMetricGridContainer, #ThirdPartyStandardMetricGridContainer, #PTStatisticGridContainer,#HospitalContractContainer {
+#LaborControlGridContainer, #StrategicInitiativeGridContainer, #QualityControlGridContainer, #PTPressGaneyGridContainer
+, #EVSHCAHPSGridContainer, #QualityPartnershipGridContainer, #AdminObjectiveGridContainer, #PTStatisticGridContainer {
 	float: left;
 	width: 100%;
 	position: relative;
@@ -110,10 +111,8 @@
 	overflow-y: hidden;
 }
 
-#LaborControlContainer, #QualityAssuranceContainer{
+#HospitalContractContainer, #LaborControlContainer, #QualityAssuranceContainer {
 	position: relative;
 	overflow-x: hidden;
 	overflow-y: auto;
 }
-
-

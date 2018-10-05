@@ -151,7 +151,7 @@ ii.Class({
 			var me = fin.hcmPTMetricUi;
 			var offset = 100;
 
-		    $("#HospitalContractContainer").height($(window).height() - 10);
+		    $("#HospitalContractContainer").height($(window).height() - offset);
 		    $("#LaborControlContainer").height($(window).height() - offset);
 		    $("#StrategicInitiativeContainer").height($(window).height() - offset);
 		    $("#QualityControlContainer").height($(window).height() - offset);
@@ -159,6 +159,14 @@ ii.Class({
 			$("#AdminObjectiveContainer").height($(window).height() - offset);
 			$("#PTStatisticContainer").height($(window).height() - offset);
 
+			if ($("#StrategicInitiativeGridContainer").width() < 1200) {
+                $("#StrategicInitiativeGrid").width(1200);
+               	me.strategicInitiativeGrid.setHeight($(window).height() - 168);
+            }
+            else {
+				$("#StrategicInitiativeGrid").width($("#StrategicInitiativeGridContainer").width() - 5);
+                me.strategicInitiativeGrid.setHeight($(window).height() - 150);
+            }
 			if ($("#QualityControlGridContainer").width() < 2600) {
 				$("#QualityControlGrid").width(2600);
 				me.qualityControlGrid.setHeight($(window).height() - 168);
@@ -172,6 +180,20 @@ ii.Class({
 			if ($("#EVSHCAHPSGridContainer").width() < 2600) {
 				$("#EVSHCAHPSGrid").width(2600);
 			}
+			if ($("#QualityPartnershipGridContainer").width() < 1000) {
+                $("#QualityPartnershipGrid").width(1000);
+            }
+            else {
+				$("#QualityPartnershipGrid").width($("#QualityPartnershipGridContainer").width() - 5);
+            }
+			if ($("#AdminObjectiveGridContainer").width() < 1500) {
+                $("#AdminObjectiveGrid").width(1500);
+               	me.adminObjectiveGrid.setHeight($(window).height() - 168);
+            }
+            else {
+				$("#AdminObjectiveGrid").width($("#AdminObjectiveGridContainer").width() - 5);
+                me.adminObjectiveGrid.setHeight($(window).height() - 150);
+            }
 			if ($("#PTStatisticGridContainer").width() < 2500) {
 			    $("#PTStatisticGrid").width(2500);
 			    me.ptStatisticGrid.setHeight($(window).height() - 168);
@@ -180,12 +202,10 @@ ii.Class({
 			    me.ptStatisticGrid.setHeight($(window).height() - 143);
 			}
 
-			me.strategicInitiativeGrid.setHeight($(window).height() - 145);
 			me.ptPressGaneyGrid.setHeight(150);
 			me.evsHCAHPSGrid.setHeight(150);
 			me.qualityPartnershipGrid.setHeight(150);
 			me.auditScoreGrid.setHeight(150);
-			me.adminObjectiveGrid.setHeight($(window).height() - 145);
 
 		    var divPFCGridWidth = $(window).width() - 258;
 			var divPFCGridHeight = 190;
@@ -2149,7 +2169,14 @@ ii.Class({
                 me.clientAssistantPhone.resizeText();
 			}
 			else if (selectedTab == 3) {
-				me.strategicInitiativeGrid.setHeight($(window).height() - 145);
+				if ($("#StrategicInitiativeGridContainer").width() < 1200) {
+	                $("#StrategicInitiativeGrid").width(1200);
+	               	me.strategicInitiativeGrid.setHeight($(window).height() - 168);
+	            }
+	            else {
+					$("#StrategicInitiativeGrid").width($("#StrategicInitiativeGridContainer").width() - 5);
+	                me.strategicInitiativeGrid.setHeight($(window).height() - 150);
+	            }
 			}
 			else if (selectedTab == 4) {
 				if ($("#QualityControlGridContainer").width() < 2600) {
@@ -2167,13 +2194,26 @@ ii.Class({
 				if ($("#EVSHCAHPSGridContainer").width() < 2600) {
 					$("#EVSHCAHPSGrid").width(2600);
 				}
+				if ($("#QualityPartnershipGridContainer").width() < 1000) {
+	                $("#QualityPartnershipGrid").width(1000);
+	            }
+	            else {
+					$("#QualityPartnershipGrid").width($("#QualityPartnershipGridContainer").width() - 5);
+	            }
 				me.ptPressGaneyGrid.setHeight(150);
 				me.evsHCAHPSGrid.setHeight(150);
 				me.qualityPartnershipGrid.setHeight(150);
 				me.auditScoreGrid.setHeight(150);
 			}
 			else if (selectedTab == 6) {
-				me.adminObjectiveGrid.setHeight($(window).height() - 145);
+				if ($("#AdminObjectiveGridContainer").width() < 1500) {
+	                $("#AdminObjectiveGrid").width(1500);
+	               	me.adminObjectiveGrid.setHeight($(window).height() - 168);
+	            }
+	            else {
+					$("#AdminObjectiveGrid").width($("#AdminObjectiveGridContainer").width() - 5);
+	                me.adminObjectiveGrid.setHeight($(window).height() - 150);
+	            }
 			}
 			else if (selectedTab == 7) {
 			    if ($("#PTStatisticGridContainer").width() < 2500) {

@@ -112,11 +112,12 @@
 	color: black;
 }
 
-#GridLaborControl, #StrategicInitiativeGrid, #GridQualityAssurance, #AdminObjectiveGrid, #GridEVSStatistic, #GridManagementStaff {
+#GridLaborControl, #GridStrategicInitiative, #GridQualityAssurance, #GridAdminObjective, #GridEVSStatistic, #GridManagementStaff {
 	margin: 10px;
 }
 
-#LaborControlGridContainer, #QualityAssuranceGridContainer, #EVSStatisticGridContainer, #ManagementStaffGridContainer {
+#LaborControlGridContainer, #StrategicInitiativeGridContainer, #QualityAssuranceGridContainer, #QualityPartnershipGridContainer
+, #CompetencyTrainingGridContainer, #AdminObjectiveGridContainer, #EVSStatisticGridContainer, #ManagementStaffGridContainer {
 	float: left;
 	width: 100%;
 	position: relative;
