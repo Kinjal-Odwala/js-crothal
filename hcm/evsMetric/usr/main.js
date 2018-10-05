@@ -27,7 +27,7 @@ ii.Class({
             var me = this;
 
             me.activeFrameId = 0;
-            me.loadCount = 0;
+            me.loadCount = 1;
             me.evsMetricId = 0;
             me.reloadData = false;
 
@@ -91,7 +91,6 @@ ii.Class({
 
                 ii.timer.timing("Page displayed");
                 me.session.registerFetchNotify(me.sessionLoaded, me);
-                me.fiscalYearStore.fetch("userId:[user]", me.fiscalYearsLoaded, me);
                 me.taskManagementSystemStore.fetch("userId:[user]", me.taskManagementSystemsLoaded, me);
                 me.administratorObjectiveStore.fetch("userId:[user]", me.administratorObjectivesLoaded, me);
                 me.metricTypeStore.fetch("userId:[user]", me.metricTypesLoaded, me);
@@ -106,9 +105,6 @@ ii.Class({
             me.adminObjectivesShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\AdminObjectives");
             me.evsStatisticShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\EVSStatistcs");
             me.managementStaffShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\ManagementStaff");
-            me.ManagerPhoneReadOnly = true;
-            me.FaxReadOnly = true;
-            me.CellPhoneReadOnly = true;
 
             if (me.hospitalContractShow)
                 $("#TabHospitalContract").show();
@@ -689,7 +685,6 @@ ii.Class({
                         this.setInvalid("Please select the correct Cart Manufacturer.");
             });
 
-            /********/
             me.managerName = new ui.ctl.Input.Text({
                 id: "ManagerName",
                 maxLength: 100,
@@ -921,13 +916,6 @@ ii.Class({
                         this.setInvalid("Please enter valid phone number. Example: (999) 999-9999");
                 });
 
-
-
-
-
-
-
-            /***********/
             me.notes = $("#Notes")[0];
 
             $("#Notes").height(100);
@@ -1885,6 +1873,14 @@ ii.Class({
                 injectionArray: me.houseCodes
             });
 
+			me.houseCodeDetails = [];
+			me.houseCodeDetailStore = me.cache.register({
+				storeId: "houseCodes",
+				itemConstructor: fin.hcm.evsMetric.HouseCodeDetail,
+				itemConstructorArgs: fin.hcm.evsMetric.houseCodeDetailArgs,
+				injectionArray: me.houseCodeDetails
+			});
+
             me.fiscalYears = [];
             me.fiscalYearStore = me.cache.register({
                 storeId: "fiscalYears",
@@ -2059,7 +2055,6 @@ ii.Class({
             me.managerPhone.text.disabled = true;
             me.managerFax.text.disabled = true;
             me.managerCellPhone.text.disabled = true;
-
         },
 
         setStatus: function(status) {
@@ -2134,22 +2129,21 @@ ii.Class({
             me.microFiber.text.tabIndex = 27;
             me.mop.text.tabIndex = 28;
             me.cartManufacturer.text.tabIndex = 29;
-            me.managerName.text.tabIndex=30;
-            me.managerEmail.text.tabIndex=31;
-            me.managerPhone.text.tabIndex=32;
-            me.managerFax.text.tabIndex=33;
-            me.managerCellPhone.text.tabIndex=34;
-            me.managerPager.text.tabIndex=35;
-            me.managerAssistantName.text.tabIndex=36;
-            me.managerAssistantPhone.text.tabIndex=37;
-            me.clientFirstName.text.tabIndex=38;
-            me.clientLastName.text.tabIndex=39;
-            me.clientTitle.text.tabIndex=40;
-            me.clientPhone.text.tabIndex=41;
-            me.clientFax.text.tabIndex=42;
-            me.clientAssistantName.text.tabIndex=43;
-            me.clientAssistantPhone.text.tabIndex=44;
-
+            me.managerName.text.tabIndex = 30;
+            me.managerEmail.text.tabIndex = 31;
+            me.managerPhone.text.tabIndex = 32;
+            me.managerFax.text.tabIndex = 33;
+            me.managerCellPhone.text.tabIndex = 34;
+            me.managerPager.text.tabIndex = 35;
+            me.managerAssistantName.text.tabIndex = 36;
+            me.managerAssistantPhone.text.tabIndex = 37;
+            me.clientFirstName.text.tabIndex = 38;
+            me.clientLastName.text.tabIndex = 39;
+            me.clientTitle.text.tabIndex = 40;
+            me.clientPhone.text.tabIndex = 41;
+            me.clientFax.text.tabIndex = 42;
+            me.clientAssistantName.text.tabIndex = 43;
+            me.clientAssistantPhone.text.tabIndex = 44;
             me.notes.tabIndex = 45;
         },
 
@@ -2208,18 +2202,18 @@ ii.Class({
                 me.mop.resizeText();
                 me.cartManufacturer.resizeText();
                 me.managerName.resizeText();
+				me.managerEmail.resizeText();
                 me.managerPhone.resizeText();
                 me.managerFax.resizeText();
                 me.managerCellPhone.resizeText();
-                me.managerEmail.resizeText();
                 me.managerPager.resizeText();
                 me.managerAssistantName.resizeText();
                 me.managerAssistantPhone.resizeText();
                 me.clientFirstName.resizeText();
                 me.clientLastName.resizeText();
+				me.clientTitle.resizeText();
                 me.clientPhone.resizeText();
                 me.clientFax.resizeText();
-                me.clientTitle.resizeText();
                 me.clientAssistantName.resizeText();
                 me.clientAssistantPhone.resizeText();
             }
@@ -2292,23 +2286,21 @@ ii.Class({
             me.mop.reset();
             me.cartManufacturer.reset();
             me.managerName.setValue("");
+			me.managerEmail.setValue("");
             me.managerPhone.setValue("");
             me.managerFax.setValue("");
             me.managerCellPhone.setValue("");
-            me.managerEmail.setValue("");
             me.managerPager.setValue("");
             me.managerAssistantName.setValue("");
             me.managerAssistantPhone.setValue("");
             me.clientFirstName.setValue("");
             me.clientLastName.setValue("");
+			me.clientTitle.setValue("");
             me.clientPhone.setValue("");
             me.clientFax.setValue("");
-            me.clientTitle.setValue("");
             me.clientAssistantName.setValue("");
             me.clientAssistantPhone.setValue("");
             me.notes.value = "";
-            //TODO: set value for new fields
-
             $("#TMSOtherContainer").hide();
 
             if (me.strategicInitiativeGrid.activeRowIndex !== - 1)
@@ -2357,7 +2349,14 @@ ii.Class({
             }
 
             me.houseCodeGlobalParametersUpdate(false);
+			me.fiscalYearStore.fetch("userId:[user]", me.fiscalYearsLoaded, me);
         },
+
+		houseCodeDetailsLoaded: function(me, activeId) {
+
+			me.yearChanged();
+			me.checkLoadCount();
+		},
 
         houseCodeChanged: function() {
             var me = this;
@@ -2365,7 +2364,8 @@ ii.Class({
             if (parent.fin.appUI.houseCodeId <= 0)
                 return;
 
-            me.yearChanged();
+			me.setLoadCount();
+			me.houseCodeDetailStore.fetch("userId:[user],unitId:" + parent.fin.appUI.unitId, me.houseCodeDetailsLoaded, me);
         },
 
         typesLoaded: function() {
@@ -2429,7 +2429,7 @@ ii.Class({
 
             me.year.setData(me.fiscalYears);
             me.year.select(0, me.year.focused);
-            me.yearChanged();
+			me.houseCodeDetailStore.fetch("userId:[user],unitId:" + parent.fin.appUI.unitId, me.houseCodeDetailsLoaded, me);
         },
 
         yearChanged: function() {
@@ -2446,6 +2446,21 @@ ii.Class({
         metricsLoaded: function(me, activeId) {
 
             me.resetControls();
+			me.managerName.setValue(me.houseCodeDetails[0].managerName);
+			me.managerEmail.setValue(me.houseCodeDetails[0].managerEmail);
+            me.managerPhone.setValue(me.houseCodeDetails[0].managerPhone);
+            me.managerFax.setValue(me.houseCodeDetails[0].managerFax);
+            me.managerCellPhone.setValue(me.houseCodeDetails[0].managerCellPhone);
+            me.managerPager.setValue(me.houseCodeDetails[0].managerPager);
+            me.managerAssistantName.setValue(me.houseCodeDetails[0].managerAssistantName);
+            me.managerAssistantPhone.setValue(me.houseCodeDetails[0].managerAssistantPhone);
+            me.clientFirstName.setValue(me.houseCodeDetails[0].clientFirstName);
+            me.clientLastName.setValue(me.houseCodeDetails[0].clientLastName);
+			me.clientTitle.setValue(me.houseCodeDetails[0].clientTitle);
+            me.clientPhone.setValue(me.houseCodeDetails[0].clientPhone);
+            me.clientFax.setValue(me.houseCodeDetails[0].clientFax);
+            me.clientAssistantName.setValue(me.houseCodeDetails[0].clientAssistantName);
+            me.clientAssistantPhone.setValue(me.houseCodeDetails[0].clientAssistantPhone);
 
             if (me.metrics.length > 0) {
                 me.evsMetricId = me.metrics[0].id;
@@ -2506,25 +2521,7 @@ ii.Class({
                 itemIndex = ii.ajax.util.findIndexById(me.metrics[0].cartManufacturer.toString(), me.cartManufacturer.data);
                 if (itemIndex !== null && itemIndex >= 0)
                     me.cartManufacturer.select(itemIndex, me.cartManufacturer.focused);
-
-                me.managerName.setValue(me.metrics[0].managerName);
-                me.managerPhone.setValue(me.metrics[0].managerPhone);
-                me.managerFax.setValue(me.metrics[0].managerFax);
-                me.managerCellPhone.setValue(me.metrics[0].managerCellPhone);
-                me.managerEmail.setValue(me.metrics[0].managerEmail);
-                me.managerPager.setValue(me.metrics[0].managerPager);
-                me.managerAssistantName.setValue(me.metrics[0].managerAssistantName);
-                me.managerAssistantPhone.setValue(me.metrics[0].managerAssistantPhone);
-                me.clientFirstName.setValue(me.metrics[0].clientFirstName);
-                me.clientLastName.setValue(me.metrics[0].clientLastName);
-                me.clientPhone.setValue(me.metrics[0].clientPhone);
-                me.clientFax.setValue(me.metrics[0].clientFax);
-                me.clientTitle.setValue(me.metrics[0].clientTitle);
-                me.clientAssistantName.setValue(me.metrics[0].clientAssistantName);
-                me.clientAssistantPhone.setValue(me.metrics[0].clientAssistantPhone);
                 me.notes.value = me.metrics[0].notes;
-
-                //TODO: set value for new fields
 
                 me.numericDetailStore.fetch("userId:[user],evsMetricId:" + me.evsMetricId, me.numericDetailsLoaded, me);
                 me.strategicInitiativeStore.fetch("userId:[user],evsMetricId:" + me.evsMetricId, me.strategicInitiativesLoaded, me);
@@ -2537,7 +2534,6 @@ ii.Class({
                 $("#spnThirdPartySatisfaction").html("");
                 me.evsMetricId = 0;
                 me.setGridData();
-                me.checkLoadCount();
             }
 
             $("#container-1").triggerTab(me.activeFrameId);
@@ -3272,9 +3268,9 @@ ii.Class({
                     || !me.serviceLinePT.valid || !me.serviceLineLaundry.valid
                     || !me.serviceLinePOM.valid || !me.serviceLineCES.valid || !me.uvManufacturer.valid || !me.hygiena.valid || !me.wanda.valid
                     || !me.union.valid || !me.microFiber.valid || !me.mop.valid || !me.cartManufacturer.valid
-                    || !me.taskManagementSystem.valid || !me.taskManagementSystemOther.valid) {
-
-                    //TODO: do we need to add the fields to validation
+                    || !me.taskManagementSystem.valid || !me.taskManagementSystemOther.valid
+					|| !me.managerEmail.valid || !me.managerPhone.valid || !me.managerFax.valid || !me.managerCellPhone.valid || !me.managerPager.valid 
+					|| !me.managerAssistantPhone.valid || !me.clientPhone.valid || !me.clientFax.valid || !me.clientAssistantPhone.valid) {
                     alert("In order to save, the errors on the page must be corrected. Please verify the data on Hospital & Contract tab.");
                     return false;
                 }
@@ -3343,23 +3339,24 @@ ii.Class({
                 , (me.microFiber.indexSelected >= 0 ? me.microFiber.data[me.microFiber.indexSelected].id : 0)
                 , (me.mop.indexSelected >= 0 ? me.mop.data[me.mop.indexSelected].id : 0)
                 , (me.cartManufacturer.indexSelected >= 0 ? me.cartManufacturer.data[me.cartManufacturer.indexSelected].id : 0)
-                ,me.managerName.getValue()
-                ,fin.cmn.text.mask.phone(me.managerPhone.getValue(),true)
-                ,fin.cmn.text.mask.phone(me.managerFax.getValue(),true)
-                ,fin.cmn.text.mask.phone(me.managerCellPhone.getValue(),true)
-                ,me.managerEmail.getValue()
-                ,fin.cmn.text.mask.phone(me.managerPager.getValue(),true)
-                ,me.managerAssistantName.getValue()
-                ,me.managerAssistantPhone.getValue()
-                ,me.clientFirstName.getValue()
-                ,me.clientLastName.getValue()
-                ,fin.cmn.text.mask.phone(me.clientPhone.getValue(),true)
-                ,fin.cmn.text.mask.phone(me.clientFax.getValue(),true)
-                ,me.clientTitle.getValue()
-                ,me.clientAssistantName.getValue()
-                ,fin.cmn.text.mask.phone(me.clientAssistantPhone.getValue(),true)
                 , me.notes.value
                 );
+
+			me.houseCodeDetails[0].managerName = me.managerName.getValue();
+			me.houseCodeDetails[0].managerEmail = me.managerEmail.getValue();
+            me.houseCodeDetails[0].managerPhone = fin.cmn.text.mask.phone(me.managerPhone.getValue(), true);
+            me.houseCodeDetails[0].managerFax = fin.cmn.text.mask.phone(me.managerFax.getValue(), true);
+            me.houseCodeDetails[0].managerCellPhone = fin.cmn.text.mask.phone(me.managerCellPhone.getValue(), true);
+            me.houseCodeDetails[0].managerPager = fin.cmn.text.mask.phone(me.managerPager.getValue(), true);
+            me.houseCodeDetails[0].managerAssistantName = me.managerAssistantName.getValue();
+            me.houseCodeDetails[0].managerAssistantPhone = me.managerAssistantPhone.getValue();
+            me.houseCodeDetails[0].clientFirstName = me.clientFirstName.getValue();
+            me.houseCodeDetails[0].clientLastName = me.clientLastName.getValue();
+			me.houseCodeDetails[0].clientTitle = me.clientTitle.getValue();
+            me.houseCodeDetails[0].clientPhone = fin.cmn.text.mask.phone(me.clientPhone.getValue(), true);
+            me.houseCodeDetails[0].clientFax = fin.cmn.text.mask.phone(me.clientFax.getValue(), true);
+            me.houseCodeDetails[0].clientAssistantName = me.clientAssistantName.getValue();
+            me.houseCodeDetails[0].clientAssistantPhone = fin.cmn.text.mask.phone(me.clientAssistantPhone.getValue(), true);
 
             var xml = me.saveXmlBuild(item);
 
@@ -3389,7 +3386,6 @@ ii.Class({
             var xml = "";
 
             if (me.hospitalContractShow || me.laborControlShow || me.strategicInitiativesShow || me.qualityAssuranceShow || me.adminObjectivesShow || me.evsStatisticShow || me.managementStaffShow) {
-               //TODO: add new fields
                 xml += '<evsMetric';
                 xml += ' id="' + item.id + '"';
                 xml += ' houseCodeId="' + item.houseCodeId + '"';
@@ -3423,21 +3419,24 @@ ii.Class({
                 xml += ' microFiber="' + item.microFiber + '"';
                 xml += ' mop="' + item.mop + '"';
                 xml += ' cartManufacturer="' + item.cartManufacturer + '"';
-                xml += ' managerName="' + ui.cmn.text.xml.encode(item.managerName) + '"';
-                xml += ' managerPhone="' + ui.cmn.text.xml.encode(item.managerPhone) + '"';
-                xml += ' managerFax="' + ui.cmn.text.xml.encode(item.managerFax) + '"';
-                xml += ' managerCellPhone="' + ui.cmn.text.xml.encode(item.managerCellPhone) + '"';
-                xml += ' managerEmail="' + ui.cmn.text.xml.encode(item.managerEmail) + '"';
-                xml += ' managerPager="' + ui.cmn.text.xml.encode(item.managerPager) + '"';
-                xml += ' managerAssistantName="' + ui.cmn.text.xml.encode(item.managerAssistantName) + '"';
-                xml += ' managerAssistantPhone="' + ui.cmn.text.xml.encode(item.managerAssistantPhone) + '"';
-                xml += ' clientFirstName="' + ui.cmn.text.xml.encode(item.clientFirstName) + '"';
-                xml += ' clientLastName="' + ui.cmn.text.xml.encode(item.clientLastName) + '"';
-                xml += ' clientPhone="' + ui.cmn.text.xml.encode(item.clientPhone) + '"';
-                xml += ' clientFax="' + ui.cmn.text.xml.encode(item.clientFax) + '"';
-                xml += ' clientTitle="' + ui.cmn.text.xml.encode(item.clientTitle) + '"';
-                xml += ' clientAssistantName="' + ui.cmn.text.xml.encode(item.clientAssistantName) + '"';
-                xml += ' clientAssistantPhone="' + ui.cmn.text.xml.encode(item.clientAssistantPhone) + '"';
+				xml += '/>';
+				xml += '<houseCodeDetail';
+				xml += ' houseCodeId="' + item.houseCodeId + '"';
+                xml += ' managerName="' + ui.cmn.text.xml.encode(me.houseCodeDetails[0].managerName) + '"';
+				xml += ' managerEmail="' + ui.cmn.text.xml.encode(me.houseCodeDetails[0].managerEmail) + '"';
+                xml += ' managerPhone="' + me.houseCodeDetails[0].managerPhone + '"';
+                xml += ' managerFax="' + me.houseCodeDetails[0].managerFax + '"';
+                xml += ' managerCellPhone="' + me.houseCodeDetails[0].managerCellPhone + '"';
+                xml += ' managerPager="' + me.houseCodeDetails[0].managerPager + '"';
+                xml += ' managerAssistantName="' + ui.cmn.text.xml.encode(me.houseCodeDetails[0].managerAssistantName) + '"';
+                xml += ' managerAssistantPhone="' + me.houseCodeDetails[0].managerAssistantPhone + '"';
+                xml += ' clientFirstName="' + ui.cmn.text.xml.encode(me.houseCodeDetails[0].clientFirstName) + '"';
+                xml += ' clientLastName="' + ui.cmn.text.xml.encode(me.houseCodeDetails[0].clientLastName) + '"';
+				xml += ' clientTitle="' + ui.cmn.text.xml.encode(me.houseCodeDetails[0].clientTitle) + '"';
+                xml += ' clientPhone="' + me.houseCodeDetails[0].clientPhone + '"';
+                xml += ' clientFax="' + me.houseCodeDetails[0].clientFax + '"';
+                xml += ' clientAssistantName="' + ui.cmn.text.xml.encode(me.houseCodeDetails[0].clientAssistantName) + '"';
+                xml += ' clientAssistantPhone="' + me.houseCodeDetails[0].clientAssistantPhone + '"';
                 xml += ' notes="' + ui.cmn.text.xml.encode(item.notes) + '"';
                 xml += '/>';
             }
