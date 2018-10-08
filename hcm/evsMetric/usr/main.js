@@ -3438,6 +3438,25 @@ ii.Class({
             var xml = "";
 
             if (me.hospitalContractShow || me.laborControlShow || me.strategicInitiativesShow || me.qualityAssuranceShow || me.adminObjectivesShow || me.evsStatisticShow || me.managementStaffShow) {
+				xml += '<houseCodeDetail';
+				xml += ' houseCodeId="' + item.houseCodeId + '"';
+                xml += ' managerName="' + ui.cmn.text.xml.encode(me.houseCodeDetails[0].managerName) + '"';
+				xml += ' managerEmail="' + ui.cmn.text.xml.encode(me.houseCodeDetails[0].managerEmail) + '"';
+                xml += ' managerPhone="' + me.houseCodeDetails[0].managerPhone + '"';
+                xml += ' managerFax="' + me.houseCodeDetails[0].managerFax + '"';
+                xml += ' managerCellPhone="' + me.houseCodeDetails[0].managerCellPhone + '"';
+                xml += ' managerPager="' + me.houseCodeDetails[0].managerPager + '"';
+                xml += ' managerAssistantName="' + ui.cmn.text.xml.encode(me.houseCodeDetails[0].managerAssistantName) + '"';
+                xml += ' managerAssistantPhone="' + me.houseCodeDetails[0].managerAssistantPhone + '"';
+                xml += ' clientFirstName="' + ui.cmn.text.xml.encode(me.houseCodeDetails[0].clientFirstName) + '"';
+                xml += ' clientLastName="' + ui.cmn.text.xml.encode(me.houseCodeDetails[0].clientLastName) + '"';
+				xml += ' clientTitle="' + ui.cmn.text.xml.encode(me.houseCodeDetails[0].clientTitle) + '"';
+                xml += ' clientPhone="' + me.houseCodeDetails[0].clientPhone + '"';
+                xml += ' clientFax="' + me.houseCodeDetails[0].clientFax + '"';
+                xml += ' clientAssistantName="' + ui.cmn.text.xml.encode(me.houseCodeDetails[0].clientAssistantName) + '"';
+                xml += ' clientAssistantPhone="' + me.houseCodeDetails[0].clientAssistantPhone + '"';
+                xml += ' notes="' + ui.cmn.text.xml.encode(item.notes) + '"';
+                xml += '/>';
                 xml += '<evsMetric';
                 xml += ' id="' + item.id + '"';
                 xml += ' houseCodeId="' + item.houseCodeId + '"';
@@ -3472,25 +3491,6 @@ ii.Class({
                 xml += ' mop="' + item.mop + '"';
                 xml += ' cartManufacturer="' + item.cartManufacturer + '"';
 				xml += '/>';
-				xml += '<houseCodeDetail';
-				xml += ' houseCodeId="' + item.houseCodeId + '"';
-                xml += ' managerName="' + ui.cmn.text.xml.encode(me.houseCodeDetails[0].managerName) + '"';
-				xml += ' managerEmail="' + ui.cmn.text.xml.encode(me.houseCodeDetails[0].managerEmail) + '"';
-                xml += ' managerPhone="' + me.houseCodeDetails[0].managerPhone + '"';
-                xml += ' managerFax="' + me.houseCodeDetails[0].managerFax + '"';
-                xml += ' managerCellPhone="' + me.houseCodeDetails[0].managerCellPhone + '"';
-                xml += ' managerPager="' + me.houseCodeDetails[0].managerPager + '"';
-                xml += ' managerAssistantName="' + ui.cmn.text.xml.encode(me.houseCodeDetails[0].managerAssistantName) + '"';
-                xml += ' managerAssistantPhone="' + me.houseCodeDetails[0].managerAssistantPhone + '"';
-                xml += ' clientFirstName="' + ui.cmn.text.xml.encode(me.houseCodeDetails[0].clientFirstName) + '"';
-                xml += ' clientLastName="' + ui.cmn.text.xml.encode(me.houseCodeDetails[0].clientLastName) + '"';
-				xml += ' clientTitle="' + ui.cmn.text.xml.encode(me.houseCodeDetails[0].clientTitle) + '"';
-                xml += ' clientPhone="' + me.houseCodeDetails[0].clientPhone + '"';
-                xml += ' clientFax="' + me.houseCodeDetails[0].clientFax + '"';
-                xml += ' clientAssistantName="' + ui.cmn.text.xml.encode(me.houseCodeDetails[0].clientAssistantName) + '"';
-                xml += ' clientAssistantPhone="' + me.houseCodeDetails[0].clientAssistantPhone + '"';
-                xml += ' notes="' + ui.cmn.text.xml.encode(item.notes) + '"';
-                xml += '/>';
             }
 
             if (me.laborControlShow) {
