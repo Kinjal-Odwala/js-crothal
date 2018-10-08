@@ -4124,7 +4124,8 @@ Bud.data.AppJDEGLTransactionDetailStore = WebLight.extend(Bud.data.XmlStore, {
         { name: 'tableType', mapping: '@tableType' },
         { name: 'teamFinId', mapping: '@teamFinId' },
         { name: 'vendor', mapping: '@vendor' },
-        { name: 'vendorNumber', mapping: '@vendorNumber' }
+        { name: 'vendorNumber', mapping: '@vendorNumber' },
+		{ name: 'servicePeriod', mapping: '@servicePeriod' }
     ]
 
 });
@@ -4588,9 +4589,10 @@ Bud.page.TransactionSummaryPage = WebLight.extend(WebLight.Page, {
                         { header: 'PO Number', dataIndex: 'orderNumber', width: 150 },
                         { header: '&nbsp;<br />Vendor', dataIndex: 'vendor', width: 100 },
                         { header: '&nbsp;<br />Description', dataIndex: 'description', width: 100 },
-                        { header: '&nbsp;<br />Amount', dataIndex: 'amount' },
+                        { header: '&nbsp;<br />Amount', dataIndex: 'amount', width: 100 },
                         { header: 'Document<br />Type', dataIndex: 'documentType' },
-                        { header: 'Import<br />Date', dataIndex: 'crtdAt', renderer: Ext.util.Format.dateRenderer('m/d/y') }
+                        { header: 'Import<br />Date', dataIndex: 'crtdAt', renderer: Ext.util.Format.dateRenderer('m/d/y') },
+						{ header: 'Service Period', dataIndex: 'servicePeriod', width: 140 }
                     ]
             }),
             store: this._detailStore
@@ -4622,7 +4624,7 @@ Bud.page.TransactionSummaryPage = WebLight.extend(WebLight.Page, {
 
             this._detailWin = new Ext.Window({
                 modal: true,
-                width: 850,
+                width: 1000,
                 closeAction: 'hide',
                 items: [this._detailGrid]
             });
