@@ -1766,7 +1766,7 @@ ii.Class({
 				else if (sendMethod == "2") {
 					var vendorName = me.purchaseOrderGrid.data[rowIndex].vendorName;
 					var vendorEmail = me.purchaseOrderGrid.data[rowIndex].vendorEmail;
-					message = "The order will then be automatically e-mailed to " + vendorName + " at " + vendorEmail + ".";
+					message = "The Purchase Order for " + vendorName + " must be e-mailed to " + vendorEmail + ".";
 				}
 				
 				if (confirm("Please click 'OK' to place this order." + '\n\n' + message)) {
@@ -1940,7 +1940,7 @@ ii.Class({
 				if (sendMethodType == "1") {
 					me.printPurchaseOrder(me.purchaseOrderGrid.data[rowIndex].id);
 				}						
-
+				/*
 				xml = '<purPurchaseOrderEmailNotification';
 				xml += ' id="' + me.purchaseOrderGrid.data[rowIndex].id + '"';
 				xml += ' houseCodeName="' + ui.cmn.text.xml.encode(me.purchaseOrderGrid.data[rowIndex].houseCodeName) + '"';
@@ -1961,8 +1961,11 @@ ii.Class({
 					referenceData: {me: me, item: item}
 				});
 
-				return true;		
+				return true;
+				*/	
 			}
+
+			$("#pageLoading").fadeOut("slow");
 		},
 
 		/* @iiDoc {Method}
