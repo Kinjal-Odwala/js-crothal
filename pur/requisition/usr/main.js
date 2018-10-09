@@ -401,7 +401,7 @@ ii.Class({
 			me.requisitionGrid.addColumn("deliveryDate", "deliveryDate", "Delivery Date", "Delivery Date", 120).setSortFunction(function(me, displayProperty, a, b) {
 				return fin.cmn.sort.dateSort(me, displayProperty, a, b);
 			});
-			me.requisitionGrid.addColumn("vendorTitle", "vendorTitle", "Vendor Title", "Vendor Title", null);
+			me.requisitionGrid.addColumn("vendorTitle", "", "Vendor", "Vendor", null, function(item) { return item.vendorNumber + " - " + item.vendorTitle; });
 			me.requisitionGrid.addColumn("purchaseOrderNumber", "purchaseOrderNumber", "Purchase Order #", "Purchase Order #", 150, function (purchaseOrderNumber) {
 			    if (purchaseOrderNumber != 0)
 			        return "<div class='viewPurchaseOrder' onclick='fin.pur.poRequisitionUi.actionViewPurchaseOrder(" + purchaseOrderNumber + ");'>" + purchaseOrderNumber + "</div>";
@@ -514,7 +514,7 @@ ii.Class({
 			me.vendorName = new ui.ctl.Input.DropDown.Filtered({
 		        id: "VendorName",
 				title: "To search a specific Vendor, type-in Vendor Number or Title and press Enter key.",
-				formatFunction: function (type) { return type.vendorNumber + " - " + type.title; },
+				formatFunction: function(type) { return type.vendorNumber + " - " + (type.nameSelectBy === "PurVenTitle" ? (type.name === "" ? type.title : type.title + " - " + type.name) : type.title); },
 				changeFunction: function() { me.vendorChanged(); me.modified();}
 		    });
 			
@@ -2113,7 +2113,7 @@ ii.Class({
 			if (index >= 0) {
 				me.vendorId = me.vendors[index].id;
 				me.vendorNumber = me.vendors[index].vendorNumber;
-				me.vendor.setValue(me.vendorNumber == "" ? me.vendors[index].title : me.vendorNumber + " - " + me.vendors[index].title);
+				me.vendor.setValue(me.vendorNumber == "" ? me.vendors[index].title : me.vendorNumber + " - " + (me.vendors[index].nameSelectBy === "PurVenTitle" ? (me.vendors[index].name === "" ? me.vendors[index].title : me.vendors[index].title + " - " + me.vendors[index].name) : me.vendors[index].title));
 				me.vendorAddress1.setValue(me.vendors[index].addressLine1);
 				me.vendorAddress2.setValue(me.vendors[index].addressLine2);
 				me.vendorCity.setValue(me.vendors[index].city);
@@ -2469,6 +2469,7 @@ ii.Class({
 		
 		actionEditItem: function() {
 			var me = this;
+			var title = "";
 
 			if (me.requisitionGrid.activeRowIndex == -1)
 				return true;			
@@ -2482,8 +2483,12 @@ ii.Class({
 			loadPopup("requisitionPopup");
 			$("#popupMessageToUser").text("Loading");
 			$("#popupLoading").show();			
+			if (me.requisitionGrid.data[me.lastSelectedRowIndex].vendorTitle.lastIndexOf("-") !== -1)
+				title = me.requisitionGrid.data[me.lastSelectedRowIndex].vendorTitle.substring(0, me.requisitionGrid.data[me.lastSelectedRowIndex].vendorTitle.lastIndexOf("-") - 1);
+			else
+				title = me.requisitionGrid.data[me.lastSelectedRowIndex].vendorTitle;
 			me.vendorStore.reset();
-		    me.vendorStore.fetch("vendorTitle:" + me.requisitionGrid.data[me.lastSelectedRowIndex].vendorTitle + ",vendorNumber:" + me.requisitionGrid.data[me.lastSelectedRowIndex].vendorNumber + ",vendorStatus:1,userId:[user]", me.vendorsLoad, me);
+		    me.vendorStore.fetch("vendorTitle:" + title + ",vendorNumber:" + me.requisitionGrid.data[me.lastSelectedRowIndex].vendorNumber + ",vendorStatus:1,userId:[user]", me.vendorsLoad, me);
 			me.poRequisitionId = me.requisitionGrid.data[me.lastSelectedRowIndex].id;
 			me.itemGrid.setData(me.poRequisitionDetails);
 			me.documentGrid.setData(me.poRequisitionDocuments);
@@ -2906,13 +2911,21 @@ ii.Class({
 				me.itemGrid.body.deselectAll();
 
 				var statusType = 0;
+				var vendorName = "";
 				if (me.template.check.checked)
 					statusType = 13;
 				else if (me.status == "EditPORequisition" && me.requisitionGrid.data[index].statusType == 13)
 					statusType = 1;
 				else
 				    statusType = (me.status == "NewPORequisition" ? 1 : me.requisitionGrid.data[index].statusType);
-				
+					
+				if (me.vendorName.indexSelected === -1)
+					vendorName = me.vendorName.lastBlurValue;
+				else {
+					var selectedVendor = me.vendors[me.vendorName.indexSelected];
+					vendorName = (selectedVendor.nameSelectBy === "PurVenTitle" ? (selectedVendor.name === "" ? selectedVendor.title : selectedVendor.title + " - " + selectedVendor.name) : selectedVendor.title);
+				}
+
 				item = new fin.pur.poRequisition.PORequisition(
 					me.poRequisitionId 
 					, (me.status == "NewPORequisition" ? 0 : me.requisitionGrid.data[index].requisitionNumber)
@@ -2932,7 +2945,7 @@ ii.Class({
 					, me.requestorEmail.getValue()
 					, me.requestedDate.lastBlurValue
 					, me.deliveryDate.lastBlurValue
-                    , (me.vendorName.indexSelected == -1 ? me.vendorName.lastBlurValue : me.vendors[me.vendorName.indexSelected].title)
+                    , vendorName
 					, me.vendorNumber
 					, me.vendorAddress1.getValue()
 					, me.vendorAddress2.getValue()
@@ -3034,6 +3047,7 @@ ii.Class({
 				xml += ' requestedDate="' + item.requestedDate + '"';
 				xml += ' deliveryDate="' + item.deliveryDate + '"';
 				xml += ' vendorTitle="' + ui.cmn.text.xml.encode(item.vendorTitle) + '"';
+				xml += ' vendorName="' + ui.cmn.text.xml.encode((me.vendorName.indexSelected == -1 ? me.vendorName.lastBlurValue : me.vendors[me.vendorName.indexSelected].title)) + '"';
 				xml += ' vendorNumber="' + ui.cmn.text.xml.encode(item.vendorNumber) + '"';
 				xml += ' vendorAddressLine1="' + ui.cmn.text.xml.encode(item.vendorAddressLine1) + '"';
 				xml += ' vendorAddressLine2="' + ui.cmn.text.xml.encode(item.vendorAddressLine2) + '"';

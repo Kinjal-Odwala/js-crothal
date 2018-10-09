@@ -267,7 +267,7 @@ ii.Class({
 			me.catalogVendor = new ui.ctl.Input.DropDown.Filtered({
 				id: "CatalogVendor",
 				title: "To search a specific Vendor, type-in Vendor Number or Title and press Enter key.",
-				formatFunction: function(type) { return type.title; },
+				formatFunction: function(type) { return type.vendorNumber + " - " + (type.nameSelectBy === "PurVenTitle" ? (type.name === "" ? type.title : type.title + " - " + type.name) : type.title); },
 				changeFunction: function() { me.modified(); }				
 		    });			
 				

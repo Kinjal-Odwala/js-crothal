@@ -27,7 +27,7 @@ ii.Class({
 			var me = this;
 			
 			me.activeFrameId = 0;
-			me.loadCount = 0;
+			me.loadCount = 1;
 			me.ptMetricId = 0;
 			me.reloadData = false;
 
@@ -90,7 +90,6 @@ ii.Class({
 
 				ii.timer.timing("Page displayed");
 				me.session.registerFetchNotify(me.sessionLoaded, me);
-				me.fiscalYearStore.fetch("userId:[user]", me.fiscalYearsLoaded, me);
 				me.taskManagementSystemStore.fetch("userId:[user]", me.taskManagementSystemsLoaded, me);
 				me.administratorObjectiveStore.fetch("userId:[user]", me.administratorObjectivesLoaded, me);
 				me.metricTypeStore.fetch("userId:[user]", me.metricTypesLoaded, me);
@@ -105,7 +104,7 @@ ii.Class({
 			me.qualityAssuranceShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\QualityAssurance");
 			me.adminObjectivesShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\AdminObjectives");
 			me.ptStatisticShow = parent.fin.cmn.util.authorization.isAuthorized(me, me.authorizePath + "\\PTStatistcs");
-						
+		
 			if (me.hospitalContractShow)
 				$("#TabHospitalContract").show();
 			if (me.laborControlShow)
@@ -141,19 +140,18 @@ ii.Class({
 				$("#container-1").triggerTab(me.activeFrameId);
 				me.resizeControls(me.activeFrameId);
 			}, 100)
-		},	
-		
+		},
+
 		sessionLoaded: function() {
 
 			ii.trace("Session Loaded", ii.traceTypes.Information, "Session");
 		},
 		
 		resize: function() {
-			var args = ii.args(arguments,{});
 			var me = fin.hcmPTMetricUi;
 			var offset = 100;
 
-		    $("#HospitalContractContainer").height($(window).height() - 10);
+		    $("#HospitalContractContainer").height($(window).height() - offset);
 		    $("#LaborControlContainer").height($(window).height() - offset);
 		    $("#StrategicInitiativeContainer").height($(window).height() - offset);
 		    $("#QualityControlContainer").height($(window).height() - offset);
@@ -161,6 +159,14 @@ ii.Class({
 			$("#AdminObjectiveContainer").height($(window).height() - offset);
 			$("#PTStatisticContainer").height($(window).height() - offset);
 
+			if ($("#StrategicInitiativeGridContainer").width() < 1200) {
+                $("#StrategicInitiativeGrid").width(1200);
+               	me.strategicInitiativeGrid.setHeight($(window).height() - 168);
+            }
+            else {
+				$("#StrategicInitiativeGrid").width($("#StrategicInitiativeGridContainer").width() - 5);
+                me.strategicInitiativeGrid.setHeight($(window).height() - 150);
+            }
 			if ($("#QualityControlGridContainer").width() < 2600) {
 				$("#QualityControlGrid").width(2600);
 				me.qualityControlGrid.setHeight($(window).height() - 168);
@@ -174,6 +180,20 @@ ii.Class({
 			if ($("#EVSHCAHPSGridContainer").width() < 2600) {
 				$("#EVSHCAHPSGrid").width(2600);
 			}
+			if ($("#QualityPartnershipGridContainer").width() < 1000) {
+                $("#QualityPartnershipGrid").width(1000);
+            }
+            else {
+				$("#QualityPartnershipGrid").width($("#QualityPartnershipGridContainer").width() - 5);
+            }
+			if ($("#AdminObjectiveGridContainer").width() < 1500) {
+                $("#AdminObjectiveGrid").width(1500);
+               	me.adminObjectiveGrid.setHeight($(window).height() - 168);
+            }
+            else {
+				$("#AdminObjectiveGrid").width($("#AdminObjectiveGridContainer").width() - 5);
+                me.adminObjectiveGrid.setHeight($(window).height() - 150);
+            }
 			if ($("#PTStatisticGridContainer").width() < 2500) {
 			    $("#PTStatisticGrid").width(2500);
 			    me.ptStatisticGrid.setHeight($(window).height() - 168);
@@ -182,12 +202,10 @@ ii.Class({
 			    me.ptStatisticGrid.setHeight($(window).height() - 143);
 			}
 
-			me.strategicInitiativeGrid.setHeight($(window).height() - 145);
 			me.ptPressGaneyGrid.setHeight(150);
 			me.evsHCAHPSGrid.setHeight(150);
 			me.qualityPartnershipGrid.setHeight(150);
 			me.auditScoreGrid.setHeight(150);
-			me.adminObjectiveGrid.setHeight($(window).height() - 145);
 
 		    var divPFCGridWidth = $(window).width() - 258;
 			var divPFCGridHeight = 190;
@@ -557,13 +575,7 @@ ii.Class({
                     if (me.supportedByNPC.indexSelected === -1)
                         this.setInvalid("Please select the correct Supported by NPC.");
             });
-			
-			me.notes = $("#Notes")[0];
 
-			$("#Notes").height(100);
-			$("#Notes").change(function() { me.modified(); });
-
-			/******************/
             me.managerName = new ui.ctl.Input.Text({
                 id: "ManagerName",
                 maxLength: 100,
@@ -794,190 +806,11 @@ ii.Class({
                     if (!(ui.cmn.text.validate.phone(enteredText)))
                         this.setInvalid("Please enter valid phone number. Example: (999) 999-9999");
                 });
-            /*****************/
-			
-//			me.laborControlGrid = new ui.ctl.Grid({
-//				id: "LaborControlGrid",
-//				appendToId: "divForm",
-//				selectFunction: function( index ) { me.laborControlItemSelect(index); },
-//				deleteFunction: function() { return true; }
-//			});
-//
-//			me.metricTypeTitle = new ui.ctl.Input.Text({
-//		        id: "MetricTypeTitle",
-//				appendToId: "LaborControlGridControlHolder"
-//		    });
-//
-//			me.period1 = new ui.ctl.Input.Text({
-//				id: "Period1",
-//				appendToId: "LaborControlGridControlHolder",
-//				changeFunction: function() { me.modified(); }
-//			});
-//
-//			me.period1.makeEnterTab()
-//				.setValidationMaster( me.validator )
-//				.addValidation( function( isFinal, dataMap ) {
-//
-//					me.validateControl(me.period1, me.laborControlGrid);
-//				});
-//
-//			me.period2 = new ui.ctl.Input.Text({
-//				id: "Period2",
-//				appendToId: "LaborControlGridControlHolder",
-//				changeFunction: function() { me.modified(); }
-//			});
-//			
-//			me.period2.makeEnterTab()
-//				.setValidationMaster( me.validator )
-//				.addValidation( function( isFinal, dataMap ) {
-//
-//					me.validateControl(me.period2, me.laborControlGrid);
-//				});
-//				
-//			me.period3 = new ui.ctl.Input.Text({
-//				id: "Period3",
-//				appendToId: "LaborControlGridControlHolder",
-//				changeFunction: function() { me.modified(); }
-//			});
-//
-//			me.period3.makeEnterTab()
-//				.setValidationMaster( me.validator )
-//				.addValidation( function( isFinal, dataMap ) {
-//
-//					me.validateControl(me.period3, me.laborControlGrid);
-//				});
-//	
-//			me.period4 = new ui.ctl.Input.Text({
-//				id: "Period4",
-//				appendToId: "LaborControlGridControlHolder",
-//				changeFunction: function() { me.modified(); }
-//			});
-//
-//			me.period4.makeEnterTab()
-//				.setValidationMaster( me.validator )
-//				.addValidation( function( isFinal, dataMap ) {
-//
-//					me.validateControl(me.period4, me.laborControlGrid);
-//				});
-//				
-//			me.period5 = new ui.ctl.Input.Text({
-//				id: "Period5",
-//				appendToId: "LaborControlGridControlHolder",
-//				changeFunction: function() { me.modified(); }
-//			});
-//			
-//			me.period5.makeEnterTab()
-//				.setValidationMaster( me.validator )
-//				.addValidation( function( isFinal, dataMap ) {
-//
-//					me.validateControl(me.period5, me.laborControlGrid);
-//				});
-//				
-//			me.period6 = new ui.ctl.Input.Text({
-//				id: "Period6",
-//				appendToId: "LaborControlGridControlHolder",
-//				changeFunction: function() { me.modified(); }
-//			});
-//			
-//			me.period6.makeEnterTab()
-//				.setValidationMaster( me.validator )
-//				.addValidation( function( isFinal, dataMap ) {
-//
-//					me.validateControl(me.period6, me.laborControlGrid);
-//				});
-//
-//			me.period7 = new ui.ctl.Input.Text({
-//				id: "Period7",
-//				appendToId: "LaborControlGridControlHolder",
-//				changeFunction: function() { me.modified(); }
-//			});
-//			
-//			me.period7.makeEnterTab()
-//				.setValidationMaster( me.validator )
-//				.addValidation( function( isFinal, dataMap ) {
-//
-//					me.validateControl(me.period7, me.laborControlGrid);
-//				});
-//				
-//			me.period8 = new ui.ctl.Input.Text({
-//				id: "Period8",
-//				appendToId: "LaborControlGridControlHolder",
-//				changeFunction: function() { me.modified(); }
-//			});
-//			
-//			me.period8.makeEnterTab()
-//				.setValidationMaster( me.validator )
-//				.addValidation( function( isFinal, dataMap ) {
-//
-//					me.validateControl(me.period8, me.laborControlGrid);
-//				});
-//				
-//			me.period9 = new ui.ctl.Input.Text({
-//				id: "Period9",
-//				appendToId: "LaborControlGridControlHolder",
-//				changeFunction: function() { me.modified(); }
-//			});
-//			
-//			me.period9.makeEnterTab()
-//				.setValidationMaster( me.validator )
-//				.addValidation( function( isFinal, dataMap ) {
-//
-//					me.validateControl(me.period9, me.laborControlGrid);
-//				});
-//				
-//			me.period10 = new ui.ctl.Input.Text({
-//				id: "Period10",
-//				appendToId: "LaborControlGridControlHolder",
-//				changeFunction: function() { me.modified(); }
-//			});
-//			
-//			me.period10.makeEnterTab()
-//				.setValidationMaster( me.validator )
-//				.addValidation( function( isFinal, dataMap ) {
-//
-//					me.validateControl(me.period10, me.laborControlGrid);
-//				});
-//				
-//			me.period11 = new ui.ctl.Input.Text({
-//				id: "Period11",
-//				appendToId: "LaborControlGridControlHolder",
-//				changeFunction: function() { me.modified(); }
-//			});
-//			
-//			me.period11.makeEnterTab()
-//				.setValidationMaster( me.validator )
-//				.addValidation( function( isFinal, dataMap ) {
-//
-//					me.validateControl(me.period11, me.laborControlGrid);
-//				});
-//				
-//			me.period12 = new ui.ctl.Input.Text({
-//				id: "Period12",
-//				appendToId: "LaborControlGridControlHolder",
-//				changeFunction: function() { me.modified(); }
-//			});
-//			
-//			me.period12.makeEnterTab()
-//				.setValidationMaster( me.validator )
-//				.addValidation( function( isFinal, dataMap ) {
-//
-//					me.validateControl(me.period12, me.laborControlGrid);
-//				});
-//				
-//			me.laborControlGrid.addColumn("ptMetricTypeTitle", "ptMetricTypeTitle", "", "", null, null, me.metricTypeTitle);
-//			me.laborControlGrid.addColumn("period1", "period1", "Period 1", "Period 1", 200, null, me.period1);
-//			me.laborControlGrid.addColumn("period2", "period2", "Period 2", "Period 2", 200, null, me.period2);
-//			me.laborControlGrid.addColumn("period3", "period3", "Period 3", "Period 3", 200, null, me.period3);
-//			me.laborControlGrid.addColumn("period4", "period4", "Period 4", "Period 4", 200, null, me.period4);
-//			me.laborControlGrid.addColumn("period5", "period5", "Period 5", "Period 5", 200, null, me.period5);
-//			me.laborControlGrid.addColumn("period6", "period6", "Period 6", "Period 6", 200, null, me.period6);
-//			me.laborControlGrid.addColumn("period7", "period7", "Period 7", "Period 7", 200, null, me.period7);
-//			me.laborControlGrid.addColumn("period8", "period8", "Period 8", "Period 8", 200, null, me.period8);
-//			me.laborControlGrid.addColumn("period9", "period9", "Period 9", "Period 9", 200, null, me.period9);
-//			me.laborControlGrid.addColumn("period10", "period10", "Period 10", "Period 10", 200, null, me.period10);
-//			me.laborControlGrid.addColumn("period11", "period11", "Period 11", "Period 11", 200, null, me.period11);
-//			me.laborControlGrid.addColumn("period12", "period12", "Period 12", "Period 12", 200, null, me.period12);
-//			me.laborControlGrid.capColumns();
+
+			me.notes = $("#Notes")[0];
+
+			$("#Notes").height(100);
+			$("#Notes").change(function() { me.modified(); });
 
 			me.strategicInitiativeGrid = new ui.ctl.Grid({
 				id: "StrategicInitiativeGrid",
@@ -1994,6 +1827,14 @@ ii.Class({
 				injectionArray: me.houseCodes
 			});			
 
+			me.houseCodeDetails = [];
+			me.houseCodeDetailStore = me.cache.register({
+				storeId: "houseCodes",
+				itemConstructor: fin.hcm.ptMetric.HouseCodeDetail,
+				itemConstructorArgs: fin.hcm.ptMetric.houseCodeDetailArgs,
+				injectionArray: me.houseCodeDetails
+			});
+
 			me.fiscalYears = [];
 			me.fiscalYearStore = me.cache.register({
 				storeId: "fiscalYears",
@@ -2156,12 +1997,17 @@ ii.Class({
 					
 				$("#container-1").tabs(me.activeFrameId);
 				$("#container-1").triggerTab(me.activeFrameId);
+
 				setTimeout(function() {
 					me.resizeControls(me.activeFrameId);
 				}, 100);
 				
 				$("#HouseCode").show();
 			});
+
+            me.managerPhone.text.disabled = true;
+            me.managerFax.text.disabled = true;
+            me.managerCellPhone.text.disabled = true;
 
 			$("#QualityAssuranceContainer").bind("scroll", me.qualityAssuranceGridScroll);
 			$("#divPFCGrid").bind("scroll", me.pfcGridScroll);
@@ -2235,23 +2081,22 @@ ii.Class({
 			me.serviceLineLaundry.text.tabIndex = 20;
 			me.serviceLinePOM.text.tabIndex = 21;
 			me.serviceLineCES.text.tabIndex = 22;
-            me.managerName.text.tabIndex=21;
-            me.managerEmail.text.tabIndex=22;
-            me.managerPhone.text.tabIndex=23;
-            me.managerFax.text.tabIndex=24;
-            me.managerCellPhone.text.tabIndex=25;
-            me.managerPager.text.tabIndex=26;
-            me.managerAssistantName.text.tabIndex=27;
-            me.managerAssistantPhone.text.tabIndex=28;
-            me.clientFirstName.text.tabIndex=29;
-            me.clientLastName.text.tabIndex=30;
-            me.clientTitle.text.tabIndex=31;
-            me.clientPhone.text.tabIndex=31;
-            me.clientFax.text.tabIndex=32;
-            me.clientAssistantName.text.tabIndex=33;
-            me.clientAssistantPhone.text.tabIndex=34;
-
-            me.notes.tabIndex = 35;
+            me.managerName.text.tabIndex = 23;
+            me.managerEmail.text.tabIndex = 24;
+            me.managerPhone.text.tabIndex = 25;
+            me.managerFax.text.tabIndex = 26;
+            me.managerCellPhone.text.tabIndex = 27;
+            me.managerPager.text.tabIndex = 28;
+            me.managerAssistantName.text.tabIndex = 29;
+            me.managerAssistantPhone.text.tabIndex = 30;
+            me.clientFirstName.text.tabIndex = 31;
+            me.clientLastName.text.tabIndex = 32;
+            me.clientTitle.text.tabIndex = 33;
+            me.clientPhone.text.tabIndex = 34;
+            me.clientFax.text.tabIndex = 35;
+            me.clientAssistantName.text.tabIndex = 36;
+            me.clientAssistantPhone.text.tabIndex = 37;
+            me.notes.tabIndex = 38;
 		},
 
 		qualityAssuranceGridScroll: function() {
@@ -2307,9 +2152,31 @@ ii.Class({
 				me.taskManagementSystemOther.resizeText();
 				me.metricStandard.resizeText();
 				me.supportedByNPC.resizeText();
+				me.managerName.resizeText();
+				me.managerEmail.resizeText();
+                me.managerPhone.resizeText();
+                me.managerFax.resizeText();
+                me.managerCellPhone.resizeText();
+                me.managerPager.resizeText();
+                me.managerAssistantName.resizeText();
+                me.managerAssistantPhone.resizeText();
+                me.clientFirstName.resizeText();
+                me.clientLastName.resizeText();
+				me.clientTitle.resizeText();
+                me.clientPhone.resizeText();
+                me.clientFax.resizeText();
+                me.clientAssistantName.resizeText();
+                me.clientAssistantPhone.resizeText();
 			}
 			else if (selectedTab == 3) {
-				me.strategicInitiativeGrid.setHeight($(window).height() - 145);
+				if ($("#StrategicInitiativeGridContainer").width() < 1200) {
+	                $("#StrategicInitiativeGrid").width(1200);
+	               	me.strategicInitiativeGrid.setHeight($(window).height() - 168);
+	            }
+	            else {
+					$("#StrategicInitiativeGrid").width($("#StrategicInitiativeGridContainer").width() - 5);
+	                me.strategicInitiativeGrid.setHeight($(window).height() - 150);
+	            }
 			}
 			else if (selectedTab == 4) {
 				if ($("#QualityControlGridContainer").width() < 2600) {
@@ -2327,13 +2194,26 @@ ii.Class({
 				if ($("#EVSHCAHPSGridContainer").width() < 2600) {
 					$("#EVSHCAHPSGrid").width(2600);
 				}
+				if ($("#QualityPartnershipGridContainer").width() < 1000) {
+	                $("#QualityPartnershipGrid").width(1000);
+	            }
+	            else {
+					$("#QualityPartnershipGrid").width($("#QualityPartnershipGridContainer").width() - 5);
+	            }
 				me.ptPressGaneyGrid.setHeight(150);
 				me.evsHCAHPSGrid.setHeight(150);
 				me.qualityPartnershipGrid.setHeight(150);
 				me.auditScoreGrid.setHeight(150);
 			}
 			else if (selectedTab == 6) {
-				me.adminObjectiveGrid.setHeight($(window).height() - 145);
+				if ($("#AdminObjectiveGridContainer").width() < 1500) {
+	                $("#AdminObjectiveGrid").width(1500);
+	               	me.adminObjectiveGrid.setHeight($(window).height() - 168);
+	            }
+	            else {
+					$("#AdminObjectiveGrid").width($("#AdminObjectiveGridContainer").width() - 5);
+	                me.adminObjectiveGrid.setHeight($(window).height() - 150);
+	            }
 			}
 			else if (selectedTab == 7) {
 			    if ($("#PTStatisticGridContainer").width() < 2500) {
@@ -2372,6 +2252,21 @@ ii.Class({
 			me.taskManagementSystemOther.setValue("");
 			me.metricStandard.reset();
 			me.supportedByNPC.reset();
+			me.managerName.setValue("");
+			me.managerEmail.setValue("");
+            me.managerPhone.setValue("");
+            me.managerFax.setValue("");
+            me.managerCellPhone.setValue("");
+            me.managerPager.setValue("");
+            me.managerAssistantName.setValue("");
+            me.managerAssistantPhone.setValue("");
+            me.clientFirstName.setValue("");
+            me.clientLastName.setValue("");
+			me.clientTitle.setValue("");
+            me.clientPhone.setValue("");
+            me.clientFax.setValue("");
+            me.clientAssistantName.setValue("");
+            me.clientAssistantPhone.setValue("");
 			me.notes.value = "";
 			$("#TMSOtherContainer").hide();
 
@@ -2419,17 +2314,25 @@ ii.Class({
 				me.houseCodeGlobalParametersUpdate(false, me.houseCodes[0]);
 			}
 
-			me.houseCodeGlobalParametersUpdate(false);			
+			me.houseCodeGlobalParametersUpdate(false);
+			me.fiscalYearStore.fetch("userId:[user]", me.fiscalYearsLoaded, me);
 		},
 
-		houseCodeChanged: function() {
-			var args = ii.args(arguments,{});
-			var me = this;
-
-			if (parent.fin.appUI.houseCodeId <= 0) return;
+		houseCodeDetailsLoaded: function(me, activeId) {
 
 			me.yearChanged();
+			me.checkLoadCount();
 		},
+		
+		houseCodeChanged: function() {
+            var me = this;
+
+            if (parent.fin.appUI.houseCodeId <= 0)
+                return;
+
+			me.setLoadCount();
+			me.houseCodeDetailStore.fetch("userId:[user],unitId:" + parent.fin.appUI.unitId, me.houseCodeDetailsLoaded, me);
+        },
 
 		typesLoaded: function() {
             var me = this;
@@ -2469,7 +2372,7 @@ ii.Class({
 
 			me.year.setData(me.fiscalYears);
 			me.year.select(0, me.year.focused);
-			me.yearChanged();
+			me.houseCodeDetailStore.fetch("userId:[user],unitId:" + parent.fin.appUI.unitId, me.houseCodeDetailsLoaded, me);
 		},
 		
 		yearChanged: function() {
@@ -2486,6 +2389,21 @@ ii.Class({
 		metricsLoaded: function(me, activeId) {
 
 			me.resetControls();
+			me.managerName.setValue(me.houseCodeDetails[0].managerName);
+			me.managerEmail.setValue(me.houseCodeDetails[0].managerEmail);
+            me.managerPhone.setValue(me.houseCodeDetails[0].managerPhone);
+            me.managerFax.setValue(me.houseCodeDetails[0].managerFax);
+            me.managerCellPhone.setValue(me.houseCodeDetails[0].managerCellPhone);
+            me.managerPager.setValue(me.houseCodeDetails[0].managerPager);
+            me.managerAssistantName.setValue(me.houseCodeDetails[0].managerAssistantName);
+            me.managerAssistantPhone.setValue(me.houseCodeDetails[0].managerAssistantPhone);
+            me.clientFirstName.setValue(me.houseCodeDetails[0].clientFirstName);
+            me.clientLastName.setValue(me.houseCodeDetails[0].clientLastName);
+			me.clientTitle.setValue(me.houseCodeDetails[0].clientTitle);
+            me.clientPhone.setValue(me.houseCodeDetails[0].clientPhone);
+            me.clientFax.setValue(me.houseCodeDetails[0].clientFax);
+            me.clientAssistantName.setValue(me.houseCodeDetails[0].clientAssistantName);
+            me.clientAssistantPhone.setValue(me.houseCodeDetails[0].clientAssistantPhone);
 			
 			if (me.metrics.length > 0) {
 				me.ptMetricId = me.metrics[0].id;
@@ -2507,21 +2425,6 @@ ii.Class({
 				me.costedTripCycleTime.setValue(me.metrics[0].costedTripCycleTime);
 				me.contractedAnnualTrips.setValue(me.metrics[0].contractedAnnualTrips);
 				me.contractTripEscalator.setValue(me.metrics[0].contractTripEscalator);
-                me.managerName.setValue(me.metrics[0].managerName);
-                me.managerPhone.setValue(me.metrics[0].managerPhone);
-                me.managerFax.setValue(me.metrics[0].managerFax);
-                me.managerCellPhone.setValue(me.metrics[0].managerCellPhone);
-                me.managerEmail.setValue(me.metrics[0].managerEmail);
-                me.managerPager.setValue(me.metrics[0].managerPager);
-                me.managerAssistantName.setValue(me.metrics[0].managerAssistantName);
-                me.managerAssistantPhone.setValue(me.metrics[0].managerAssistantPhone);
-                me.clientFirstName.setValue(me.metrics[0].clientFirstName);
-                me.clientLastName.setValue(me.metrics[0].clientLastName);
-                me.clientPhone.setValue(me.metrics[0].clientPhone);
-                me.clientFax.setValue(me.metrics[0].clientFax);
-                me.clientTitle.setValue(me.metrics[0].clientTitle);
-                me.clientAssistantName.setValue(me.metrics[0].clientAssistantName);
-                me.clientAssistantPhone.setValue(me.metrics[0].clientAssistantPhone);
 				var itemIndex = ii.ajax.util.findIndexById(me.metrics[0].taskManagementSystem.toString(), me.taskManagementSystems);
 				if (itemIndex != undefined && itemIndex >= 0)
 					me.taskManagementSystem.select(itemIndex, me.taskManagementSystem.focused);
@@ -2547,7 +2450,6 @@ ii.Class({
 			else {
 				me.ptMetricId = 0;
 				me.setGridData();
-				me.checkLoadCount();
 			}
 
 			$("#container-1").triggerTab(me.activeFrameId);
@@ -3368,7 +3270,9 @@ ii.Class({
 					|| !me.operatingCapacity.valid || !me.serviceLineEVS.valid || !me.serviceLineLaundry.valid
 					|| !me.serviceLinePOM.valid || !me.serviceLineCES.valid 
 					|| !me.costedTripCycleTime.valid || !me.contractedAnnualTrips.valid || !me.contractTripEscalator.valid || !me.taskManagementSystem.valid || !me.taskManagementSystemOther.valid
-					|| !me.metricStandard.valid || !me.supportedByNPC.valid) {
+					|| !me.metricStandard.valid || !me.supportedByNPC.valid
+					|| !me.managerEmail.valid || !me.managerPhone.valid || !me.managerFax.valid || !me.managerCellPhone.valid || !me.managerPager.valid 
+					|| !me.managerAssistantPhone.valid || !me.clientPhone.valid || !me.clientFax.valid || !me.clientAssistantPhone.valid) {
 					alert("In order to save, the errors on the page must be corrected. Please verify the data on Hospital & Contract tab.");
 					return false;
 				}
@@ -3426,24 +3330,25 @@ ii.Class({
 				, me.taskManagementSystemOther.getValue()
 				, (me.metricStandard.indexSelected >= 0 ? me.metricStandards[me.metricStandard.indexSelected].id : 0)
 				, (me.supportedByNPC.indexSelected >= 0 ? me.supportedByNPCTypes[me.supportedByNPC.indexSelected].id : -1)
-                ,me.managerName.getValue()
-                ,fin.cmn.text.mask.phone(me.managerPhone.getValue(),true)
-                ,fin.cmn.text.mask.phone(me.managerFax.getValue(),true)
-                ,fin.cmn.text.mask.phone(me.managerCellPhone.getValue(),true)
-                ,me.managerEmail.getValue()
-                ,fin.cmn.text.mask.phone(me.managerPager.getValue(),true)
-                ,me.managerAssistantName.getValue()
-                ,fin.cmn.text.mask.phone(me.managerAssistantPhone.getValue(),true)
-                ,me.clientFirstName.getValue()
-                ,me.clientLastName.getValue()
-                ,fin.cmn.text.mask.phone(me.clientPhone.getValue(),true)
-                ,fin.cmn.text.mask.phone(me.clientFax.getValue(),true)
-                ,me.clientTitle.getValue()
-                ,me.clientAssistantName.getValue()
-                ,fin.cmn.text.mask.phone(me.clientAssistantPhone.getValue(),true)
 				, me.notes.value
 				);
-			
+
+			me.houseCodeDetails[0].managerName = me.managerName.getValue();
+			me.houseCodeDetails[0].managerEmail = me.managerEmail.getValue();
+            me.houseCodeDetails[0].managerPhone = fin.cmn.text.mask.phone(me.managerPhone.getValue(), true);
+            me.houseCodeDetails[0].managerFax = fin.cmn.text.mask.phone(me.managerFax.getValue(), true);
+            me.houseCodeDetails[0].managerCellPhone = fin.cmn.text.mask.phone(me.managerCellPhone.getValue(), true);
+            me.houseCodeDetails[0].managerPager = fin.cmn.text.mask.phone(me.managerPager.getValue(), true);
+            me.houseCodeDetails[0].managerAssistantName = me.managerAssistantName.getValue();
+            me.houseCodeDetails[0].managerAssistantPhone = me.managerAssistantPhone.getValue();
+            me.houseCodeDetails[0].clientFirstName = me.clientFirstName.getValue();
+            me.houseCodeDetails[0].clientLastName = me.clientLastName.getValue();
+			me.houseCodeDetails[0].clientTitle = me.clientTitle.getValue();
+            me.houseCodeDetails[0].clientPhone = fin.cmn.text.mask.phone(me.clientPhone.getValue(), true);
+            me.houseCodeDetails[0].clientFax = fin.cmn.text.mask.phone(me.clientFax.getValue(), true);
+            me.houseCodeDetails[0].clientAssistantName = me.clientAssistantName.getValue();
+            me.houseCodeDetails[0].clientAssistantPhone = fin.cmn.text.mask.phone(me.clientAssistantPhone.getValue(), true);
+
 			var xml = me.saveXmlBuild(item);
 
 			me.setStatus("Saving");
@@ -3471,6 +3376,24 @@ ii.Class({
 			var xml = "";
 
 			if (me.hospitalContractShow || me.laborControlShow || me.strategicInitiativesShow || me.qualityControlShow || me.qualityAssuranceShow || me.adminObjectivesShow || me.ptStatisticShow) {
+				xml += '<houseCodeDetail';
+				xml += ' houseCodeId="' + item.houseCodeId + '"';
+                xml += ' managerName="' + ui.cmn.text.xml.encode(me.houseCodeDetails[0].managerName) + '"';
+				xml += ' managerEmail="' + ui.cmn.text.xml.encode(me.houseCodeDetails[0].managerEmail) + '"';
+                xml += ' managerPhone="' + me.houseCodeDetails[0].managerPhone + '"';
+                xml += ' managerFax="' + me.houseCodeDetails[0].managerFax + '"';
+                xml += ' managerCellPhone="' + me.houseCodeDetails[0].managerCellPhone + '"';
+                xml += ' managerPager="' + me.houseCodeDetails[0].managerPager + '"';
+                xml += ' managerAssistantName="' + ui.cmn.text.xml.encode(me.houseCodeDetails[0].managerAssistantName) + '"';
+                xml += ' managerAssistantPhone="' + me.houseCodeDetails[0].managerAssistantPhone + '"';
+                xml += ' clientFirstName="' + ui.cmn.text.xml.encode(me.houseCodeDetails[0].clientFirstName) + '"';
+                xml += ' clientLastName="' + ui.cmn.text.xml.encode(me.houseCodeDetails[0].clientLastName) + '"';
+				xml += ' clientTitle="' + ui.cmn.text.xml.encode(me.houseCodeDetails[0].clientTitle) + '"';
+                xml += ' clientPhone="' + me.houseCodeDetails[0].clientPhone + '"';
+                xml += ' clientFax="' + me.houseCodeDetails[0].clientFax + '"';
+                xml += ' clientAssistantName="' + ui.cmn.text.xml.encode(me.houseCodeDetails[0].clientAssistantName) + '"';
+                xml += ' clientAssistantPhone="' + me.houseCodeDetails[0].clientAssistantPhone + '"';
+                xml += '/>';
 				xml += '<ptMetric';
 				xml += ' id="' + item.id + '"';
 				xml += ' houseCodeId="' + item.houseCodeId + '"';
@@ -3497,21 +3420,6 @@ ii.Class({
 				xml += ' taskManagementSystemOther="' + ui.cmn.text.xml.encode(item.taskManagementSystemOther) + '"';
 				xml += ' metricStandard="' + item.metricStandard + '"' ;
                 xml += ' supportedByNPC="' + item.supportedByNPC + '"';
-                xml += ' managerName="' + ui.cmn.text.xml.encode(item.managerName) + '"';
-                xml += ' managerPhone="' + ui.cmn.text.xml.encode(item.managerPhone) + '"';
-                xml += ' managerFax="' + ui.cmn.text.xml.encode(item.managerFax) + '"';
-                xml += ' managerCellPhone="' + ui.cmn.text.xml.encode(item.managerCellPhone) + '"';
-                xml += ' managerEmail="' + ui.cmn.text.xml.encode(item.managerEmail) + '"';
-                xml += ' managerPager="' + ui.cmn.text.xml.encode(item.managerPager) + '"';
-                xml += ' managerAssistantName="' + ui.cmn.text.xml.encode(item.managerAssistantName) + '"';
-                xml += ' managerAssistantPhone="' + ui.cmn.text.xml.encode(item.managerAssistantPhone) + '"';
-                xml += ' clientFirstName="' + ui.cmn.text.xml.encode(item.clientFirstName) + '"';
-                xml += ' clientLastName="' + ui.cmn.text.xml.encode(item.clientLastName) + '"';
-                xml += ' clientPhone="' + ui.cmn.text.xml.encode(item.clientPhone) + '"';
-                xml += ' clientFax="' + ui.cmn.text.xml.encode(item.clientFax) + '"';  //mask.phone(me.customerPhone.getValue(), true)
-                xml += ' clientTitle="' + ui.cmn.text.xml.encode(item.clientTitle) + '"';
-                xml += ' clientAssistantName="' + ui.cmn.text.xml.encode(item.clientAssistantName) + '"';
-                xml += ' clientAssistantPhone="' + ui.cmn.text.xml.encode(item.clientAssistantPhone) + '"';
 				xml += ' notes="' + ui.cmn.text.xml.encode(item.notes) + '"';
 				xml += '/>';
 			}

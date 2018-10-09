@@ -1419,7 +1419,7 @@ ii.Class({
                     me.employeeStore.fetch("userId:[user],searchValue:" + me.employeeNumberPopup.getValue()
                         + ",hcmHouseCodeId:" + ($("#houseCodeText").val() !== "" ? parent.fin.appUI.houseCodeId : 0)
                         + ",employeeType:SearchFull"
-                        + ",filterType:Employee Number"
+                        + ",filterType:Employee Number,moduleName:CheckRequest"
                         , me.employeesLoaded, me);
                 }
             }
@@ -1441,7 +1441,7 @@ ii.Class({
                     me.employeeStore.fetch("userId:[user],searchValue:" + me.employeeNamePopup.getValue()
                         + ",hcmHouseCodeId:" + ($("#houseCodeText").val() !== "" ? parent.fin.appUI.houseCodeId : 0)
                         + ",employeeType:SearchFull"
-                        + ",filterType:Name"
+                        + ",filterType:Name,moduleName:CheckRequest"
                         , me.employeesLoaded, me);
                 }
             }

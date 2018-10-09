@@ -53,6 +53,7 @@ ii.init.register( function() {
 		, period: {type: String, required: false, defaultValue: ""}
 		, week: {type: Number, required: false, defaultValue: 1}		
 		, vendorId: {type: Number, required: false, defaultValue: 0}
+		, vendorNumber: {type: String, required: false, defaultValue: ""}
 		, vendorName: {type: String, required: false, defaultValue: ""}
 		, vendorEmail: {type: String, required: false, defaultValue: ""}
 		, sendMethod: {type: String, required: false, defaultValue: ""}
@@ -79,6 +80,9 @@ ii.init.register( function() {
 	fin.pur.master.vendorArgs = {
 		id: {type: Number}
 		, title: {type: String}
+		, vendorNumber: {type: String}
+		, name: {type: String, required: false, defaultValue: ""}
+		, nameSelectBy: {type: String, required: false, defaultValue: ""}
 	};
 	
 	fin.pur.master.accountArgs = {

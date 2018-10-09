@@ -380,7 +380,7 @@ dl.editArea dd {
 }
 
 .itemStatusImage.Loading, .itemStatusImage.Saving, .itemStatusImage.Exporting, .itemStatusImage.Importing
-, .itemStatusImage.Validating, .itemStatusImage.Uploading, .itemStatusImage.Downloading, .itemStatusImage.Generating {
+, .itemStatusImage.Validating, .itemStatusImage.Uploading, .itemStatusImage.Downloading, .itemStatusImage.Generating, .itemStatusImage.Sending {
 	background-image: url(media/Common/indicator.gif);
 }
 
