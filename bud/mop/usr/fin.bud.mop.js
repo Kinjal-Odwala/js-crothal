@@ -4522,6 +4522,7 @@ var submitWorItems = function (changes, commentXml, callback) {
                              + '<td>' + row.amount + '</td>'
                              + '<td>' + row.documentType + '</td>'
                              + '<td>' + row.crtdAt + '</td>'
+							 + '<td>' + row.servicePeriod + '</td>'
                             + '</tr>';
 
                         $('#trans-items').append(html);
