@@ -114,6 +114,10 @@
 	background-color: pink;
 }
 
+.warning {
+	background-color: yellow;
+}
+
 .iiInputText.Loading {
 	background-image: url(/fin/cmn/usr/media/common/indicator.gif);
 	background-repeat: no-repeat;
