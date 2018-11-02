@@ -2455,12 +2455,17 @@ ii.Class({
                     me.cartManufacturerTypes.push(new fin.hcm.evsMetric.Type(me.metricTypes[index].id, me.metricTypes[index].title));
             }
 
-			me.thirdPartySatisfactionTypes.unshift(new fin.hcm.evsMetric.Type(0, "None"));
+            me.thirdPartySatisfactionTypes.unshift(new fin.hcm.evsMetric.Type(0, "None"));
             me.thirdPartySatisfaction.setData(me.thirdPartySatisfactionTypes);
+            me.uvManufacturerTypes.unshift(new fin.hcm.evsMetric.Type(0, "None"));
             me.uvManufacturer.setData(me.uvManufacturerTypes);
+            me.wandaTypes.unshift(new fin.hcm.evsMetric.Type(0, "None"));
             me.wanda.setData(me.wandaTypes);
+            me.microFiberTypes.unshift(new fin.hcm.evsMetric.Type(0, "None"));
             me.microFiber.setData(me.microFiberTypes);
+            me.mopTypes.unshift(new fin.hcm.evsMetric.Type(0, "None"));
             me.mop.setData(me.mopTypes);
+            me.cartManufacturerTypes.unshift(new fin.hcm.evsMetric.Type(0, "None"));
             me.cartManufacturer.setData(me.cartManufacturerTypes);
         },
 
