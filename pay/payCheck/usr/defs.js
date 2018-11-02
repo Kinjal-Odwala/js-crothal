@@ -69,6 +69,7 @@ ii.init.register(function() {
         , ssn: { type: String, required: false, defaultValue: "" }
         , hourly: { type: Boolean, required: false, defaultValue: false }
         , statusType: { type: Number, required: false, defaultValue: 0 }
+		, hireDate: { type: String, required: false, defaultValue: "" }
         , terminationDate: { type: String, required: false, defaultValue: "" }
         , payRate: { type: String, required: false, defaultValue: "" }
      };

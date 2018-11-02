@@ -206,7 +206,12 @@ ii.Class({
             me.payCheckRequestGrid.addColumn("requestorName", "requestorName", "Requestor Name", "Requestor Name", 200);
             me.payCheckRequestGrid.addColumn("requestedDate", "requestedDate", "Requested Date", "Requested Date", 140);
             me.payCheckRequestGrid.addColumn("managerName", "managerName", "Manager Name", "Manager Name", 200);
-            me.payCheckRequestGrid.addColumn("approvedDate", "approvedDate", "Approved Date", "Approved Date", 140);
+            me.payCheckRequestGrid.addColumn("approvedDate", "", "Approved Date", "Approved Date", 140, function(item) {
+                if (item.statusType === 8 || item.statusType === 9)
+                    return item.approvedDate;
+                else
+                    return "";
+            });
             me.payCheckRequestGrid.addColumn("statusType", "statusType", "Status", "Status", 100, function(statusType) {
                 if (statusType === 2)
                     return "In Process";
@@ -514,6 +519,8 @@ ii.Class({
                         me.modified();
                         if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
                             this.setInvalid("Please enter valid date.");
+						else if (new Date(enteredText) < new Date(me.employee.hireDate))
+							this.setInvalid("Termination Date should be greater than or equal to Hire Date.");
                     }
                 });
 
@@ -534,6 +541,8 @@ ii.Class({
                     me.modified();
                     if (!(ui.cmn.text.validate.generic(enteredText, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
                         this.setInvalid("Please enter valid date.");
+					else if (new Date(enteredText) <= new Date(me.currentDate()))
+						this.setInvalid("Delivery Date should be greater than today’s date.");
                 });
 
             me.unitAddressPopup = new ui.ctl.Input.Text({
@@ -951,6 +960,9 @@ ii.Class({
                     if (me.terminationDatePopup.lastBlurValue === undefined || me.terminationDatePopup.lastBlurValue === "" || !(ui.cmn.text.validate.generic(me.terminationDatePopup.lastBlurValue, "^\\d{1,2}(\\-|\\/|\\.)\\d{1,2}\\1\\d{4}$")))
                         me.terminationDatePopup.setValue("");
                 }
+				else if (this.id === "SaturdayDeliveryYesPopup" || this.id === "SaturdayDeliveryNoPopup") {
+                    me.setDeliveryDate();
+                }
             });
 
             $("#imgWeekDaysAdd").bind("click", function() { me.addWeekDays(); });
@@ -1259,7 +1271,7 @@ ii.Class({
         },
 
         currentDate: function() {
-            var currentTime = new Date();
+            var currentTime = new Date(parent.fin.appUI.glbCurrentDate);
             var month = currentTime.getMonth() + 1;
             var day = currentTime.getDate();
             var year = currentTime.getFullYear();
@@ -1571,12 +1583,9 @@ ii.Class({
         setUserInfo: function() {
             var me = this;
 
-            me.houseCodeSearchTemplate.houseCodeIdTemplate = parent.fin.appUI.houseCodeId;
-            me.houseCodeSearchTemplate.houseCodeTitleTemplate = parent.fin.appUI.houseCodeTitle;
             me.requestorNamePopup.setValue(me.users[0].firstName + " " + me.users[0].lastName);
             me.requestorEmailPopup.setValue(me.users[0].email);
             me.requestorPhonePopup.setValue(me.users[0].homePhone);
-            $("#houseCodeText").val(parent.fin.appUI.houseCodeTitle);
         },
 
         actionSearchItem: function() {
@@ -1712,19 +1721,42 @@ ii.Class({
             var today = new Date(parent.fin.appUI.glbCurrentDate);
             var hours = today.getHours();
             var minutes = today.getMinutes();
+    		var day = today.getDay();
+			var saturdayDelivery = $("input[name='SaturdayDeliveryPopup']:checked").val() === "true" ? true : false;
+			var addDays = 0;
 
             if (me.employee.statusType === 1) {
                 if (hours < 12 && minutes < 59) {
-                    today.setDate(today.getDate() + 1);
+					if (day === 5)
+						addDays = saturdayDelivery ? 1 : 3;
+					else if (day === 6)
+						addDays = 2;
+					else
+						addDays = 1;
+                    today.setDate(today.getDate() + addDays);
                     me.deliveryDatePopup.setValue((today.getMonth() + 1) + "/" + today.getDate() + "/" + today.getFullYear());
                 }
                 else {
-                    today.setDate(today.getDate() + 2);
+					if (day === 4)
+						addDays = saturdayDelivery ? 2 : 4;
+					else if (day === 5)
+						addDays = saturdayDelivery ? 3 : 4;
+					else if (day === 6)
+						addDays = 3;
+					else
+						addDays = 2;
+	                today.setDate(today.getDate() + addDays);
                     me.deliveryDatePopup.setValue((today.getMonth() + 1) + "/" + today.getDate() + "/" + today.getFullYear());
                 }
             }
             else if (me.employee.statusType === 6 && hours < 16 && minutes < 59) {
-                today.setDate(today.getDate() + 1);
+				if (day === 5)
+					addDays = saturdayDelivery ? 1 : 3;
+				else if (day === 6)
+					addDays = 2;
+				else
+					addDays = 1;
+                today.setDate(today.getDate() + addDays);
                 me.deliveryDatePopup.setValue((today.getMonth() + 1) + "/" + today.getDate() + "/" + today.getFullYear());
             }
         },
@@ -1943,6 +1975,8 @@ ii.Class({
                     total = Number($("#spnGrandTotalDay" + index).html()) - Number(me.weeklyWages[rowNumber]["day" + index]);
                     $("#spnGrandTotalDay" + index).html(total.toFixed(2));
                     $("#txtD" + index + rowNumber).val("0");
+					$("#txtD" + index + rowNumber).attr("title", "");
+					$("#txtD" + index + rowNumber).removeClass("invalid");
                     me.weeklyWages[rowNumber]["day" + index] = 0;
                 }
                 total = Number($("#spnTotal" + totalIndex).html()) - Number($("#txtEarnings" + rowNumber).val());
@@ -1950,13 +1984,23 @@ ii.Class({
                 total = Number($("#spnGrandTotal").html()) - Number($("#txtEarnings" + rowNumber).val());
                 $("#spnGrandTotal").html(total.toFixed(2));
                 $("#txtPayRate" + rowNumber).val("0");
+				$("#txtPayRate" + rowNumber).attr("title", "");
+				$("#txtPayRate" + rowNumber).removeClass("invalid");
                 $("#txtEarnings" + rowNumber).val("0");
+				$("#txtEarnings" + rowNumber).attr("title", "");
+				$("#txtEarnings" + rowNumber).removeClass("invalid");
+				$("#txtEarnings" + rowNumber).removeClass("warning");
                 me.weeklyWages[rowNumber].payRate = 0;
                 me.weeklyWages[rowNumber].earnings = 0;
             }
             else {
                 $("#txtPayRate" + rowNumber).val(me.employee.hourly ? me.employee.payRate : 0);
+				$("#txtPayRate" + rowNumber).attr("title", "");
+				$("#txtPayRate" + rowNumber).removeClass("invalid");
                 $("#txtEarnings" + rowNumber).val("0");
+				$("#txtEarnings" + rowNumber).attr("title", "");
+				$("#txtEarnings" + rowNumber).removeClass("invalid");
+				$("#txtEarnings" + rowNumber).removeClass("warning");
                 me.weeklyWages[rowNumber].payRate = (me.employee.hourly ? me.employee.payRate : 0);
                 me.weeklyWages[rowNumber].earnings = 0;
             }
@@ -2028,6 +2072,7 @@ ii.Class({
             if (objInput.value === "" || objInput.value != me.weeklyWages[rowCount].earnings) {
                 var wageType = me.getWageType(me.weeklyWages[rowCount].payCodeId);
                 totalIndex = me.weeklyWages[rowCount].index;
+				$("#" + objInput.id).removeClass("warning");
 
                 if (objInput.value === "" || Number(objInput.value) <= 0 || !(/^\d{0,8}(\.\d{1,2})?$/.test(objInput.value))) {
                     $("#" + objInput.id).attr("title", "Please enter valid number.");
@@ -2044,6 +2089,10 @@ ii.Class({
                     grandTotal = Number($("#spnGrandTotal").html()) - Number(me.weeklyWages[rowCount].earnings) + Number($("#txtEarnings" + rowCount).val());
                     $("#spnTotal" + totalIndex).html(total.toFixed(2));
                     $("#spnGrandTotal").html(grandTotal.toFixed(2));
+					if (Number($("#txtEarnings" + rowCount).val()) > 1500)
+						$("#" + objInput.id).addClass("warning");
+					else
+						$("#" + objInput.id).removeClass("warning");
                 }
 
                 me.weeklyWages[rowCount].earnings = Number(objInput.value);
@@ -2117,8 +2166,8 @@ ii.Class({
             $("#selWeekType").attr("value", me.weeks[0].id);
             me.employee = null;
             me.personId = 0;
-            me.houseCodeSearchTemplate.houseCodeIdTemplate = parent.fin.appUI.houseCodeId;
-            me.houseCodeSearchTemplate.houseCodeTitleTemplate = parent.fin.appUI.houseCodeTitle;
+            me.houseCodeSearchTemplate.houseCodeIdTemplate = 0;
+            me.houseCodeSearchTemplate.houseCodeTitleTemplate = "";
             me.wizardCount = 1;
 			me.status = "New";
             me.resetControls("New");
@@ -2225,6 +2274,7 @@ ii.Class({
         validateCheckRequest: function() {
             var me = this;
             var valid = true;
+			var rowValid = true;
 
             if (me.wizardCount === 1) {
                 if (!me.employeeNumberPopup.validate(true) || !me.employeeNamePopup.validate(true) || me.employee === null || me.employees.length === 0 || parent.fin.appUI.houseCodeId === 0 || parent.fin.appUI.houseCodeTitle === "") {
@@ -2278,29 +2328,51 @@ ii.Class({
                 }
             }
             else if (me.wizardCount === 4) {
+				if (me.weeklyWages.length === 0) {
+                    alert("Please add at least one Wage Type details.");
+                    return false;
+                }
                 for (var index = 0; index < me.weeklyWages.length; index++) {
                     if (me.weeklyWages[index].payCodeId > 0) {
                         var wageType = me.getWageType(me.weeklyWages[index].payCodeId);
                         if (wageType.earnings) {
-                            if (Number($("#txtEarnings" + index).val()) <= 0)
-                                valid = false;
+                            if (Number($("#txtEarnings" + index).val()) <= 0 || Number($("#txtEarnings" + index).val()) > 99999999.99) {
+								valid = false;
+								if ($("#txtEarnings" + index).attr("title") !== undefined && $("#txtEarnings" + index).attr("title") !== "")
+									rowValid = false;
+							}
                         }
                         else {
-                            if (Number($("#txtPayRate" + index).val()) <= 0)
-                                valid = false;
+                            if (Number($("#txtPayRate" + index).val()) <= 0 || Number($("#txtPayRate" + index).val()) > 99.99)
+								valid = false;
                             else if ((Number($("#txtD1" + index).val()) <= 0) && (Number($("#txtD2" + index).val()) <= 0) && (Number($("#txtD3" + index).val()) <= 0) && (Number($("#txtD4" + index).val()) <= 0)
                                 && (Number($("#txtD5" + index).val()) <= 0) && (Number($("#txtD6" + index).val()) <= 0) && (Number($("#txtD7" + index).val()) <= 0))
-                            valid = false;
+                            	valid = false;
+							else if ((Number($("#txtD1" + index).val()) > 24) || (Number($("#txtD2" + index).val()) > 24) || (Number($("#txtD3" + index).val()) > 24) || (Number($("#txtD4" + index).val()) > 24)
+                                || (Number($("#txtD5" + index).val()) > 24) || (Number($("#txtD6" + index).val()) > 24) || (Number($("#txtD7" + index).val()) > 24))
+                            	valid = false;
+								
+							if (($("#txtPayRate" + index).attr("title") !== undefined && $("#txtPayRate" + index).attr("title") !== "")
+								|| ($("#txtD1" + index).attr("title") !== undefined && $("#txtD1" + index).attr("title") !== "")
+								|| ($("#txtD2" + index).attr("title") !== undefined && $("#txtD2" + index).attr("title") !== "")
+								|| ($("#txtD3" + index).attr("title") !== undefined && $("#txtD3" + index).attr("title") !== "")
+								|| ($("#txtD4" + index).attr("title") !== undefined && $("#txtD4" + index).attr("title") !== "")
+								|| ($("#txtD5" + index).attr("title") !== undefined && $("#txtD5" + index).attr("title") !== "")
+								|| ($("#txtD6" + index).attr("title") !== undefined && $("#txtD6" + index).attr("title") !== "")
+								|| ($("#txtD7" + index).attr("title") !== undefined && $("#txtD7" + index).attr("title") !== ""))
+									rowValid = false;
                         }
                     }
-                    else if (me.weeklyWages.length === 1) {
-                        alert("Please add at least one Wage Type details.");
+                    else {
+                        alert("Please enter all required Wage Type details.")
                         return false;
                     }
                 }
 
-                if (!valid)
-                    alert("Please enter all nencessary Wage Type details.")
+				if (!rowValid)
+                    alert("In order to continue, the errors on the page must be corrected.");
+                else if (!valid)
+                    alert("Please enter all required Wage Type details.");
                 return valid;
             }
             else if (me.wizardCount === 5) {
@@ -2635,6 +2707,25 @@ ii.Class({
                 xml += '/>';
             }
             else {
+				if (me.status === "CheckRequestResend") {
+					xml += '<payCheckRequestStatus';
+                    xml += ' id="' + item.id + '"';
+                    xml += ' transactionStatusType="2"';
+                    xml += '/>';
+				}
+                else if (me.status === "CheckRequestCancel") {
+                    xml += '<payCheckRequestStatus';
+                    xml += ' id="' + item.id + '"';
+                    xml += ' transactionStatusType="6"';
+                    xml += '/>';
+                }
+                else if (me.status === "CheckRequestApprove") {
+                    xml += '<payCheckRequestStatus';
+                    xml += ' id="' + item.id + '"';
+                    xml += ' transactionStatusType="8"';
+                    xml += '/>';
+                }
+
                 xml += '<payCheckRequestNotification';
 				xml += ' id="' + item.id + '"';
                 xml += ' houseCodeTitle="' + ui.cmn.text.xml.encode(item.houseCodeTitle) + '"';
@@ -2663,25 +2754,6 @@ ii.Class({
                 xml += ' managerEmail="' + ui.cmn.text.xml.encode(item.managerEmail) + '"';
                 xml += ' action="' + me.status + '"';
                 xml += '/>';
-
-				if (me.status === "CheckRequestResend") {
-					xml += '<payCheckRequestStatus';
-                    xml += ' id="' + item.id + '"';
-                    xml += ' transactionStatusType="2"';
-                    xml += '/>';
-				}
-                else if (me.status === "CheckRequestCancel") {
-                    xml += '<payCheckRequestStatus';
-                    xml += ' id="' + item.id + '"';
-                    xml += ' transactionStatusType="6"';
-                    xml += '/>';
-                }
-                else if (me.status === "CheckRequestApprove") {
-                    xml += '<payCheckRequestStatus';
-                    xml += ' id="' + item.id + '"';
-                    xml += ' transactionStatusType="8"';
-                    xml += '/>';
-                }
             }
 
             return xml;
@@ -2722,6 +2794,7 @@ ii.Class({
                         }
                         else if (me.status === "CheckRequestApprove") {
                             alert("Payroll check request approved successfully.");
+							me.payCheckRequests[me.payCheckRequestGrid.activeRowIndex].approvedDate = $(this).attr("approvedDate");
                             me.resetGrid();
                         }
                         else if (me.status === "ReExport") {
