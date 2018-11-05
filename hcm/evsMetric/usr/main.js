@@ -2456,16 +2456,16 @@ ii.Class({
             }
 
             me.thirdPartySatisfactionTypes.unshift(new fin.hcm.evsMetric.Type(0, "None"));
+			me.uvManufacturerTypes.unshift(new fin.hcm.evsMetric.Type(0, "None"));
+			me.wandaTypes.unshift(new fin.hcm.evsMetric.Type(0, "None"));
+			me.microFiberTypes.unshift(new fin.hcm.evsMetric.Type(0, "None"));
+			me.mopTypes.unshift(new fin.hcm.evsMetric.Type(0, "None"));
+			me.cartManufacturerTypes.unshift(new fin.hcm.evsMetric.Type(0, "None"));
             me.thirdPartySatisfaction.setData(me.thirdPartySatisfactionTypes);
-            me.uvManufacturerTypes.unshift(new fin.hcm.evsMetric.Type(0, "None"));
             me.uvManufacturer.setData(me.uvManufacturerTypes);
-            me.wandaTypes.unshift(new fin.hcm.evsMetric.Type(0, "None"));
             me.wanda.setData(me.wandaTypes);
-            me.microFiberTypes.unshift(new fin.hcm.evsMetric.Type(0, "None"));
             me.microFiber.setData(me.microFiberTypes);
-            me.mopTypes.unshift(new fin.hcm.evsMetric.Type(0, "None"));
             me.mop.setData(me.mopTypes);
-            me.cartManufacturerTypes.unshift(new fin.hcm.evsMetric.Type(0, "None"));
             me.cartManufacturer.setData(me.cartManufacturerTypes);
         },
 
@@ -3389,13 +3389,13 @@ ii.Class({
                 , me.serviceLineLaundry.getValue()
                 , me.serviceLinePOM.getValue()
                 , me.serviceLineCES.getValue()
-                , (me.uvManufacturer.indexSelected >= 0 ? me.uvManufacturer.data[me.uvManufacturer.indexSelected].id : 0)
+                , (me.uvManufacturer.indexSelected >= 0 ? me.uvManufacturer.data[me.uvManufacturer.indexSelected].id : -1)
                 , (me.hygiena.indexSelected >= 0 ? me.hygiena.data[me.hygiena.indexSelected].id : -1)
-                , (me.wanda.indexSelected >= 0 ? me.wanda.data[me.wanda.indexSelected].id : 0)
+                , (me.wanda.indexSelected >= 0 ? me.wanda.data[me.wanda.indexSelected].id : -1)
                 , (me.union.indexSelected >= 0 ? me.union.data[me.union.indexSelected].id : -1)
-                , (me.microFiber.indexSelected >= 0 ? me.microFiber.data[me.microFiber.indexSelected].id : 0)
-                , (me.mop.indexSelected >= 0 ? me.mop.data[me.mop.indexSelected].id : 0)
-                , (me.cartManufacturer.indexSelected >= 0 ? me.cartManufacturer.data[me.cartManufacturer.indexSelected].id : 0)
+                , (me.microFiber.indexSelected >= 0 ? me.microFiber.data[me.microFiber.indexSelected].id : -1)
+                , (me.mop.indexSelected >= 0 ? me.mop.data[me.mop.indexSelected].id : -1)
+                , (me.cartManufacturer.indexSelected >= 0 ? me.cartManufacturer.data[me.cartManufacturer.indexSelected].id : -1)
                 , me.notes.value
                 );
 
