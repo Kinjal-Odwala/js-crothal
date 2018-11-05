@@ -371,7 +371,17 @@ ii.Class({
 				if (enteredText != ""  && !(/^\d{1,16}(\.\d{1,2})?$/.test(enteredText)))
 					this.setInvalid("Please enter valid Price.");
 			});
-						
+
+            me.clientMandated = new ui.ctl.Input.Check({
+                id: "ClientMandated",
+                changeFunction: function () { me.modified(); }
+            });
+
+            me.nonCompliant = new ui.ctl.Input.Check({
+                id: "NonCompliant",
+                changeFunction: function () { me.modified(); }
+            });
+
 			me.itemActive = new ui.ctl.Input.Check({
 		        id: "ItemActive",
 				changeFunction: function() { me.modified(); }
@@ -546,8 +556,9 @@ ii.Class({
 				$("#ItemAccountText").attr('disabled', true);
 				$("#ItemAccountAction").removeClass("iiInputAction");
 				$("#ItemPriceText").attr('disabled', true);
+				$("#ClientMandated").attr("disabled", true);
+                $("#NonCompliant").attr("disabled", true);
 				$("#ItemActiveCheck").attr('disabled', true);
-				
 				$("#actionMenu").hide();
 				$(".footer").hide();
 			}
@@ -652,8 +663,9 @@ ii.Class({
 					me.itemAccount.select(itemIndex, me.itemAccount.focused);
 
 				me.itemPrice.setValue(me.itemGrid.data[index].price);
+				me.clientMandated.setValue(me.itemGrid.data[index].clientMandated.toString());
+                me.nonCompliant.setValue(me.itemGrid.data[index].nonCompliant.toString());
 				me.itemActive.setValue(me.itemGrid.data[index].active.toString());
-
 				me.historyReference = me.itemGrid.data[index].id;
 				me.currentPrice = me.itemGrid.data[index].price;
 			}
@@ -711,7 +723,9 @@ ii.Class({
 			me.itemSupplierClass.setValue("");
 			me.itemUom.setValue("");
 			me.itemAccount.reset();
-			me.itemPrice.setValue("");
+            me.itemPrice.setValue("");
+            me.clientMandated.setValue("false");
+            me.nonCompliant.setValue("false");
 			me.itemActive.setValue("true");
 			me.validateControl = true;
 		},
@@ -867,7 +881,9 @@ ii.Class({
 				, me.itemUom.getValue()
 				, me.accounts[me.itemAccount.indexSelected].id
 				, me.itemPrice.getValue()
-				, 1
+                , 1
+                , me.clientMandated.getValue()
+                , me.nonCompliant.getValue()
 				, me.itemActive.check.checked
 				);				
 
@@ -903,7 +919,9 @@ ii.Class({
 			xml += ' uom="' + ui.cmn.text.xml.encode(item.uom) + '"';				
 			xml += ' account="' + item.account + '"';
 			xml += ' price="' + item.price + '"';
-			xml += ' displayOrder="' + item.displayOrder + '"';
+            xml += ' displayOrder="' + item.displayOrder + '"';
+            xml += ' clientMandated = "' + item.clientMandated + '"';
+            xml += ' nonCompliant="' + item.nonCompliant + '"';
 			xml += ' active="' + item.active + '"';
 			xml += '/>';
 	

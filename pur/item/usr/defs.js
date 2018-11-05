@@ -18,7 +18,9 @@ ii.init.register( function(){
 		uom: {type: String},
 		account: {type: Number},
 		price: {type: String},
-		displayOrder: {type: Number, required: false},
+        displayOrder: {type: Number, required: false},
+        clientMandated: {type: Boolean, required: false},
+        nonCompliant: {type: Boolean, required: false },
 		active: {type: Boolean}
 	};
 	
