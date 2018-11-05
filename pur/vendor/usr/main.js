@@ -512,6 +512,16 @@ ii.Class({
 				changeFunction: function() { me.modified(); }
 		    });
 
+			me.clientMandated = new ui.ctl.Input.Check({
+                id: "ClientMandated",
+                changeFunction: function () { me.modified(); }
+            });
+
+            me.nonCompliant = new ui.ctl.Input.Check({
+                id: "NonCompliant",
+                changeFunction: function () { me.modified(); }
+            });
+
 			me.active = new ui.ctl.Input.Check({
 		        id: "Active",
 				changeFunction: function() { me.modified(); }
@@ -623,7 +633,9 @@ ii.Class({
 			me.sendMethodType.text.tabIndex = 33;
 			me.selectVendorBy.text.tabIndex = 34;
 			me.autoEmail.check.tabIndex = 35;
-			me.active.check.tabIndex = 36;
+			me.clientMandated.check.tabIndex = 36;
+            me.nonCompliant.check.tabIndex = 37;
+			me.active.check.tabIndex = 38;
 		},
 
 		resizeControls: function() {
@@ -703,6 +715,8 @@ ii.Class({
 			me.sendMethodType.reset();
 			me.selectVendorBy.reset();
 			me.autoEmail.setValue("false");
+			me.clientMandated.setValue("false");
+            me.nonCompliant.setValue("false");
 			me.active.setValue("false");
 			me.vendorNumber.text.focus();
 		},
@@ -969,6 +983,8 @@ ii.Class({
 			}
 
 			me.autoEmail.setValue(item.autoEmail.toString());
+			me.clientMandated.setValue(item.clientMandated.toString());
+            me.nonCompliant.setValue(item.nonCompliant.toString());
 			me.active.setValue(item.active.toString());
 
 			if (item.statusType === 6) {
@@ -1080,6 +1096,8 @@ ii.Class({
 				, me.sendMethodType.data[me.sendMethodType.indexSelected].id
 				, me.autoEmail.check.checked
 				, me.selectVendorBy.data[me.selectVendorBy.indexSelected].value
+				, me.clientMandated.getValue()
+                , me.nonCompliant.getValue()
 				, me.active.check.checked
 				);
 
@@ -1109,6 +1127,8 @@ ii.Class({
 			xml += ' sendMethodType="' + item.sendMethodType + '"';
 			xml += ' nameSelectBy="' + item.nameSelectBy + '"';
 			xml += ' autoEmail="' + item.autoEmail + '"';
+			xml += ' clientMandated="' + item.clientMandated + '"';
+            xml += ' nonCompliant="' + item.nonCompliant + '"';
 			xml += '/>';
 
 			return xml;

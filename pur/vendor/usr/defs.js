@@ -72,9 +72,10 @@ ii.init.register( function() {
 		, sendMethodType: {type: Number, required: false}
 		, autoEmail: {type: Boolean, required: false}
 		, nameSelectBy: {type: String, required: false, defaultValue: ""}
-		, active: {type: Boolean}
+        , clientMandated: {type: Boolean, required: false}
+        , nonCompliant: {type: Boolean, required: false}
+        , active: {type: Boolean}
 	};
-
 }, 2);
 
 ii.Class({
