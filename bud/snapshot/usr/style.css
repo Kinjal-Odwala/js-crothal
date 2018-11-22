@@ -1,0 +1,264 @@
+﻿.header {
+	font-family: Verdana;
+	font-weight: bold;
+	font-size: 18px;	
+	color: #2C2F50;
+	text-align: center;
+	margin-bottom: 5px;
+}
+
+.labelText {
+	float: left;
+	font-family: Verdana;
+	font-size: 12px;
+	font-weight: bold;
+	color: #032D23;
+}
+
+.labelTextArea {
+	float: left;
+	width: 80px;	
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding: 3px 0px 0px 10px;
+}
+
+.labelCheckArea {
+	float: left;
+	width: 80px;	
+	height: 27px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #032D23;
+	padding: 3px 0px 0px 0px;
+}
+
+.inputTextAreaSmall {
+    float: left;
+	width: 150px;
+	padding: 0px 10px 0px 0px;
+}
+
+.inputTextArea {
+    float: left;
+	width: 200px;
+	padding: 0px 10px 0px 0px;
+}
+
+.inputTextAreaLarge {
+	float: left;
+	width: 400px;
+}
+
+.inputCheckArea {
+	float: left;
+	width: 25px;
+	padding-left: 3px;
+}
+
+.snapshotLink {
+	font-family: Verdana;
+	font-size: 12px;
+	color: blue;
+	cursor: pointer;
+	text-decoration: underline;
+	margin: 0px 10px 5px 10px;
+}
+
+.snapshotLink:hover {	
+	color: red;
+	text-decoration: underline;
+}
+
+.iiGridHeaderColumn {
+	font-size: 8pt;
+}
+
+.iiGridBodyColumn {
+	font-size: 8pt;
+}
+
+.ui-state-default, .ui-widget-content .ui-state-default { 
+	border: 1px solid #d3d3d3; 
+	font-family: Verdana;
+	font-size: 12px;
+	background: #ffffff;
+	font-weight: normal; 
+	color: #000000; 
+	outline: none; 
+}
+
+.ui-corner-all {
+	-moz-border-radius: 0px;
+}
+
+.ui-icon.ui-icon-triangle-2-n-s {
+	background-image: url(/fin/cmn/usr/media/DropDown/dropDownEnabled.gif);
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+.ui-multiselect { 
+	padding: 0px; 
+	text-align: left;
+	border: solid #aaaaaa thin;
+	border-width: 1px;
+}
+
+#AnchorLoad {
+	float: left;
+	width: 68px;
+	margin: 0px;
+}
+
+#AnchorCompare {
+	float: left;
+	width: 96px;
+	margin: 0px;
+}
+
+#AnchorCreateSnapshot {
+	float: left;
+	width: 146px;
+	padding: 10px 0px 0px 0px;
+	margin: 0px 0px 10px 10px;
+}
+
+#AnchorLockSnapshot {
+	float: left;
+	width: 134px;
+	padding: 10px 0px 0px 0px;
+	margin: 0px 0px 10px 10px;
+}
+
+#AnchorUnlockRequest {
+	float: left;
+	width: 140px;
+	padding: 10px 0px 0px 0px;
+	margin: 0px 0px 10px 10px;
+}
+
+#AnchorSave {
+	float: left;
+	width: 68px;
+	padding: 10px 0px 0px 0px;
+	margin: 0px 0px 10px 10px;
+}
+
+#AnchorCancel {
+	float: left;
+	width: 80px;
+	padding: 10px 0px 0px 0px;
+	margin: 0px 0px 10px 10px;
+}
+
+#AnchorSendRequest {
+	float: left;
+	width: 128px;
+	margin: 0px 0px 0px 15px;
+}
+
+#AnchorClose {
+	float: left;
+	width: 72px;
+	margin: 0px 0px 0px 10px;
+}
+
+#Description {
+	float: left;
+	width: 820px;
+	height: 100px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: black;
+	margin-left: 10px;
+}
+
+#period1BodyColumn, #period2BodyColumn, #period3BodyColumn, #period4BodyColumn, #period5BodyColumn, #period6BodyColumn, #period7BodyColumn, #period8BodyColumn, #period9BodyColumn, #period10BodyColumn, #period11BodyColumn, #period12BodyColumn, #totalBodyColumn 
+, #tPeriod1BodyColumn, #tPeriod2BodyColumn, #tPeriod3BodyColumn, #tPeriod4BodyColumn, #tPeriod5BodyColumn, #tPeriod6BodyColumn, #tPeriod7BodyColumn, #tPeriod8BodyColumn, #tPeriod9BodyColumn, #tPeriod10BodyColumn, #tPeriod11BodyColumn, #tPeriod12BodyColumn, #tTotalBodyColumn
+, #ccPeriod1BodyColumn, #ccPeriod2BodyColumn, #ccPeriod3BodyColumn, #ccPeriod4BodyColumn, #ccPeriod5BodyColumn, #ccPeriod6BodyColumn, #ccPeriod7BodyColumn, #ccPeriod8BodyColumn, #ccPeriod9BodyColumn, #ccPeriod10BodyColumn, #ccPeriod11BodyColumn, #ccPeriod12BodyColumn, #ccTotalBodyColumn
+, #aPeriod1BodyColumn, #aPeriod2BodyColumn, #aPeriod3BodyColumn, #aPeriod4BodyColumn, #aPeriod5BodyColumn, #aPeriod6BodyColumn, #aPeriod7BodyColumn, #aPeriod8BodyColumn, #aPeriod9BodyColumn, #aPeriod10BodyColumn, #aPeriod11BodyColumn, #aPeriod12BodyColumn, #aTotalBodyColumn {
+	text-align: right;
+}
+
+#SnapshotDetailGridContainer, #CostCenterGridContainer, #AccountGridContainer {
+	float: left;
+	width: 100%;
+	position: relative;
+	overflow-x: auto;
+	overflow-y: hidden;
+	border: solid #AAAAAA thin;
+	border-width: 1px;
+}
+
+#RevenueGrid, #TotalGrid, #CostCenterGrid, #AccountGrid {
+	padding: 0px 10px 10px 10px;
+}
+
+#CostCenterGridContainer, #AccountGridContainer {
+	padding: 10px 0px 0px 0px;
+}
+
+#CostCenterSearchContainer, #AccountSearchContainer {
+	float: left;
+	width: 400px;
+}
+
+#DivisionLink, #SectorLink, #CostCenterLink {
+	float: left;
+	color: blue;
+	font-family: Verdana;
+	font-size: 12px;
+	font-weight: bold;
+	text-decoration: underline;
+	cursor: pointer;
+	padding: 5px 0px 0px 10px;
+}
+
+#spnDivision, #spnSector, #spnCategory {
+	float: left;
+	font-family: Verdana;
+	font-size: 12px;
+	font-weight: bold;
+	padding: 5px 0px 0px 10px;
+}
+
+#PopupContainer {
+	width: 800px;
+	height: 400px;
+	background-color: white;
+	position: absolute;
+	z-index: 5030;
+	display: none;
+}
+
+#SendRequestContainer {
+	border: solid #AAAAAA thin;
+	border-width: 1px;
+	margin: 15px;
+	height: 310px;
+}
+
+#Notes {
+	width: 400px;
+	height: 150px;
+	border: solid #AAAAAA thin;
+	border-width: 1px;
+	color: black;
+	font-family: Verdana;
+	font-size: 12px;
+}
+
+#backgroundPopup {
+	position: fixed; 
+	top: 0; 
+	left: 0; 
+	z-index: 5000; 
+	width: 100%; 
+	height: 100%;
+	border: 1px solid #cecece; 
+	background-color: black;
+	display: none;
+}
