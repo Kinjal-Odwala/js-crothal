@@ -127,11 +127,7 @@ ii.Class({
                 $("#TotalGrid").width(2000);
                 $("#CostCenterGrid").width(2000);
                 $("#AccountGrid").width(2000);
-                //me.costCenterGrid.setHeight($(window).height() - 275);
             }
-//			else {
-//			    me.costCenterGrid.setHeight($(window).height() - 235);
-//			}
 
             me.revenueGrid.setHeight(150);
             me.totalGrid.setHeight(150);
@@ -162,7 +158,7 @@ ii.Class({
             me.anchorCreateSnapshot = new ui.ctl.buttons.Sizeable({
                 id: "AnchorCreateSnapshot",
                 className: "iiButton",
-                text: "<span>&nbsp;&nbsp;Creare Snapshot&nbsp;&nbsp;</span>",
+                text: "<span>&nbsp;&nbsp;Create Snapshot&nbsp;&nbsp;</span>",
                 clickFunction: function() { me.actionCreateSnapshotItem(); },
                 hasHotState: true
             });
@@ -570,6 +566,14 @@ ii.Class({
             return month + "/" + day + "/" + year;
         },
 
+		customSort: function(a, b) {
+            if (a.periodId > b.periodId)
+                return 1;
+            if (a.periodId < b.periodId)
+                return -1;
+            return 0;
+        },
+
         houseCodesLoaded: function(me, activeId) {
 
             me.checkLoadCount();
@@ -703,6 +707,7 @@ ii.Class({
                 }
             }
 
+			me.mopSnapshots.sort(me.customSort);
             me.snapshotGrid.setData(me.mopSnapshots);
             if (me.reloadData)
                 me.reloadData = false;
@@ -714,8 +719,14 @@ ii.Class({
             var me = this;
             var index = 0;
 
-            if ($("#Division").val() === null || me.year.indexSelected === -1 || (me.snapshot.check.checked && me.period.indexSelected === -1))
-                return;
+			if (!me.budget.check.checked && !me.actual.check.checked && !me.snapshot.check.checked) {
+				alert("Please select at least one option [Budget / Actual / Snapshot] to compare.");
+				return;
+			}
+            else if (me.snapshot.check.checked && me.period.indexSelected === -1) {
+				alert("Please select the Period.");
+				return;
+			}
 
             for (index = me.revenueItems.length - 1; index > 0; index--) {
                 me.revenueItems.splice(index, 1);
@@ -885,6 +896,7 @@ ii.Class({
             me.resetControls();
             me.action = "CreateSnapshot";
             me.periodId = periodId;
+			me.setLoadCount();
             me.snapshotItemStore.reset();
             me.snapshotItemStore.fetch("userId:[user],level:Sector,revenue:1,divisionIds:" + $("#Division").val().join('~') + ",periodId:" + me.periodId, me.revenueItemsLoaded, me);
             $("#AnchorCreateSnapshot").show();
@@ -926,8 +938,6 @@ ii.Class({
             me.revenueGrid.setHeight(150);
             me.totalGrid.setHeight(150);
             me.checkLoadCount();
-            //$(me.revenueGrid.rows[0].getElement("total")).text("0.00");
-            //$(me.revenueGrid.rows[0].getElement("total")).addClass("snapshotLink");
         },
 
         revenueItemSelect: function() {
@@ -940,6 +950,7 @@ ii.Class({
             if (index > 0)
                 return;
             me.revenue = 1;
+			me.setLoadCount();
             me.snapshotItemStore.fetch("userId:[user],level:CostCenter,revenue:1,divisionIds:" + $("#Division").val().join('~') + ",periodId:" + me.periodId, me.costCenterItemsLoaded, me);
         },
 
@@ -953,6 +964,7 @@ ii.Class({
             if (index > 0)
                 return;
             me.revenue = 0;
+			me.setLoadCount();
             me.snapshotItemStore.fetch("userId:[user],level:CostCenter,revenue:0,divisionIds:" + $("#Division").val().join('~') + ",periodId:" + me.periodId, me.costCenterItemsLoaded, me);
         },
 
@@ -982,13 +994,14 @@ ii.Class({
             $("#spnDivision").show();
             $("#spnCategory").show();
             $("#spnCategory").html("/ " + (me.revenue === 1 ? "Revenue" : "Total"));
+			$("#CostCenterGridContainer").scrollLeft(0);
 
             var $scope = angular.element($("#CostCenterSearchContainer")).scope();
             $scope.$apply(function() {
                 $scope.selectedCostCenter = null;
                 $scope.houseCodes = me.houseCodeDetails;
             });
-            $("#CostCenterGridContainer").scrollLeft(0);
+ 			me.checkLoadCount();
         },
 
         costCenterItemSelect: function() {
@@ -1001,6 +1014,7 @@ ii.Class({
             $("#CostCenterLink").html(me.costCenterGrid.data[index].title);
             $("#CostCenterLink").show();
             $("#spnSector").show();
+			me.setLoadCount();
             me.snapshotItemStore.fetch("userId:[user],level:GLAccount,revenue:" + me.revenue + ",houseCodeId:" + me.costCenterGrid.data[index].id + ",periodId:" + me.periodId, me.accountItemsLoaded, me);
         },
 
@@ -1020,6 +1034,7 @@ ii.Class({
             }
             $("#CostCenterGridContainer").hide();
             $("#AccountGridContainer").show();
+			$("#AccountGridContainer").scrollLeft(0);
             me.createAccountGrid();
             me.accountGrid.setData(me.accountItems);
             me.accountGrid.setHeight($(window).height() - 275);
@@ -1031,6 +1046,7 @@ ii.Class({
                 else
                     $scope.accounts = me.accounts.slice();
             });
+			me.checkLoadCount();
         },
 
         selectCostCenter: function(id) {
@@ -1045,7 +1061,7 @@ ii.Class({
             else if (me.action === "SaveSnapshot" && !me.snapshotLocked && me.currentPeriod === me.periodId) {
                 index = ii.ajax.util.findIndexById(id, me.houseCodeDetails);
 
-                if (confirm("Do you want add the Cost Center [" + me.houseCodeDetails[index].name + "] to selected snapshot?")) {
+                if (confirm("Do you want to add the Cost Center [" + me.houseCodeDetails[index].name + "] to selected snapshot?")) {
                     var item = new fin.bud.snapshot.SnapshotItem(me.houseCodeDetails[index].id, me.houseCodeDetails[index].name);
                     me.costCenterItems.push(item);
                     if (me.costCenterGrid.activeRowIndex !== -1)
@@ -1067,7 +1083,7 @@ ii.Class({
             else if (me.action === "SaveSnapshot" && !me.snapshotLocked && me.currentPeriod === me.periodId) {
                 index = ii.ajax.util.findIndexById(id, me.accounts);
 
-                if (confirm("Do you want add the GL Account Code [" + me.accounts[index].code + "] to selected Cost Center?")) {
+                if (confirm("Do you want to add the GL Account Code [" + me.accounts[index].code + "] to selected Cost Center?")) {
                     var item = new fin.bud.snapshot.SnapshotItem(me.accounts[index].id, me.accounts[index].code + " - " + me.accounts[index].name);
                     me.accountItems.push(item);
                     if (me.accountGrid.activeRowIndex !== -1)
@@ -1133,11 +1149,11 @@ ii.Class({
             var me = this;
             var index = args.index;
 
-            $("#AccountGridContainer").scrollLeft(0);
             me.accountGrid.data[index].modified = true;
             setTimeout(function() {
                 me.glPeriod.text.focus();
                 me.glPeriod.text.select();
+				$("#AccountGridContainer").scrollLeft(0);
             }, 100);
         },
 
@@ -1218,6 +1234,7 @@ ii.Class({
                 $("#CostCenterLink").html("");
                 $("#CostCenterLink").hide();
                 $("#spnSector").hide();
+				$("#SnapshotDetailGridContainer").scrollLeft(0);
                 if (me.revenueGrid.activeRowIndex !== -1)
                     me.revenueGrid.body.deselect(me.revenueGrid.activeRowIndex, true);
                 if (me.totalGrid.activeRowIndex !== -1)
@@ -1250,6 +1267,7 @@ ii.Class({
                 $("#CostCenterLink").html("");
                 $("#CostCenterLink").hide();
                 $("#spnSector").hide();
+				$("#CostCenterGridContainer").scrollLeft(0);
                 if (me.costCenterGrid.activeRowIndex !== -1)
                     me.costCenterGrid.body.deselect(me.costCenterGrid.activeRowIndex, true);
             }
@@ -1500,8 +1518,6 @@ ii.Class({
                     $("#AnchorCreateSnapshot").hide();
                 }
                 else if (me.action === "DeleteSnapshot") {
-                    //me.mopSnapshots.splice(me.snapshotGrid.activeRowIndex, 1);
-                    //me.snapshotGrid.setData(me.mopSnapshots);
                     me.reloadData = true;
                 }
                 else if (me.action === "LockSnapshot") {
