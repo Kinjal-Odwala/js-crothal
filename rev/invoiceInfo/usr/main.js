@@ -651,6 +651,7 @@ ii.Class({
 
 				$("#SAPCustomerNumber").html(me.invoiceBillTos[index].sapCustomerNumber);
 				$("#SendMethodType").html(me.invoiceBillTos[index].sendMethodType);
+				$("#EmailAddress").html(me.invoiceBillTos[index].emailAddress);
 				me.setDueDate();
 				me.company.setValue(me.invoiceBillTos[index].company);
 				me.address1.setValue(me.invoiceBillTos[index].address1);
@@ -665,6 +666,7 @@ ii.Class({
 			else {
 				$("#SAPCustomerNumber").html("");
 				$("#SendMethodType").html("");
+				$("#EmailAddress").html("");
 				me.dueDate.setValue("");
 				me.company.setValue("");
 				me.address1.setValue("");
@@ -742,6 +744,7 @@ ii.Class({
 			if (index !== null) {
 				$("#SAPCustomerNumber").html(me.invoiceBillTos[index].sapCustomerNumber);
 				$("#SendMethodType").html(me.invoiceBillTos[index].sendMethodType);
+				$("#EmailAddress").html(me.invoiceBillTos[index].emailAddress);
 			}
 
 			if (me.invoice.printed) {
@@ -801,6 +804,7 @@ ii.Class({
 			me.notes.value = "";
 			$("#SAPCustomerNumber").html("");
 			$("#SendMethodType").html("");
+			$("#EmailAddress").html("");
 		},
 		
 		actionUndoItem: function() {

@@ -99,6 +99,7 @@ ii.init.register( function() {
 		, paymentTerm: {type: Number, required: false, defaultValue: 0}
 		, jobType: {type: fin.hcm.job.JobType, required: false}
 		, sendMethodType: {type: Number, required: false, defaultValue: 0}
+		, emailAddress: {type: String, required: false, defaultValue: ""}
 		, invoiceTemplate: {type: Number, required: false, defaultValue: 0}
 		, customerName: {type: String, required: false, defaultValue: ""}
 		, customerPhone: {type: String, required: false, defaultValue: ""}

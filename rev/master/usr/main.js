@@ -1510,6 +1510,7 @@ ii.Class({
 
 				$("#SAPCustomerNumber").html(me.billTo.data[index].sapCustomerNumber);
 				$("#SendMethodType").html(me.billTo.data[index].sendMethodType);
+				$("#EmailAddress").html(me.billTo.data[index].emailAddress);
 				me.setDueDate();
                 me.company.setValue(me.billTo.data[index].company);
                 me.address1.setValue(me.billTo.data[index].address1);
@@ -1524,6 +1525,7 @@ ii.Class({
             else {
 				$("#SAPCustomerNumber").html("");
 				$("#SendMethodType").html("");
+				$("#EmailAddress").html("");
 				me.dueDate.setValue("");
 				me.taxId.setValue("");
                 me.company.setValue("");
@@ -1626,11 +1628,13 @@ ii.Class({
 					me.setDueDate();
 					$("#SAPCustomerNumber").html(me.billTo.data[me.billTo.indexSelected].sapCustomerNumber);
 					$("#SendMethodType").html(me.billTo.data[me.billTo.indexSelected].sendMethodType);
+					$("#EmailAddress").html(me.billTo.data[me.billTo.indexSelected].emailAddress);
 				}
 				else {
 					me.dueDate.setValue("");
 					$("#SAPCustomerNumber").html("");
 					$("#SendMethodType").html("");
+					$("#EmailAddress").html("");
 				}
 
 				me.company.setValue(searchInvoice.company);
@@ -1661,6 +1665,7 @@ ii.Class({
 			else {
 				$("#SAPCustomerNumber").html("");
 				$("#SendMethodType").html("");
+				$("#EmailAddress").html("");
 				me.taxExempt.reset();
 				me.taxId.setValue("");
 				me.company.setValue("");

@@ -163,6 +163,7 @@ ii.Class({
 			me.jPaymentTermShow = me.isCtrlVisible(me.authorizePath + "\\PaymentTerm", me.jobsShow, (me.jobsWrite || me.jobsReadOnly));
 			me.jJobTypeShow = me.isCtrlVisible(me.authorizePath + "\\JobType", me.jobsShow, (me.jobsWrite || me.jobsReadOnly));
 			me.jSendMethodTypeShow = me.isCtrlVisible(me.authorizePath + "\\SendMethodType", me.jobsShow, (me.jobsWrite || me.jobsReadOnly));
+			me.jEmailAddressShow = me.isCtrlVisible(me.authorizePath + "\\EmailAddress", me.jobsShow, (me.jobsWrite || me.jobsReadOnly));
 			me.jInvoiceTemplateShow = me.isCtrlVisible(me.authorizePath + "\\InvoiceTemplate", me.jobsShow, (me.jobsWrite || me.jobsReadOnly));
 			me.jCustomerNameShow = me.isCtrlVisible(me.authorizePath + "\\CustomerName", me.jobsShow, (me.jobsWrite || me.jobsReadOnly));
 			me.jCustomerPhoneShow = me.isCtrlVisible(me.authorizePath + "\\CustomerPhone", me.jobsShow, (me.jobsWrite || me.jobsReadOnly));
@@ -193,6 +194,7 @@ ii.Class({
 			me.jPaymentTermReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\PaymentTerm\\Read", me.jobsWrite, me.jobsReadOnly);
 			me.jJobTypeReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\JobType\\Read", me.jobsWrite, me.jobsReadOnly);
 			me.jSendMethodTypeReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\SendMethodType\\Read", me.jobsWrite, me.jobsReadOnly);
+			me.jEmailAddressReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\EmailAddress\\Read", me.jobsWrite, me.jobsReadOnly);
 			me.jInvoiceTemplateReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\InvoiceTemplate\\Read", me.jobsWrite, me.jobsReadOnly);
 			me.jCustomerNameReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\CustomerName\\Read", me.jobsWrite, me.jobsReadOnly);
 			me.jCustomerPhoneReadOnly = me.isCtrlReadOnly(me.authorizePath + "\\CustomerPhone\\Read", me.jobsWrite, me.jobsReadOnly);
@@ -310,6 +312,7 @@ ii.Class({
 			me.setControlState("PaymentTerm", me.jPaymentTermReadOnly, me.jPaymentTermShow);
 			me.setControlState("JobType", me.jJobTypeReadOnly, me.jJobTypeShow);
 			me.setControlState("SendMethodType", me.jSendMethodTypeReadOnly, me.jSendMethodTypeShow);
+			me.setControlState("EmailAddress", me.jEmailAddressReadOnly, me.jEmailAddressShow);
 			me.setControlState("InvoiceTemplate", me.jInvoiceTemplateReadOnly, me.jInvoiceTemplateShow);
 			me.setControlState("CustomerName", me.jCustomerNameReadOnly, me.jCustomerNameShow);
 			me.setControlState("CustomerPhone", me.jCustomerPhoneReadOnly, me.jCustomerPhoneShow);
@@ -407,6 +410,7 @@ ii.Class({
 			me.country.resizeText();
 			me.industry.resizeText();
 			me.sendMethodType.resizeText();
+			me.emailAddress.resizeText();
 			me.invoiceTemplate.resizeText();
 			me.taxId.resizeText();
 			me.serviceContract.resizeText();
@@ -761,6 +765,25 @@ ii.Class({
 					if ((this.focused || this.touched) && me.sendMethodType.lastBlurValue !== "" && me.sendMethodType.indexSelected === -1)
 						this.setInvalid("Please select the correct Send Method Type.");
 				});
+
+			me.emailAddress = new ui.ctl.Input.Text({
+                id: "EmailAddress",
+                maxLength: 50,
+                changeFunction: function() { me.modified(); }
+            });
+
+            me.emailAddress.makeEnterTab()
+                .setValidationMaster( me.validator )
+                .addValidation( function( isFinal, dataMap ){
+
+                    var enteredText = me.emailAddress.getValue();
+
+                    if (enteredText === "")
+                        return;
+
+                    if (!(/^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/.test(enteredText)))
+                        this.setInvalid("Please enter valid Email Address.");
+                });
 
 			me.invoiceTemplate = new ui.ctl.Input.DropDown.Filtered({
 				id: "InvoiceTemplate",
@@ -1383,6 +1406,7 @@ ii.Class({
 						else
 							me.sendMethodType.reset();
 
+						me.emailAddress.setValue(item.emailAddress);
 						index = ii.ajax.util.findIndexById(item.invoiceTemplate.toString(), me.invoiceTemplates);
 						if (index !== null)
 							me.invoiceTemplate.select(index, me.invoiceTemplate.focused);
@@ -1396,6 +1420,7 @@ ii.Class({
 					}
 					else {
 						me.sendMethodType.reset();
+						me.emailAddress.setValue("");
 						me.invoiceTemplate.reset();
 						me.taxId.setValue("");
 						me.paymentTerm.text.disabled = false;
@@ -1727,6 +1752,7 @@ ii.Class({
 			me.paymentTerm.reset();
 			me.jobType.reset();
 			me.sendMethodType.reset();
+			me.emailAddress.setValue("");
 			me.invoiceTemplate.reset();
 			me.customerName.setValue("");
 			me.customerPhone.setValue("");
@@ -1894,6 +1920,7 @@ ii.Class({
 				, paymentTerm: me.paymentTerm.indexSelected !== -1 ? me.paymentTerms[me.paymentTerm.indexSelected].id : 0
 				, jobType: me.jobType.indexSelected !== -1 ? me.jobTypes[me.jobType.indexSelected] : 0
 				, sendMethodType: me.sendMethodType.indexSelected !== -1 ? me.sendMethodTypes[me.sendMethodType.indexSelected].id : 0
+				, emailAddress: me.emailAddress.getValue()
 				, invoiceTemplate: me.invoiceTemplate.indexSelected !== -1 ? me.invoiceTemplates[me.invoiceTemplate.indexSelected].id : 0
 				, customerName: me.customerName.getValue()
 				, customerPhone: me.customerPhone.getValue()
@@ -1939,6 +1966,7 @@ ii.Class({
 			xml += ' paymentTerm="' + item.paymentTerm + '"';
 			xml += ' jobType="' + (item.jobType.id ? item.jobType.id : 0) + '"';
 			xml += ' sendMethodType="' + item.sendMethodType + '"';
+			xml += ' emailAddress="' + item.emailAddress + '"';
 			xml += ' invoiceTemplate="' + item.invoiceTemplate + '"';
 			xml += ' customerName="' + ui.cmn.text.xml.encode(item.customerName) + '"';
 			xml += ' customerPhone="' + fin.cmn.text.mask.phone(item.customerPhone, true) + '"';
