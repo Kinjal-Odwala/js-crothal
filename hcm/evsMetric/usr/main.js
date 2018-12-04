@@ -2955,7 +2955,7 @@ ii.Class({
                 }
 
                 $("#trLaborControl" + index + " input[id^=txtPeriod]").keypress(function (e) {
-                    if (e.which !== 46 && e.which !== 8 && e.which !== 0 && (e.which < 48 || e.which > 57))
+                    if (e.which !== 46 && e.which !== 8 && e.which !== 0 && e.which !== 45 && (e.which < 48 || e.which > 57))
                         return false;
                 });
                 $("#trLaborControl" + index + " input[id^=txtPeriod]").bind("blur", function() { me.periodBlur(this); });
@@ -3013,10 +3013,7 @@ ii.Class({
             var period = "";
             var type = "";
             var id = objInput.id.replace("txtPeriod", "");
-
-            //Remove any unwanted characters
-            objInput.value = objInput.value.replace(/[^0-9.]/g, "");
-
+ 
             if (id.indexOf("Budget") > 0) {
                 type = "Budget";
                 period = id.substring(0, id.indexOf("Budget"));
@@ -3030,19 +3027,20 @@ ii.Class({
 
             //Make sure we have a change
             if (objInput.value !== me.laborControls[rowCount]["period" + period]) {
-                me.laborControls[rowCount]["period" + period] = objInput.value;
-                me.laborControls[rowCount].modified = true;
-                me.modified();
-
-                if (objInput.value !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(objInput.value))) {
-                    $("#" + objInput.id).attr("title", "Please enter numeric value. Example 99.99");
+                var regExp = new RegExp(me.laborControls[rowCount].evsMetricType.regExpValidation);
+                if (objInput.value !== "" && !(ui.cmn.text.validate.generic(objInput.value,regExp))) {
+                    $("#" + objInput.id).attr("title", me.laborControls[rowCount].evsMetricType.validationMessage);
                     $("#" + objInput.id).addClass("invalid");
+                    me.laborControls[rowCount]["period" + period] = objInput.value;
                     return;
                 }
                 else {
                     $("#" + objInput.id).attr("title", "");
                     $("#" + objInput.id).removeClass("invalid");
                 }
+                me.laborControls[rowCount]["period" + period] = objInput.value;
+                me.laborControls[rowCount].modified = true;
+                me.modified();
 
                 if (rowCount === 0 || rowCount === 2) {
                     startRowNumber = 0;
@@ -3101,8 +3099,8 @@ ii.Class({
                     $("#spnPeriod" + period + type + "Paid5").html(total.toFixed(2));
                 }
                 else if (rowCount >= 6 && rowCount <= 11) {
-                    total = ($("#spnPeriod" + period + type + "9").html() === "" ? 0 : parseInt($("#spnPeriod" + period + type + "9").html(), 10))
-                        + ($("#spnPeriod" + period + type + "11").html() === "" ? 0 : parseInt($("#spnPeriod" + period + type + "11").html(), 10));
+                    total = ($("#spnPeriod" + period + type + "9").html() === "" ? 0 : parseFloat($("#spnPeriod" + period + type + "9").html()))
+                        + ($("#spnPeriod" + period + type + "11").html() === "" ? 0 : parseFloat($("#spnPeriod" + period + type + "11").html()));
                     $("#spnPeriod" + period + type + "Paid11").html(total.toFixed(2));
                 }
             }
@@ -3148,18 +3146,19 @@ ii.Class({
 
              for (var index = 0; index < me.laborControls.length; index++) {
                 if (me.laborControls[index].evsMetricType.dataType === "Decimal") {
-                    if (me.laborControls[index].period1 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.laborControls[index].period1))
-                        || me.laborControls[index].period2 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.laborControls[index].period2))
-                        || me.laborControls[index].period3 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.laborControls[index].period3))
-                        || me.laborControls[index].period4 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.laborControls[index].period4))
-                        || me.laborControls[index].period5 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.laborControls[index].period5))
-                        || me.laborControls[index].period6 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.laborControls[index].period6))
-                        || me.laborControls[index].period7 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.laborControls[index].period7))
-                        || me.laborControls[index].period8 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.laborControls[index].period8))
-                        || me.laborControls[index].period9 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.laborControls[index].period9))
-                        || me.laborControls[index].period10 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.laborControls[index].period10))
-                        || me.laborControls[index].period11 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.laborControls[index].period11))
-                        || me.laborControls[index].period12 !== "" && !(/^\d{0,16}(\.\d{1,2})?$/.test(me.laborControls[index].period12))) {
+                    var regExp = new RegExp(me.laborControls[index].evsMetricType.regExpValidation);
+                	if (me.laborControls[index].period1 !== "" && !(ui.cmn.text.validate.generic(me.laborControls[index].period1, regExp))
+						|| me.laborControls[index].period2 !== "" && !(ui.cmn.text.validate.generic(me.laborControls[index].period2, regExp))
+						|| me.laborControls[index].period3 !== "" && !(ui.cmn.text.validate.generic(me.laborControls[index].period3, regExp))
+						|| me.laborControls[index].period4 !== "" && !(ui.cmn.text.validate.generic(me.laborControls[index].period4, regExp))
+						|| me.laborControls[index].period5 !== "" && !(ui.cmn.text.validate.generic(me.laborControls[index].period5, regExp))
+						|| me.laborControls[index].period6 !== "" && !(ui.cmn.text.validate.generic(me.laborControls[index].period6, regExp))
+						|| me.laborControls[index].period7 !== "" && !(ui.cmn.text.validate.generic(me.laborControls[index].period7, regExp))
+						|| me.laborControls[index].period8 !== "" && !(ui.cmn.text.validate.generic(me.laborControls[index].period8, regExp))
+						|| me.laborControls[index].period9 !== "" && !(ui.cmn.text.validate.generic(me.laborControls[index].period9, regExp))
+						|| me.laborControls[index].period10 !== "" && !(ui.cmn.text.validate.generic(me.laborControls[index].period10, regExp))
+						|| me.laborControls[index].period11 !== "" && !(ui.cmn.text.validate.generic(me.laborControls[index].period11, regExp))
+						|| me.laborControls[index].period12 !== "" && !(ui.cmn.text.validate.generic(me.laborControls[index].period12, regExp))) {
                         return false;
                     }
                 }

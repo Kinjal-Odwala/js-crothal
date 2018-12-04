@@ -57,7 +57,9 @@ ii.init.register( function() {
         , brief: {type: String, required: false, defaultValue: ""}
         , title: {type: String, required: false, defaultValue: ""}
         , dataType: {type: String, required: false, defaultValue: ""}
-        , displayOrder: {type: Number, required: false, defaultValue: 0}
+		, regExpValidation: { type: String, required: false, defaultValue: ""}
+		, validationMessage: { type: String, required: false, defaultValue: ""}
+		, displayOrder: {type: Number, required: false, defaultValue: 0}
     };
 
     fin.hcm.evsMetric.taskManagementSystemArgs = {
