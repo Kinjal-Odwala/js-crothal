@@ -220,7 +220,9 @@ ii.Class({
 			$("#divCommentsGrid").css({"width" : divCommentsGridWidth + "px", "height" : divCommentsGridHeight + "px"});
 
 			if (ii.browser.chrome) {
-			    $("#tblPFCGridHeader").css({"width":"3215px"});
+                $("#tblPFCGridHeader").css({ "width": "3245px" });
+                $("#tblNonPFCGridHeader").css({ "width": "3245px" });
+                $("#tblCommentsGridHeader").css({ "width": "3183px" });
 			}
 		},
 
