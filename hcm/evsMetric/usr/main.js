@@ -219,7 +219,7 @@ ii.Class({
             $("#divCommentsGrid").css({"width" : divCommentsGridWidth + "px", "height" : divCommentsGridHeight + "px"});
 
             if (ii.browser.chrome) {
-                $("#tblCommentsGridHeader").css({ "width": "3184px" });
+ 				$("#tblCommentsGridHeader").css({ "width": "3184px" });
             }
         },
 
@@ -3028,7 +3028,7 @@ ii.Class({
             //Make sure we have a change
             if (objInput.value !== me.laborControls[rowCount]["period" + period]) {
                 var regExp = new RegExp(me.laborControls[rowCount].evsMetricType.regExpValidation);
-                if (objInput.value !== "" && !(ui.cmn.text.validate.generic(objInput.value,regExp))) {
+                if (objInput.value !== "" && !(ui.cmn.text.validate.generic(objInput.value, regExp))) {
                     $("#" + objInput.id).attr("title", me.laborControls[rowCount].evsMetricType.validationMessage);
                     $("#" + objInput.id).addClass("invalid");
                     me.laborControls[rowCount]["period" + period] = objInput.value;
@@ -3132,13 +3132,9 @@ ii.Class({
             if (enteredText === "" || activeGrid.activeRowIndex === -1)
                 return;
 
-            var dataType = activeGrid.data[activeGrid.activeRowIndex].evsMetricType.dataType;
-            if (dataType === "Decimal") {
-                if (!(/^\d{1,16}(\.\d{1,2})?$/.test(enteredText)))
-                    control.setInvalid("Please enter numeric value.");
-            }
-            else if ((dataType === "Integer") && !(/^\d{1,9}$/.test(enteredText)))
-            	control.setInvalid("Please enter valid number.");
+            var regExp = new RegExp(activeGrid.data[activeGrid.activeRowIndex].evsMetricType.regExpValidation);
+            if (!ui.cmn.text.validate.generic(enteredText, regExp))
+                control.setInvalid(activeGrid.data[activeGrid.activeRowIndex].evsMetricType.validationMessage);
         },
 
         validateLaborControl: function() {
