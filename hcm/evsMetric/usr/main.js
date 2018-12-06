@@ -2666,18 +2666,18 @@ ii.Class({
                             , me.numericDetails[index].evsMetricId
                             , me.numericDetails[index].evsMetricType
                             , me.numericDetails[index].evsMetricType.title
-                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? me.numericDetails[index].period1 : (me.numericDetails[index].period1 === "" ? "" : parseInt(me.numericDetails[index].period1, 10)))
-                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? me.numericDetails[index].period2 : (me.numericDetails[index].period2 === "" ? "" : parseInt(me.numericDetails[index].period2, 10)))
-                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? me.numericDetails[index].period3 : (me.numericDetails[index].period3 === "" ? "" : parseInt(me.numericDetails[index].period3, 10)))
-                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? me.numericDetails[index].period4 : (me.numericDetails[index].period4 === "" ? "" : parseInt(me.numericDetails[index].period4, 10)))
-                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? me.numericDetails[index].period5 : (me.numericDetails[index].period5 === "" ? "" : parseInt(me.numericDetails[index].period5, 10)))
-                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? me.numericDetails[index].period6 : (me.numericDetails[index].period6 === "" ? "" : parseInt(me.numericDetails[index].period6, 10)))
-                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? me.numericDetails[index].period7 : (me.numericDetails[index].period7 === "" ? "" : parseInt(me.numericDetails[index].period7, 10)))
-                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? me.numericDetails[index].period8 : (me.numericDetails[index].period8 === "" ? "" : parseInt(me.numericDetails[index].period8, 10)))
-                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? me.numericDetails[index].period9 : (me.numericDetails[index].period9 === "" ? "" : parseInt(me.numericDetails[index].period9, 10)))
-                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? me.numericDetails[index].period10 : (me.numericDetails[index].period10 === "" ? "" : parseInt(me.numericDetails[index].period10, 10)))
-                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? me.numericDetails[index].period11 : (me.numericDetails[index].period11 === "" ? "" : parseInt(me.numericDetails[index].period11, 10)))
-                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? me.numericDetails[index].period12 : (me.numericDetails[index].period12 === "" ? "" : parseInt(me.numericDetails[index].period12, 10)))
+                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? parseFloat(me.numericDetails[index].period1, 1) : (me.numericDetails[index].period1 === "" ? "" : parseInt(me.numericDetails[index].period1, 10)))
+                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? parseFloat(me.numericDetails[index].period2, 1) : (me.numericDetails[index].period2 === "" ? "" : parseInt(me.numericDetails[index].period2, 10)))
+                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? parseFloat(me.numericDetails[index].period3, 1) : (me.numericDetails[index].period3 === "" ? "" : parseInt(me.numericDetails[index].period3, 10)))
+                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? parseFloat(me.numericDetails[index].period4, 1) : (me.numericDetails[index].period4 === "" ? "" : parseInt(me.numericDetails[index].period4, 10)))
+                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? parseFloat(me.numericDetails[index].period5, 1) : (me.numericDetails[index].period5 === "" ? "" : parseInt(me.numericDetails[index].period5, 10)))
+                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? parseFloat(me.numericDetails[index].period6, 1) : (me.numericDetails[index].period6 === "" ? "" : parseInt(me.numericDetails[index].period6, 10)))
+                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? parseFloat(me.numericDetails[index].period7, 1) : (me.numericDetails[index].period7 === "" ? "" : parseInt(me.numericDetails[index].period7, 10)))
+                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? parseFloat(me.numericDetails[index].period8, 1) : (me.numericDetails[index].period8 === "" ? "" : parseInt(me.numericDetails[index].period8, 10)))
+                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? parseFloat(me.numericDetails[index].period9, 1) : (me.numericDetails[index].period9 === "" ? "" : parseInt(me.numericDetails[index].period9, 10)))
+                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? parseFloat(me.numericDetails[index].period10, 1) : (me.numericDetails[index].period10 === "" ? "" : parseInt(me.numericDetails[index].period10, 10)))
+                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? parseFloat(me.numericDetails[index].period11, 1) : (me.numericDetails[index].period11 === "" ? "" : parseInt(me.numericDetails[index].period11, 10)))
+                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? parseFloat(me.numericDetails[index].period12, 1) : (me.numericDetails[index].period12 === "" ? "" : parseInt(me.numericDetails[index].period12, 10)))
                             , me.numericDetails[index].staffManagementRatio
                             );
                         me.managementStaffs.push(item);
