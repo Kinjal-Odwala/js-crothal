@@ -221,18 +221,7 @@ ii.init.register( function() {
         , modified: {type: Boolean, required: false, defaultValue: false}
     };
 
-    fin.hcm.evsMetric.competencyTrainingArgs = {
-        id: {type: Number, required: false, defaultValue: 0}
-        , evsMetricId: {type: Number, required: false, defaultValue: 0}
-        , evsMetricType: {type: fin.hcm.evsMetric.MetricType, required: false}
-        , evsMetricTypeTitle: {type: String, required: false, defaultValue: ""}
-        , quarter1: {type: String, required: false, defaultValue: ""}
-        , quarter2: {type: String, required: false, defaultValue: ""}
-        , quarter3: {type: String, required: false, defaultValue: ""}
-        , quarter4: {type: String, required: false, defaultValue: ""}
-        , modified: {type: Boolean, required: false, defaultValue: false}
-    };
-
+    
     fin.hcm.evsMetric.adminObjectiveArgs = {
         id: {type: Number, required: false, defaultValue: 0}
         , evsMetricId: {type: Number, required: false, defaultValue: 0}
@@ -443,16 +432,6 @@ ii.Class({
     Definition: {
         init: function() {
             var args = ii.args(arguments, fin.hcm.evsMetric.auditScoreArgs);
-            $.extend(this, args);
-        }
-    }
-});
-
-ii.Class({
-    Name: "fin.hcm.evsMetric.CompetencyTraining",
-    Definition: {
-        init: function() {
-            var args = ii.args(arguments, fin.hcm.evsMetric.competencyTrainingArgs);
             $.extend(this, args);
         }
     }

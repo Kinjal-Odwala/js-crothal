@@ -117,7 +117,7 @@
 }
 
 #LaborControlGridContainer, #StrategicInitiativeGridContainer, #QualityAssuranceGridContainer, #QualityPartnershipGridContainer
-, #CompetencyTrainingGridContainer, #AdminObjectiveGridContainer, #EVSStatisticGridContainer, #ManagementStaffGridContainer {
+, #AdminObjectiveGridContainer, #EVSStatisticGridContainer, #ManagementStaffGridContainer {
 	float: left;
 	width: 100%;
 	position: relative;

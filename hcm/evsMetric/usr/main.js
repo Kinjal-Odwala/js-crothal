@@ -176,12 +176,6 @@ ii.Class({
             else {
 				$("#QualityPartnershipGrid").width($("#QualityPartnershipGridContainer").width() - 5);
             }
-			if ($("#CompetencyTrainingGridContainer").width() < 1000) {
-                $("#CompetencyTrainingGrid").width(1000);
-            }
-            else {
-				$("#CompetencyTrainingGrid").width($("#CompetencyTrainingGridContainer").width() - 5);
-            }
 			if ($("#AdminObjectiveGridContainer").width() < 1500) {
                 $("#AdminObjectiveGrid").width(1500);
                	me.adminObjectiveGrid.setHeight($(window).height() - 168);
@@ -208,7 +202,6 @@ ii.Class({
             me.qualityAssuranceGrid.setHeight(150);
             me.qualityPartnershipGrid.setHeight(150);
             me.auditScoreGrid.setHeight(150);
-            me.competencyTrainingGrid.setHeight(150);
 
             var divLaborControlGridWidth = $(window).width() - 248;
             var divLaborControlGridHeight = 330;
@@ -1314,81 +1307,6 @@ ii.Class({
             me.auditScoreGrid.addColumn("annual2", "annual2", "Year-End", "Year-End", 200, null, me.annual2);
             me.auditScoreGrid.capColumns();
 
-            me.competencyTrainingGrid = new ui.ctl.Grid({
-                id: "CompetencyTrainingGrid",
-                appendToId: "divForm",
-                selectFunction: function( index ) { me.competencyTrainingItemSelect(index); },
-                deleteFunction: function() { return true; }
-            });
-
-            me.ctMetricTypeTitle = new ui.ctl.Input.Text({
-                id: "CTMetricTypeTitle",
-                appendToId: "CompetencyTrainingGridControlHolder"
-            });
-
-            me.ctQuarter1 = new ui.ctl.Input.Text({
-                id: "CTQuarter1",
-                maxLength: 19,
-                appendToId: "CompetencyTrainingGridControlHolder",
-                changeFunction: function() { me.modified(); }
-            });
-
-            me.ctQuarter1.makeEnterTab()
-                .setValidationMaster( me.validator )
-                .addValidation( function( isFinal, dataMap ) {
-
-                    me.validateControl(me.ctQuarter1, me.competencyTrainingGrid);
-                });
-
-            me.ctQuarter2 = new ui.ctl.Input.Text({
-                id: "CTQuarter2",
-                maxLength: 19,
-                appendToId: "CompetencyTrainingGridControlHolder",
-                changeFunction: function() { me.modified(); }
-            });
-
-            me.ctQuarter2.makeEnterTab()
-                .setValidationMaster( me.validator )
-                .addValidation( function( isFinal, dataMap ) {
-
-                    me.validateControl(me.ctQuarter2, me.competencyTrainingGrid);
-                });
-
-            me.ctQuarter3 = new ui.ctl.Input.Text({
-                id: "CTQuarter3",
-                maxLength: 19,
-                appendToId: "CompetencyTrainingGridControlHolder",
-                changeFunction: function() { me.modified(); }
-            });
-
-            me.ctQuarter3.makeEnterTab()
-                .setValidationMaster( me.validator )
-                .addValidation( function( isFinal, dataMap ) {
-
-                    me.validateControl(me.ctQuarter3, me.competencyTrainingGrid);
-                });
-
-            me.ctQuarter4 = new ui.ctl.Input.Text({
-                id: "CTQuarter4",
-                maxLength: 19,
-                appendToId: "QualityPartnershipGridControlHolder",
-                changeFunction: function() { me.modified(); }
-            });
-
-            me.ctQuarter4.makeEnterTab()
-                .setValidationMaster( me.validator )
-                .addValidation( function( isFinal, dataMap ) {
-
-                    me.validateControl(me.ctQuarter4, me.competencyTrainingGrid);
-                });
-
-            me.competencyTrainingGrid.addColumn("ctMetricTypeTitle", "evsMetricTypeTitle", "", "", null, null, me.ctMetricTypeTitle);
-            me.competencyTrainingGrid.addColumn("ctQuarter1", "quarter1", "Quarter 1", "Quarter 1", 200, null, me.ctQuarter1);
-            me.competencyTrainingGrid.addColumn("ctQuarter2", "quarter2", "Quarter 2", "Quarter 2", 200, null, me.ctQuarter2);
-            me.competencyTrainingGrid.addColumn("ctQuarter3", "quarter3", "Quarter 3", "Quarter 3", 200, null, me.ctQuarter3);
-            me.competencyTrainingGrid.addColumn("ctQuarter4", "quarter4", "Quarter 4", "Quarter 4", 200, null, me.ctQuarter4);
-            me.competencyTrainingGrid.capColumns();
-
             me.adminObjectiveGrid = new ui.ctl.Grid({
                 id: "AdminObjectiveGrid",
                 appendToId: "divForm",
@@ -1991,15 +1909,6 @@ ii.Class({
                 lookupSpec: { evsMetricType: me.metricTypes }
             });
 
-            me.competencyTrainings = [];
-            me.competencyTrainingStore = me.cache.register({
-                storeId: "evsMetricCompetencyTrainings",
-                itemConstructor: fin.hcm.evsMetric.CompetencyTraining,
-                itemConstructorArgs: fin.hcm.evsMetric.competencyTrainingArgs,
-                injectionArray: me.competencyTrainings,
-                lookupSpec: { evsMetricType: me.metricTypes }
-            });
-
             me.laborControls = [];
             me.laborControlStore = me.cache.register({
                 storeId: "evsLaborControls",
@@ -2191,7 +2100,6 @@ ii.Class({
             me.qualityAssuranceGrid.setHeight(150);
             me.qualityPartnershipGrid.setHeight(150);
             me.auditScoreGrid.setHeight(150);
-            me.competencyTrainingGrid.setHeight(150);
         },
 
         resizeControls: function(selectedTab) {
@@ -2263,16 +2171,10 @@ ii.Class({
 	            else {
 					$("#QualityPartnershipGrid").width($("#QualityPartnershipGridContainer").width() - 5);
 	            }
-				if ($("#CompetencyTrainingGridContainer").width() < 1000) {
-	                $("#CompetencyTrainingGrid").width(1000);
-	            }
-	            else {
-					$("#CompetencyTrainingGrid").width($("#CompetencyTrainingGridContainer").width() - 5);
-	            }
+				
                 me.qualityAssuranceGrid.setHeight(150);
                 me.qualityPartnershipGrid.setHeight(150);
                 me.auditScoreGrid.setHeight(150);
-                me.competencyTrainingGrid.setHeight(150);
             }
             else if (selectedTab === 5) {
 				if ($("#AdminObjectiveGridContainer").width() < 1500) {
@@ -2363,8 +2265,6 @@ ii.Class({
                 me.qualityPartnershipGrid.body.deselect(me.qualityPartnershipGrid.activeRowIndex, true);
             if (me.auditScoreGrid.activeRowIndex !== - 1)
                 me.auditScoreGrid.body.deselect(me.auditScoreGrid.activeRowIndex, true);
-            if (me.competencyTrainingGrid.activeRowIndex !== - 1)
-                me.competencyTrainingGrid.body.deselect(me.competencyTrainingGrid.activeRowIndex, true);
             if (me.adminObjectiveGrid.activeRowIndex !== - 1)
                 me.adminObjectiveGrid.body.deselect(me.adminObjectiveGrid.activeRowIndex, true);
             if (me.evsStatisticGrid.activeRowIndex !== -1)
@@ -2376,7 +2276,6 @@ ii.Class({
             me.qualityAssuranceGrid.setData([]);
             me.qualityPartnershipGrid.setData([]);
             me.auditScoreGrid.setData([]);
-            me.competencyTrainingGrid.setData([]);
             me.adminObjectiveGrid.setData([]);
             me.evsStatisticGrid.setData([]);
             me.managementStaffGrid.setData([]);
@@ -2386,7 +2285,6 @@ ii.Class({
             me.strategicInitiativeStore.reset();
             me.qualityPartnershipStore.reset();
             me.auditScoreStore.reset();
-            me.competencyTrainingStore.reset();
             me.adminObjectiveStore.reset();
         },
 
@@ -2584,7 +2482,6 @@ ii.Class({
                 me.strategicInitiativeStore.fetch("userId:[user],evsMetricId:" + me.evsMetricId, me.strategicInitiativesLoaded, me);
                 me.qualityPartnershipStore.fetch("userId:[user],evsMetricId:" + me.evsMetricId, me.qualityPartnershipsLoaded, me);
                 me.auditScoreStore.fetch("userId:[user],evsMetricId:" + me.evsMetricId, me.auditScoresLoaded, me);
-                me.competencyTrainingStore.fetch("userId:[user],evsMetricId:" + me.evsMetricId, me.competencyTrainingsLoaded, me);
                 me.adminObjectiveStore.fetch("userId:[user],evsMetricId:" + me.evsMetricId, me.adminObjectivesLoaded, me);
             }
             else {
@@ -2638,17 +2535,6 @@ ii.Class({
             me.auditScoreGrid.setData(me.auditScores);
         },
 
-        competencyTrainingsLoaded: function(me, activeId) {
-
-            for (var index = 0; index < me.metricTypes.length; index++) {
-                if (me.metricTypes[index].subType === "Competency Training") {
-                    var result = $.grep(me.competencyTrainings, function(item) { return item.evsMetricType.id === me.metricTypes[index].id; });
-                    if (result.length === 0)
-                        me.competencyTrainings.push(new fin.hcm.evsMetric.CompetencyTraining(0, me.evsMetricId, me.metricTypes[index], me.metricTypes[index].title));
-                }
-            }
-            me.competencyTrainingGrid.setData(me.competencyTrainings);
-        },
 
         adminObjectivesLoaded: function(me, activeId) {
 
@@ -2690,10 +2576,6 @@ ii.Class({
                         item = new fin.hcm.evsMetric.AuditScore(0, me.evsMetricId, me.metricTypes[index], me.metricTypes[index].title);
                         me.auditScores.push(item);
                     }
-                    else if (me.metricTypes[index].subType === "Competency Training") {
-                        item = new fin.hcm.evsMetric.CompetencyTraining(0, me.evsMetricId, me.metricTypes[index], me.metricTypes[index].title);
-                        me.competencyTrainings.push(item);
-                    }
                     else if (me.metricTypes[index].subType === "Admin Objective") {
                         item = new fin.hcm.evsMetric.AdminObjective(0, me.evsMetricId, me.metricTypes[index], me.metricTypes[index].title);
                         me.adminObjectives.push(item);
@@ -2711,7 +2593,6 @@ ii.Class({
                 me.strategicInitiativeGrid.setData(me.strategicInitiatives);
                 me.qualityPartnershipGrid.setData(me.qualityPartnerships);
                 me.auditScoreGrid.setData(me.auditScores);
-                me.competencyTrainingGrid.setData(me.competencyTrainings);
                 me.adminObjectiveGrid.setData(me.adminObjectives);
             }
             else {
@@ -3215,18 +3096,6 @@ ii.Class({
             }
         },
 
-        competencyTrainingItemSelect: function() {
-            var args = ii.args(arguments, {
-                index: {type: Number}
-            });
-            var me = this;
-            var index = args.index;
-
-            if (me.competencyTrainingGrid.data[index] !== undefined) {
-                me.competencyTrainingGrid.data[index].modified = true;
-                me.ctMetricTypeTitle.text.readOnly = true;
-            }
-        },
 
         adminObjectiveItemSelect: function() {
             var args = ii.args(arguments, {
@@ -3298,7 +3167,6 @@ ii.Class({
             me.qualityAssuranceGrid.body.deselectAll();
             me.qualityPartnershipGrid.body.deselectAll();
             me.auditScoreGrid.body.deselectAll();
-            me.competencyTrainingGrid.body.deselectAll();
             me.adminObjectiveGrid.body.deselectAll();
             me.evsStatisticGrid.body.deselectAll();
             me.managementStaffGrid.body.deselectAll();
@@ -3338,7 +3206,7 @@ ii.Class({
                 return false;
             }
 
-            if (me.qualityAssuranceShow && (me.qualityAssuranceGrid.activeRowIndex >= 0 || me.qualityPartnershipGrid.activeRowIndex >= 0 || me.auditScoreGrid.activeRowIndex >= 0 || me.competencyTrainingGrid.activeRowIndex >= 0)) {
+            if (me.qualityAssuranceShow && (me.qualityAssuranceGrid.activeRowIndex >= 0 || me.qualityPartnershipGrid.activeRowIndex >= 0 || me.auditScoreGrid.activeRowIndex >= 0 )) {
                 alert("In order to save, the errors on the page must be corrected. Please verify the data on Quality Assurance tab.");
                 return false;
             }
@@ -3594,21 +3462,6 @@ ii.Class({
                         xml += '/>';
                     }
                 }
-
-                for (index = 0; index < me.competencyTrainings.length; index++) {
-                    if (me.competencyTrainings[index].modified || me.competencyTrainings[index].id === 0) {
-                        me.competencyTrainings[index].modified = true;
-                        xml += '<evsMetricCompetencyTraining';
-                        xml += ' id="' + me.competencyTrainings[index].id + '"';
-                        xml += ' evsMetricId="' + me.evsMetricId + '"';
-                        xml += ' evsMetricTypeId="' + me.competencyTrainings[index].evsMetricType.id + '"';
-                        xml += ' quarter1="' + me.competencyTrainings[index].quarter1 + '"';
-                        xml += ' quarter2="' + me.competencyTrainings[index].quarter2 + '"';
-                        xml += ' quarter3="' + me.competencyTrainings[index].quarter3 + '"';
-                        xml += ' quarter4="' + me.competencyTrainings[index].quarter4 + '"';
-                        xml += '/>';
-                    }
-                }
             }
 
             if (me.adminObjectivesShow) {
@@ -3751,19 +3604,6 @@ ii.Class({
                                     if (me.auditScoreGrid.data[index].id === 0)
                                         me.auditScoreGrid.data[index].id = id;
                                     me.auditScoreGrid.data[index].modified = false;
-                                    break;
-                                }
-                            }
-                            break;
-
-                        case "evsMetricCompetencyTraining":
-                            id = parseInt($(this).attr("id"), 10);
-
-                            for (var index = 0; index < me.competencyTrainingGrid.data.length; index++) {
-                                if (me.competencyTrainingGrid.data[index].modified) {
-                                    if (me.competencyTrainingGrid.data[index].id === 0)
-                                        me.competencyTrainingGrid.data[index].id = id;
-                                    me.competencyTrainingGrid.data[index].modified = false;
                                     break;
                                 }
                             }
