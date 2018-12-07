@@ -95,6 +95,7 @@ ii.init.register( function() {
 		, hourlyFTEVacancies: {type: String, required: false, defaultValue: ""}
 		, fullTimePartTimeRatio: {type: String, required: false, defaultValue: ""}
 		, percentageOperatingCapacity: {type: String, required: false, defaultValue: ""}
+		, budgetedTPPH: {type: String, required: false, defaultValue: ""}
 		, serviceLineEVS: {type: String, required: false, defaultValue: ""}
 		, serviceLineLaundry: {type: String, required: false, defaultValue: ""}
 		, serviceLinePOM: {type: String, required: false, defaultValue: ""}

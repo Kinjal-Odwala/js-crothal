@@ -220,9 +220,9 @@ ii.Class({
 			$("#divCommentsGrid").css({"width" : divCommentsGridWidth + "px", "height" : divCommentsGridHeight + "px"});
 
 			if (ii.browser.chrome) {
-                $("#tblPFCGridHeader").css({ "width": "3245px" });
-                $("#tblNonPFCGridHeader").css({ "width": "3245px" });
-                $("#tblCommentsGridHeader").css({ "width": "3183px" });
+                $("#tblPFCGridHeader").css({ "width": "3238px" });
+				$("#tblNonPFCGridHeader").css({ "width": "3238px" });
+                $("#tblCommentsGridHeader").css({ "width": "3176px" });
 			}
 		},
 
@@ -427,6 +427,24 @@ ii.Class({
 					if (!(/^\d{1,12}(\.\d{1,4})?$/.test(enteredText)))
 						this.setInvalid("Please enter valid number.");
 				});
+
+            me.budgetedTPPH = new ui.ctl.Input.Text({
+                id: "BudgetedTPPH",
+                maxLength: 19,
+                changeFunction: function () { me.modified(); }
+            });
+
+            me.budgetedTPPH
+                .setValidationMaster(me.validator)
+                .addValidation(function (isFinal, dataMap) {
+                    var enteredText = me.budgetedTPPH.getValue();
+
+                    if (enteredText == "")
+                        return;
+
+                    if (!(/^\d{1,16}(\.\d{1,2})?$/.test(enteredText)))
+                        this.setInvalid("Please enter valid number.");
+                });
 
 			me.serviceLineEVS = new ui.ctl.Input.Text({
 		        id: "ServiceLineEVS",
@@ -2078,27 +2096,28 @@ ii.Class({
 			me.supportedByNPC.text.tabIndex = 15;
 			me.hourlyFTEVacancies.text.tabIndex = 16;
 			me.fullTimePartTimeRatio.text.tabIndex = 17;
-			me.operatingCapacity.text.tabIndex = 18;
-			me.serviceLineEVS.text.tabIndex = 19;
-			me.serviceLineLaundry.text.tabIndex = 20;
-			me.serviceLinePOM.text.tabIndex = 21;
-			me.serviceLineCES.text.tabIndex = 22;
-            me.managerName.text.tabIndex = 23;
-            me.managerEmail.text.tabIndex = 24;
-            me.managerPhone.text.tabIndex = 25;
-            me.managerFax.text.tabIndex = 26;
-            me.managerCellPhone.text.tabIndex = 27;
-            me.managerPager.text.tabIndex = 28;
-            me.managerAssistantName.text.tabIndex = 29;
-            me.managerAssistantPhone.text.tabIndex = 30;
-            me.clientFirstName.text.tabIndex = 31;
-            me.clientLastName.text.tabIndex = 32;
-            me.clientTitle.text.tabIndex = 33;
-            me.clientPhone.text.tabIndex = 34;
-            me.clientFax.text.tabIndex = 35;
-            me.clientAssistantName.text.tabIndex = 36;
-            me.clientAssistantPhone.text.tabIndex = 37;
-            me.notes.tabIndex = 38;
+            me.operatingCapacity.text.tabIndex = 18;
+            me.budgetedTPPH.text.tabIndex = 19;
+			me.serviceLineEVS.text.tabIndex = 20;
+			me.serviceLineLaundry.text.tabIndex = 21;
+			me.serviceLinePOM.text.tabIndex = 22;
+			me.serviceLineCES.text.tabIndex = 23;
+            me.managerName.text.tabIndex = 24;
+            me.managerEmail.text.tabIndex = 25;
+            me.managerPhone.text.tabIndex = 26;
+            me.managerFax.text.tabIndex = 27;
+            me.managerCellPhone.text.tabIndex = 28;
+            me.managerPager.text.tabIndex = 29;
+            me.managerAssistantName.text.tabIndex = 30;
+            me.managerAssistantPhone.text.tabIndex = 31;
+            me.clientFirstName.text.tabIndex = 32;
+            me.clientLastName.text.tabIndex = 33;
+            me.clientTitle.text.tabIndex = 34;
+            me.clientPhone.text.tabIndex = 35;
+            me.clientFax.text.tabIndex = 36;
+            me.clientAssistantName.text.tabIndex = 37;
+            me.clientAssistantPhone.text.tabIndex = 38;
+            me.notes.tabIndex = 39;
 		},
 
 		qualityAssuranceGridScroll: function() {
@@ -2142,7 +2161,8 @@ ii.Class({
 				me.cpiCap.resizeText();
 				me.hourlyFTEVacancies.resizeText();
 				me.fullTimePartTimeRatio.resizeText();
-				me.operatingCapacity.resizeText();
+                me.operatingCapacity.resizeText();
+                me.budgetedTPPH.resizeText();
 				me.serviceLineEVS.resizeText();
 				me.serviceLineLaundry.resizeText();
 				me.serviceLinePOM.resizeText();
@@ -2242,7 +2262,8 @@ ii.Class({
 			me.cpiCap.setValue("");
 			me.hourlyFTEVacancies.setValue("");
 			me.fullTimePartTimeRatio.setValue("");
-			me.operatingCapacity.setValue("");
+            me.operatingCapacity.setValue("");
+            me.budgetedTPPH.setValue("");
 			me.serviceLineEVS.setValue("");
 			me.serviceLineLaundry.setValue("");
 			me.serviceLinePOM.setValue("");
@@ -2390,7 +2411,7 @@ ii.Class({
 
 		metricsLoaded: function(me, activeId) {
 
-			me.resetControls();
+            me.resetControls();
 			me.managerName.setValue(me.houseCodeDetails[0].managerName);
 			me.managerEmail.setValue(me.houseCodeDetails[0].managerEmail);
             me.managerPhone.setValue(me.houseCodeDetails[0].managerPhone);
@@ -2419,7 +2440,8 @@ ii.Class({
 				me.cpiCap.setValue(me.metrics[0].cpiCap);
 				me.hourlyFTEVacancies.setValue(me.metrics[0].hourlyFTEVacancies);
 				me.fullTimePartTimeRatio.setValue(me.metrics[0].fullTimePartTimeRatio);
-				me.operatingCapacity.setValue(me.metrics[0].percentageOperatingCapacity);
+                me.operatingCapacity.setValue(me.metrics[0].percentageOperatingCapacity);
+                me.budgetedTPPH.setValue(me.metrics[0].budgetedTPPH);
 				me.serviceLineEVS.setValue(me.metrics[0].serviceLineEVS);
 				me.serviceLineLaundry.setValue(me.metrics[0].serviceLineLaundry);
 				me.serviceLinePOM.setValue(me.metrics[0].serviceLinePOM);
@@ -2437,8 +2459,9 @@ ii.Class({
                 itemIndex = ii.ajax.util.findIndexById(me.metrics[0].supportedByNPC.toString(), me.supportedByNPCTypes);
                 if (itemIndex != undefined && itemIndex >= 0)
                     me.supportedByNPC.select(itemIndex, me.supportedByNPC.focused);					
-				me.notes.value = me.metrics[0].notes;
-				if (me.taskManagementSystem.lastBlurValue == "Other")
+                me.notes.value = me.metrics[0].notes;
+
+                if (me.taskManagementSystem.lastBlurValue == "Other")
 					$("#TMSOtherContainer").show();
 				else
 					$("#TMSOtherContainer").hide();
@@ -3269,7 +3292,7 @@ ii.Class({
 				if (!me.chiefExecutiveOfficer.valid || !me.chiefFinancialOfficer.valid || !me.chiefOperatingOfficer.valid
 					|| !me.chiefNursingOfficer.valid || !me.contractStartDate.valid || !me.contractRenewalDate.valid
 					|| !me.cpiDueDate.valid || !me.cpiCap.valid || !me.hourlyFTEVacancies.valid || !me.fullTimePartTimeRatio.valid
-					|| !me.operatingCapacity.valid || !me.serviceLineEVS.valid || !me.serviceLineLaundry.valid
+					|| !me.operatingCapacity.valid || !me.budgetedTPPH.valid || !me.serviceLineEVS.valid || !me.serviceLineLaundry.valid
 					|| !me.serviceLinePOM.valid || !me.serviceLineCES.valid 
 					|| !me.costedTripCycleTime.valid || !me.contractedAnnualTrips.valid || !me.contractTripEscalator.valid || !me.taskManagementSystem.valid || !me.taskManagementSystemOther.valid
 					|| !me.metricStandard.valid || !me.supportedByNPC.valid
@@ -3320,7 +3343,8 @@ ii.Class({
 				, me.cpiCap.getValue()
 				, me.hourlyFTEVacancies.getValue()
 				, me.fullTimePartTimeRatio.getValue()
-				, me.operatingCapacity.getValue()
+                , me.operatingCapacity.getValue()
+                , me.budgetedTPPH.getValue()
 				, me.serviceLineEVS.getValue()
 				, me.serviceLineLaundry.getValue()
 				, me.serviceLinePOM.getValue()
@@ -3410,7 +3434,8 @@ ii.Class({
 				xml += ' cpiCap="' + item.cpiCap + '"';
 				xml += ' hourlyFTEVacancies="' + item.hourlyFTEVacancies + '"';
 				xml += ' fullTimePartTimeRatio="' + ui.cmn.text.xml.encode(item.fullTimePartTimeRatio) + '"';
-				xml += ' percentageOperatingCapacity="' + item.percentageOperatingCapacity + '"';
+                xml += ' percentageOperatingCapacity="' + item.percentageOperatingCapacity + '"';
+                xml += ' budgetedTPPH="' + item.budgetedTPPH + '"';
 				xml += ' serviceLineEVS="' + ui.cmn.text.xml.encode(item.serviceLineEVS) + '"';
 				xml += ' serviceLineLaundry="' + ui.cmn.text.xml.encode(item.serviceLineLaundry) + '"';
 				xml += ' serviceLinePOM="' + ui.cmn.text.xml.encode(item.serviceLinePOM) + '"';
