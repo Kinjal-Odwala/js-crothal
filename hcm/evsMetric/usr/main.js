@@ -212,7 +212,7 @@ ii.Class({
             $("#divCommentsGrid").css({"width" : divCommentsGridWidth + "px", "height" : divCommentsGridHeight + "px"});
 
             if (ii.browser.chrome) {
- 				$("#tblCommentsGridHeader").css({ "width": "3184px" });
+ 				$("#tblCommentsGridHeader").css({ "width": "3176px" });
             }
         },
 
