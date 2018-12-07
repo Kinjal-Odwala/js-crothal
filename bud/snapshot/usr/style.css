@@ -140,6 +140,13 @@
 	margin: 0px 0px 10px 10px;
 }
 
+#AnchorDeleteSnapshot {
+	float: left;
+	width: 146px;
+	padding: 10px 0px 0px 0px;
+	margin: 0px 0px 10px 10px;
+}
+
 #AnchorSave {
 	float: left;
 	width: 68px;
@@ -147,7 +154,7 @@
 	margin: 0px 0px 10px 10px;
 }
 
-#AnchorCancel {
+#AnchorUndo {
 	float: left;
 	width: 80px;
 	padding: 10px 0px 0px 0px;

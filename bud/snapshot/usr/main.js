@@ -44,12 +44,13 @@ ii.Class({
             me.revenueAccounts = [];
             me.revenueItems = [];
             me.totalItems = [];
-            me.sortSelections = [];
             me.loadCount = 0;
             me.periodId = 0;
             me.revenue = 0;
             me.action = "";
             me.reloadData = false;
+			me.viewMOPClicked = false;
+			me.snapshotLocked = false;
 
             me.gateway = ii.ajax.addGateway("bud", ii.config.xmlProvider);
             me.cache = new ii.ajax.Cache(me.gateway);
@@ -179,6 +180,14 @@ ii.Class({
                 hasHotState: true
             });
 
+			me.anchorDeleteSnapshot = new ui.ctl.buttons.Sizeable({
+                id: "AnchorDeleteSnapshot",
+                className: "iiButton",
+                text: "<span>&nbsp;&nbsp;Delete Snapshot&nbsp;&nbsp;</span>",
+                clickFunction: function() { me.actionDeleteSnapshotItem(); },
+                hasHotState: true
+            });
+
             me.anchorSave = new ui.ctl.buttons.Sizeable({
                 id: "AnchorSave",
                 className: "iiButton",
@@ -187,11 +196,11 @@ ii.Class({
                 hasHotState: true
             });
 
-            me.anchorCancel = new ui.ctl.buttons.Sizeable({
-                id: "AnchorCancel",
+            me.anchorUndo = new ui.ctl.buttons.Sizeable({
+                id: "AnchorUndo",
                 className: "iiButton",
-                text: "<span>&nbsp;&nbsp;Cancel&nbsp;&nbsp;</span>",
-                clickFunction: function() { me.actionCancelItem(); },
+                text: "<span>&nbsp;&nbsp;Undo&nbsp;&nbsp;</span>",
+                clickFunction: function() { me.actionUndoItem(); },
                 hasHotState: true
             });
 
@@ -533,7 +542,10 @@ ii.Class({
 
             me.loadCount--;
             if (me.loadCount === 0) {
-                me.setStatus("Loaded");
+				if (parent.fin.appUI.modified)
+					me.setStatus("Edit");
+				else
+                	me.setStatus("Loaded");
                 $("#pageLoading").fadeOut("slow");
             }
         },
@@ -551,10 +563,15 @@ ii.Class({
             $("#AnchorCreateSnapshot").hide();
             $("#AnchorLockSnapshot").hide();
             $("#AnchorUnlockRequest").hide();
+			$("#AnchorDeleteSnapshot").hide();
             $("#AnchorSave").hide();
-            $("#AnchorCancel").hide();
+            $("#AnchorUndo").hide();
             me.description.value = "";
             me.description.disabled = false;
+			me.budget.setValue("false");
+			me.actual.setValue("false");
+			me.snapshot.setValue("false");
+			me.period.reset();
         },
 
         currentDate: function() {
@@ -854,24 +871,18 @@ ii.Class({
 
             if (me.isSnapshotAvailable(periodId)) {
                 me.action = "SaveSnapshot";
-                me.anchorLoad.display(ui.cmn.behaviorStates.disabled);
-                me.year.text.readOnly = true;
-                $("#Division").multiselect("disable");
-                $("#YearAction").removeClass("iiInputAction");
                 $("#DivisionLink").html(name);
-                $("#Notification").show();
-                $("#DivisionLink").show();
                 $("#CompareContainer").show();
                 if (!me.snapshotLocked && me.currentPeriod === periodId) {
                     $("#AnchorSave").show();
                     $("#AnchorLockSnapshot").show();
-                    $("#AnchorCancel").show();
+					$("#AnchorDeleteSnapshot").show();
                     me.description.disabled = false;
                 }
                 else {
                     $("#AnchorSave").hide();
                     $("#AnchorLockSnapshot").hide();
-                    $("#AnchorCancel").hide();
+					$("#AnchorDeleteSnapshot").hide();
                     me.description.disabled = true;
                 }
 
@@ -895,18 +906,13 @@ ii.Class({
 
             me.resetControls();
             me.action = "CreateSnapshot";
+			me.snapshotLocked = false;
             me.periodId = periodId;
 			me.setLoadCount();
             me.snapshotItemStore.reset();
             me.snapshotItemStore.fetch("userId:[user],level:Sector,revenue:1,divisionIds:" + $("#Division").val().join('~') + ",periodId:" + me.periodId, me.revenueItemsLoaded, me);
-            $("#AnchorCreateSnapshot").show();
             $("#DivisionLink").html(name);
-            $("#Notification").show();
-            $("#DivisionLink").show();
-            $("#Division").multiselect("disable");
-            $("#YearAction").removeClass("iiInputAction");
-            me.anchorLoad.display(ui.cmn.behaviorStates.disabled);
-            me.year.text.readOnly = true;
+			me.modified();
         },
 
         revenueItemsLoaded: function(me, activeId) {
@@ -931,12 +937,21 @@ ii.Class({
                 var item = me.totalItems[index];
                 me.totalItems[index].total = item.period1 + item.period2 + item.period3 + item.period4 + item.period5 + item.period6 + item.period7 + item.period8 + item.period9 + item.period10 + item.period11 + item.period12;
             }
+			$("#Division").multiselect("disable");
+            $("#YearAction").removeClass("iiInputAction");
+			$("#Notification").show();
+            $("#DivisionLink").show();
+			if (me.action === "CreateSnapshot")
+				$("#AnchorCreateSnapshot").show();
             $("#SnapshotGridContainer").hide();
             $("#SnapshotDetailGridContainer").show();
+			$("#CompareContainer").show();
             me.revenueGrid.setData(me.revenueItems);
             me.totalGrid.setData(me.totalItems);
             me.revenueGrid.setHeight(150);
             me.totalGrid.setHeight(150);
+			me.anchorLoad.display(ui.cmn.behaviorStates.disabled);
+            me.year.text.readOnly = true;
             me.checkLoadCount();
         },
 
@@ -978,6 +993,9 @@ ii.Class({
             $("#CompareContainer").hide();
             $("#SnapshotDetailGridContainer").hide();
             $("#CostCenterGridContainer").show();
+			$("#AnchorLockSnapshot").hide();
+			$("#AnchorUnlockRequest").hide();
+			$("#AnchorDeleteSnapshot").hide();
             me.costCenterGrid.setData(me.costCenterItems);
             me.costCenterGrid.setHeight($(window).height() - 275);
 
@@ -1011,16 +1029,25 @@ ii.Class({
             var me = this;
             var index = args.index;
 
-            $("#CostCenterLink").html(me.costCenterGrid.data[index].title);
-            $("#CostCenterLink").show();
-            $("#spnSector").show();
-			me.setLoadCount();
-            me.snapshotItemStore.fetch("userId:[user],level:GLAccount,revenue:" + me.revenue + ",houseCodeId:" + me.costCenterGrid.data[index].id + ",periodId:" + me.periodId, me.accountItemsLoaded, me);
-        },
+			if (me.viewMOPClicked) {
+				me.viewMOPClicked = false;
+                me.costCenterGrid.body.deselect(index, true);
+				setTimeout(function() {
+					$("#CostCenterGridContainer").scrollLeft(0);
+	            }, 100);
+			}
+			else {
+				$("#CostCenterLink").html(me.costCenterGrid.data[index].title);
+				$("#CostCenterLink").show();
+				$("#spnSector").show();
+				me.setLoadCount();
+				me.snapshotItemStore.fetch("userId:[user],level:GLAccount,divisionIds:" + $("#Division").val().join('~') + ",revenue:" + me.revenue + ",houseCodeId:" + me.costCenterGrid.data[index].id + ",periodId:" + me.periodId, me.accountItemsLoaded, me);
+			}
+    	},
 
         accountItemsLoaded: function(me, activeId) {
 
-            me.revenueCurrentPeriodTotal = 0;
+			me.revenueCurrentPeriodTotal = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
             me.accountItems = me.snapshotItems.slice();
 
             for (var index = 0; index < me.accountItems.length; index++) {
@@ -1028,12 +1055,17 @@ ii.Class({
                 me.accountItems[index].total = item.period1 + item.period2 + item.period3 + item.period4 + item.period5 + item.period6 + item.period7 + item.period8 + item.period9 + item.period10 + item.period11 + item.period12;
                 if (me.revenue === 0) {
                     var itemIndex = ii.ajax.util.findIndexById(item.id.toString(), me.accounts);
-                    if (itemIndex !== null && me.accounts[itemIndex].isNegative)
-                        me.revenueCurrentPeriodTotal += Number(item["period" + me.currentPeriodTitle]);
-                }
+                    if (itemIndex !== null && me.accounts[itemIndex].isNegative) {
+						for (var iIndex = 1; iIndex <= 12; iIndex++) {
+							me.revenueCurrentPeriodTotal[iIndex - 1] += Number(item["period" + iIndex]);
+						}
+					}
+				}
             }
             $("#CostCenterGridContainer").hide();
             $("#AccountGridContainer").show();
+			if (me.action === "SaveSnapshot" && !me.snapshotLocked && me.currentPeriod === me.periodId)
+				$("#AnchorUndo").show();
 			$("#AccountGridContainer").scrollLeft(0);
             me.createAccountGrid();
             me.accountGrid.setData(me.accountItems);
@@ -1067,6 +1099,7 @@ ii.Class({
                     if (me.costCenterGrid.activeRowIndex !== -1)
                         me.costCenterGrid.body.deselect(me.costCenterGrid.activeRowIndex, true);
                     me.costCenterGrid.setData(me.costCenterItems);
+					me.modified();
                 }
             }
         },
@@ -1089,6 +1122,7 @@ ii.Class({
                     if (me.accountGrid.activeRowIndex !== -1)
                         me.accountGrid.body.deselect(me.accountGrid.activeRowIndex, true);
                     me.accountGrid.setData(me.accountItems);
+					me.modified();
                 }
             }
         },
@@ -1105,41 +1139,199 @@ ii.Class({
                 deleteFunction: function() { return true; }
             });
 
-            me.glPeriod = new ui.ctl.Input.Text({
-                id: "GLPeriod",
+            me.glPeriod1 = new ui.ctl.Input.Text({
+                id: "GLPeriod1",
                 maxLength: 19,
                 appendToId: "AccountGridControlHolder",
                 changeFunction: function () { me.calculateTotal(); }
             });
 
-            me.glPeriod.makeEnterTab()
-                .setValidationMaster(me.validator)
-                .addValidation(function (isFinal, dataMap) {
+			me.glPeriod1.makeEnterTab()
+                .setValidationMaster( me.validator )
+                .addValidation( function( isFinal, dataMap ) {
 
-                    var enteredText = me.glPeriod.getValue();
+                    me.validateControl(me.glPeriod1, me.accountGrid);
+                });
 
-                    if (enteredText === "")
-                        return;
+			me.glPeriod2 = new ui.ctl.Input.Text({
+                id: "GLPeriod2",
+                maxLength: 19,
+                appendToId: "AccountGridControlHolder",
+                changeFunction: function () { me.calculateTotal(); }
+            });
 
-                    if (!(/^\d{1,16}(\.\d{1,2})?$/.test(enteredText)))
-                        this.setInvalid("Please enter numeric value.");
+			me.glPeriod2.makeEnterTab()
+                .setValidationMaster( me.validator )
+                .addValidation( function( isFinal, dataMap ) {
+
+                    me.validateControl(me.glPeriod2, me.accountGrid);
+                });
+
+			me.glPeriod3 = new ui.ctl.Input.Text({
+                id: "GLPeriod3",
+                maxLength: 19,
+                appendToId: "AccountGridControlHolder",
+                changeFunction: function () { me.calculateTotal(); }
+            });
+
+			me.glPeriod3.makeEnterTab()
+                .setValidationMaster( me.validator )
+                .addValidation( function( isFinal, dataMap ) {
+
+                    me.validateControl(me.glPeriod3, me.accountGrid);
+                });
+
+			me.glPeriod4 = new ui.ctl.Input.Text({
+                id: "GLPeriod4",
+                maxLength: 19,
+                appendToId: "AccountGridControlHolder",
+                changeFunction: function () { me.calculateTotal(); }
+            });
+
+			me.glPeriod4.makeEnterTab()
+                .setValidationMaster( me.validator )
+                .addValidation( function( isFinal, dataMap ) {
+
+                    me.validateControl(me.glPeriod4, me.accountGrid);
+                });
+
+			me.glPeriod5 = new ui.ctl.Input.Text({
+                id: "GLPeriod5",
+                maxLength: 19,
+                appendToId: "AccountGridControlHolder",
+                changeFunction: function () { me.calculateTotal(); }
+            });
+
+			me.glPeriod5.makeEnterTab()
+                .setValidationMaster( me.validator )
+                .addValidation( function( isFinal, dataMap ) {
+
+                    me.validateControl(me.glPeriod5, me.accountGrid);
+                });
+
+			me.glPeriod6 = new ui.ctl.Input.Text({
+                id: "GLPeriod6",
+                maxLength: 19,
+                appendToId: "AccountGridControlHolder",
+                changeFunction: function () { me.calculateTotal(); }
+            });
+
+			me.glPeriod6.makeEnterTab()
+                .setValidationMaster( me.validator )
+                .addValidation( function( isFinal, dataMap ) {
+
+                    me.validateControl(me.glPeriod6, me.accountGrid);
+                });
+
+			me.glPeriod7 = new ui.ctl.Input.Text({
+                id: "GLPeriod7",
+                maxLength: 19,
+                appendToId: "AccountGridControlHolder",
+                changeFunction: function () { me.calculateTotal(); }
+            });
+
+			me.glPeriod7.makeEnterTab()
+                .setValidationMaster( me.validator )
+                .addValidation( function( isFinal, dataMap ) {
+
+                    me.validateControl(me.glPeriod7, me.accountGrid);
+                });
+
+			me.glPeriod8 = new ui.ctl.Input.Text({
+                id: "GLPeriod8",
+                maxLength: 19,
+                appendToId: "AccountGridControlHolder",
+                changeFunction: function () { me.calculateTotal(); }
+            });
+
+			me.glPeriod8.makeEnterTab()
+                .setValidationMaster( me.validator )
+                .addValidation( function( isFinal, dataMap ) {
+
+                    me.validateControl(me.glPeriod8, me.accountGrid);
+                });
+
+			me.glPeriod9 = new ui.ctl.Input.Text({
+                id: "GLPeriod9",
+                maxLength: 19,
+                appendToId: "AccountGridControlHolder",
+                changeFunction: function () { me.calculateTotal(); }
+            });
+
+			me.glPeriod9.makeEnterTab()
+                .setValidationMaster( me.validator )
+                .addValidation( function( isFinal, dataMap ) {
+
+                    me.validateControl(me.glPeriod9, me.accountGrid);
+                });
+
+			me.glPeriod10 = new ui.ctl.Input.Text({
+                id: "GLPeriod10",
+                maxLength: 19,
+                appendToId: "AccountGridControlHolder",
+                changeFunction: function () { me.calculateTotal(); }
+            });
+
+			me.glPeriod10.makeEnterTab()
+                .setValidationMaster( me.validator )
+                .addValidation( function( isFinal, dataMap ) {
+
+                    me.validateControl(me.glPeriod10, me.accountGrid);
+                });
+
+			me.glPeriod11 = new ui.ctl.Input.Text({
+                id: "GLPeriod11",
+                maxLength: 19,
+                appendToId: "AccountGridControlHolder",
+                changeFunction: function () { me.calculateTotal(); }
+            });
+
+			me.glPeriod11.makeEnterTab()
+                .setValidationMaster( me.validator )
+                .addValidation( function( isFinal, dataMap ) {
+
+                    me.validateControl(me.glPeriod11, me.accountGrid);
+                });
+
+			me.glPeriod12 = new ui.ctl.Input.Text({
+                id: "GLPeriod12",
+                maxLength: 19,
+                appendToId: "AccountGridControlHolder",
+                changeFunction: function () { me.calculateTotal(); }
+            });
+
+			me.glPeriod12.makeEnterTab()
+                .setValidationMaster( me.validator )
+                .addValidation( function( isFinal, dataMap ) {
+
+                    me.validateControl(me.glPeriod12, me.accountGrid);
                 });
 
             me.accountGrid.addColumn("aTitle", "title", "Account Code", "Account Code", null);
-            me.accountGrid.addColumn("aPeriod1", "period1", "Period 1", "Period 1", 130, function(period1) { return parseFloat(period1).toFixed(2); }, (editable && me.currentPeriodTitle === 1 ? me.glPeriod : null));
-            me.accountGrid.addColumn("aPeriod2", "period2", "Period 2", "Period 2", 130, function(period2) { return parseFloat(period2).toFixed(2); }, (editable && me.currentPeriodTitle === 2 ? me.glPeriod : null));
-            me.accountGrid.addColumn("aPeriod3", "period3", "Period 3", "Period 3", 130, function(period3) { return parseFloat(period3).toFixed(2); }, (editable && me.currentPeriodTitle === 3 ? me.glPeriod : null));
-            me.accountGrid.addColumn("aPeriod4", "period4", "Period 4", "Period 4", 130, function(period4) { return parseFloat(period4).toFixed(2); }, (editable && me.currentPeriodTitle === 4 ? me.glPeriod : null));
-            me.accountGrid.addColumn("aPeriod5", "period5", "Period 5", "Period 5", 130, function(period5) { return parseFloat(period5).toFixed(2); }, (editable && me.currentPeriodTitle === 5 ? me.glPeriod : null));
-            me.accountGrid.addColumn("aPeriod6", "period6", "Period 6", "Period 6", 130, function(period6) { return parseFloat(period6).toFixed(2); }, (editable && me.currentPeriodTitle === 6 ? me.glPeriod : null));
-            me.accountGrid.addColumn("aPeriod7", "period7", "Period 7", "Period 7", 130, function(period7) { return parseFloat(period7).toFixed(2); }, (editable && me.currentPeriodTitle === 7 ? me.glPeriod : null));
-            me.accountGrid.addColumn("aPeriod8", "period8", "Period 8", "Period 8", 130, function(period8) { return parseFloat(period8).toFixed(2); }, (editable && me.currentPeriodTitle === 8 ? me.glPeriod : null));
-            me.accountGrid.addColumn("aPeriod9", "period9", "Period 9", "Period 9", 130, function(period9) { return parseFloat(period9).toFixed(2); }, (editable && me.currentPeriodTitle === 9 ? me.glPeriod : null));
-            me.accountGrid.addColumn("aPeriod10", "period10", "Period 10", "Period 10", 130, function(period10) { return parseFloat(period10).toFixed(2); }, (editable && me.currentPeriodTitle === 10 ? me.glPeriod : null));
-            me.accountGrid.addColumn("aPeriod11", "period11", "Period 11", "Period 11", 130, function(period11) { return parseFloat(period11).toFixed(2); }, (editable && me.currentPeriodTitle === 11 ? me.glPeriod : null));
-            me.accountGrid.addColumn("aPeriod12", "period12", "Period 12", "Period 12", 130, function(period12) { return parseFloat(period12).toFixed(2); }, (editable && me.currentPeriodTitle === 12 ? me.glPeriod : null));
+            me.accountGrid.addColumn("aPeriod1", "period1", "Period 1", "Period 1", 130, function(period1) { return parseFloat(period1).toFixed(2); }, (editable && me.currentPeriodTitle <= 1 ? me.glPeriod1 : null));
+            me.accountGrid.addColumn("aPeriod2", "period2", "Period 2", "Period 2", 130, function(period2) { return parseFloat(period2).toFixed(2); }, (editable && me.currentPeriodTitle <= 2 ? me.glPeriod2 : null));
+            me.accountGrid.addColumn("aPeriod3", "period3", "Period 3", "Period 3", 130, function(period3) { return parseFloat(period3).toFixed(2); }, (editable && me.currentPeriodTitle <= 3 ? me.glPeriod3 : null));
+            me.accountGrid.addColumn("aPeriod4", "period4", "Period 4", "Period 4", 130, function(period4) { return parseFloat(period4).toFixed(2); }, (editable && me.currentPeriodTitle <= 4 ? me.glPeriod4 : null));
+            me.accountGrid.addColumn("aPeriod5", "period5", "Period 5", "Period 5", 130, function(period5) { return parseFloat(period5).toFixed(2); }, (editable && me.currentPeriodTitle <= 5 ? me.glPeriod5 : null));
+            me.accountGrid.addColumn("aPeriod6", "period6", "Period 6", "Period 6", 130, function(period6) { return parseFloat(period6).toFixed(2); }, (editable && me.currentPeriodTitle <= 6 ? me.glPeriod6 : null));
+            me.accountGrid.addColumn("aPeriod7", "period7", "Period 7", "Period 7", 130, function(period7) { return parseFloat(period7).toFixed(2); }, (editable && me.currentPeriodTitle <= 7 ? me.glPeriod7 : null));
+            me.accountGrid.addColumn("aPeriod8", "period8", "Period 8", "Period 8", 130, function(period8) { return parseFloat(period8).toFixed(2); }, (editable && me.currentPeriodTitle <= 8 ? me.glPeriod8 : null));
+            me.accountGrid.addColumn("aPeriod9", "period9", "Period 9", "Period 9", 130, function(period9) { return parseFloat(period9).toFixed(2); }, (editable && me.currentPeriodTitle <= 9 ? me.glPeriod9 : null));
+            me.accountGrid.addColumn("aPeriod10", "period10", "Period 10", "Period 10", 130, function(period10) { return parseFloat(period10).toFixed(2); }, (editable && me.currentPeriodTitle <= 10 ? me.glPeriod10 : null));
+            me.accountGrid.addColumn("aPeriod11", "period11", "Period 11", "Period 11", 130, function(period11) { return parseFloat(period11).toFixed(2); }, (editable && me.currentPeriodTitle <= 11 ? me.glPeriod11 : null));
+            me.accountGrid.addColumn("aPeriod12", "period12", "Period 12", "Period 12", 130, function(period12) { return parseFloat(period12).toFixed(2); }, (editable && me.currentPeriodTitle <= 12 ? me.glPeriod12 : null));
             me.accountGrid.addColumn("aTotal", "total", "Total", "Total", 130, function(total) { return parseFloat(total).toFixed(2); });
             me.accountGrid.capColumns();
+        },
+
+		validateControl: function(control, activeGrid) {
+            var enteredText = control.getValue();
+
+            if (enteredText === "" || activeGrid.activeRowIndex === -1)
+                return;
+
+            if (!(/^-?\d{1,16}(\.\d{1,2})?$/.test(enteredText)))
+            	control.setInvalid("Please enter numeric value.");
         },
 
         accountItemSelect: function() {
@@ -1151,21 +1343,34 @@ ii.Class({
 
             me.accountGrid.data[index].modified = true;
             setTimeout(function() {
-                me.glPeriod.text.focus();
-                me.glPeriod.text.select();
+				$("#GLPeriod" + me.currentPeriodTitle + "Text").select();;
+				$("#GLPeriod" + me.currentPeriodTitle + "Text").select();
 				$("#AccountGridContainer").scrollLeft(0);
             }, 100);
         },
 
         calculateTotal: function() {
             var me = this;
-            var periodAmount = me.glPeriod.getValue();
+            var periodAmount = 0;
+			var periodValue = 0;
+			var total = 0;
 
-            me.modified();
-            if (periodAmount !== "" && !isNaN(periodAmount)) {
-                var total = me.accountGrid.data[me.accountGrid.activeRowIndex].total - Number(me.accountGrid.data[me.accountGrid.activeRowIndex]["period" + me.currentPeriodTitle]) + Number(periodAmount);
-                $(me.accountGrid.rows[me.accountGrid.activeRowIndex].getElement("aTotal")).text(parseFloat(total).toFixed(2));
-            }
+			for (var index = 1; index <= 12; index++) {
+				if (me.currentPeriodTitle <= index) {
+					periodAmount = $("#GLPeriod" + index + "Text").val();
+					if (periodAmount !== "" && !isNaN(periodAmount))
+						periodValue = Number(periodAmount);
+					else
+						periodValue = 0;
+				}
+				else {
+					periodValue = Number(me.accountGrid.data[me.accountGrid.activeRowIndex]["period" + index]);
+				}
+				total += periodValue;
+			}
+
+            $(me.accountGrid.rows[me.accountGrid.activeRowIndex].getElement("aTotal")).text(parseFloat(total).toFixed(2));
+			me.modified();
         },
 
         actionViewItem: function(level) {
@@ -1234,7 +1439,14 @@ ii.Class({
                 $("#CostCenterLink").html("");
                 $("#CostCenterLink").hide();
                 $("#spnSector").hide();
+				$("#AnchorUndo").hide();
 				$("#SnapshotDetailGridContainer").scrollLeft(0);
+				if (me.action === "SaveSnapshot" && !me.snapshotLocked && me.currentPeriod === me.periodId) {
+					$("#AnchorLockSnapshot").show();
+					$("#AnchorDeleteSnapshot").show();
+				}
+				if (me.snapshotLocked && me.currentPeriod === me.periodId)
+                    $("#AnchorUnlockRequest").show();
                 if (me.revenueGrid.activeRowIndex !== -1)
                     me.revenueGrid.body.deselect(me.revenueGrid.activeRowIndex, true);
                 if (me.totalGrid.activeRowIndex !== -1)
@@ -1267,6 +1479,7 @@ ii.Class({
                 $("#CostCenterLink").html("");
                 $("#CostCenterLink").hide();
                 $("#spnSector").hide();
+				$("#AnchorUndo").hide();
 				$("#CostCenterGridContainer").scrollLeft(0);
                 if (me.costCenterGrid.activeRowIndex !== -1)
                     me.costCenterGrid.body.deselect(me.costCenterGrid.activeRowIndex, true);
@@ -1276,8 +1489,10 @@ ii.Class({
         actionViewMOP: function(houseCodeId) {
             var me = this;
 
-			if (!parent.fin.cmn.status.itemValid())
-            	return;
+			if (!parent.fin.cmn.status.itemValid()) {
+				me.viewMOPClicked = true;
+				return;
+			}
 
             for (var index = 0; index < me.houseCodes.length; index++) {
                 if (me.houseCodes[index].id === houseCodeId) {
@@ -1289,55 +1504,8 @@ ii.Class({
                 }
             }
 
-            if (!me.columnSorted()) {
-                top.ui.ctl.menu.Dom.me.items["bud"].items["MOP"].select();
-                window.location = "/fin/bud/mop/usr/markup.htm";
-            }
-        },
-
-        columnSorted: function() {
-            var me = this;
-            var columnExists = false;
-            var generalColumnSorted = false;
-            var columnSorted = false;
-            var column;
-            var columnSelected;
-
-            for (var index = 0; index < me.costCenterGrid.columns.length; index++) {
-                column = me.costCenterGrid.columns[index];
-                if (column) {
-                    if (index === "rowNumber")
-                        continue;
-
-                    for (var sortColumnIndex = 0; sortColumnIndex < me.sortSelections.length; sortColumnIndex++) {
-                        columnSelected = me.sortSelections[sortColumnIndex];
-                        if (columnSelected.name === index) {
-                            columnExists = true;
-                            if (columnSelected.sortStatus !== column.sortStatus) {
-                                columnSorted = true;
-                                me.sortSelections[sortColumnIndex].name = index;
-                                me.sortSelections[sortColumnIndex].sortStatus = column.sortStatus;
-                            }
-                        }
-                    }
-
-                    if (!columnExists) {
-                        me.sortSelections.push({
-                            name: index
-                            , sortStatus: column.sortStatus
-                        });
-
-                        if (column.sortStatus !== "none")
-                            columnSorted = true;
-                    }
-
-                    if (columnSorted)
-                        generalColumnSorted = true;
-                    columnSorted = false;
-                }
-            }
-
-            return generalColumnSorted;
+            top.ui.ctl.menu.Dom.me.items["bud"].items["MOP"].select();
+            window.location = "/fin/bud/mop/usr/markup.htm";
         },
 
         actionCreateSnapshotItem: function() {
@@ -1366,7 +1534,7 @@ ii.Class({
                 alert("Sanpshot is not available for one or more selected divisions.");
         },
 
-        actionCancelItem: function() {
+        actionDeleteSnapshotItem: function() {
             var me = this;
 
             if (confirm("Are you sure you would like to delete the selected snapshot?")) {
@@ -1398,6 +1566,19 @@ ii.Class({
             var me = this;
 
             me.hidePopup("PopupContainer");
+        },
+
+		actionUndoItem: function() {
+            var me = this;
+
+			if (!parent.fin.cmn.status.itemValid())
+            	return;
+
+			if (me.accountGrid.activeRowIndex !== -1)
+            	me.accountGrid.body.deselect(me.accountGrid.activeRowIndex, true);
+            me.setLoadCount();
+			me.snapshotItemStore.reset();
+			me.snapshotItemStore.fetch("userId:[user],level:GLAccount,divisionIds:" + $("#Division").val().join('~') + ",revenue:" + me.revenue + ",houseCodeId:" + me.costCenterGrid.data[me.costCenterGrid.activeRowIndex].id + ",periodId:" + me.periodId, me.accountItemsLoaded, me);
         },
 
         actionSaveItem: function() {
@@ -1523,7 +1704,8 @@ ii.Class({
                 else if (me.action === "LockSnapshot") {
                     $("#AnchorLockSnapshot").hide();
                     $("#AnchorSave").hide();
-                    $("#AnchorCancel").hide();
+					$("#AnchorDeleteSnapshot").hide();
+                    $("#AnchorUndo").hide();
                     me.snapshotGrid.data[me.snapshotGrid.activeRowIndex].locked = true;
                     me.snapshotGrid.data[me.snapshotGrid.activeRowIndex].unlockRequested = false;
                     me.snapshotGrid.body.renderRow(me.snapshotGrid.activeRowIndex, me.snapshotGrid.activeRowIndex);
@@ -1542,47 +1724,68 @@ ii.Class({
                     me.snapshotGrid.data[me.snapshotGrid.activeRowIndex].description = me.description.value;
 
                     if (me.accountGrid !== undefined && me.accountGrid.data.length > 0) {
-                        var periodTotal = 0;
-                        var revenueTotal = 0;
-                        var revenuePeriodTotal = 0;
-                        var totalPeriodTotal = 0;
+						var periodTotal = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+						var revenueTotal = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+						var costCenterPeriodTotal = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+						var revenuePeriodTotal = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+						var totalPeriodTotal = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+						var total = 0;
 
                         for (var index = 0; index < me.accountGrid.data.length; index++) {
-                            periodTotal += Number(me.accountGrid.data[index]["period" + me.currentPeriodTitle]);
+							for (var iIndex = 1; iIndex <= 12; iIndex++) {
+								periodTotal[iIndex - 1] += Number(me.accountGrid.data[index]["period" + iIndex]);
+							}
+
                             if (me.revenue === 0) {
                                 var itemIndex = ii.ajax.util.findIndexById(me.accountGrid.data[index].id.toString(), me.accounts);
-                                if (itemIndex !== null && me.accounts[itemIndex].isNegative)
-                                    revenueTotal += Number(me.accountGrid.data[index]["period" + me.currentPeriodTitle]);
+                                if (itemIndex !== null && me.accounts[itemIndex].isNegative) {
+									for (var iIndex = 1; iIndex <= 12; iIndex++) {
+										revenueTotal[iIndex - 1] += Number(me.accountGrid.data[index]["period" + iIndex]);
+									}
+								}
                             }
                         }
 
-                        var costCenterPeriodTotal = me.costCenterGrid.data[me.costCenterGrid.activeRowIndex]["period" + me.currentPeriodTitle];
-                        me.costCenterGrid.data[me.costCenterGrid.activeRowIndex]["period" + me.currentPeriodTitle] = periodTotal;
-                        me.costCenterGrid.data[me.costCenterGrid.activeRowIndex].total = me.costCenterGrid.data[me.costCenterGrid.activeRowIndex].total - costCenterPeriodTotal + periodTotal;
+						for (var iIndex = 1; iIndex <= 12; iIndex++) {
+							costCenterPeriodTotal[iIndex - 1] += Number(me.costCenterGrid.data[me.costCenterGrid.activeRowIndex]["period" + iIndex]);
+						}
+
+						for (var iIndex = 1; iIndex <= 12; iIndex++) {
+							me.costCenterGrid.data[me.costCenterGrid.activeRowIndex]["period" + iIndex] = periodTotal[iIndex - 1];
+							total += periodTotal[iIndex - 1];
+						}
+						me.costCenterGrid.data[me.costCenterGrid.activeRowIndex].total = total;
                         me.costCenterGrid.body.renderRow(me.costCenterGrid.activeRowIndex, me.costCenterGrid.activeRowIndex);
 
+						for (var iIndex = 1; iIndex <= 12; iIndex++) {
+							revenuePeriodTotal[iIndex - 1] += Number(me.revenueGrid.data[0]["period" + iIndex]);
+						}
+						total = 0;
                         if (me.revenue === 1) {
-                            revenuePeriodTotal = me.revenueGrid.data[0]["period" + me.currentPeriodTitle];
-                            me.revenueGrid.data[0]["period" + me.currentPeriodTitle] = revenuePeriodTotal - costCenterPeriodTotal + periodTotal;
-                            me.revenueGrid.data[0].total = me.revenueGrid.data[0].total - costCenterPeriodTotal + periodTotal;
-                            me.revenueGrid.body.renderRow(0, 0);
-
-                            totalPeriodTotal = me.totalGrid.data[0]["period" + me.currentPeriodTitle];
-                            me.totalGrid.data[0]["period" + me.currentPeriodTitle] = totalPeriodTotal - costCenterPeriodTotal + periodTotal;
-                            me.totalGrid.data[0].total = me.totalGrid.data[0].total - costCenterPeriodTotal + periodTotal;
-                            me.totalGrid.body.renderRow(0, 0);
+							for (var iIndex = 1; iIndex <= 12; iIndex++) {
+								me.revenueGrid.data[0]["period" + iIndex] = revenuePeriodTotal[iIndex - 1] - costCenterPeriodTotal[iIndex - 1] + periodTotal[iIndex - 1];
+								total += me.revenueGrid.data[0]["period" + iIndex];
+							}
                         }
                         else {
-                            revenuePeriodTotal = me.revenueGrid.data[0]["period" + me.currentPeriodTitle];
-                            me.revenueGrid.data[0]["period" + me.currentPeriodTitle] = revenuePeriodTotal - me.revenueCurrentPeriodTotal + revenueTotal;
-                            me.revenueGrid.data[0].total = me.revenueGrid.data[0].total - me.revenueCurrentPeriodTotal + revenueTotal;
-                            me.revenueGrid.body.renderRow(0, 0);
-
-                            totalPeriodTotal = me.totalGrid.data[0]["period" + me.currentPeriodTitle];
-                            me.totalGrid.data[0]["period" + me.currentPeriodTitle] = totalPeriodTotal - costCenterPeriodTotal + periodTotal;
-                            me.totalGrid.data[0].total = me.totalGrid.data[0].total - costCenterPeriodTotal + periodTotal;
-                            me.totalGrid.body.renderRow(0, 0);
+							for (var iIndex = 1; iIndex <= 12; iIndex++) {
+								me.revenueGrid.data[0]["period" + iIndex] = revenuePeriodTotal[iIndex - 1] - me.revenueCurrentPeriodTotal[iIndex - 1] + revenueTotal[iIndex - 1];
+								total += me.revenueGrid.data[0]["period" + iIndex];
+							}
                         }
+						me.revenueGrid.data[0].total = total;
+                        me.revenueGrid.body.renderRow(0, 0);
+
+						for (var iIndex = 1; iIndex <= 12; iIndex++) {
+							totalPeriodTotal[iIndex - 1] += Number(me.totalGrid.data[0]["period" + iIndex]);
+						}
+						total = 0;
+						for (var iIndex = 1; iIndex <= 12; iIndex++) {
+							me.totalGrid.data[0]["period" + iIndex] = totalPeriodTotal[iIndex - 1] - costCenterPeriodTotal[iIndex - 1] + periodTotal[iIndex - 1];
+							total += me.totalGrid.data[0]["period" + iIndex];
+						}
+						me.totalGrid.data[0].total = total;
+                        me.totalGrid.body.renderRow(0, 0);
                     }
                 }
 
