@@ -1597,20 +1597,12 @@ ii.Class({
                 id: "ManagementStaffGrid",
                 appendToId: "divForm",
                 selectFunction: function (index) { me.managementStaffItemSelect(index); },
-                deselectFunction: function() { me.managementStaffItemDeSelect(); },
                 deleteFunction: function () { return true; }
             });
 
             me.msMetricTypeTitle = new ui.ctl.Input.Text({
                 id: "MSMetricTypeTitle",
                 appendToId: "ManagementStaffGridControlHolder"
-            });
-
-            me.staffManagementRatio = new ui.ctl.Input.Check({
-                id: "StaffManagementRatio",
-                appendToId: "ManagementStaffGridControlHolder",
-                className: "iiInputCheckSMRatio",
-                changeFunction: function() { me.modified(); }
             });
 
             me.msPeriod1 = new ui.ctl.Input.Text({
@@ -1782,7 +1774,7 @@ ii.Class({
                 });
 
             me.managementStaffGrid.addColumn("msMetricTypeTitle", "evsMetricTypeTitle", "", "", null, null, me.msMetricTypeTitle);
-            me.managementStaffGrid.addColumn("staffManagementRatio", "staffManagementRatio", "Include in Staff to Management Ratio", "Include in Staff to Management Ratio", 300, function(staffManagementRatio) { return (staffManagementRatio === true ? "Yes" : "No"); }, me.staffManagementRatio);
+			me.managementStaffGrid.addColumn("staffManagementRatio", "", "Include in Staff to Management Ratio", "Include in Staff to Management Ratio", 300, function(item) { return (item.evsMetricType.brief); });
             me.managementStaffGrid.addColumn("msPeriod1", "period1", "Period 1", "Period 1", 180, null, me.msPeriod1);
             me.managementStaffGrid.addColumn("msPeriod2", "period2", "Period 2", "Period 2", 180, null, me.msPeriod2);
             me.managementStaffGrid.addColumn("msPeriod3", "period3", "Period 3", "Period 3", 180, null, me.msPeriod3);
@@ -2666,18 +2658,18 @@ ii.Class({
                             , me.numericDetails[index].evsMetricId
                             , me.numericDetails[index].evsMetricType
                             , me.numericDetails[index].evsMetricType.title
-                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? parseFloat(me.numericDetails[index].period1, 1) : (me.numericDetails[index].period1 === "" ? "" : parseInt(me.numericDetails[index].period1, 10)))
-                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? parseFloat(me.numericDetails[index].period2, 1) : (me.numericDetails[index].period2 === "" ? "" : parseInt(me.numericDetails[index].period2, 10)))
-                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? parseFloat(me.numericDetails[index].period3, 1) : (me.numericDetails[index].period3 === "" ? "" : parseInt(me.numericDetails[index].period3, 10)))
-                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? parseFloat(me.numericDetails[index].period4, 1) : (me.numericDetails[index].period4 === "" ? "" : parseInt(me.numericDetails[index].period4, 10)))
-                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? parseFloat(me.numericDetails[index].period5, 1) : (me.numericDetails[index].period5 === "" ? "" : parseInt(me.numericDetails[index].period5, 10)))
-                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? parseFloat(me.numericDetails[index].period6, 1) : (me.numericDetails[index].period6 === "" ? "" : parseInt(me.numericDetails[index].period6, 10)))
-                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? parseFloat(me.numericDetails[index].period7, 1) : (me.numericDetails[index].period7 === "" ? "" : parseInt(me.numericDetails[index].period7, 10)))
-                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? parseFloat(me.numericDetails[index].period8, 1) : (me.numericDetails[index].period8 === "" ? "" : parseInt(me.numericDetails[index].period8, 10)))
-                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? parseFloat(me.numericDetails[index].period9, 1) : (me.numericDetails[index].period9 === "" ? "" : parseInt(me.numericDetails[index].period9, 10)))
-                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? parseFloat(me.numericDetails[index].period10, 1) : (me.numericDetails[index].period10 === "" ? "" : parseInt(me.numericDetails[index].period10, 10)))
-                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? parseFloat(me.numericDetails[index].period11, 1) : (me.numericDetails[index].period11 === "" ? "" : parseInt(me.numericDetails[index].period11, 10)))
-                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? parseFloat(me.numericDetails[index].period12, 1) : (me.numericDetails[index].period12 === "" ? "" : parseInt(me.numericDetails[index].period12, 10)))
+                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? (me.numericDetails[index].period1 === "" ? "" : parseFloat(me.numericDetails[index].period1).toFixed(1)) : (me.numericDetails[index].period1 === "" ? "" : parseInt(me.numericDetails[index].period1, 10)))
+                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? (me.numericDetails[index].period2 === "" ? "" : parseFloat(me.numericDetails[index].period2).toFixed(1)) : (me.numericDetails[index].period2 === "" ? "" : parseInt(me.numericDetails[index].period2, 10)))
+                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? (me.numericDetails[index].period3 === "" ? "" : parseFloat(me.numericDetails[index].period3).toFixed(1)) : (me.numericDetails[index].period3 === "" ? "" : parseInt(me.numericDetails[index].period3, 10)))
+                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? (me.numericDetails[index].period4 === "" ? "" : parseFloat(me.numericDetails[index].period4).toFixed(1)) : (me.numericDetails[index].period4 === "" ? "" : parseInt(me.numericDetails[index].period4, 10)))
+                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? (me.numericDetails[index].period5 === "" ? "" : parseFloat(me.numericDetails[index].period5).toFixed(1)) : (me.numericDetails[index].period5 === "" ? "" : parseInt(me.numericDetails[index].period5, 10)))
+                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? (me.numericDetails[index].period6 === "" ? "" : parseFloat(me.numericDetails[index].period6).toFixed(1)) : (me.numericDetails[index].period6 === "" ? "" : parseInt(me.numericDetails[index].period6, 10)))
+                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? (me.numericDetails[index].period7 === "" ? "" : parseFloat(me.numericDetails[index].period7).toFixed(1)) : (me.numericDetails[index].period7 === "" ? "" : parseInt(me.numericDetails[index].period7, 10)))
+                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? (me.numericDetails[index].period8 === "" ? "" : parseFloat(me.numericDetails[index].period8).toFixed(1)) : (me.numericDetails[index].period8 === "" ? "" : parseInt(me.numericDetails[index].period8, 10)))
+                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? (me.numericDetails[index].period9 === "" ? "" : parseFloat(me.numericDetails[index].period9).toFixed(1)) : (me.numericDetails[index].period9 === "" ? "" : parseInt(me.numericDetails[index].period9, 10)))
+                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? (me.numericDetails[index].period10 === "" ? "" : parseFloat(me.numericDetails[index].period10).toFixed(1)) : (me.numericDetails[index].period10 === "" ? "" : parseInt(me.numericDetails[index].period10, 10)))
+                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? (me.numericDetails[index].period11 === "" ? "" : parseFloat(me.numericDetails[index].period11).toFixed(1)) : (me.numericDetails[index].period11 === "" ? "" : parseInt(me.numericDetails[index].period11, 10)))
+                            , (me.numericDetails[index].evsMetricType.dataType === "Decimal" ? (me.numericDetails[index].period12 === "" ? "" : parseFloat(me.numericDetails[index].period12).toFixed(1)) : (me.numericDetails[index].period12 === "" ? "" : parseInt(me.numericDetails[index].period12, 10)))
                             , me.numericDetails[index].staffManagementRatio
                             );
                         me.managementStaffs.push(item);
@@ -3140,15 +3132,6 @@ ii.Class({
             }
         },
 
-        managementStaffItemDeSelect: function() {
-            var me = this;
-            var index = me.managementStaffGrid.selectedRows[0];
-
-            if (index >= 0) {
-                $(me.managementStaffGrid.rows[index].getElement("staffManagementRatio")).text(me.staffManagementRatio.check.checked ? "Yes" : "No");
-            }
-        },
-
         actionUndoItem: function() {
             var me = this;
 
@@ -3524,7 +3507,7 @@ ii.Class({
                         xml += ' id="' + me.managementStaffs[index].id + '"';
                         xml += ' evsMetricId="' + me.evsMetricId + '"';
                         xml += ' evsMetricTypeId="' + me.managementStaffs[index].evsMetricType.id + '"';
-                        xml += ' staffManagementRatio="' + me.managementStaffs[index].staffManagementRatio + '"';
+                        xml += ' staffManagementRatio="' + (me.managementStaffs[index].staffManagementRatio === "Yes" ? 1 : 0 ) + '"';
                         xml += ' period1="' + ui.cmn.text.xml.encode(me.managementStaffs[index].period1) + '"';
                         xml += ' period2="' + ui.cmn.text.xml.encode(me.managementStaffs[index].period2) + '"';
                         xml += ' period3="' + ui.cmn.text.xml.encode(me.managementStaffs[index].period3) + '"';
