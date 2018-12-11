@@ -1786,9 +1786,6 @@ ii.Class({
             }
 
             $("#selPCRowCount").html(payCode);
-            me.weekDaysLoad(me.weeks[Number($("#selWeekType").val()) - 1], true);
-            $("#trWageFooter0").after('<tr id="trLastRow" height="100%"><td id="tdLastRow" colspan="11" class="gridColumnRight" style="height: 100%">&nbsp;</td></tr>');
-            me.addWageTypeRow(me.weekDays.length - 1, true);
         },
 
         addWeekDays: function() {
@@ -1804,7 +1801,7 @@ ii.Class({
             }
 
             if (!found) {
-                me.weekDaysLoad(me.weeks[Number($("#selWeekType").val()) - 1], false);
+                me.weekDaysLoad(me.weeks[Number($("#selWeekType").val()) - 1], (me.weekDays.length === 0 ? true : false));
                 me.addWageTypeRow(me.weekDays.length - 1, true);
             }
         },
@@ -1838,6 +1835,7 @@ ii.Class({
             if (append) {
                 $("#tblWageHeader").append(wageHeaderRow);
                 $("#trWageHeader0").after(wageFooterRow);
+				$("#trWageFooter0").after('<tr id="trLastRow" height="100%"><td id="tdLastRow" colspan="11" class="gridColumnRight" style="height: 100%">&nbsp;</td></tr>');
             }
             else {
                 $("#trLastRow").before(wageHeaderRow);
