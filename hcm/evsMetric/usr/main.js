@@ -2512,6 +2512,7 @@ ii.Class({
                         me.qualityPartnerships.push(new fin.hcm.evsMetric.QualityPartnership(0, me.evsMetricId, me.metricTypes[index], me.metricTypes[index].title));
                 }
             }
+			me.qualityPartnerships.sort(me.customSort);
             me.qualityPartnershipGrid.setData(me.qualityPartnerships);
         },
 
@@ -2582,6 +2583,7 @@ ii.Class({
                     }
                 }
 
+				me.qualityPartnerships.sort(me.customSort);
                 me.strategicInitiativeGrid.setData(me.strategicInitiatives);
                 me.qualityPartnershipGrid.setData(me.qualityPartnerships);
                 me.auditScoreGrid.setData(me.auditScores);
@@ -2755,6 +2757,7 @@ ii.Class({
             }
 
             me.qualityAssurances.sort(me.customSort);
+			me.evsStatistics.sort(me.customSort);
             me.qualityAssuranceGrid.setData(me.qualityAssurances);
             me.evsStatisticGrid.setData(me.evsStatistics);
             me.managementStaffGrid.setData(me.managementStaffs);
