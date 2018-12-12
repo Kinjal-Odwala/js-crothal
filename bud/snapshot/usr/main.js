@@ -583,6 +583,17 @@ ii.Class({
             return month + "/" + day + "/" + year;
         },
 
+		currentTime: function() {
+            var currentDate = new Date(parent.fin.appUI.glbCurrentDate);
+
+			if (currentDate.getHours() === 12)
+            	return currentDate.getHours() + ":" + currentDate.getMinutes() + ":" + currentDate.getSeconds() + " PM";
+			else if (currentDate.getHours() > 12)
+            	return (currentDate.getHours() - 12) + ":" + currentDate.getMinutes() + ":" + currentDate.getSeconds() + " PM";
+			else
+				return currentDate.getHours() + ":" + currentDate.getMinutes() + ":" + currentDate.getSeconds() + " AM";
+        },
+
 		customSort: function(a, b) {
             if (a.periodId > b.periodId)
                 return 1;
@@ -905,6 +916,7 @@ ii.Class({
             var me = this;
 
             me.resetControls();
+			me.modified();
             me.action = "CreateSnapshot";
 			me.snapshotLocked = false;
             me.periodId = periodId;
@@ -912,7 +924,6 @@ ii.Class({
             me.snapshotItemStore.reset();
             me.snapshotItemStore.fetch("userId:[user],level:Sector,revenue:1,divisionIds:" + $("#Division").val().join('~') + ",periodId:" + me.periodId, me.revenueItemsLoaded, me);
             $("#DivisionLink").html(name);
-			me.modified();
         },
 
         revenueItemsLoaded: function(me, activeId) {
@@ -1706,6 +1717,8 @@ ii.Class({
                     $("#AnchorSave").hide();
 					$("#AnchorDeleteSnapshot").hide();
                     $("#AnchorUndo").hide();
+					me.snapshotGrid.data[me.snapshotGrid.activeRowIndex].modBy = me.session.propertyGet("userName");
+					me.snapshotGrid.data[me.snapshotGrid.activeRowIndex].modAt = me.currentDate() + " " + me.currentTime();;
                     me.snapshotGrid.data[me.snapshotGrid.activeRowIndex].locked = true;
                     me.snapshotGrid.data[me.snapshotGrid.activeRowIndex].unlockRequested = false;
                     me.snapshotGrid.body.renderRow(me.snapshotGrid.activeRowIndex, me.snapshotGrid.activeRowIndex);
