@@ -1802,15 +1802,15 @@ ii.Class({
 
             if (!found) {
                 me.weekDaysLoad(me.weeks[Number($("#selWeekType").val()) - 1], (me.weekDays.length === 0 ? true : false));
-                me.addWageTypeRow(me.weekDays.length - 1, true);
-            }
+				me.addWageTypeRow(Number($("#selWeekType").val()), true);
+	        }
         },
 
         weekDaysLoad: function(week, append) {
             var me = this;
             var item = new fin.pay.payCheck.WeekDay();
 
-            item.id = me.weekDays.length + 1;
+			item.id = week.id;
             item.weekStartDate = week.weekStartDate;
             item.weekEndDate = week.weekEndDate;
             me.weekDays.push(item);
@@ -1827,29 +1827,30 @@ ii.Class({
             }
 
             var weekRowIndex = me.weekDays.length - 1;
+		    var rowIndex = week.id;
             var wageHeaderRow = $("#tblWageHeaderTemplate").html();
-            wageHeaderRow = wageHeaderRow.replace(/RowCount/g, weekRowIndex);
+            wageHeaderRow = wageHeaderRow.replace(/RowCount/g, rowIndex);
             var wageFooterRow = $("#tblWageFooterTemplate").html();
-            wageFooterRow = wageFooterRow.replace(/RowCount/g, weekRowIndex);
+            wageFooterRow = wageFooterRow.replace(/RowCount/g, rowIndex);
 
             if (append) {
                 $("#tblWageHeader").append(wageHeaderRow);
-                $("#trWageHeader0").after(wageFooterRow);
-				$("#trWageFooter0").after('<tr id="trLastRow" height="100%"><td id="tdLastRow" colspan="11" class="gridColumnRight" style="height: 100%">&nbsp;</td></tr>');
+                $("#trWageHeader" + week.id).after(wageFooterRow);
+				$("#trWageFooter" + week.id).after('<tr id="trLastRow" height="100%"><td id="tdLastRow" colspan="11" class="gridColumnRight" style="height: 100%">&nbsp;</td></tr>');
             }
             else {
                 $("#trLastRow").before(wageHeaderRow);
                 $("#trLastRow").before(wageFooterRow);
             }
 
-            $("#weekDays" + weekRowIndex).html(me.weekDays[weekRowIndex].weekStartDate + " - " + me.weekDays[weekRowIndex].weekEndDate);
-            $("#spnDay1" + weekRowIndex).html(me.weekDays[weekRowIndex].day1);
-            $("#spnDay2" + weekRowIndex).html(me.weekDays[weekRowIndex].day2);
-            $("#spnDay3" + weekRowIndex).html(me.weekDays[weekRowIndex].day3);
-            $("#spnDay4" + weekRowIndex).html(me.weekDays[weekRowIndex].day4);
-            $("#spnDay5" + weekRowIndex).html(me.weekDays[weekRowIndex].day5);
-            $("#spnDay6" + weekRowIndex).html(me.weekDays[weekRowIndex].day6);
-            $("#spnDay7" + weekRowIndex).html(me.weekDays[weekRowIndex].day7);
+            $("#weekDays" + rowIndex).html(me.weekDays[weekRowIndex].weekStartDate + " - " + me.weekDays[weekRowIndex].weekEndDate);
+            $("#spnDay1" + rowIndex).html(me.weekDays[weekRowIndex].day1);
+            $("#spnDay2" + rowIndex).html(me.weekDays[weekRowIndex].day2);
+            $("#spnDay3" + rowIndex).html(me.weekDays[weekRowIndex].day3);
+            $("#spnDay4" + rowIndex).html(me.weekDays[weekRowIndex].day4);
+            $("#spnDay5" + rowIndex).html(me.weekDays[weekRowIndex].day5);
+            $("#spnDay6" + rowIndex).html(me.weekDays[weekRowIndex].day6);
+            $("#spnDay7" + rowIndex).html(me.weekDays[weekRowIndex].day7);
         },
 
         addWageTypeRow: function(headerIndex, add) {
@@ -1857,8 +1858,13 @@ ii.Class({
             var weeklyWage = {};
             var rowIndex = 0;
 
+			if (me.weeklyWages.length === 0)
+				weeklyWage.rowIndex = 0;
+			else
+				weeklyWage.rowIndex = me.weeklyWages[me.weeklyWages.length - 1].rowIndex + 1;
             weeklyWage.id = 0;
             weeklyWage.index = headerIndex;
+			weeklyWage.firstRow = add;
             weeklyWage.payRate = 0;
             weeklyWage.wageType = null;
             weeklyWage.payCodeId = 0;
@@ -1879,14 +1885,13 @@ ii.Class({
             weeklyWage.day7TransactionId = 0;
             weeklyWage.modified = false;
             me.weeklyWages.push(weeklyWage);
-            var wageTypeIndex = me.weeklyWages.length - 1;
 
             for (var index = 0; index < me.weeklyWages.length; index++) {
                 if (me.weeklyWages[index].index === headerIndex)
                     rowIndex++;
             }
 
-            me.wageTypeRowBuild(weeklyWage, headerIndex, wageTypeIndex, add, rowIndex);
+            me.wageTypeRowBuild(weeklyWage, headerIndex, weeklyWage.rowIndex, add, rowIndex);
         },
 
         wageTypeRowBuild: function(weeklyWage, headerIndex, wageTypeIndex, showAdd, rowIndex) {
@@ -1895,12 +1900,12 @@ ii.Class({
 
             if (showAdd)
                 wageRow = wageRow.replace("ImageAdd", "<img id='imgAdd" + headerIndex + "'"
-                    + " src='/fin/cmn/usr/media/Common/add.png' style='cursor: pointer' alt='Add Pay Code' title='Add Pay Code' />");
+                    + " src='/fin/cmn/usr/media/Common/add.png' style='cursor: pointer' alt='Add Wage Type' title='Add Wage Type' />");
             else
                 wageRow = wageRow.replace("ImageAdd", "&nbsp;&nbsp;&nbsp;&nbsp;");
 
-            //wageRow = wageRow.replace("ImageDelete", "<img id='imgDelete" + wageTypeIndex + "'"
-            //	+ " src='/fin/cmn/usr/media/Common/delete.png' style='cursor: pointer' alt='Delete Pay Code' title='Delete Pay Code' />");
+            wageRow = wageRow.replace("ImageDelete", "<img id='imgDelete" + wageTypeIndex + "'"
+            	+ " src='/fin/cmn/usr/media/Common/delete.png' style='cursor: pointer' alt='Delete Wage Type' title='Delete Wage Type' />");
 
             wageRow = wageRow.replace(/RowCount/g, wageTypeIndex);
             wageRow = wageRow.replace("RowStyle", ((rowIndex % 2) ? "alternateGridRow" : "gridRow"));
@@ -1923,7 +1928,7 @@ ii.Class({
 
             if (showAdd)
                 $("#imgAdd" + headerIndex).bind("click", function() { me.addWageTypeRow(Number(this.id.replace("imgAdd", "")), false); });
-            //$("#imgDelete" + wageTypeIndex).bind("click", function() { me.payCodeDelete(this.id.replace("imgDelete", "")); });
+            $("#imgDelete" + wageTypeIndex).bind("click", function() { me.deleteWageTypeRow(this.id.replace("imgDelete", "")); });
             $("#trPay" + wageTypeIndex + " select[id^=selPC]").bind("change", function() { me.wageTypeChange(this); });
             $("#trPay" + wageTypeIndex + " input[id^=txtPayRate]").bind("blur", function() { me.payRateBlur(this); });
             $("#trPay" + wageTypeIndex + " input[id^=txtD]").bind("blur", function() { me.hourBlur(this); });
@@ -1940,6 +1945,53 @@ ii.Class({
             $("#txtEarnings" + wageTypeIndex).attr("disabled", true);
         },
 
+		deleteWageTypeRow: function(wageTypeIndex) {
+		    var me = this;
+			var item = [];
+			var index = 0;
+			var rowCount = 0;
+			var deleteIndex = -1;
+
+			for (index = 0; index < me.weeklyWages.length; index++) {
+				if (Number(wageTypeIndex) === me.weeklyWages[index].rowIndex) {
+					item = me.weeklyWages[index];
+					deleteIndex = index;
+					break;
+				}
+			}
+
+			if (item.firstRow) {
+				for (index = 0; index < me.weeklyWages.length; index++) {
+					if (item.index === me.weeklyWages[index].index)
+						rowCount++;
+				}
+			}
+
+			if (!item.firstRow || rowCount === 1) {
+				for (index = 1; index < 8; index++) {
+	                $("#spnTotalDay" + index + item.index).html((Number($("#spnTotalDay" + index + item.index).html()) - item["day" + index]).toFixed(2));
+					$("#spnGrandTotalDay" + index).html((Number($("#spnGrandTotalDay" + index).html()) - item["day" + index]).toFixed(2));
+	            }
+				$("#spnTotal" + item.index).html((Number($("#spnTotal" + item.index).html()) - Number($("#txtEarnings" + wageTypeIndex).val())).toFixed(2));
+				$("#spnGrandTotal").html((Number($("#spnGrandTotal").html()) - Number($("#txtEarnings" + wageTypeIndex).val())).toFixed(2));
+
+				me.weeklyWages.splice(deleteIndex, 1);
+				$("#trPay" + wageTypeIndex).remove();
+
+				if (rowCount === 1) {
+					$("#trWageHeader" + item.index).remove();
+					$("#trWageFooter" + item.index).remove();
+					for (index = 0; index < me.weekDays.length; index++) {
+						if (item.index === me.weekDays[index].id)
+							me.weekDays.splice(index, 1);
+					}
+
+					if (me.weekDays.length === 0)
+						$("#trLastRow").remove();
+				}
+			}
+		},
+
         getWageType: function(id) {
             var me = this;
 
@@ -1953,8 +2005,17 @@ ii.Class({
             var me = this;
             var rowNumber = Number(objSelect.id.substr(5));
             var wageType = me.getWageType(Number(objSelect.value));
-            var totalIndex = me.weeklyWages[rowNumber].index;
+			var rowIndex = -1;
+            var totalIndex = -1;
             var total = 0;
+
+			for (var index = 0; index < me.weeklyWages.length; index++) {
+				if (Number(rowNumber) === me.weeklyWages[index].rowIndex) {
+					rowIndex = index;
+					totalIndex = me.weeklyWages[index].index;
+					break;
+				}
+			}
 
             $("#txtPayRate" + rowNumber).attr("disabled", wageType.earnings);
             $("#txtD1" + rowNumber).attr("disabled", wageType.earnings);
@@ -1968,19 +2029,15 @@ ii.Class({
 
             if (wageType.earnings) {
                 for (var index = 1; index < 8; index++) {
-                    total = Number($("#spnTotalDay" + index + totalIndex).html()) - Number(me.weeklyWages[rowNumber]["day" + index]);
+                    total = Number($("#spnTotalDay" + index + totalIndex).html()) - Number(me.weeklyWages[rowIndex]["day" + index]);
                     $("#spnTotalDay" + index + totalIndex).html(total.toFixed(2));
-                    total = Number($("#spnGrandTotalDay" + index).html()) - Number(me.weeklyWages[rowNumber]["day" + index]);
+                    total = Number($("#spnGrandTotalDay" + index).html()) - Number(me.weeklyWages[rowIndex]["day" + index]);
                     $("#spnGrandTotalDay" + index).html(total.toFixed(2));
                     $("#txtD" + index + rowNumber).val("0");
 					$("#txtD" + index + rowNumber).attr("title", "");
 					$("#txtD" + index + rowNumber).removeClass("invalid");
-                    me.weeklyWages[rowNumber]["day" + index] = 0;
+                    me.weeklyWages[rowIndex]["day" + index] = 0;
                 }
-                total = Number($("#spnTotal" + totalIndex).html()) - Number($("#txtEarnings" + rowNumber).val());
-                $("#spnTotal" + totalIndex).html(total.toFixed(2));
-                total = Number($("#spnGrandTotal").html()) - Number($("#txtEarnings" + rowNumber).val());
-                $("#spnGrandTotal").html(total.toFixed(2));
                 $("#txtPayRate" + rowNumber).val("0");
 				$("#txtPayRate" + rowNumber).attr("title", "");
 				$("#txtPayRate" + rowNumber).removeClass("invalid");
@@ -1988,8 +2045,8 @@ ii.Class({
 				$("#txtEarnings" + rowNumber).attr("title", "");
 				$("#txtEarnings" + rowNumber).removeClass("invalid");
 				$("#txtEarnings" + rowNumber).removeClass("warning");
-                me.weeklyWages[rowNumber].payRate = 0;
-                me.weeklyWages[rowNumber].earnings = 0;
+                me.weeklyWages[rowIndex].payRate = 0;
+                me.weeklyWages[rowIndex].earnings = 0;
             }
             else {
                 $("#txtPayRate" + rowNumber).val(me.employee.hourly ? me.employee.payRate : 0);
@@ -1999,14 +2056,19 @@ ii.Class({
 				$("#txtEarnings" + rowNumber).attr("title", "");
 				$("#txtEarnings" + rowNumber).removeClass("invalid");
 				$("#txtEarnings" + rowNumber).removeClass("warning");
-                me.weeklyWages[rowNumber].payRate = (me.employee.hourly ? me.employee.payRate : 0);
-                me.weeklyWages[rowNumber].earnings = 0;
+                me.weeklyWages[rowIndex].payRate = (me.employee.hourly ? me.employee.payRate : 0);
+                me.weeklyWages[rowIndex].earnings = 0;
             }
 
-            if (Number(objSelect.value) !== me.weeklyWages[rowNumber].payCodeId) {
-                me.weeklyWages[rowNumber].wageType = wageType;
-                me.weeklyWages[rowNumber].payCodeId = Number(objSelect.value);
-                me.weeklyWages[rowNumber].modified = true;
+			total = Number($("#spnTotal" + totalIndex).html()) - Number($("#txtEarnings" + rowNumber).val());
+            $("#spnTotal" + totalIndex).html(total.toFixed(2));
+            total = Number($("#spnGrandTotal").html()) - Number($("#txtEarnings" + rowNumber).val());
+            $("#spnGrandTotal").html(total.toFixed(2));
+
+            if (Number(objSelect.value) !== me.weeklyWages[rowIndex].payCodeId) {
+                me.weeklyWages[rowIndex].wageType = wageType;
+                me.weeklyWages[rowIndex].payCodeId = Number(objSelect.value);
+                me.weeklyWages[rowIndex].modified = true;
             }
         },
 
@@ -2016,17 +2078,25 @@ ii.Class({
             var weekTotal = 0;
             var total = 0;
             var grandTotal = 0;
-            var totalIndex = 0;
-            var hours = 0;
+			var hours = 0;
+			var rowIndex = -1;
+            var totalIndex = -1;
+
+			for (var index = 0; index < me.weeklyWages.length; index++) {
+				if (Number(rowCount) === me.weeklyWages[index].rowIndex) {
+					rowIndex = index;
+					break;
+				}
+			}
 
             //remove any unwanted characters
             objInput.value = objInput.value.replace(/[^0-9\.]/g, "");
             hours = Number(objInput.value);
 
             //make sure we have a change
-            if (objInput.value === "" || objInput.value != me.weeklyWages[rowCount].payRate) {
-                var wageType = me.getWageType(me.weeklyWages[rowCount].payCodeId);
-                totalIndex = me.weeklyWages[rowCount].index;
+            if (objInput.value === "" || objInput.value != me.weeklyWages[rowIndex].payRate) {
+                var wageType = me.getWageType(me.weeklyWages[rowIndex].payCodeId);
+                totalIndex = me.weeklyWages[rowIndex].index;
 
                 if (objInput.value === "" || hours <= 0 || hours > 99.99) {
                     $("#" + objInput.id).attr("title", "The value should be between 0 and 99.99.");
@@ -2039,11 +2109,11 @@ ii.Class({
                 }
 
                 for (var index = 1; index < 8; index++) {
-                    weekTotal += Number(me.weeklyWages[rowCount]["day" + index]);
+                    weekTotal += Number(me.weeklyWages[rowIndex]["day" + index]);
                 }
 
-                me.weeklyWages[rowCount].payRate = Number(objInput.value);
-                me.weeklyWages[rowCount].modified = true;
+                me.weeklyWages[rowIndex].payRate = Number(objInput.value);
+                me.weeklyWages[rowIndex].modified = true;
 
                 if (!wageType.earnings) {
                     var totalEarnings = weekTotal * parseFloat($("#txtPayRate" + rowCount).val());
@@ -2061,15 +2131,23 @@ ii.Class({
             var rowCount = Number(objInput.id.substr(11));
             var total = 0;
             var grandTotal = 0;
-            var totalIndex = 0;
+            var rowIndex = -1;
+            var totalIndex = -1;
+
+			for (var index = 0; index < me.weeklyWages.length; index++) {
+				if (Number(rowCount) === me.weeklyWages[index].rowIndex) {
+					rowIndex = index;
+					break;
+				}
+			}
 
             //remove any unwanted characters
             objInput.value = objInput.value.replace(/[^0-9\.]/g, "");
 
             //make sure we have a change
-            if (objInput.value === "" || objInput.value != me.weeklyWages[rowCount].earnings) {
-                var wageType = me.getWageType(me.weeklyWages[rowCount].payCodeId);
-                totalIndex = me.weeklyWages[rowCount].index;
+            if (objInput.value === "" || objInput.value != me.weeklyWages[rowIndex].earnings) {
+                var wageType = me.getWageType(me.weeklyWages[rowIndex].payCodeId);
+                totalIndex = me.weeklyWages[rowIndex].index;
 				$("#" + objInput.id).removeClass("warning");
 
                 if (objInput.value === "" || Number(objInput.value) <= 0 || !(/^\d{0,8}(\.\d{1,2})?$/.test(objInput.value))) {
@@ -2083,8 +2161,8 @@ ii.Class({
                 }
 
                 if (wageType.earnings) {
-                    total = Number($("#spnTotal" + totalIndex).html()) - Number(me.weeklyWages[rowCount].earnings) + Number($("#txtEarnings" + rowCount).val());
-                    grandTotal = Number($("#spnGrandTotal").html()) - Number(me.weeklyWages[rowCount].earnings) + Number($("#txtEarnings" + rowCount).val());
+                    total = Number($("#spnTotal" + totalIndex).html()) - Number(me.weeklyWages[rowIndex].earnings) + Number($("#txtEarnings" + rowCount).val());
+                    grandTotal = Number($("#spnGrandTotal").html()) - Number(me.weeklyWages[rowIndex].earnings) + Number($("#txtEarnings" + rowCount).val());
                     $("#spnTotal" + totalIndex).html(total.toFixed(2));
                     $("#spnGrandTotal").html(grandTotal.toFixed(2));
 					if (Number($("#txtEarnings" + rowCount).val()) > 1500)
@@ -2093,8 +2171,8 @@ ii.Class({
 						$("#" + objInput.id).removeClass("warning");
                 }
 
-                me.weeklyWages[rowCount].earnings = Number(objInput.value);
-                me.weeklyWages[rowCount].modified = true;
+                me.weeklyWages[rowIndex].earnings = Number(objInput.value);
+                me.weeklyWages[rowIndex].modified = true;
             }
         },
 
@@ -2107,16 +2185,24 @@ ii.Class({
             var dayGrandTotal = 0;
             var total = 0;
             var grandTotal = 0;
-            var totalIndex = 0;
-            var hours = 0;
+			var hours = 0;
+			var rowIndex = -1;
+            var totalIndex = -1;
+
+			for (var index = 0; index < me.weeklyWages.length; index++) {
+				if (Number(rowCount) === me.weeklyWages[index].rowIndex) {
+					rowIndex = index;
+					break;
+				}
+			}
 
             //remove any unwanted characters
             objInput.value = objInput.value.replace(/[^0-9\.]/g, "");
             hours = Number(objInput.value);
 
             //make sure we have a change
-            if (objInput.value === "" || objInput.value != me.weeklyWages[rowCount]["day" + DayNumber]) {
-                totalIndex = me.weeklyWages[rowCount].index;
+            if (objInput.value === "" || objInput.value != me.weeklyWages[rowIndex]["day" + DayNumber]) {
+                totalIndex = me.weeklyWages[rowIndex].index;
 
                 if (objInput.value === "" || hours < 0 || hours > 24) {
                     $("#" + objInput.id).attr("title", "The value should be between 0 and 24.");
@@ -2129,12 +2215,12 @@ ii.Class({
                 }
 
                 for (var index = 1; index < 8; index++) {
-                    weekTotal += Number(me.weeklyWages[rowCount]["day" + index]);
+                    weekTotal += Number(me.weeklyWages[rowIndex]["day" + index]);
                 }
 
-                weekTotal = weekTotal - Number(me.weeklyWages[rowCount]["day" + DayNumber]) + hours;
-                dayTotal = Number($("#spnTotalDay" + DayNumber + totalIndex).html()) - Number(me.weeklyWages[rowCount]["day" + DayNumber]) + hours;
-                dayGrandTotal = Number($("#spnGrandTotalDay" + DayNumber).html()) - Number(me.weeklyWages[rowCount]["day" + DayNumber]) + hours;
+                weekTotal = weekTotal - Number(me.weeklyWages[rowIndex]["day" + DayNumber]) + hours;
+                dayTotal = Number($("#spnTotalDay" + DayNumber + totalIndex).html()) - Number(me.weeklyWages[rowIndex]["day" + DayNumber]) + hours;
+                dayGrandTotal = Number($("#spnGrandTotalDay" + DayNumber).html()) - Number(me.weeklyWages[rowIndex]["day" + DayNumber]) + hours;
                 var weeklyTotal = weekTotal * parseFloat($("#txtPayRate" + rowCount).val());
                 total = Number($("#spnTotal" + totalIndex).html()) - Number($("#txtEarnings" + rowCount).val()) + Number(weeklyTotal);
                 grandTotal = Number($("#spnGrandTotal").html()) - Number($("#txtEarnings" + rowCount).val()) + Number(weeklyTotal);
@@ -2144,8 +2230,8 @@ ii.Class({
                 $("#spnGrandTotalDay" + DayNumber).html(dayGrandTotal.toFixed(2));
                 $("#spnGrandTotal").html(grandTotal.toFixed(2));
 
-                me.weeklyWages[rowCount]["day" + DayNumber] = hours;
-                me.weeklyWages[rowCount].modified = true;
+                me.weeklyWages[rowIndex]["day" + DayNumber] = hours;
+                me.weeklyWages[rowIndex].modified = true;
             }
             else {
                 $("#" + objInput.id).attr("title", "");
@@ -2222,6 +2308,7 @@ ii.Class({
                 $("#WageInfo").show();
                 $("#RequestorInfo").hide();
                 $("#divWage").css({"height" : divWageHeight + "px"});
+				$("#selWeekType").show();
                 $("#imgWeekDaysAdd").show();
                 $("#tblWageHeader img[id^=img]").show();
                 $("#tblWageHeader select[id^=sel]").attr("disabled", false);
@@ -2259,6 +2346,7 @@ ii.Class({
                 $("#WageInfo").show();
                 $("#AnchorNext").hide();
                 $("#AnchorSendRequest").show();
+				$("#selWeekType").hide();
                 $("#imgWeekDaysAdd").hide();
                 $("#tblWageHeader img[id^=img]").hide();
                 $("#tblWageHeader input[id^=txt]").attr("disabled", true);
@@ -2665,7 +2753,7 @@ ii.Class({
                 xml += '/>';
 
                 for (index = 0; index < me.weeklyWages.length; index++) {
-                    var weeklyIndex = me.weeklyWages[index].index;
+					var weeklyIndex = ii.ajax.util.findIndexById(me.weeklyWages[index].index.toString(), me.weekDays);
                     var wageType = me.getWageType(me.weeklyWages[index].payCodeId);
 
                     if (Number($("#selPC" + index).val()) > 0) {
