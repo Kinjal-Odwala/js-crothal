@@ -2008,6 +2008,7 @@ ii.Class({
 			var rowIndex = -1;
             var totalIndex = -1;
             var total = 0;
+			var earnings = 0;
 
 			for (var index = 0; index < me.weeklyWages.length; index++) {
 				if (Number(rowNumber) === me.weeklyWages[index].rowIndex) {
@@ -2017,6 +2018,7 @@ ii.Class({
 				}
 			}
 
+			earnings = Number($("#txtEarnings" + rowNumber).val());
             $("#txtPayRate" + rowNumber).attr("disabled", wageType.earnings);
             $("#txtD1" + rowNumber).attr("disabled", wageType.earnings);
             $("#txtD2" + rowNumber).attr("disabled", wageType.earnings);
@@ -2060,9 +2062,9 @@ ii.Class({
                 me.weeklyWages[rowIndex].earnings = 0;
             }
 
-			total = Number($("#spnTotal" + totalIndex).html()) - Number($("#txtEarnings" + rowNumber).val());
+			total = Number($("#spnTotal" + totalIndex).html()) - earnings;
             $("#spnTotal" + totalIndex).html(total.toFixed(2));
-            total = Number($("#spnGrandTotal").html()) - Number($("#txtEarnings" + rowNumber).val());
+            total = Number($("#spnGrandTotal").html()) - earnings;
             $("#spnGrandTotal").html(total.toFixed(2));
 
             if (Number(objSelect.value) !== me.weeklyWages[rowIndex].payCodeId) {
